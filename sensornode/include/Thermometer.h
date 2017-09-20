@@ -19,7 +19,7 @@ class Thermometer: public Sensor {
     public:
         Thermometer(const uint32_t &id,
                     const float &samplerate,
-                    const bool &enable, 
+                    const bool &active, 
                     const double &mean, 
                     const double &stddev);
         ~Thermometer();
@@ -30,15 +30,15 @@ class Thermometer: public Sensor {
         void setSampleRate(const float &);
         float getSampleRate();
 
-        void setEnable(const bool &);
-        bool isEnabled();
+        void setActive(const bool &);
+        bool isActive();
 
         float getData();
 
     private:
         uint32_t m_id;
         float m_samplerate;
-        bool m_enable;
+        bool m_active;
 
         mt19937 m_gen;
         normal_distribution<> m_distr;

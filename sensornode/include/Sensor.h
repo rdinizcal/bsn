@@ -19,13 +19,13 @@ class Sensor {
         virtual void setSampleRate(const float &) = 0;
         virtual float getSampleRate() = 0;
 
-        virtual void setEnable(const bool &) = 0;
-        virtual bool isEnabled() = 0;
+        virtual void setActive(const bool &) = 0;
+        virtual bool isActive() = 0;
 
     private:
         uint32_t m_id;
         float m_samplerate;
-        bool m_enable;
+        bool m_active;
 };
 
 #endif
