@@ -37,3 +37,7 @@
             ```
             $ sudo apt-get install opendavinci-lib opendavinci-odtools opendavinci-odsupercomponent
             ```
+
+        Otherwise:
+
+        Consult http://opendavinci.readthedocs.io/en/latest/installation.pre-compiled.html#
