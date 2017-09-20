@@ -1,0 +1,386 @@
+/*
+ * OpenDaVINCI.odvd - Core data structures for OpenDaVINCI.
+ * Copyright (C) 2015 - 2016 Christian Berger
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+// OpenDaVINCI core data messages.
+
+// This message will be the base class for odcore::data::TimeStamp.
+// It is not meant to be used directly but via its deriving subclass TimeStamp.
+message odcore.data.TimePoint [id = 12] {
+    int32 seconds [id = 1];
+    int32 microseconds [id = 2];
+}
+
+// This message will be the base class for odcore::data::Container.
+message odcore.data.MessageContainer [id = 0] {
+    int32 dataType [id = 1];
+    bytes serializedData [id = 2];
+    odcore.data.TimePoint sent [id = 3];
+    odcore.data.TimePoint received [id = 4];
+    odcore.data.TimePoint sampleTimeStamp [id = 5];
+    uint32 senderStamp [id = 6];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Logging messages.
+message odcore.data.LogMessage [id = 100] {
+    enum LogLevel {
+        NONE = 0,
+        INFO = 1,
+        WARN = 2,
+        DEBUG = 3,
+    };
+    string componentName [id = 1];
+    LogLevel logLevel [id = 2];
+    string logMessage [id = 3];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Reflection messages.
+
+// This message serves as the base class for a message's field description.
+message odcore.data.reflection.AbstractField [id = 70] {
+    enum FIELDDATATYPE {
+        BOOL_T              = 0,
+        INTEGERS_START      = 1,
+        UINT8_T             = 2,
+        INT8_T              = 3,
+        UINT16_T            = 4,
+        INT16_T             = 5,
+        UINT32_T            = 6,
+        INT32_T             = 7,
+        UINT64_T            = 8,
+        INT64_T             = 9,
+        INTEGERS_END        = 10,
+        CHAR_T              = 11,
+        UCHAR_T             = 12,
+        FLOAT_T             = 13,
+        DOUBLE_T            = 14,
+        NON_PRIMITIVE_START = 50,
+        STRING_T            = 51,
+        DATA_T              = 52,
+        SERIALIZABLE_T      = 53,
+        NON_PRIMITIVE_END   = 54,
+    };
+    uint32 fieldIdentifier [ id = 1 ];
+    string longFieldName [ id = 2 ];
+    string shortFieldName [ id = 3 ];
+    FIELDDATATYPE fieldDataType [ id = 4 ];
+    int8 size [ default = -1, id = 5 ];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// DMCP messages.
+
+// This message contains all constants for the Dynamic Module Configuration Protocol (DMCP).
+message odcore.data.dmcp.Constants [id = 110] {
+    enum DMCP {
+        CONNECTIONSERVER_PORT_BASE = 19755, // This is the base port for the TCP control connection.
+        BROADCAST_PORT_SERVER = 19750,      // This port is the server listening for the DMCP client discovery.
+        BROADCAST_PORT_CLIENT = 19751,      // This port is the client listening for the DMCP server response.
+        CONNECTION_TIMEOUT = 1000,
+        CONNECTION_RETRIES = 5,
+        CONFIGURATION_TIMEOUT = 1000,
+        DISCOVER_TIMEOUT = 1000,
+    };
+}
+
+// Message ID 111 is used in OpenDaVINCITestData.odvd.
+
+// This message describes the DMCP server.
+message odcore.data.dmcp.ServerInformation [id = 112] { 
+    enum ManagedLevel {
+        ML_NONE = 0,
+        ML_PULSE = 1,
+        ML_PULSE_SHIFT = 2,
+        ML_PULSE_TIME = 3,
+        ML_PULSE_TIME_ACK = 4,
+        ML_SIMULATION_RT = 5,
+        ML_SIMULATION = 6,
+    };
+    string IP [id = 1];
+    uint32 port [id = 2];
+    ManagedLevel managedLevel [id = 3];
+}
+
+// This message belongs to the handshake of the DMCP protocol.
+message odcore.data.dmcp.DiscoverMessage [id = 3] {
+    enum Type {
+        UNDEFINED = 0,
+        DISCOVER = 1,
+        RESPONSE = 2,
+    };
+    Type type [id = 1];
+    odcore.data.dmcp.ServerInformation serverInformation [id = 2];
+    string moduleName [id = 3];
+}
+
+// This message describes a connected software component.
+message odcore.data.dmcp.ModuleDescriptor [id = 113] {
+    string name [id = 1];
+    string identifier [id = 2];
+    string version [id = 3];
+    float frequency [id = 4];
+}
+
+// This message describes information about a software component's time slice consumption.
+message odcore.data.dmcp.RuntimeStatistic [id = 9] {
+    double sliceConsumption [id = 1];
+}
+
+// This message describes runtime statistics about a software component.
+message odcore.data.dmcp.ModuleStatistic [id = 114] {
+    odcore.data.dmcp.ModuleDescriptor module [id = 1];
+    odcore.data.dmcp.RuntimeStatistic runtimeStatistic [id = 2];
+}
+
+// This message describes runtime statistics about a software component.
+message odcore.data.dmcp.ModuleStatistics [id = 8] {
+    list<odcore.data.dmcp.ModuleStatistic> moduleStatistics [id = 1];
+}
+
+// This message describes a software module's current state.
+message odcore.data.dmcp.ModuleStateMessage [id = 6] {
+    enum ModuleState {
+        NOT_RUNNING = 0,
+        RUNNING = 1,
+        UNDEFINED_STATE = 2,
+    };
+
+    ModuleState moduleState [id = 1];
+}
+
+// This message describes the software module's exit code.
+message odcore.data.dmcp.ModuleExitCodeMessage [id = 7] {
+    enum ModuleExitCode {
+        OKAY = 0,
+        EXCEPTION_CAUGHT = 1,
+        SERIOUS_ERROR = 2,
+        CONNECTION_LOST = 3,
+        NO_SUPERCOMPONENT = 4,
+        UNDEFINED_EXITCODE = 5,
+    };
+
+    ModuleExitCode moduleExitCode [id = 1];
+}
+
+// This message is part of centralized scheduling coordinated by supercomponent.
+message odcore.data.dmcp.PulseMessage [id = 101] {
+    odcore::data::TimeStamp realTimeFromSupercomponent [id = 1];
+    uint32 nominalTimeSlice [id = 2];
+    uint32 cumulatedTimeSlice [id = 3];
+    list<odcore::data::Container> containers [id = 4];
+}
+
+// This message is part of centralized scheduling coordinated by supercomponent.
+message odcore.data.dmcp.PulseAckMessage [id = 102] {}
+
+// This message is part of centralized scheduling coordinated by supercomponent.
+message odcore.data.dmcp.PulseAckContainersMessage [id = 103] {
+    list<odcore::data::Container> containers [id = 1];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Configuration message.
+message odcore.data.Configuration [id = 2] {
+    odcore::base::KeyValueConfiguration keyValueConfiguration [id = 1];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// odplayer and odrecorder messages.
+
+// This message is used to describe memory segments to handle binary large objects like SharedImages or SharedData.
+message odcore.data.buffer.MemorySegment [id = 29] {
+    odcore::data::Container header [id = 1];
+    uint32 size [id = 2];
+    uint32 consumedSize [id = 3];
+    uint16 identifier [id = 4];
+}
+
+// This message is used to remotely control the odplayer component.
+message odcore.data.player.PlayerStatus [id = 10] {
+    enum Status {
+        NEW_FILE_LOADED=0,
+    };
+    Status status [id = 1];
+}
+
+// This message is used to remotely control the odrecorder component.
+message odcore.data.recorder.RecorderCommand [id = 11] {
+    enum Command {
+        RECORD=0,
+        STOP=1,
+    };
+    Command command [id = 1];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Shared BLOB messages.
+
+// This message describes generic shared data residing in a shared memory segment.
+message odcore.data.SharedData [id = 13] {
+    string name [id = 1];
+    uint32 size [id = 2];
+}
+
+// This message describes image data residing in a shared memory segment.
+message odcore.data.image.SharedImage [id = 14] {
+    string name [id = 1];
+    uint32 size [id = 2];
+    uint32 width [id = 3];
+    uint32 height [id = 4];
+    uint32 bytesPerPixel [id = 5];
+}
+
+// This message describes an H264 frame created from a SharedImage message
+// to encode/decode to/from an H264 video stream.
+// Purpose: In a Container recording file, the original SharedImage will be
+// replaced by an instance of this message after the original frame has been
+// encoded (for recording); on replay, any occurring instance of this message
+// will be loaded from the specified h264 file and restored into a SharedImage.
+message odcore.data.image.H264Frame [id = 27] {
+    string h264Filename [id = 1];    // Name of the file containing the h264 stream.
+    uint32 frameIdentifier [id = 2]; // Increasing identifier of this frame.
+    uint32 frameSize [id = 3];       // Size of the h264-encoded frame in bytes.
+    odcore.data.image.SharedImage associatedSharedImage [id = 4]; // Original SharedImage data structure.
+}
+
+// This message is not complete as dynamic sized arrays are not available yet.
+// message odcore.data.image.CompressedImage [id = 16] { // TO BE INTEGRATED
+//     string name [id = 1];
+//     uint16 width [id = 2];
+//     uint16 height [id = 3];
+//     uint8 bytesPerPixel [id = 4];
+//     uint16 compressedSize [id = 5];
+//     uint8 *imageData [id = 6]; // Dynamically sized arrays are not available yet.
+// }
+
+// This message can be used to provide meta-information about a
+// pointcloud stored in a shared memory segment.
+// Typical use cases are to store a fixed amount (= width, height=1) of vectors
+// with vector's dimension = numberOfComponentsPerPoint of type componentDataType.
+// See libopendavinci/testsuite/EigenExamplesTest.h for examples.
+message odcore.data.SharedPointCloud [id = 28] {
+    enum COMPONENTDATATYPE {
+        BOOL_T              = 0,
+        INTEGERS_START      = 1,
+        UINT8_T             = 2,
+        INT8_T              = 3,
+        UINT16_T            = 4,
+        INT16_T             = 5,
+        UINT32_T            = 6,
+        INT32_T             = 7,
+        UINT64_T            = 8,
+        INT64_T             = 9,
+        INTEGERS_END        = 10,
+        CHAR_T              = 11,
+        UCHAR_T             = 12,
+        FLOAT_T             = 13,
+        DOUBLE_T            = 14,
+    };
+    enum USERINFO {
+        XYZ_INTENSITY      = 0, // This type specifies information about the data layout with (x,y,z) coordinates and intensity.
+        POLAR_INTENSITY    = 1, // This type specifies information about the data layout with azimuth, distance, and intensity
+        //POLAR_INTENSITY is recommended because conversion from polar coordinate to Cartesian coordinate is easy while it is difficult the other way round
+    };
+    string name [id = 1];
+    uint32 size [id = 2];
+    uint32 width [id = 3];
+    uint32 height [id = 4];
+    uint8 numberOfComponentsPerPoint [id = 5];
+    COMPONENTDATATYPE componentDataType [id = 6];
+    uint32 userInfo [id = 7]; // This field can be used to specify further information about the semantic data layout.
+}
+
+message odcore.data.CompactPointCloud [id = 49] {
+    enum DISTANCE_ENCODING {
+        CM = 0, // distances are encoded as cm
+        MM = 1, // distances are encoded as 2mm
+    };
+    enum INTENSITY_PLACEMENT {
+          HIGHER_BITS = 0, // use higher bits for intensity
+          LOWER_BITS = 1, // use lower bits for intensity
+      };
+    float startAzimuth      [id = 1];
+    float endAzimuth        [id = 2];
+    uint8 entriesPerAzimuth [id = 3];
+    bytes distances        [id = 4];
+    uint8 numberOfBitsForIntensity [id = 5];
+    INTENSITY_PLACEMENT intensityPlacement [id = 6];
+    DISTANCE_ENCODING distanceEncoding [id = 7];
+    
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// This message is used to display values.
+// This is a highly inefficient data structure and should be used only
+// for debug purposes!
+message odcockpit.SimplePlot [id = 42] {
+    map<string, double> values [id = 1];
+}
+
+// This message is used to provide configuration parameters at runtime.
+// This data structure should only be used during testing; final configuration
+// settings should be made available via the configuration file supplied by
+// odsupercomponent.
+message odcockpit.RuntimeConfiguration [id = 43] {
+    map<string, double> parameters [id = 1];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// PCAP recordings (de-facto standard for raw packet dumps, created for
+// instance with WireShark).
+// A PCAP recording is structured as GlobalHeader - Packet Header - Packet Data - Packet Header - Packet Data - ...
+message odcore.data.pcap.GlobalHeader [id = 120] {
+    uint32 magic_number [id = 1];
+    uint16 version_major [id = 2];
+    uint16 version_minor [id = 3];
+    int32 thiszone [id = 4]; // GMT to local time zone correction.
+    uint32 sigfigs [id = 5]; // Accuracy of time stamps.
+    uint32 snaplen [id = 6]; // Max length of captured packets in octets.
+    uint32 network [id = 7]; // Data link type, cf. http://www.tcpdump.org/linktypes.html
+}
+
+message odcore.data.pcap.PacketHeader [id = 121] {
+    uint32 ts_sec [id = 1]; // Timestamp seconds.
+    uint32 ts_usec [id = 2]; // Timestamp microseconds.
+    uint32 incl_len [id = 3]; // Number of octets from the captured packet in the stored pcap file.
+    uint32 orig_len [id = 4]; // Actual length of the packet as appeared on the network.
+}
+
+message odcore.data.pcap.Packet [id = 122] {
+    odcore.data.pcap.PacketHeader header [id = 1];
+    string payload [id = 2]; // Raw byte dump.
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// This message is used to share data received from a socket.
+message odcore.data.Packet [id = 123] {
+    string sender [id = 1];
+    string data [id = 2]; // Raw byte dump.
+    odcore.data.TimePoint received [id = 3];
+}
+

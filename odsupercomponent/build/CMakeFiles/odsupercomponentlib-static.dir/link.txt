@@ -1,0 +1,2 @@
+/usr/bin/ar qc libodsupercomponentlib-static.a  CMakeFiles/odsupercomponentlib-static.dir/src/GlobalConfigurationProvider.cpp.o CMakeFiles/odsupercomponentlib-static.dir/src/SuperComponent.cpp.o CMakeFiles/odsupercomponentlib-static.dir/src/ConnectedModule.cpp.o CMakeFiles/odsupercomponentlib-static.dir/src/ConnectedModules.cpp.o
+/usr/bin/ranlib libodsupercomponentlib-static.a
