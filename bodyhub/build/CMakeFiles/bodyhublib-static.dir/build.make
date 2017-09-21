@@ -57,33 +57,9 @@ include CMakeFiles/bodyhublib-static.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/bodyhublib-static.dir/flags.make
 
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o: CMakeFiles/bodyhublib-static.dir/flags.make
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o: ../src/SensorData.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o -c /home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.cpp
-
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.cpp > CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.i
-
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.cpp -o CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.s
-
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.requires:
-
-.PHONY : CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.requires
-
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.provides: CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.requires
-	$(MAKE) -f CMakeFiles/bodyhublib-static.dir/build.make CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.provides.build
-.PHONY : CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.provides
-
-CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.provides.build: CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o
-
-
 CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o: CMakeFiles/bodyhublib-static.dir/flags.make
 CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o: ../src/BodyHubModule.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o -c /home/rdiniz/Projects/OpenBASN/bodyhub/src/BodyHubModule.cpp
 
 CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.i: cmake_force
@@ -107,17 +83,15 @@ CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o.provides.build: CMakeFi
 
 # Object files for target bodyhublib-static
 bodyhublib__static_OBJECTS = \
-"CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o" \
 "CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o"
 
 # External object files for target bodyhublib-static
 bodyhublib__static_EXTERNAL_OBJECTS =
 
-libbodyhublib-static.a: CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o
 libbodyhublib-static.a: CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o
 libbodyhublib-static.a: CMakeFiles/bodyhublib-static.dir/build.make
 libbodyhublib-static.a: CMakeFiles/bodyhublib-static.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libbodyhublib-static.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libbodyhublib-static.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/bodyhublib-static.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/bodyhublib-static.dir/link.txt --verbose=$(VERBOSE)
 
@@ -126,7 +100,6 @@ CMakeFiles/bodyhublib-static.dir/build: libbodyhublib-static.a
 
 .PHONY : CMakeFiles/bodyhublib-static.dir/build
 
-CMakeFiles/bodyhublib-static.dir/requires: CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o.requires
 CMakeFiles/bodyhublib-static.dir/requires: CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o.requires
 
 .PHONY : CMakeFiles/bodyhublib-static.dir/requires

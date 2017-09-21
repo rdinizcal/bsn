@@ -1,14 +1,18 @@
-#include "BodyHubModule.hpp"
+#include "BodyHubModule.h"
+
+#include "opendavinci/odcore/base/FIFOQueue.h"
+
+#include "openbasn/data/SensorData.h"
 
 #include <iostream>
-#include "SensorData.hpp"
-#include "opendavinci/odcore/base/FIFOQueue.h"
-#include "opendavinci/odcore/data/Container.h"
 
 using namespace std;
+
 using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace odcore::data;
+
+using namespace openbasn::data;
 
 BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "BodyHubModule")

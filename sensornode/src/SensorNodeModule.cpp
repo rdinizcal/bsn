@@ -1,13 +1,18 @@
+#include "SensorNodeModule.h"
+
+#include "openbasn/data/SensorData.h"
+#include "openbasn/model/sensor/Thermometer.h"
+
 #include <iostream>
 
-#include "SensorNodeModule.hpp"
-#include "SensorData.hpp"
-#include "Thermometer.hpp"
-
 using namespace std;
+
 using namespace odcore;
 using namespace odcore::data;
 using namespace odcore::base::module;
+
+using namespace openbasn::data;
+using namespace openbasn::model::sensor;
 
 
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :

@@ -5,12 +5,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/rdiniz/Projects/OpenBASN/bodyhub/src/BodyHubModule.cpp" "/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o"
-  "/home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.cpp" "/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/usr/local/include"
   "../include"
   )
 

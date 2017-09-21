@@ -24,13 +24,21 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake.Modules/CompileFlags.cmake)
 SET(OPENDAVINCI_DIR "${CMAKE_INSTALL_PREFIX}")
 FIND_PACKAGE (OpenDaVINCI REQUIRED)
 
+# Find OpenBASN.
+SET(OPENBASN_DIR "${CMAKE_INSTALL_PREFIX}")
+FIND_PACKAGE (OpenBASN REQUIRED)
+
 ###########################################################################
 # Set linking libraries to successfully link test suites and binaries.
-SET (LIBRARIES ${OPENDAVINCI_LIBRARIES})
+SET (LIBRARIES ${OPENDAVINCI_LIBRARIES}
+                ${OPENBASN_LIBRARIES})
 
 ###########################################################################
 # Set header files from OpenDaVINCI.
 INCLUDE_DIRECTORIES (${OPENDAVINCI_INCLUDE_DIRS})
+
+# Set header files from OpenBASN.
+INCLUDE_DIRECTORIES (${OPENBASN_INCLUDE_DIRS})
 
 # Set include directory.
 INCLUDE_DIRECTORIES(include)

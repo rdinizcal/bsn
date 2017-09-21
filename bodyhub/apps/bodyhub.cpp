@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "BodyHubModule.hpp"
+#include "BodyHubModule.h"
 
 int32_t main(int32_t argc, char **argv) {
     BodyHubModule bhmodule(argc, argv);

@@ -234,33 +234,6 @@ src/BodyHubModule.cpp.s:
 	$(MAKE) -f CMakeFiles/bodyhublib-static.dir/build.make CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.s
 .PHONY : src/BodyHubModule.cpp.s
 
-src/SensorData.o: src/SensorData.cpp.o
-
-.PHONY : src/SensorData.o
-
-# target to build an object file
-src/SensorData.cpp.o:
-	$(MAKE) -f CMakeFiles/bodyhublib-static.dir/build.make CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o
-.PHONY : src/SensorData.cpp.o
-
-src/SensorData.i: src/SensorData.cpp.i
-
-.PHONY : src/SensorData.i
-
-# target to preprocess a source file
-src/SensorData.cpp.i:
-	$(MAKE) -f CMakeFiles/bodyhublib-static.dir/build.make CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.i
-.PHONY : src/SensorData.cpp.i
-
-src/SensorData.s: src/SensorData.cpp.s
-
-.PHONY : src/SensorData.s
-
-# target to generate assembly for a file
-src/SensorData.cpp.s:
-	$(MAKE) -f CMakeFiles/bodyhublib-static.dir/build.make CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.s
-.PHONY : src/SensorData.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -281,9 +254,6 @@ help:
 	@echo "... src/BodyHubModule.o"
 	@echo "... src/BodyHubModule.i"
 	@echo "... src/BodyHubModule.s"
-	@echo "... src/SensorData.o"
-	@echo "... src/SensorData.i"
-	@echo "... src/SensorData.s"
 .PHONY : help
 
 

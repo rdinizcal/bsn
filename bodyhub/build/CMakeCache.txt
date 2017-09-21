@@ -172,6 +172,12 @@ LIBRT_INCLUDE_DIR:PATH=/usr/include
 LIBRT_LIBRARIES:FILEPATH=/usr/lib/x86_64-linux-gnu/librt.a
 
 //Path to a file.
+OPENBASN_INCLUDE_DIR:PATH=/usr/local/include
+
+//Path to a library.
+OPENBASN_LIBRARY:FILEPATH=/usr/local/lib/libopenbasn.so
+
+//Path to a file.
 OPENDAVINCI_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
@@ -328,6 +334,12 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 FIND_PACKAGE_MESSAGE_DETAILS_LibOpenDaVINCI:INTERNAL=[/usr/lib/libopendavinci.so][/usr/include][v()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//Details about finding libaala
+FIND_PACKAGE_MESSAGE_DETAILS_libaala:INTERNAL=[/usr/local/lib/libopenbasn.so][/usr/local/include][v()]
+//ADVANCED property for variable: OPENBASN_INCLUDE_DIR
+OPENBASN_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENBASN_LIBRARY
+OPENBASN_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENDAVINCI_INCLUDE_DIR
 OPENDAVINCI_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENDAVINCI_LIBRARY

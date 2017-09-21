@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-../include/BodyHubModule.hpp
+../include/BodyHubModule.h
 opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h
 ../include/opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h
 
 /home/rdiniz/Projects/OpenBASN/bodyhub/apps/bodyhub.cpp
 stdint.h
 -
-BodyHubModule.hpp
-/home/rdiniz/Projects/OpenBASN/bodyhub/apps/BodyHubModule.hpp
+BodyHubModule.h
+/home/rdiniz/Projects/OpenBASN/bodyhub/apps/BodyHubModule.h
 

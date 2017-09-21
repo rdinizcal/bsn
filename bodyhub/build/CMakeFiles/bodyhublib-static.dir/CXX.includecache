@@ -6,37 +6,21 @@
 
 #IncludeRegexTransform: 
 
-../include/BodyHubModule.hpp
+../include/BodyHubModule.h
 opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h
 ../include/opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h
 
-../include/SensorData.hpp
-opendavinci/odcore/data/SerializableData.h
-../include/opendavinci/odcore/data/SerializableData.h
-
 /home/rdiniz/Projects/OpenBASN/bodyhub/src/BodyHubModule.cpp
-BodyHubModule.hpp
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/BodyHubModule.hpp
-iostream
--
-SensorData.hpp
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.hpp
+BodyHubModule.h
+/home/rdiniz/Projects/OpenBASN/bodyhub/src/BodyHubModule.h
 opendavinci/odcore/base/FIFOQueue.h
 /home/rdiniz/Projects/OpenBASN/bodyhub/src/opendavinci/odcore/base/FIFOQueue.h
-opendavinci/odcore/data/Container.h
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/opendavinci/odcore/data/Container.h
+openbasn/data/SensorData.h
+/home/rdiniz/Projects/OpenBASN/bodyhub/src/openbasn/data/SensorData.h
+iostream
+-
 
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.cpp
-SensorData.hpp
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/SensorData.hpp
-ostream
--
-string
--
-opendavinci/odcore/serialization/Deserializer.h
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/opendavinci/odcore/serialization/Deserializer.h
-opendavinci/odcore/serialization/SerializationFactory.h
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/opendavinci/odcore/serialization/SerializationFactory.h
-opendavinci/odcore/serialization/Serializer.h
-/home/rdiniz/Projects/OpenBASN/bodyhub/src/opendavinci/odcore/serialization/Serializer.h
+/usr/local/include/openbasn/data/SensorData.h
+opendavinci/odcore/data/SerializableData.h
+/usr/local/include/openbasn/data/opendavinci/odcore/data/SerializableData.h
 
