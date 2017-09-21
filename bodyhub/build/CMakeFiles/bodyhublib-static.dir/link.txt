@@ -1,0 +1,2 @@
+/usr/bin/ar qc libbodyhublib-static.a  CMakeFiles/bodyhublib-static.dir/src/SensorData.cpp.o CMakeFiles/bodyhublib-static.dir/src/BodyHubModule.cpp.o
+/usr/bin/ranlib libbodyhublib-static.a

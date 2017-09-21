@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/BodyHubModule.hpp
+opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h
+../include/opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h
+
+/home/rdiniz/Projects/OpenBASN/bodyhub/apps/bodyhub.cpp
+stdint.h
+-
+BodyHubModule.hpp
+/home/rdiniz/Projects/OpenBASN/bodyhub/apps/BodyHubModule.hpp
+

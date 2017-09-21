@@ -1,4 +1,4 @@
-#include "Thermometer.h"
+#include "Thermometer.hpp"
 
 using namespace std;
 

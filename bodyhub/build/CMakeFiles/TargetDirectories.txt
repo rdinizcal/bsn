@@ -1,0 +1,8 @@
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/install.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/list_install_components.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/rebuild_cache.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/edit_cache.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/bodyhublib-static.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/bodyhub.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/install/strip.dir
+/home/rdiniz/Projects/OpenBASN/bodyhub/build/CMakeFiles/install/local.dir

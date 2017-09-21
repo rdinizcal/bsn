@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "SensorNodeModule.h"
-#include "SensorData.h"
-#include "Thermometer.h"
+#include "SensorNodeModule.hpp"
+#include "SensorData.hpp"
+#include "Thermometer.hpp"
 
 using namespace std;
 using namespace odcore;
