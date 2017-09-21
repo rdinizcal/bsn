@@ -1,4 +1,4 @@
-#include "openbasn/model/sensor/Thermometer.h"
+#include "openbasn/model/sensor/Sensor.h"
 
 namespace openbasn {
     namespace model {
@@ -6,48 +6,43 @@ namespace openbasn {
 
             using namespace std;
             
-            Thermometer::Thermometer(const uint32_t &id, const float &samplerate, const bool &active, const double &mean, const double &stddev) :
-                m_id(id),
+            Sensor::Sensor(const int32_t &type, const float &samplerate, const bool &active, const double &mean, const double &stddev) :
+                m_sensorType(type),
                 m_samplerate(samplerate),
                 m_active(active),
                 m_gen((unsigned int)time(NULL)),
                 m_distr(mean, stddev),
                 m_now(odcore::data::TimeStamp()),
-                m_data(m_active?m_distr(m_gen):0),
-                m_name("Thermometer#"+to_string(id))
+                m_data(m_active?m_distr(m_gen):0)
             {}
             
-            Thermometer::~Thermometer() {}
+            Sensor::~Sensor() {}
             
-            void Thermometer::setID(const uint32_t &id) {
-                m_id = id;
+            void Sensor::setSensorType(const int32_t &sensorType) {
+                m_sensorType = sensorType;
             }
             
-            uint32_t Thermometer::getID() {
-                return m_id;
+            int32_t Sensor::getSensorType() {
+                return m_sensorType;
             }
             
-            void Thermometer::setSampleRate(const float &samplerate) {
+            void Sensor::setSampleRate(const float &samplerate) {
                 m_samplerate = samplerate;
             }
             
-            float Thermometer::getSampleRate() {
+            float Sensor::getSampleRate() {
                 return m_samplerate;
             }
             
-            void Thermometer::setActive(const bool &active){
+            void Sensor::setActive(const bool &active){
                 m_active = active;
             }
             
-            bool Thermometer::isActive() {
+            bool Sensor::isActive() {
                 return m_active;
             }
-            
-            string Thermometer::getName() {
-                return m_name;
-            }
-            
-            double Thermometer::getData() {
+                        
+            double Sensor::getData() {
                 
                 if(!m_active){
                     return 0;

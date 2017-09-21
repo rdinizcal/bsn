@@ -12,22 +12,30 @@ namespace openbasn {
             using namespace std;
             using namespace odcore::data;
 
-            class Thermometer {
-            
-                private:
-                    Thermometer(const Thermometer &/*obj*/);
-                    Thermometer& operator=(const Thermometer &/*obj*/);
+            class Sensor {
             
                 public:
-                    Thermometer(const uint32_t &id,
+                    enum SENSORTYPE {
+                        UNDEFINED               = 0,
+                        THERMOMETER             = 1,
+                        ECG                     = 2,
+                        OXIMETER                = 3
+                    };
+
+                private:
+                    Sensor(const Sensor &/*obj*/);
+                    Sensor& operator=(const Sensor &/*obj*/);
+            
+                public:
+                    Sensor(const int32_t &sensorType,
                                 const float &samplerate,
                                 const bool &active, 
                                 const double &mean, 
                                 const double &stddev);
-                    ~Thermometer();
+                    ~Sensor();
                     
-                    void setID(const uint32_t &);
-                    uint32_t getID();
+                    void setSensorType(const int32_t &);
+                    int32_t getSensorType();
             
                     void setSampleRate(const float &);
                     float getSampleRate();
@@ -35,13 +43,10 @@ namespace openbasn {
                     void setActive(const bool &);
                     bool isActive();
             
-                    void setName(const string &);
-                    string getName();
-            
                     double getData();
             
                 private:
-                    uint32_t m_id;
+                    int32_t m_sensorType;
                     float m_samplerate;
                     bool m_active;
             
@@ -50,7 +55,6 @@ namespace openbasn {
                     TimeStamp m_now;
             
                     double m_data;
-                    string m_name;
             };
         }
     }
