@@ -14,13 +14,13 @@ namespace openbasn {
         
         SensorData::SensorData() : 
         m_snode_id(0),
-        m_sname(""),
+        m_sensor_id(0),
         m_data(0)
         {}
         
-        SensorData::SensorData(uint32_t snode_id, string sname, double data) : 
+        SensorData::SensorData(uint32_t snode_id, uint32_t sensor_id, double data) : 
             m_snode_id(snode_id),
-            m_sname(sname),
+            m_sensor_id(sensor_id),
             m_data(data)
         {}
         
@@ -29,12 +29,12 @@ namespace openbasn {
         SensorData::SensorData(const SensorData &obj) :
             SerializableData(),
             m_snode_id(obj.getSensorNodeID()),
-            m_sname(obj.getSensorName()),
+            m_sensor_id(obj.getSensorID()),
             m_data(obj.getData()) {}
         
         SensorData& SensorData::operator=(const SensorData &obj) {
             m_snode_id = obj.getSensorNodeID();
-            m_sname = obj.getSensorName();
+            m_sensor_id = obj.getSensorID();
             m_data= obj.getData();
             return (*this);
         }
@@ -63,8 +63,8 @@ namespace openbasn {
             return m_snode_id;
         }
         
-        string SensorData::getSensorName() const {
-            return m_sname;
+        uint32_t SensorData::getSensorID() const {
+            return m_sensor_id;
         }
         
         double SensorData::getData() const {
@@ -76,7 +76,7 @@ namespace openbasn {
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
         
             s->write(1, m_snode_id);
-            s->write(2, m_sname);
+            s->write(2, m_sensor_id);
             s->write(3, m_data);
         
             return out;
@@ -87,7 +87,7 @@ namespace openbasn {
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
         
             d->read(1, m_snode_id);
-            d->read(2, m_sname);
+            d->read(2, m_sensor_id);
             d->read(3, m_data);
         
             return in;
@@ -97,7 +97,7 @@ namespace openbasn {
             stringstream sstr;
         
             sstr << SensorData::ShortName() << "#" << SensorData::ID() << " | ";
-            sstr << m_snode_id << " " << m_sname << " : " << m_data;
+            sstr << "SensorNode#" << m_snode_id << " Sensor#" << m_sensor_id << " : " << m_data;
             
             return sstr.str();
         }

@@ -33,7 +33,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         if(thermometer.isActive()){
-            SensorData sd(m_id, thermometer.getName(), thermometer.getData());
+            SensorData sd(m_id, thermometer.getID(), thermometer.getData());
             Container c(sd);
             getConference().send(c);
             cout << sd.toString() << " sent." << endl;
