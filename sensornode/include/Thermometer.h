@@ -25,7 +25,7 @@ class Thermometer: public Sensor {
         ~Thermometer();
         
         void setID(const uint32_t &);
-        uint32_t  getID();
+        uint32_t getID();
 
         void setSampleRate(const float &);
         float getSampleRate();
@@ -33,7 +33,10 @@ class Thermometer: public Sensor {
         void setActive(const bool &);
         bool isActive();
 
-        float getData();
+        void setName(const string &);
+        string getName();
+
+        double getData();
 
     private:
         uint32_t m_id;
@@ -44,7 +47,8 @@ class Thermometer: public Sensor {
         normal_distribution<> m_distr;
         TimeStamp m_now;
 
-        float m_data;
+        double m_data;
+        string m_name;
 };
 
 #endif

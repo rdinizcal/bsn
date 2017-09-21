@@ -9,7 +9,8 @@ Thermometer::Thermometer(const uint32_t &id, const float &samplerate, const bool
     m_gen((unsigned int)time(NULL)),
     m_distr(mean, stddev),
     m_now(odcore::data::TimeStamp()),
-    m_data(m_active?m_distr(m_gen):0)
+    m_data(m_active?m_distr(m_gen):0),
+    m_name("Thermometer#"+to_string(id))
 {}
 
 Thermometer::~Thermometer() {}
@@ -38,7 +39,11 @@ bool Thermometer::isActive() {
     return m_active;
 }
 
-float Thermometer::getData() {
+string Thermometer::getName() {
+    return m_name;
+}
+
+double Thermometer::getData() {
     
     if(!m_active){
         return 0;
