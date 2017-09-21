@@ -1,0 +1,37 @@
+# OpenBASN Global configuration file
+
+### Sensor configuration
+
+## Thermometer configuration patterns
+## 50 >= "high" > 38 >= "moderate" > 37 >= "normal" > 35 >= "moderate" > 30 >= "high" > 0
+# no risk   - thermometer(mean = 36, stddev = 0.5) 
+# risky     - thermometer(mean = 37, stddev = 0.5) || thermometer(mean = 33, stddev = 0.5)
+# critical  - thermometer(mean = 40, stddev = 0.5) || thermometer(mean = 28, stddev = 0.5)   
+
+sensornode.thermometer.stddev = 0.5
+sensornode.thermometer.norisk.mean = 36
+sensornode.thermometer.risky1.mean = 37
+sensornode.thermometer.risky2.mean = 33
+sensornode.thermometer.critical1.mean = 40
+sensornode.thermometer.critical2.mean = 28
+
+## Oximeter configuration patterns
+## 100 >= "normal" > 94 >= "moderate" > 90 >= "high" > 0
+# no risk   - oxiemeter(mean = 97, stddev = 2)
+# risky     - oxiemeter(mean = 92, stddev = 2)
+# critical  - oxiemeter(mean = 85, stddev = 2)
+
+sensornode.oximeter.stddev = 2
+sensornode.oximeter.norisk.mean = 97
+sensornode.oximeter.risky.mean = 92
+sensornode.oximeter.critical.mean = 85
+
+## Ecg configuration patterns
+## 150 >= "high" > 120 >= "normal" > 80 >= "high" > 0
+# no risk   - ecg(mean = 100, stddev = 10)
+# critical  - ecg(mean = 125, stddev = 10) || ecg(mean = 60, stddev = 10)
+
+sensornode.ecg.stddev = 10
+sensornode.ecg.norisk.mean = 100
+sensornode.ecg.critical1.mean = 125
+sensornode.ecg.critical2.mean = 60
