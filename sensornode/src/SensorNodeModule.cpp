@@ -1,7 +1,7 @@
 #include "SensorNodeModule.h"
 
 #include "openbasn/data/SensorData.h"
-#include "openbasn/model/sensor/Thermometer.h"
+#include "openbasn/model/sensor/Sensor.h"
 
 #include <iostream>
 
@@ -29,11 +29,19 @@ void SensorNodeModule::tearDown() {}
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() { 
 
     //Instantiate Sensors
-    Thermometer thermometer(1, 2, true, 36, 2);
+    Sensor thermometer(Sensor::THERMOMETER, 2, true, 36, 2);
+    Sensor ecg(Sensor::ECG, 2, true, 90, 30);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         if(thermometer.isActive()){
-            SensorData sd(m_id, thermometer.getID(), thermometer.getData());
+            SensorData sd(m_id, thermometer.getSensorType(), thermometer.getData());
+            Container c(sd);
+            getConference().send(c);
+            cout << sd.toString() << " sent." << endl;
+        }
+
+        if(ecg.isActive()) {
+            SensorData sd(m_id, ecg.getSensorType(), ecg.getData());
             Container c(sd);
             getConference().send(c);
             cout << sd.toString() << " sent." << endl;
