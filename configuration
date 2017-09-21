@@ -35,3 +35,12 @@ sensornode.ecg.stddev = 10
 sensornode.ecg.norisk.mean = 100
 sensornode.ecg.critical1.mean = 125
 sensornode.ecg.critical2.mean = 60
+
+## Node Module Sensor configurations
+# default
+sensornode.thermometer.active = 1
+sensornode.thermometer.behavior = norisk
+sensornode.oximeter.active = 1
+sensornode.oximeter.behavior = norisk
+sensornode.ecg.active = 1
+sensornode.ecg.behavior = norisk

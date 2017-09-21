@@ -26,11 +26,10 @@ void SensorNodeModule::setUp() {}
 
 void SensorNodeModule::tearDown() {}
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() { 
-
     //Instantiate Sensors
     Sensor thermometer(Sensor::THERMOMETER, 2, true, 36, 2);
     Sensor ecg(Sensor::ECG, 2, true, 90, 30);
+    Sensor oximeter(Sensor::OXIMETER, 2, true, 10 , 5);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         if(thermometer.isActive()){
@@ -42,6 +41,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
         if(ecg.isActive()) {
             SensorData sd(m_id, ecg.getSensorType(), ecg.getData());
+            Container c(sd);
+            getConference().send(c);
+            cout << sd.toString() << " sent." << endl;
+        }
+
+        if(oximeter.isActive()){
+            SensorData sd(m_id, oximeter.getSensorType(), oximeter.getData());
             Container c(sd);
             getConference().send(c);
             cout << sd.toString() << " sent." << endl;
