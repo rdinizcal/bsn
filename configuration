@@ -9,11 +9,11 @@
 # critical  - thermometer(mean = 40, stddev = 0.5) || thermometer(mean = 28, stddev = 0.5)   
 
 sensornode.thermometer.stddev = 0.5
-sensornode.thermometer.norisk.mean = 36
-sensornode.thermometer.risky1.mean = 37
-sensornode.thermometer.risky2.mean = 33
-sensornode.thermometer.critical1.mean = 40
-sensornode.thermometer.critical2.mean = 28
+sensornode.thermometer.mean.norisk = 36
+sensornode.thermometer.mean.risky1 = 37
+sensornode.thermometer.mean.risky2 = 33
+sensornode.thermometer.mean.critical1 = 40
+sensornode.thermometer.mean.critical2 = 28
 
 ## Oximeter configuration patterns
 ## 100 >= "normal" > 94 >= "moderate" > 90 >= "high" > 0
@@ -22,9 +22,9 @@ sensornode.thermometer.critical2.mean = 28
 # critical  - oxiemeter(mean = 85, stddev = 2)
 
 sensornode.oximeter.stddev = 2
-sensornode.oximeter.norisk.mean = 97
-sensornode.oximeter.risky.mean = 92
-sensornode.oximeter.critical.mean = 85
+sensornode.oximeter.mean.norisk = 97
+sensornode.oximeter.mean.risky = 92
+sensornode.oximeter.mean.critical = 85
 
 ## Ecg configuration patterns
 ## 150 >= "high" > 120 >= "normal" > 80 >= "high" > 0
@@ -32,15 +32,18 @@ sensornode.oximeter.critical.mean = 85
 # critical  - ecg(mean = 125, stddev = 10) || ecg(mean = 60, stddev = 10)
 
 sensornode.ecg.stddev = 10
-sensornode.ecg.norisk.mean = 100
-sensornode.ecg.critical1.mean = 125
-sensornode.ecg.critical2.mean = 60
+sensornode.ecg.mean.norisk = 100
+sensornode.ecg.mean.critical1 = 125
+sensornode.ecg.mean.critical2 = 60
 
 ## Node Module Sensor configurations
 # default
 sensornode.thermometer.active = 1
-sensornode.thermometer.behavior = norisk
+sensornode.thermometer.samplerate = 1
+sensornode.thermometer.mean.behavior = norisk
 sensornode.oximeter.active = 1
-sensornode.oximeter.behavior = norisk
+sensornode.oximeter.samplerate = 1
+sensornode.oximeter.mean.behavior = norisk
 sensornode.ecg.active = 1
-sensornode.ecg.behavior = norisk
+sensornode.ecg.samplerate = 1
+sensornode.ecg.mean.behavior = norisk
