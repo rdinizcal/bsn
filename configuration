@@ -37,13 +37,46 @@ sensornode.ecg.mean.critical1 = 125
 sensornode.ecg.mean.critical2 = 60
 
 ## Node Module Sensor configurations
-# default
-sensornode.thermometer.active = 1
-sensornode.thermometer.samplerate = 1
-sensornode.thermometer.mean.behavior = norisk
-sensornode.oximeter.active = 1
-sensornode.oximeter.samplerate = 1
-sensornode.oximeter.mean.behavior = norisk
-sensornode.ecg.active = 1
-sensornode.ecg.samplerate = 1
-sensornode.ecg.mean.behavior = norisk
+# default: all sensors active
+sensornode:1.thermometer.active = 1
+sensornode:1.thermometer.samplerate = 1
+sensornode:1.thermometer.mean.behavior = norisk
+sensornode:1.oximeter.active = 1
+sensornode:1.oximeter.samplerate = 1
+sensornode:1.oximeter.mean.behavior = norisk
+sensornode:1.ecg.active = 1
+sensornode:1.ecg.samplerate = 1
+sensornode:1.ecg.mean.behavior = norisk
+
+# node with temperature sensor
+sensornode:1.thermometer.active = 1
+sensornode:1.thermometer.samplerate = 1
+sensornode:1.thermometer.mean.behavior = norisk
+sensornode:1.oximeter.active = 0
+sensornode:1.oximeter.samplerate = 1
+sensornode:1.oximeter.mean.behavior = norisk
+sensornode:1.ecg.active = 0
+sensornode:1.ecg.samplerate = 1
+sensornode:1.ecg.mean.behavior = norisk
+
+# node with heart rate sensor
+sensornode:2.thermometer.active = 0
+sensornode:2.thermometer.samplerate = 1
+sensornode:2.thermometer.mean.behavior = norisk
+sensornode:2.oximeter.active = 0
+sensornode:2.oximeter.samplerate = 1
+sensornode:2.oximeter.mean.behavior = norisk
+sensornode:2.ecg.active = 1
+sensornode:2.ecg.samplerate = 1
+sensornode:2.ecg.mean.behavior = norisk
+
+# node with oxygen sensor
+sensornode:3.thermometer.active = 0
+sensornode:3.thermometer.samplerate = 1
+sensornode:3.thermometer.mean.behavior = norisk
+sensornode:3.oximeter.active = 1
+sensornode:3.oximeter.samplerate = 1
+sensornode:3.oximeter.mean.behavior = norisk
+sensornode:3.ecg.active = 0
+sensornode:3.ecg.samplerate = 1
+sensornode:3.ecg.mean.behavior = norisk

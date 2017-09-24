@@ -52,7 +52,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     //Instantiate Sensors
     Sensor thermometer(Sensor::THERMOMETER, t_samplerate, t_active, t_mean, t_stddev);
     Sensor ecg(Sensor::ECG, e_samplerate, e_active, e_mean, e_stddev);
-    Sensor oximeter(Sensor::OXIMETER, o_samplerate, o_active,o_mean , o_stddev);
+    Sensor oximeter(Sensor::OXIMETER, o_samplerate, o_active, o_mean, o_stddev);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         if(thermometer.isActive()){

@@ -15,7 +15,7 @@ using namespace odcore::data;
 using namespace openbasn::data;
 
 BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "BodyHubModule")
+    TimeTriggeredConferenceClientModule(argc, argv, "bodyhub")
      {}
 
 BodyHubModule::~BodyHubModule() {}
@@ -29,20 +29,21 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
     addDataStoreFor(7, fifo);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        //ReceiveData
+        
+        //Receive Data
         Container c = fifo.leave();
-        if(c.getDataType() == SensorData::ID()){
-            SensorData sd = c.getData<SensorData>();
+        SensorData sd = c.getData<SensorData>();
 
-            cout << "-------------------------------------------------" << endl;
-            cout << sd.toString() << endl;
-            cout << " sent at " << c.getSentTimeStamp().getYYYYMMDD_HHMMSS() << endl;
-            cout << " received at " << c.getReceivedTimeStamp().getYYYYMMDD_HHMMSS() << endl;
-            cout << "-------------------------------------------------" << endl;
-        }
-        //PersistData
+        //View Data
+        cout << "-------------------------------------------------" << endl;
+        cout << sd.toString() << endl;
+        cout << " sent at " << c.getSentTimeStamp().getYYYYMMDD_HHMMSS() << endl;
+        cout << " received at " << c.getReceivedTimeStamp().getYYYYMMDD_HHMMSS() << endl;
+        cout << " processed at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
+        cout << "-------------------------------------------------" << endl;
 
-        //ViewData
+        //Persist Data
+
     }
     
 return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
