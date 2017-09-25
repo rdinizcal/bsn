@@ -65,7 +65,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
         Container c_req = fifo.leave();
         Request req = c_req.getData<Request>();
 
-        if(req.getType() == Request::SENSOR_DATA){
+        if(req.getRequestType() == Request::SENSOR_DATA){
 
             if(thermometer.isActive()){
                 SensorData sd(m_id, thermometer.getSensorType(), thermometer.getData());

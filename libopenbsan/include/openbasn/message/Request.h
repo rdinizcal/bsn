@@ -42,7 +42,7 @@ namespace openbasn {
                 virtual const string toString() const;
             
             public:
-                int32_t getType() const;
+                int32_t getRequestType() const;
 
             private:
                 int32_t m_request_type;

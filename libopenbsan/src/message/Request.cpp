@@ -20,10 +20,10 @@ namespace openbasn {
         
         Request::Request(const Request &obj) :
             SerializableData(),
-            m_request_type(obj.getType()) {}
+            m_request_type(obj.getRequestType()) {}
         
         Request& Request::operator=(const Request &obj) {
-            m_request_type = obj.getType();
+            m_request_type = obj.getRequestType();
             return (*this);
         }
         
@@ -47,7 +47,7 @@ namespace openbasn {
             return Request::LongName();
         }
         
-        int32_t Request::getType() const {
+        int32_t Request::getRequestType() const {
             return m_request_type;
         }
             
