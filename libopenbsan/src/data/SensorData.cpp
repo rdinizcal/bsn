@@ -46,7 +46,7 @@ namespace openbasn {
             return "SensorData";
         }
         const string SensorData::LongName() {
-            return "SensorData";
+            return "data.SensorData";
         }
         
         int32_t SensorData::getID() const {
