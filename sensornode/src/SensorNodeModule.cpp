@@ -1,17 +1,21 @@
 #include "SensorNodeModule.h"
 
+#include "opendavinci/odcore/base/FIFOQueue.h"
+
 #include "openbasn/data/SensorData.h"
+#include "openbasn/message/Request.h"
 #include "openbasn/model/sensor/Sensor.h"
 
 #include <iostream>
 
 using namespace std;
 
-using namespace odcore;
+using namespace odcore::base;
 using namespace odcore::data;
 using namespace odcore::base::module;
 
 using namespace openbasn::data;
+using namespace openbasn::message;
 using namespace openbasn::model::sensor;
 
 
@@ -54,26 +58,36 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     Sensor ecg(Sensor::ECG, e_samplerate, e_active, e_mean, e_stddev);
     Sensor oximeter(Sensor::OXIMETER, o_samplerate, o_active, o_mean, o_stddev);
 
+    FIFOQueue fifo;
+    addDataStoreFor(3, fifo);
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        if(thermometer.isActive()){
-            SensorData sd(m_id, thermometer.getSensorType(), thermometer.getData());
-            Container c(sd);
-            getConference().send(c);
-            cout << sd.toString() << " sent." << endl;
-        }
+        Container c_req = fifo.leave();
+        Request req = c_req.getData<Request>();
 
-        if(ecg.isActive()) {
-            SensorData sd(m_id, ecg.getSensorType(), ecg.getData());
-            Container c(sd);
-            getConference().send(c);
-            cout << sd.toString() << " sent." << endl;
-        }
+        if(req.getType() == Request::SENSOR_DATA){
 
-        if(oximeter.isActive()){
-            SensorData sd(m_id, oximeter.getSensorType(), oximeter.getData());
-            Container c(sd);
-            getConference().send(c);
-            cout << sd.toString() << " sent." << endl;
+            if(thermometer.isActive()){
+                SensorData sd(m_id, thermometer.getSensorType(), thermometer.getData());
+                Container c(sd);
+                getConference().send(c);
+                cout << sd.toString() << " sent." << endl;
+            }
+
+            if(ecg.isActive()) {
+                SensorData sd(m_id, ecg.getSensorType(), ecg.getData());
+                Container c(sd);
+                getConference().send(c);
+                cout << sd.toString() << " sent." << endl;
+            }
+
+            if(oximeter.isActive()){
+                SensorData sd(m_id, oximeter.getSensorType(), oximeter.getData());
+                Container c(sd);
+                getConference().send(c);
+                cout << sd.toString() << " sent." << endl;
+            }
+
         }
     }
     
