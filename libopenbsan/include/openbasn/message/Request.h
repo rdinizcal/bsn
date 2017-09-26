@@ -12,7 +12,8 @@ namespace openbasn {
         class Request : public SerializableData {
 
             public:
-                Request(const int32_t &/*request_type*/);
+                Request(const int32_t &/*request_type*/, const uint32_t &/*source_id*/);
+                Request(const int32_t &/*request_type*/, const uint32_t &/*source_id*/, const uint32_t &/*destination_id*/);
 
                 Request();
                 virtual ~Request();
@@ -23,7 +24,9 @@ namespace openbasn {
             public:
                 enum REQUESTTYPE {
                     UNDEFINED           = 0,
-                    SENSOR_DATA         = 1
+                    SENSOR_DATA         = 1,
+                    REGISTER            = 2,
+                    UNREGISTER          = 3
                 };
 
             public:
@@ -44,8 +47,16 @@ namespace openbasn {
             public:
                 int32_t getRequestType() const;
 
+                void setSourceID(const uint32_t &/*m_source_id*/);
+                uint32_t getSourceID() const;
+
+                void setDestinationID(const uint32_t &/*m_destination_id*/);
+                uint32_t getDestinationID() const;
+
             private:
                 int32_t m_request_type;
+                uint32_t m_source_id;
+                uint32_t m_destination_id;
         };
     }
 }

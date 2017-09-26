@@ -26,9 +26,19 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
 
 SensorNodeModule::~SensorNodeModule() {}
 
-void SensorNodeModule::setUp() {}
+void SensorNodeModule::setUp() {
+    //Send REGISTER request
+    Request req(Request::REGISTER, m_id);
+    Container c_req(req);
+    getConference().send(c_req);
+}
 
-void SensorNodeModule::tearDown() {}
+void SensorNodeModule::tearDown() {
+    //Send UNREGISTER request
+    Request req(Request::UNREGISTER, m_id);
+    Container c_req(req);
+    getConference().send(c_req);
+}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
     
@@ -65,7 +75,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
         Container c_req = fifo.leave();
         Request req = c_req.getData<Request>();
 
-        if(req.getRequestType() == Request::SENSOR_DATA){
+        if(req.getRequestType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
 
             if(thermometer.isActive()){
                 SensorData sd(m_id, thermometer.getSensorType(), thermometer.getData());

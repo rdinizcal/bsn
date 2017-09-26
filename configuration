@@ -10,7 +10,7 @@
 
 sensornode.thermometer.stddev = 0.5
 sensornode.thermometer.mean.norisk = 36
-sensornode.thermometer.mean.risky1 = 37
+sensornode.thermometer.mean.risky = 38
 sensornode.thermometer.mean.risky2 = 33
 sensornode.thermometer.mean.critical1 = 40
 sensornode.thermometer.mean.critical2 = 28
@@ -33,11 +33,11 @@ sensornode.oximeter.mean.critical = 85
 
 sensornode.ecg.stddev = 10
 sensornode.ecg.mean.norisk = 100
-sensornode.ecg.mean.critical1 = 125
+sensornode.ecg.mean.critical = 125
 sensornode.ecg.mean.critical2 = 60
 
 ## Node Module Sensor configurations
-# default: all sensors active
+# default: all sensors active no risk
 sensornode:1.thermometer.active = 1
 sensornode:1.thermometer.samplerate = 1
 sensornode:1.thermometer.mean.behavior = norisk
@@ -48,7 +48,7 @@ sensornode:1.ecg.active = 1
 sensornode:1.ecg.samplerate = 1
 sensornode:1.ecg.mean.behavior = norisk
 
-# node with temperature sensor
+# temperature sensor (low risk)
 sensornode:1.thermometer.active = 1
 sensornode:1.thermometer.samplerate = 1
 sensornode:1.thermometer.mean.behavior = norisk
@@ -59,24 +59,81 @@ sensornode:1.ecg.active = 0
 sensornode:1.ecg.samplerate = 1
 sensornode:1.ecg.mean.behavior = norisk
 
-# node with heart rate sensor
+
+# oxygen sensor (low risk)
 sensornode:2.thermometer.active = 0
 sensornode:2.thermometer.samplerate = 1
 sensornode:2.thermometer.mean.behavior = norisk
-sensornode:2.oximeter.active = 0
+sensornode:2.oximeter.active = 1
 sensornode:2.oximeter.samplerate = 1
 sensornode:2.oximeter.mean.behavior = norisk
-sensornode:2.ecg.active = 1
+sensornode:2.ecg.active = 0
 sensornode:2.ecg.samplerate = 1
 sensornode:2.ecg.mean.behavior = norisk
 
-# node with oxygen sensor
+# heart rate sensor (low risk)
 sensornode:3.thermometer.active = 0
 sensornode:3.thermometer.samplerate = 1
 sensornode:3.thermometer.mean.behavior = norisk
-sensornode:3.oximeter.active = 1
+sensornode:3.oximeter.active = 0
 sensornode:3.oximeter.samplerate = 1
 sensornode:3.oximeter.mean.behavior = norisk
-sensornode:3.ecg.active = 0
+sensornode:3.ecg.active = 1
 sensornode:3.ecg.samplerate = 1
 sensornode:3.ecg.mean.behavior = norisk
+
+# temperature sensor (moderate risk)
+sensornode:11.thermometer.active = 1
+sensornode:11.thermometer.samplerate = 1
+sensornode:11.thermometer.mean.behavior = risky
+sensornode:11.oximeter.active = 0
+sensornode:11.oximeter.samplerate = 1
+sensornode:11.oximeter.mean.behavior = risky
+sensornode:11.ecg.active = 0
+sensornode:11.ecg.samplerate = 1
+sensornode:11.ecg.mean.behavior = norisk
+
+# oxygen sensor (moderate risk)
+sensornode:12.thermometer.active = 0
+sensornode:12.thermometer.samplerate = 1
+sensornode:12.thermometer.mean.behavior = risky
+sensornode:12.oximeter.active = 1
+sensornode:12.oximeter.samplerate = 1
+sensornode:12.oximeter.mean.behavior = risky
+sensornode:12.ecg.active = 0
+sensornode:12.ecg.samplerate = 1
+sensornode:12.ecg.mean.behavior = norisk
+
+# temperature sensor (high risk)
+sensornode:21.thermometer.active = 1
+sensornode:21.thermometer.samplerate = 1
+sensornode:21.thermometer.mean.behavior = critical
+sensornode:21.oximeter.active = 0
+sensornode:21.oximeter.samplerate = 1
+sensornode:21.oximeter.mean.behavior = critical
+sensornode:21.ecg.active = 0
+sensornode:21.ecg.samplerate = 1
+sensornode:21.ecg.mean.behavior = critical
+
+
+# oxygen sensor (high risk)
+sensornode:22.thermometer.active = 0
+sensornode:22.thermometer.samplerate = 1
+sensornode:22.thermometer.mean.behavior = critical
+sensornode:22.oximeter.active = 1
+sensornode:22.oximeter.samplerate = 1
+sensornode:22.oximeter.mean.behavior = critical
+sensornode:22.ecg.active = 0
+sensornode:22.ecg.samplerate = 1
+sensornode:22.ecg.mean.behavior = critical
+
+# heart rate sensor (high risk)
+sensornode:23.thermometer.active = 0
+sensornode:23.thermometer.samplerate = 1
+sensornode:23.thermometer.mean.behavior = critical
+sensornode:23.oximeter.active = 0
+sensornode:23.oximeter.samplerate = 1
+sensornode:23.oximeter.mean.behavior = critical
+sensornode:23.ecg.active = 1
+sensornode:23.ecg.samplerate = 1
+sensornode:23.ecg.mean.behavior = critical

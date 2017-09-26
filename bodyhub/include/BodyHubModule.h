@@ -19,6 +19,9 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
     private:
         virtual void setUp();
         virtual void tearDown();
+
+    private:
+        uint32_t m_id;
 };
 
 #endif
