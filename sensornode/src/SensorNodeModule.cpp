@@ -2,7 +2,7 @@
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "openbasn/data/SensorData.h"
+#include "openbasn/data/SensorNodeData.h"
 #include "openbasn/message/Request.h"
 #include "openbasn/model/sensor/Sensor.h"
 
@@ -77,27 +77,23 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
         if(req.getRequestType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
 
+            SensorNodeData sd(m_id);
+
             if(thermometer.isActive()){
-                SensorData sd(m_id, thermometer.getSensorType(), thermometer.getData());
-                Container c(sd);
-                getConference().send(c);
-                cout << sd.toString() << " sent." << endl;
+                sd.addSensorData(thermometer.getSensorType(), thermometer.getData());
             }
 
             if(ecg.isActive()) {
-                SensorData sd(m_id, ecg.getSensorType(), ecg.getData());
-                Container c(sd);
-                getConference().send(c);
-                cout << sd.toString() << " sent." << endl;
+                sd.addSensorData(ecg.getSensorType(), ecg.getData());
             }
 
             if(oximeter.isActive()){
-                SensorData sd(m_id, oximeter.getSensorType(), oximeter.getData());
-                Container c(sd);
-                getConference().send(c);
-                cout << sd.toString() << " sent." << endl;
+                sd.addSensorData(oximeter.getSensorType(), oximeter.getData());
             }
 
+            Container c(sd);
+            getConference().send(c);
+            cout << sd.toString() << " sent." << endl;
         }
     }
     

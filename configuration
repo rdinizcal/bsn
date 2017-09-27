@@ -12,7 +12,7 @@ sensornode.thermometer.stddev = 0.5
 sensornode.thermometer.mean.norisk = 36
 sensornode.thermometer.mean.risky = 38
 sensornode.thermometer.mean.risky2 = 33
-sensornode.thermometer.mean.critical1 = 40
+sensornode.thermometer.mean.critical = 40
 sensornode.thermometer.mean.critical2 = 28
 
 ## Oximeter configuration patterns
@@ -38,15 +38,15 @@ sensornode.ecg.mean.critical2 = 60
 
 ## Node Module Sensor configurations
 # default: all sensors active no risk
-sensornode:1.thermometer.active = 1
-sensornode:1.thermometer.samplerate = 1
-sensornode:1.thermometer.mean.behavior = norisk
-sensornode:1.oximeter.active = 1
-sensornode:1.oximeter.samplerate = 1
-sensornode:1.oximeter.mean.behavior = norisk
-sensornode:1.ecg.active = 1
-sensornode:1.ecg.samplerate = 1
-sensornode:1.ecg.mean.behavior = norisk
+sensornode.thermometer.active = 1
+sensornode.thermometer.samplerate = 1
+sensornode.thermometer.mean.behavior = norisk
+sensornode.oximeter.active = 1
+sensornode.oximeter.samplerate = 1
+sensornode.oximeter.mean.behavior = norisk
+sensornode.ecg.active = 1
+sensornode.ecg.samplerate = 1
+sensornode.ecg.mean.behavior = norisk
 
 # temperature sensor (low risk)
 sensornode:1.thermometer.active = 1

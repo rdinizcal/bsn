@@ -2,7 +2,7 @@
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "openbasn/data/SensorData.h"
+#include "openbasn/data/SensorNodeData.h"
 #include "openbasn/message/Request.h"
 #include "openbasn/model/sensor/Sensor.h"
 
@@ -56,49 +56,57 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                 cout << "SensorNode#" << req.getSourceID() << " successfully unregistered." << endl;                
             }
 
-        } else if(c.getDataType() == SensorData::ID()){
-            //Receive SensorData
-            SensorData sd = c.getData<SensorData>();
+        } else if(c.getDataType() == SensorNodeData::ID()){
+            //Receive SensorNodeData
+            SensorNodeData sd = c.getData<SensorNodeData>();
 
             //Categorize Data
             double health_risk_value = 0;
-            double data = sd.getData();
-            if(sd.getSensorType() == Sensor::THERMOMETER){
+            map<int32_t,double> sensor_data_map = sd.getSensorDataMap();
 
-                if(37 >= data && data > 35){
-                    health_risk_value += 0.1; 
-                } else if ( (35 >= data && data > 30) || (38 >= data && data > 37) ) {
-                    health_risk_value += 1;
-                } else if ( (50 >= data && data > 38) || (30 >= data && data > 0) ) {
-                    health_risk_value += 10;
+            map<int32_t,double>::iterator it = sensor_data_map.begin();
+            for(pair<int32_t,double> element : sensor_data_map){
+
+                int32_t sensor_type = element.first;
+                double sensor_data = element.second;
+
+                if(sensor_type == Sensor::THERMOMETER){
+    
+                    if(37 >= sensor_data && sensor_data > 35){
+                        health_risk_value += 0.1; 
+                    } else if ( (35 >= sensor_data && sensor_data > 30) || (38 >= sensor_data && sensor_data > 37) ) {
+                        health_risk_value += 1;
+                    } else if ( (50 >= sensor_data && sensor_data > 38) || (30 >= sensor_data && sensor_data > 0) ) {
+                        health_risk_value += 10;
+                    } else {
+                        health_risk_value = 0; 
+                    }
+    
+                } else if (sensor_type == Sensor::OXIMETER) {
+    
+                    if( 100 >= sensor_data && sensor_data > 94) {
+                        health_risk_value += 0.1;
+                    } else if ( 94 >= sensor_data && sensor_data > 90) {
+                        health_risk_value += 1;
+                    } else if ( 90 >= sensor_data && sensor_data > 0) {
+                        health_risk_value += 10;
+                    } else {
+                        health_risk_value = 0;
+                    }
+    
+                } else if (sensor_type == Sensor::ECG) {
+                    
+                    if ( (150 >= sensor_data && sensor_data > 120) || (80 >= sensor_data && sensor_data > 0) ) {
+                        health_risk_value += 10;
+                    } else if (120 >= sensor_data && sensor_data > 80) {
+                        health_risk_value += 0.1;
+                    } else {
+                        health_risk_value = 0;
+                    }
+    
                 } else {
-                    health_risk_value = 0; 
+                    cerr << "Could not recognize sensor." << endl;
                 }
-
-            } else if (sd.getSensorType() == Sensor::OXIMETER) {
-
-                if( 100 >= data && data > 94) {
-                    health_risk_value += 0.1;
-                } else if ( 94 >= data && data > 90) {
-                    health_risk_value += 1;
-                } else if ( 90 >= data && data > 0) {
-                    health_risk_value += 10;
-                } else {
-                    health_risk_value = 0;
-                }
-
-            } else if (sd.getSensorType() == Sensor::ECG) {
-                
-                if ( (150 >= data && data > 120) || (80 >= data && data > 0) ) {
-                    health_risk_value += 10;
-                } else if (120 >= data && data > 80) {
-                    health_risk_value += 0.1;
-                } else {
-                    health_risk_value = 0;
-                }
-
-            } else {
-                cerr << "Could not recognize sensor." << endl;
             }
 
             if(0 < health_risk_value && health_risk_value < 1) {
@@ -113,7 +121,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
             //View Data
             cout << "-------------------------------------------------" << endl;
-            cout << sd.toString() << " | risk: " << snm_risk[sd.getSensorNodeID()] << endl;
+            cout << sd.toString() << " risk: " << snm_risk[sd.getSensorNodeID()] << endl;
             cout << " sent at " << c.getSentTimeStamp().getYYYYMMDD_HHMMSS() << endl;
             cout << " received at " << c.getReceivedTimeStamp().getYYYYMMDD_HHMMSS() << endl;
             cout << " processed at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
@@ -155,7 +163,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
             map<uint32_t, string>::iterator it = snm_risk.begin();
             for (pair<uint32_t, string> element : snm_risk) {
-                if( element.second.compare("high") == 0) {
+                if( element.second.compare("high") == 0 || element.second.compare("unknown") == 0) {
                     Request request(Request::SENSOR_DATA, m_id, element.first);
                     Container c_req(request);
                     getConference().send(c_req);
