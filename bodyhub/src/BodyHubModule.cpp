@@ -77,7 +77,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                     } else if ( (35 >= sensor_data && sensor_data > 30) || (38 >= sensor_data && sensor_data > 37) ) {
                         health_risk_value += 1;
                     } else if ( (50 >= sensor_data && sensor_data > 38) || (30 >= sensor_data && sensor_data > 0) ) {
-                        health_risk_value += 10;
+                        health_risk_value += 5;
                     } else {
                         health_risk_value = 0; 
                     }
@@ -89,7 +89,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                     } else if ( 94 >= sensor_data && sensor_data > 90) {
                         health_risk_value += 1;
                     } else if ( 90 >= sensor_data && sensor_data > 0) {
-                        health_risk_value += 10;
+                        health_risk_value += 5;
                     } else {
                         health_risk_value = 0;
                     }
@@ -97,7 +97,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                 } else if (sensor_type == Sensor::ECG) {
                     
                     if ( (150 >= sensor_data && sensor_data > 120) || (80 >= sensor_data && sensor_data > 0) ) {
-                        health_risk_value += 10;
+                        health_risk_value += 5;
                     } else if (120 >= sensor_data && sensor_data > 80) {
                         health_risk_value += 0.1;
                     } else {
@@ -111,9 +111,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
             if(0 < health_risk_value && health_risk_value < 1) {
                 snm_risk[sd.getSensorNodeID()] = "low";
-            } else if (1 <= health_risk_value && health_risk_value < 10) {
+            } else if (1 <= health_risk_value && health_risk_value < 5) {
                 snm_risk[sd.getSensorNodeID()] = "moderate";
-            } else if (10 <= health_risk_value) {
+            } else if (5 <= health_risk_value && health_risk_value < 20) {
                 snm_risk[sd.getSensorNodeID()] = "high";
             } else {
                 snm_risk[sd.getSensorNodeID()] = "unknown";
