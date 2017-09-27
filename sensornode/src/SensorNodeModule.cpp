@@ -69,31 +69,34 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     Sensor oximeter(Sensor::OXIMETER, o_samplerate, o_active, o_mean, o_stddev);
 
     FIFOQueue fifo;
-    addDataStoreFor(3, fifo);
+    addDataStoreFor(fifo);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        Container c_req = fifo.leave();
-        Request req = c_req.getData<Request>();
+        Container c_rec = fifo.leave();
+        
+        if(c_rec.getDataType() == Request::ID()){
+            Request req = c_rec.getData<Request>();
 
-        if(req.getRequestType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
-
-            SensorNodeData sd(m_id);
-
-            if(thermometer.isActive()){
-                sd.addSensorData(thermometer.getSensorType(), thermometer.getData());
+            if(req.getRequestType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
+    
+                SensorNodeData sd(m_id);
+    
+                if(thermometer.isActive()){
+                    sd.addSensorData(thermometer.getSensorType(), thermometer.getData());
+                }
+    
+                if(ecg.isActive()) {
+                    sd.addSensorData(ecg.getSensorType(), ecg.getData());
+                }
+    
+                if(oximeter.isActive()){
+                    sd.addSensorData(oximeter.getSensorType(), oximeter.getData());
+                }
+    
+                Container c(sd);
+                getConference().send(c);
+                cout << sd.toString() << " sent." << endl;
             }
-
-            if(ecg.isActive()) {
-                sd.addSensorData(ecg.getSensorType(), ecg.getData());
-            }
-
-            if(oximeter.isActive()){
-                sd.addSensorData(oximeter.getSensorType(), oximeter.getData());
-            }
-
-            Container c(sd);
-            getConference().send(c);
-            cout << sd.toString() << " sent." << endl;
         }
     }
     
