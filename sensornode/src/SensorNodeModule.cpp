@@ -4,7 +4,7 @@
 
 #include "openbasn/data/SensorNodeData.h"
 #include "openbasn/message/Request.h"
-#include "openbasn/model/sensor/Sensor.h"
+
 
 #include <iostream>
 
@@ -21,8 +21,10 @@ using namespace openbasn::model::sensor;
 
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
-    m_id(getIdentifier())
-     {}
+    m_id(getIdentifier()),
+    m_sensor_vector(),
+    m_number_of_sensors()
+    {}
 
 SensorNodeModule::~SensorNodeModule() {}
 
@@ -42,31 +44,24 @@ void SensorNodeModule::tearDown() {
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
     
-    //Configure thermometer
-    bool t_active = (getKeyValueConfiguration().getValue<bool>("sensornode.thermometer.active") == 1);
-    float t_samplerate = getKeyValueConfiguration().getValue<float>("sensornode.thermometer.samplerate");
-    string t_mean_behavior = getKeyValueConfiguration().getValue<string>("sensornode.thermometer.mean.behavior");
-    double t_stddev = getKeyValueConfiguration().getValue<double>("sensornode.thermometer.stddev");
-    double t_mean = getKeyValueConfiguration().getValue<double>("sensornode.thermometer.mean."+t_mean_behavior);
+    m_number_of_sensors = getKeyValueConfiguration().getValue<uint32_t>("sensornode.numberOfSensors");
+    
+    for(uint32_t i = 0; i < m_number_of_sensors; i++) {
+        string sensor_type;
+        uint32_t sensor_id = i+1;
 
-    //Configure ecg
-    bool e_active = (getKeyValueConfiguration().getValue<bool>("sensornode.ecg.active") == 1);
-    float e_samplerate = getKeyValueConfiguration().getValue<float>("sensornode.ecg.samplerate");
-    string e_mean_behavior = getKeyValueConfiguration().getValue<string>("sensornode.ecg.mean.behavior");
-    double e_stddev = getKeyValueConfiguration().getValue<double>("sensornode.ecg.stddev");
-    double e_mean = getKeyValueConfiguration().getValue<double>("sensornode.ecg.mean."+e_mean_behavior);
+        sensor_type = getKeyValueConfiguration().getValue<string>("sensornode.sensortype."+ to_string(sensor_id));
 
-    //Configure oximeter
-    bool o_active = (getKeyValueConfiguration().getValue<bool>("sensornode.oximeter.active") == 1);
-    float o_samplerate = getKeyValueConfiguration().getValue<float>("sensornode.oximeter.samplerate");
-    string o_mean_behavior = getKeyValueConfiguration().getValue<string>("sensornode.oximeter.mean.behavior");
-    double o_stddev = getKeyValueConfiguration().getValue<double>("sensornode.oximeter.stddev");
-    double o_mean = getKeyValueConfiguration().getValue<double>("sensornode.oximeter.mean."+o_mean_behavior);
+        if((getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1)){
+            bool   active = (getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1);
+            float  samplerate = getKeyValueConfiguration().getValue<float>("sensornode."+ sensor_type +".samplerate");
+            string mean_behavior = getKeyValueConfiguration().getValue<string>("sensornode."+ sensor_type +".mean.behavior");
+            double stddev = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".stddev");
+            double mean = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".mean."+mean_behavior);
 
-    //Instantiate Sensors
-    Sensor thermometer(Sensor::THERMOMETER, t_samplerate, t_active, t_mean, t_stddev);
-    Sensor ecg(Sensor::ECG, e_samplerate, e_active, e_mean, e_stddev);
-    Sensor oximeter(Sensor::OXIMETER, o_samplerate, o_active, o_mean, o_stddev);
+            m_sensor_vector.push_back(Sensor(sensor_id, samplerate, active, mean, stddev));
+        }
+    }
 
     FIFOQueue fifo;
     addDataStoreFor(fifo);
@@ -79,23 +74,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
             if(req.getRequestType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
     
-                SensorNodeData sd(m_id);
-    
-                if(thermometer.isActive()){
-                    sd.addSensorData(thermometer.getSensorType(), thermometer.getData());
+                SensorNodeData snData(m_id);
+
+                for(uint32_t i = 0; i < m_sensor_vector.size(); i++) {
+                    snData.addSensorData(m_sensor_vector[i].getSensorType(), m_sensor_vector[i].getData());
                 }
     
-                if(ecg.isActive()) {
-                    sd.addSensorData(ecg.getSensorType(), ecg.getData());
-                }
-    
-                if(oximeter.isActive()){
-                    sd.addSensorData(oximeter.getSensorType(), oximeter.getData());
-                }
-    
-                Container c(sd);
-                getConference().send(c);
-                cout << sd.toString() << " sent." << endl;
+                Container c_send(snData);
+                getConference().send(c_send);
+                cout << snData.toString() << " sent." << endl;
             }
         }
     }

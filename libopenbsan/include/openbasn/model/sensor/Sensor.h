@@ -22,34 +22,45 @@ namespace openbasn {
                         OXIMETER                = 3
                     };
 
-                private:
+                public:
+                    Sensor(const uint32_t &sensorType,
+                        const float &samplerate,
+                        const bool &active, 
+                        const double &mean, 
+                        const double &stddev);
+                    
+                    Sensor();
+                    virtual ~Sensor();
+
+                public:
                     Sensor(const Sensor &/*obj*/);
                     Sensor& operator=(const Sensor &/*obj*/);
-            
-                public:
-                    Sensor(const int32_t &sensorType,
-                                const float &samplerate,
-                                const bool &active, 
-                                const double &mean, 
-                                const double &stddev);
-                    ~Sensor();
-                    
-                    void setSensorType(const int32_t &);
-                    int32_t getSensorType();
-            
+                   
+                public:        
+                    void setSensorType(const uint32_t &);
+                    uint32_t getSensorType() const;
+                        
                     void setSampleRate(const float &);
-                    float getSampleRate();
+                    float getSampleRate() const;
             
                     void setActive(const bool &);
-                    bool isActive();
-            
+                    bool isActive() const;
+
+                    void setMean(const double &/*mean*/);
+                    double getMean() const;
+
+                    void setStddev(const double &/*stddev*/);
+                    double getStddev() const;
+                    
                     double getData();
             
                 private:
-                    int32_t m_sensorType;
+                    uint32_t m_sensorType;
                     float m_samplerate;
                     bool m_active;
-            
+
+                    double m_mean;
+                    double m_stddev;
                     mt19937 m_gen;
                     normal_distribution<> m_distr;
                     TimeStamp m_now;

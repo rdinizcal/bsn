@@ -2,8 +2,13 @@
 #define SENSORNODE_MODULE_H_
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
+#include "openbasn/model/sensor/Sensor.h"
+
+using namespace std;
 
 using namespace odcore::base::module;
+
+using namespace openbasn::model::sensor;
 
 class SensorNodeModule : public TimeTriggeredConferenceClientModule {
 
@@ -22,6 +27,8 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
 
     private:
         uint32_t m_id;
+        vector<Sensor> m_sensor_vector;
+        uint32_t m_number_of_sensors;
 };
 
 #endif

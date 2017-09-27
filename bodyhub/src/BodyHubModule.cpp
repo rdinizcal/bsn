@@ -50,10 +50,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
             if(req.getRequestType() == Request::REGISTER) {
                 snm_risk.insert(pair<uint32_t, string>(req.getSourceID(), "low"));
-                cout << "SensorNode#" << req.getSourceID() << " successfully registered." << endl;
             } else if (req.getRequestType() == Request::UNREGISTER) {
                 snm_risk.erase(req.getSourceID());
-                cout << "SensorNode#" << req.getSourceID() << " successfully unregistered." << endl;                
             }
 
         } else if(c.getDataType() == SensorNodeData::ID()){
