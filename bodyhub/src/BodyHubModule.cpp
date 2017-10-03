@@ -7,6 +7,7 @@
 #include "openbasn/model/sensor/Sensor.h"
 
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <string>
 #include <iterator>
@@ -24,34 +25,41 @@ using namespace openbasn::model::sensor;
 
 BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "bodyhub"),
-    m_id(getIdentifier())
-     {}
+    m_id(getIdentifier()),
+    sensornode_risk()
+    {}
 
 BodyHubModule::~BodyHubModule() {}
 
 void BodyHubModule::setUp() {}
 
-void BodyHubModule::tearDown() {}
+void BodyHubModule::tearDown() {
+    //Unregister all
+
+    //Loop thrugh all registered nodes
+    //    sensornode_risk.erase(req.getSourceID());
+}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     FIFOQueue fifo;
     addDataStoreFor(fifo);
     int32_t clock_tick = 0;
-    
-    map <uint32_t, string> snm_risk;
+
+    ofstream data_file;
+    data_file.open("bodyhub"+to_string(m_id)+".csv");
+    //file header
+    data_file << "Sensor Node #, Active Sensors, Thermometer Data, ECG Data, Oximeter Data, Health Risk, Sent at, Received at, Processed at\n";
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-
         Container c = fifo.leave();
 
         if(c.getDataType() == Request::ID()) {
-            //Receive Request
             Request req = c.getData<Request>();
 
             if(req.getRequestType() == Request::REGISTER) {
-                snm_risk.insert(pair<uint32_t, string>(req.getSourceID(), "low"));
+                sensornode_risk.insert(pair<uint32_t, string>(req.getSourceID(), "low"));
             } else if (req.getRequestType() == Request::UNREGISTER) {
-                snm_risk.erase(req.getSourceID());
+                sensornode_risk.erase(req.getSourceID());
             }
 
         } else if(c.getDataType() == SensorNodeData::ID()){
@@ -60,6 +68,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
             //Categorize Data
             double health_risk_value = 0;
+            double thermometer_data = 0;
+            double ecg_data = 0;
+            double oximeter_data = 0;
             map<int32_t,double> sensor_data_map = sd.getSensorDataMap();
 
             map<int32_t,double>::iterator it = sensor_data_map.begin();
@@ -79,6 +90,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                     } else {
                         health_risk_value = 0; 
                     }
+
+                    thermometer_data = sensor_data;
     
                 } else if (sensor_type == Sensor::OXIMETER) {
     
@@ -91,6 +104,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                     } else {
                         health_risk_value = 0;
                     }
+
+                    oximeter_data = sensor_data;
     
                 } else if (sensor_type == Sensor::ECG) {
                     
@@ -101,25 +116,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                     } else {
                         health_risk_value = 0;
                     }
-    
+                    
+                    ecg_data = sensor_data;
+
                 } else {
                     cerr << "Could not recognize sensor." << endl;
                 }
             }
 
             if(0 < health_risk_value && health_risk_value < 1) {
-                snm_risk[sd.getSensorNodeID()] = "low";
+                sensornode_risk[sd.getSensorNodeID()] = "low";
             } else if (1 <= health_risk_value && health_risk_value < 5) {
-                snm_risk[sd.getSensorNodeID()] = "moderate";
+                sensornode_risk[sd.getSensorNodeID()] = "moderate";
             } else if (5 <= health_risk_value && health_risk_value < 20) {
-                snm_risk[sd.getSensorNodeID()] = "high";
+                sensornode_risk[sd.getSensorNodeID()] = "high";
             } else {
-                snm_risk[sd.getSensorNodeID()] = "unknown";
+                sensornode_risk[sd.getSensorNodeID()] = "unknown";
             }
 
             //View Data
             cout << "-------------------------------------------------" << endl;
-            cout << sd.toString() << " risk: " << snm_risk[sd.getSensorNodeID()] << endl;
+            cout << " RECEIVED CONTENT " << endl;
+            cout << " " << sd.toString() << " risk: " << sensornode_risk[sd.getSensorNodeID()] << endl;
             cout << " sent at " << c.getSentTimeStamp().getYYYYMMDD_HHMMSS() << endl;
             cout << " received at " << c.getReceivedTimeStamp().getYYYYMMDD_HHMMSS() << endl;
             cout << " processed at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
@@ -127,51 +145,82 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
             cout << "-------------------------------------------------" << endl;
 
             //Persist Data
+            //file header
+            //"Sensor Node #, Active Sensors, Thermometer Data, ECG Data, Oximeter Data, Health Risk, Sent at, Received at, Processed at";
+            data_file << sd.getSensorNodeID() << ",";
+            data_file << sensor_data_map.size() << ",";
 
+            if(thermometer_data > 0){
+                data_file << thermometer_data << ",";
+            } else {
+                data_file << "- ,";
+            }
+
+            if(ecg_data > 0){
+                data_file << ecg_data << ",";
+            } else {
+                data_file << "- ,";
+            }
+
+            if(oximeter_data > 0){
+                data_file << oximeter_data << ",";
+            } else {
+                data_file << "- ,";
+            }
+
+            data_file << sensornode_risk[sd.getSensorNodeID()] << ",";
+            data_file << c.getSentTimeStamp().getYYYYMMDD_HHMMSS() << ",";
+            data_file << c.getReceivedTimeStamp().getYYYYMMDD_HHMMSS() << ",";
+            data_file << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
+
+        } else {
+
+            //Request Data
+            if(clock_tick%15 == 0){
+    
+                map<uint32_t, string>::iterator it = sensornode_risk.begin();
+                for (pair<uint32_t, string> element : sensornode_risk) {
+                    if( element.second.compare("low") == 0) {
+                        Request request(Request::SENSOR_DATA, m_id, element.first);
+                        Container c_req(request);
+                        getConference().send(c_req);
+                    }
+                }
+    
+            } 
+            
+            if(clock_tick%5 == 0) {
+    
+                map<uint32_t, string>::iterator it = sensornode_risk.begin();
+                for (pair<uint32_t, string> element : sensornode_risk) {
+                    if( element.second.compare("moderate") == 0) {
+                        Request request(Request::SENSOR_DATA, m_id, element.first);
+                        Container c_req(request);
+                        getConference().send(c_req);
+                    }
+                }
+    
+            } 
+            
+            if (clock_tick%1 == 0) {
+    
+                map<uint32_t, string>::iterator it = sensornode_risk.begin();
+                for (pair<uint32_t, string> element : sensornode_risk) {
+                    if( element.second.compare("high") == 0 || element.second.compare("unknown") == 0) {
+                        Request request(Request::SENSOR_DATA, m_id, element.first);
+                        Container c_req(request);
+                        getConference().send(c_req);
+                    }
+                }
+    
+            }
+    
+            clock_tick++;
         }
 
-        //Request Data
-        if(clock_tick%15 == 0){
-
-            map<uint32_t, string>::iterator it = snm_risk.begin();
-            for (pair<uint32_t, string> element : snm_risk) {
-                if( element.second.compare("low") == 0) {
-                    Request request(Request::SENSOR_DATA, m_id, element.first);
-                    Container c_req(request);
-                    getConference().send(c_req);
-                }
-            }
-
-        } 
-        
-        if(clock_tick%5 == 0) {
-
-            map<uint32_t, string>::iterator it = snm_risk.begin();
-            for (pair<uint32_t, string> element : snm_risk) {
-                if( element.second.compare("moderate") == 0) {
-                    Request request(Request::SENSOR_DATA, m_id, element.first);
-                    Container c_req(request);
-                    getConference().send(c_req);
-                }
-            }
-
-        } 
-        
-        if (clock_tick%1 == 0) {
-
-            map<uint32_t, string>::iterator it = snm_risk.begin();
-            for (pair<uint32_t, string> element : snm_risk) {
-                if( element.second.compare("high") == 0 || element.second.compare("unknown") == 0) {
-                    Request request(Request::SENSOR_DATA, m_id, element.first);
-                    Container c_req(request);
-                    getConference().send(c_req);
-                }
-            }
-
-        }
-
-        clock_tick++;
     }
     
-return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
+    data_file.close();
+
+    return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }

@@ -64,7 +64,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     }
 
     FIFOQueue fifo;
-    addDataStoreFor(fifo);
+    addDataStoreFor(3, fifo);
+    addDataStoreFor(8, fifo);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         Container c_rec = fifo.leave();
@@ -82,7 +83,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     
                 Container c_send(snData);
                 getConference().send(c_send);
-                cout << snData.toString() << " sent." << endl;
+                cout << snData.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
             }
         }
     }

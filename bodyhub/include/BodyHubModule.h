@@ -22,6 +22,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
 
     private:
         uint32_t m_id;
+        map <uint32_t, string> sensornode_risk;
 };
 
 #endif
