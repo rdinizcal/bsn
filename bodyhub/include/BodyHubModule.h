@@ -1,8 +1,14 @@
 #ifndef BODYHUB_MODULE_H_
 #define BODYHUB_MODULE_H_
 
+#include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
+#include <fstream>
+
+using namespace std;
+
+using namespace odcore::base;
 using namespace odcore::base::module;
 
 class BodyHubModule : public TimeTriggeredConferenceClientModule {
@@ -22,7 +28,12 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
 
     private:
         uint32_t m_id;
-        map <uint32_t, string> sensornode_risk;
+        int32_t clock_tick;
+        FIFOQueue c_buffer;
+        
+        map<uint32_t, string> sensornode_risk;
+        ofstream data_file;
+        
 };
 
 #endif

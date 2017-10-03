@@ -1,13 +1,11 @@
 #include "BodyHubModule.h"
 
-#include "opendavinci/odcore/base/FIFOQueue.h"
-
 #include "openbasn/data/SensorNodeData.h"
 #include "openbasn/message/Request.h"
 #include "openbasn/model/sensor/Sensor.h"
 
 #include <iostream>
-#include <fstream>
+
 #include <map>
 #include <string>
 #include <iterator>
@@ -26,14 +24,25 @@ using namespace openbasn::model::sensor;
 BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "bodyhub"),
     m_id(getIdentifier()),
-    sensornode_risk()
+    clock_tick(0),
+    c_buffer(),
+    sensornode_risk(),
+    data_file()
     {}
 
 BodyHubModule::~BodyHubModule() {}
 
-void BodyHubModule::setUp() {}
+void BodyHubModule::setUp() {
+    //setup buffer
+    addDataStoreFor(c_buffer);
+
+    data_file.open("bodyhub"+to_string(m_id)+".csv");
+    data_file << "Sensor Node #,Active Sensors,Thermometer Data,ECG Data,Oximeter Data,Health Risk,Sent at,Received at,Processed at\n";
+}
 
 void BodyHubModule::tearDown() {
+    data_file.close();
+    
     //Unregister all
 
     //Loop thrugh all registered nodes
@@ -41,17 +50,9 @@ void BodyHubModule::tearDown() {
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
-    FIFOQueue fifo;
-    addDataStoreFor(fifo);
-    int32_t clock_tick = 0;
-
-    ofstream data_file;
-    data_file.open("bodyhub"+to_string(m_id)+".csv");
-    //file header
-    data_file << "Sensor Node #, Active Sensors, Thermometer Data, ECG Data, Oximeter Data, Health Risk, Sent at, Received at, Processed at\n";
-
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        Container c = fifo.leave();
+        Container c = c_buffer.leave();
 
         if(c.getDataType() == Request::ID()) {
             Request req = c.getData<Request>();
@@ -220,7 +221,5 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
     }
     
-    data_file.close();
-
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }
