@@ -12,8 +12,8 @@ namespace openbasn {
         class Request : public SerializableData {
 
             public:
-                Request(const int32_t &/*request_type*/, const uint32_t &/*source_id*/);
-                Request(const int32_t &/*request_type*/, const uint32_t &/*source_id*/, const uint32_t &/*destination_id*/);
+                Request(const int32_t &/*type*/, const uint32_t &/*source_id*/);
+                Request(const int32_t &/*type*/, const uint32_t &/*source_id*/, const uint32_t &/*destination_id*/);
 
                 Request();
                 virtual ~Request();
@@ -41,7 +41,7 @@ namespace openbasn {
                 virtual istream& operator>>(istream &in);
             
             public:
-                int32_t getRequestType() const;
+                int32_t getType() const;
 
                 void setSourceID(const uint32_t &/*m_source_id*/);
                 uint32_t getSourceID() const;
@@ -50,7 +50,7 @@ namespace openbasn {
                 uint32_t getDestinationID() const;
 
             private:
-                int32_t m_request_type;
+                int32_t m_type;
                 uint32_t m_source_id;
                 uint32_t m_destination_id;
         };

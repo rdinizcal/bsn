@@ -1,6 +1,7 @@
 #include "BodyHubModule.h"
 
 #include "openbasn/model/sensor/Sensor.h"
+#include "openbasn/message/Acknowledge.h"
 
 #include <iostream>
 
@@ -43,9 +44,20 @@ void BodyHubModule::tearDown() {
 }
 
 void BodyHubModule::processRequest(Request request){
-    switch(request.getRequestType()) {
-        case Request::REGISTER : m_sensornode.insert(pair<uint32_t, string>(request.getSourceID(), "low")); break;
-        case Request::UNREGISTER : m_sensornode.erase(request.getSourceID()); break;
+    switch(request.getType()) {
+        case Request::REGISTER : 
+            {
+                m_sensornode.insert(pair<uint32_t, string>(request.getSourceID(), "low"));
+                openbasn::message::Acknowledge ack(Acknowledge::OK, m_id, request.getSourceID()); 
+                Container c_ack(ack);
+                getConference().send(c_ack);
+                CLOG1 << "SensorNode" << request.getSourceID() << " successfully registered." << endl;
+            }
+            break;
+        case Request::UNREGISTER : 
+            m_sensornode.erase(request.getSourceID()); 
+            CLOG1 << "SensorNode" << request.getSourceID() << " successfully unregistered." << endl;
+            break;
         case Request::SENSOR_DATA : break;
         default : cerr << "Could not recognize request"; break;
     }

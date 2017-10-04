@@ -4,7 +4,7 @@
 
 #include "openbasn/data/SensorNodeData.h"
 #include "openbasn/message/Request.h"
-
+#include "openbasn/message/Acknowledge.h"
 
 #include <iostream>
 
@@ -44,6 +44,16 @@ void SensorNodeModule::tearDown() {
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
     
+    FIFOQueue ack_buffer;
+    addDataStoreFor(4, ack_buffer);
+
+    Container c_ack = ack_buffer.leave();
+    Acknowledge ack = c_ack.getData<Acknowledge>();
+    
+    if(ack.getDestinationID() != m_id || ack.getType() != Acknowledge::OK){
+        return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
+    }
+
     m_number_of_sensors = getKeyValueConfiguration().getValue<uint32_t>("sensornode.numberOfSensors");
     
     for(uint32_t i = 0; i < m_number_of_sensors; i++) {
@@ -73,7 +83,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
         if(c_rec.getDataType() == Request::ID()){
             Request req = c_rec.getData<Request>();
 
-            if(req.getRequestType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
+            if(req.getType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
     
                 SensorNodeData snData(m_id);
 
