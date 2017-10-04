@@ -44,7 +44,7 @@ void BodyHubModule::setUp() {
         uint32_t sensor_id = i+1;
         m_datalog << getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id)) << ",";
     }
-    m_datalog << "Health Risk, Sent at, Received at, Processed at\n";
+    m_datalog << "Health Risk,Sent at,Received at,Processed at\n";
 }
 
 void BodyHubModule::tearDown() {
