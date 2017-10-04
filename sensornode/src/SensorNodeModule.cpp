@@ -54,13 +54,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
         return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
     }
 
-    m_number_of_sensors = getKeyValueConfiguration().getValue<uint32_t>("sensornode.numberOfSensors");
+    m_number_of_sensors = getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors");
     
     for(uint32_t i = 0; i < m_number_of_sensors; i++) {
         string sensor_type;
         uint32_t sensor_id = i+1;
 
-        sensor_type = getKeyValueConfiguration().getValue<string>("sensornode.sensortype."+ to_string(sensor_id));
+        sensor_type = getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id));
 
         if((getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1)){
             bool   active = (getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1);

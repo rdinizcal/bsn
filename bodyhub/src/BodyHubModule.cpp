@@ -37,6 +37,14 @@ void BodyHubModule::setUp() {
 
     //setup m_datalog
     m_datalog.open("bodyhub"+to_string(m_id)+".csv");
+    
+    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., Health Risk, Sent at, Received at, Processed at";
+    m_datalog << "SensorNodeID,Active Sensors,";
+    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++) {
+        uint32_t sensor_id = i+1;
+        m_datalog << getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id)) << ",";
+    }
+    m_datalog << "Health Risk, Sent at, Received at, Processed at\n";
 }
 
 void BodyHubModule::tearDown() {
@@ -48,7 +56,7 @@ void BodyHubModule::processRequest(Request request){
         case Request::REGISTER : 
             {
                 m_sensornode.insert(pair<uint32_t, string>(request.getSourceID(), "low"));
-                openbasn::message::Acknowledge ack(Acknowledge::OK, m_id, request.getSourceID()); 
+                Acknowledge ack(Acknowledge::OK, m_id, request.getSourceID()); 
                 Container c_ack(ack);
                 getConference().send(c_ack);
                 CLOG1 << "SensorNode" << request.getSourceID() << " successfully registered." << endl;
@@ -121,16 +129,18 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
         m_sensornode[sensornodedata.getSensorNodeID()] = "unknown";
     }
 
-    //"SensorNodeID, Number of active sensors, [0]SensorType,[0]SensorData, [1]SensorType,[1]SensorData, ..., Health Risk, Sent at, Received at, Processed at";
+    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., Health Risk, Sent at, Received at, Processed at";
     m_datalog << sensornodedata.getSensorNodeID() << ",";
     m_datalog << sensor_data_map.size() << ",";
 
-    it = sensor_data_map.begin();
-    for(pair<int32_t,double> element : sensor_data_map){
-        int32_t sensor_type = element.first;
-        double sensor_data = element.second;
+    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++){
+        uint32_t sensor_id = i+1;
 
-        m_datalog << sensor_type << "," << sensor_data << ",";
+        if(sensor_data_map.find(sensor_id) != sensor_data_map.end()){
+            m_datalog << sensor_data_map.find(sensor_id)->second<<",";
+        } else {
+            m_datalog << "-,";
+        }
     }
 
     m_datalog << m_sensornode[sensornodedata.getSensorNodeID()] << ",";

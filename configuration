@@ -2,10 +2,10 @@
 
 ### Sensor configuration
 
-sensornode.numberOfSensors = 3
-sensornode.sensortype.1 = thermometer
-sensornode.sensortype.2 = ecg
-sensornode.sensortype.3 = oximeter
+global.numberOfSensors = 3
+global.sensortype.1 = thermometer
+global.sensortype.2 = ecg
+global.sensortype.3 = oximeter
 # *Obs: Do not chance sensortype order!
 
 ## Thermometer configuration patterns
