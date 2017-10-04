@@ -28,12 +28,11 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
 
     private:
         uint32_t m_id;
-        int32_t clock_tick;
-        FIFOQueue c_buffer;
+        int32_t m_clock;
+        FIFOQueue m_buffer;
         
-        map<uint32_t, string> sensornode_risk;
-        ofstream data_file;
-        
+        map<uint32_t, string> m_sensornode;
+        ofstream m_datalog;
 };
 
 #endif
