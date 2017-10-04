@@ -158,17 +158,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
         } else if (c.getDataType() == SensorNodeData::ID()) {
             BodyHubModule::processSensorNodeData(c.getData<SensorNodeData>(),c.getSentTimeStamp(),c.getReceivedTimeStamp());
         } else {
+            m_clock++;
 
-            if(m_clock%15 == 0) BodyHubModule::requestSensorNodeData("low");
-                
-            if(m_clock%5 == 0) BodyHubModule::requestSensorNodeData("moderate");
+            if(m_clock%15 == 0) {
+                BodyHubModule::requestSensorNodeData("low");
+            } 
 
-            if (m_clock%1 == 0) {
+            if(m_clock%5 == 0) { 
+                BodyHubModule::requestSensorNodeData("moderate");
+            }
+
+            if(m_clock%1 == 0) {
                 BodyHubModule::requestSensorNodeData("high");
                 BodyHubModule::requestSensorNodeData("unknown");
             }
 
-            m_clock++;    
+                
         }
     }
     
