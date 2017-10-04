@@ -41,25 +41,18 @@ namespace openbasn {
             m_destination_id = obj.getDestinationID();
             return (*this);
         }
-        
+
         int32_t Request::ID() {
             return 3;
         }
-        const string Request::ShortName() {
-            return "Request";
-        }
-        const string Request::LongName() {
-            return "message.Request";
-        }
-        
         int32_t Request::getID() const {
-            return Request::ID();
+            return 3;
         }
         const string Request::getShortName() const {
-            return Request::ShortName();
+            return "Request";
         }
         const string Request::getLongName() const {
-            return Request::LongName();
+            return "message.Request";
         }
         
         int32_t Request::getRequestType() const {
@@ -107,7 +100,7 @@ namespace openbasn {
         const string Request::toString() const {
             stringstream sstr;
         
-            sstr << Request::ShortName() << "#" << Request::ID() << endl;
+            sstr << Request::getShortName() << "#" << Request::getID() << endl;
             sstr << "Type: " << m_request_type << endl;
             sstr << "Source ID: " << m_destination_id << endl;
             sstr << "Dest. ID: " << m_destination_id << endl; 

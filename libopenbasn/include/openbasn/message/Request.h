@@ -30,19 +30,15 @@ namespace openbasn {
                 };
 
             public:
+                static int32_t ID();
                 virtual int32_t getID() const;
                 virtual const string getShortName() const;
                 virtual const string getLongName() const;
-
-                static int32_t ID();
-                static const string ShortName();
-                static const string LongName();
+                virtual const string toString() const;
                         
             public:
                 virtual ostream& operator<<(ostream &out) const;
                 virtual istream& operator>>(istream &in);
-        
-                virtual const string toString() const;
             
             public:
                 int32_t getRequestType() const;

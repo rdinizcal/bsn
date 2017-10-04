@@ -4,12 +4,18 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
+#include "openbasn/message/Request.h"
+#include "openbasn/data/SensorNodeData.h"
+
 #include <fstream>
 
 using namespace std;
 
 using namespace odcore::base;
 using namespace odcore::base::module;
+
+using namespace openbasn::data;
+using namespace openbasn::message;
 
 class BodyHubModule : public TimeTriggeredConferenceClientModule {
 
@@ -26,6 +32,11 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         virtual void setUp();
         virtual void tearDown();
 
+    private:
+        void processRequest(Request /*obj*/);
+        void processSensorNodeData(SensorNodeData /*obj*/, TimeStamp /*sentTS*/, TimeStamp /*receivedTS*/);
+        void requestSensorNodeData(string /*health risk label*/);
+            
     private:
         uint32_t m_id;
         int32_t m_clock;
