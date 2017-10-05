@@ -53,9 +53,9 @@ namespace openbasn {
                     double getStddev() const;
                     
                     double getData();
-            
+
                 private:
-                    uint32_t m_sensorType;
+                    uint32_t m_type;
                     float m_samplerate;
                     bool m_active;
 
