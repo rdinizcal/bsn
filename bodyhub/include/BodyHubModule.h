@@ -36,6 +36,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         void processRequest(Request /*obj*/);
         void processSensorNodeData(SensorNodeData /*obj*/, TimeStamp /*sentTS*/, TimeStamp /*receivedTS*/);
         void requestSensorNodeData(string /*health risk label*/);
+        double evaluateSensorDataRisk(uint32_t /*type*/, double /*data*/);
             
     private:
         uint32_t m_id;

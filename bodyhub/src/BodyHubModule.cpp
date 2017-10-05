@@ -72,63 +72,29 @@ void BodyHubModule::processRequest(Request request){
 }
 
 void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeStamp sentTS,TimeStamp receivedTS){
-    double health_risk_value = 0;
+    double health_risk = 0;
     map<int32_t,double> sensor_data_map = sensornodedata.getSensorDataMap();
 
+    //Evaluate Data
     map<int32_t,double>::iterator it = sensor_data_map.begin();
     for(pair<int32_t,double> element : sensor_data_map){
-        int32_t sensor_type = element.first;
-        double sensor_data = element.second;
+        double sensor_risk = BodyHubModule::evaluateSensorDataRisk(element.first, element.second);
 
-        if(sensor_type == Sensor::THERMOMETER){
-
-            if(37 >= sensor_data && sensor_data > 35){
-                health_risk_value += 0.1; 
-            } else if ( (35 >= sensor_data && sensor_data > 30) || (38 >= sensor_data && sensor_data > 37) ) {
-                health_risk_value += 1;
-            } else if ( (50 >= sensor_data && sensor_data > 38) || (30 >= sensor_data && sensor_data > 0) ) {
-                health_risk_value += 5;
-            } else {
-                health_risk_value = 0; 
-            }
-
-        } else if (sensor_type == Sensor::OXIMETER) {
-
-            if( 100 >= sensor_data && sensor_data > 94) {
-                health_risk_value += 0.1;
-            } else if ( 94 >= sensor_data && sensor_data > 90) {
-                health_risk_value += 1;
-            } else if ( 90 >= sensor_data && sensor_data > 0) {
-                health_risk_value += 5;
-            } else {
-                health_risk_value = 0;
-            }
-
-        } else if (sensor_type == Sensor::ECG) {
-            
-            if ( (150 >= sensor_data && sensor_data > 120) || (80 >= sensor_data && sensor_data > 0) ) {
-                health_risk_value += 5;
-            } else if (120 >= sensor_data && sensor_data > 80) {
-                health_risk_value += 0.1;
-            } else {
-                health_risk_value = 0;
-            }
-                
-        } else {
-            cerr << "Could not recognize sensor." << endl;
-        }
+        health_risk += (sensor_risk > 0)?sensor_risk:0;
     }
 
-    if(0 < health_risk_value && health_risk_value < 1) {
+    //Categorize Data
+    if(0 < health_risk && health_risk < 1) {
         m_sensornode[sensornodedata.getSensorNodeID()] = "low";
-    } else if (1 <= health_risk_value && health_risk_value < 5) {
+    } else if (1 <= health_risk && health_risk < 5) {
         m_sensornode[sensornodedata.getSensorNodeID()] = "moderate";
-    } else if (5 <= health_risk_value && health_risk_value < 20) {
+    } else if (5 <= health_risk && health_risk < 20) {
         m_sensornode[sensornodedata.getSensorNodeID()] = "high";
     } else {
         m_sensornode[sensornodedata.getSensorNodeID()] = "unknown";
     }
 
+    //Persist Data
     //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., Health Risk, Sent at, Received at, Processed at";
     m_datalog << sensornodedata.getSensorNodeID() << ",";
     m_datalog << sensor_data_map.size() << ",";
@@ -157,6 +123,50 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
     CLOG1 << " processed at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
     CLOG1 << " clock tick: " << m_clock << endl;
     CLOG1 << "-------------------------------------------------" << endl;
+}
+
+double BodyHubModule::evaluateSensorDataRisk(uint32_t type, double data) {
+    
+    switch(type){
+
+        case Sensor::THERMOMETER:
+            if(37 >= data && data > 35){
+                return 0.1; 
+            } else if ( (35 >= data && data > 30) || (38 >= data && data > 37) ) {
+                return 1;
+            } else if ( (50 >= data && data > 38) || (30 >= data && data > 0) ) {
+                return 5;
+            } else {
+                return 0; 
+            }
+            break;
+
+        case Sensor::ECG:
+            if ( (150 >= data && data > 120) || (80 >= data && data > 0) ) {
+                return 5;
+            } else if (120 >= data && data > 80) {
+                return 0.1;
+            } else {
+                return 0;
+            }
+            break;
+
+        case Sensor::OXIMETER:
+            if( 100 >= data && data > 94) {
+                return 0.1;
+            } else if ( 94 >= data && data > 90) {
+                return 1;
+            } else if ( 90 >= data && data > 0) {
+                return 5;
+            } else {
+                return 0;
+            }
+            break;
+
+        default:
+            return -1;
+            break;
+    }
 }
 
 void BodyHubModule::requestSensorNodeData(string health_risk_label) {
