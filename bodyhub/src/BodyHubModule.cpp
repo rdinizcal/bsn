@@ -200,10 +200,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                 BodyHubModule::requestSensorNodeData("moderate");
             }
 
-            if(m_clock%1 == 0) {
-                BodyHubModule::requestSensorNodeData("high");
-                BodyHubModule::requestSensorNodeData("unknown");
-            }
+            BodyHubModule::requestSensorNodeData("high");
+            BodyHubModule::requestSensorNodeData("unknown");
 
                 
         }
