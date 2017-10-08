@@ -1,12 +1,19 @@
 # OpenBASN Global configuration file
 
-### Sensor configuration
-
+### Global configs
 global.numberOfSensors = 3
 global.sensortype.1 = thermometer
 global.sensortype.2 = ecg
 global.sensortype.3 = oximeter
 # *Obs: Do not chance sensortype order!
+
+### Supercomponent execution pattern configurations
+
+odsupercomponent.pulsetimeack.timeout = 5000 # In milliseconds.
+odsupercomponent.pulsetimeack.yield = 5000 # In milliseconds.
+#odsupercomponent.pulsetimeack.exclude = bodyhub
+
+### SensorNodeModule configuration
 
 ## Thermometer configuration patterns
 ## 50 >= "high" > 38 >= "moderate" > 37 >= "normal" > 35 >= "moderate" > 30 >= "high" > 0

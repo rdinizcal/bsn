@@ -1,6 +1,7 @@
 #include "SensorNodeModule.h"
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
+#include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
 
 #include "openbasn/data/SensorNodeData.h"
 #include "openbasn/message/Request.h"
@@ -10,9 +11,11 @@
 
 using namespace std;
 
+
 using namespace odcore::base;
-using namespace odcore::data;
 using namespace odcore::base::module;
+using namespace odcore::data;
+using namespace odcore::data::dmcp;
 
 using namespace openbasn::data;
 using namespace openbasn::message;
@@ -22,17 +25,22 @@ using namespace openbasn::model::sensor;
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
     m_id(getIdentifier()),
+    m_isRegistered(false),
+    m_clock(0),
+    m_buffer(),
     m_sensor_vector(),
-    m_number_of_sensors()
+    m_number_of_sensors(),
+    m_risk("low")
     {}
 
 SensorNodeModule::~SensorNodeModule() {}
 
 void SensorNodeModule::setUp() {
-    //Send REGISTER request
-    Request req(Request::REGISTER, m_id);
-    Container c_req(req);
-    getConference().send(c_req);
+    //setup module buffer
+    addDataStoreFor(871, m_buffer);
+    addDataStoreFor(872, m_buffer);
+
+    SensorNodeModule::getSensorConfiguration();
 }
 
 void SensorNodeModule::tearDown() {
@@ -42,18 +50,7 @@ void SensorNodeModule::tearDown() {
     getConference().send(c_req);
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
-    
-    FIFOQueue ack_buffer;
-    addDataStoreFor(4, ack_buffer);
-
-    Container c_ack = ack_buffer.leave();
-    Acknowledge ack = c_ack.getData<Acknowledge>();
-    
-    if(ack.getDestinationID() != m_id || ack.getType() != Acknowledge::OK){
-        return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
-    }
-
+void SensorNodeModule::getSensorConfiguration(){
     m_number_of_sensors = getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors");
     
     for(uint32_t i = 0; i < m_number_of_sensors; i++) {
@@ -72,31 +69,81 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
             m_sensor_vector.push_back(Sensor(sensor_id, samplerate, active, mean, stddev));
         }
     }
+}
 
-    FIFOQueue fifo;
-    addDataStoreFor(3, fifo);
-    addDataStoreFor(8, fifo);
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        Container c_rec = fifo.leave();
+         m_clock++;
         
-        if(c_rec.getDataType() == Request::ID()){
-            Request req = c_rec.getData<Request>();
+        if(!m_isRegistered){
 
-            if(req.getType() == Request::SENSOR_DATA && req.getDestinationID() == m_id){
-    
+            //Send REGISTER request
+            if(m_clock==1){
+                Request req(Request::REGISTER, m_id);
+                Container c_req(req);
+                getConference().send(c_req);
+                CLOG1 << req.toString() << " sent" << endl;
+            }
+
+            while(!m_buffer.isEmpty()){
+                Container c_ack = m_buffer.leave();
+
+                if(c_ack.getDataType() == Acknowledge::ID()){
+                    Acknowledge ack = c_ack.getData<Acknowledge>();
+                    
+                    if(ack.getDestinationID() == m_id && ack.getType() == Acknowledge::OK){
+                        m_isRegistered = true;
+                        m_clock = 0;
+                        CLOG1 << "SensorNode" << m_id << " successfully registered." << endl;
+                    }
+                }
+            }
+
+            if(m_clock == 15){
+                return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
+            }
+
+        } else {
+            if( (m_risk.compare("low") == 0 && m_clock == 15) 
+                || (m_risk.compare("moderate") == 0 && m_clock == 5) 
+                || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0) ){
                 SensorNodeData snData(m_id);
-
+    
                 for(uint32_t i = 0; i < m_sensor_vector.size(); i++) {
                     snData.addSensorData(m_sensor_vector[i].getSensorType(), m_sensor_vector[i].getData());
                 }
-    
+            
                 Container c_send(snData);
                 getConference().send(c_send);
                 cout << snData.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
+    
+                m_clock = 0;
+            } 
+            
+            while(!m_buffer.isEmpty()){
+                Container c = m_buffer.leave();
+    
+                if(c.getDataType() == Request::ID()){
+                    Request req = c.getData<Request>();
+    
+                    CLOG1 << req.toString(); 
+    
+                    if(req.getDestinationID() == m_id){ 
+                        if(req.getType() == Request::SENSOR_DATA){
+                            m_risk = req.getContent();
+                        } else if (req.getType() == Request::UNREGISTER) {
+                            return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;  
+                        }
+                    }
+                }
             }
-        }
+        } 
+
+        PulseAckMessage pulseackmessage;
+        Container ccc(pulseackmessage);
+        getConference().send(ccc);
     }
     
-return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
+    return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }

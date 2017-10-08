@@ -3,6 +3,8 @@
 #include "openbasn/model/sensor/Sensor.h"
 #include "openbasn/message/Acknowledge.h"
 
+#include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
+
 #include <iostream>
 
 #include <map>
@@ -15,6 +17,7 @@ using namespace std;
 using namespace odcore::base;
 using namespace odcore::data;
 using namespace odcore::base::module;
+using namespace odcore::data::dmcp;
 
 using namespace openbasn::data;
 using namespace openbasn::message;
@@ -23,8 +26,9 @@ using namespace openbasn::model::sensor;
 BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "bodyhub"),
     m_id(getIdentifier()),
-    m_clock(0),
     m_buffer(),
+    m_patient_healthrisk("low"),
+    m_healthrisk_counter(0),
     m_sensornode(),
     m_datalog()
     {}
@@ -33,22 +37,36 @@ BodyHubModule::~BodyHubModule() {}
 
 void BodyHubModule::setUp() {
     //setup buffer
-    addDataStoreFor(m_buffer);
+    addDataStoreFor(871, m_buffer);
+    addDataStoreFor(872, m_buffer);
+    addDataStoreFor(873, m_buffer);
 
     //setup m_datalog
     m_datalog.open("bodyhub"+to_string(m_id)+".csv");
     
-    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., Health Risk, Sent at, Received at, Processed at";
+    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., , SensorNode Category, Patient Health Risk, Sent at, Received at, Processed at";
     m_datalog << "SensorNodeID,Active Sensors,";
     for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++) {
         uint32_t sensor_id = i+1;
         m_datalog << getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id)) << ",";
     }
-    m_datalog << "Health Risk,Sent at,Received at,Processed at\n";
+    m_datalog << "SensorNode Category,Health Risk,Sent at,Received at,Processed at\n";
 }
 
 void BodyHubModule::tearDown() {
     m_datalog.close();
+
+    map<uint32_t,string>::iterator it = m_sensornode.begin();
+    for(pair<uint32_t,string> element : m_sensornode){
+
+        Request req(Request::UNREGISTER, m_id, element.first);
+        Container c_req(req);
+        getConference().send(c_req);
+
+        CLOG1 << req.toString() << endl;
+        m_sensornode.erase(element.first); 
+        CLOG1 << "SensorNode" << element.first << " successfully unregistered." << endl;
+    }
 }
 
 void BodyHubModule::processRequest(Request request){
@@ -73,6 +91,7 @@ void BodyHubModule::processRequest(Request request){
 
 void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeStamp sentTS,TimeStamp receivedTS){
     double health_risk = 0;
+    string health_risk_label;
     map<int32_t,double> sensor_data_map = sensornodedata.getSensorDataMap();
 
     //Evaluate Data
@@ -80,22 +99,40 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
     for(pair<int32_t,double> element : sensor_data_map){
         double sensor_risk = BodyHubModule::evaluateSensorDataRisk(element.first, element.second);
 
-        health_risk += (sensor_risk > 0)?sensor_risk:0;
+        health_risk += (sensor_risk>0)?sensor_risk:0;
     }
 
     //Categorize Data
     if(0 < health_risk && health_risk < 1) {
-        m_sensornode[sensornodedata.getSensorNodeID()] = "low";
+        health_risk_label = "low";
     } else if (1 <= health_risk && health_risk < 5) {
-        m_sensornode[sensornodedata.getSensorNodeID()] = "moderate";
+        health_risk_label = "moderate";
     } else if (5 <= health_risk && health_risk < 20) {
-        m_sensornode[sensornodedata.getSensorNodeID()] = "high";
+        health_risk_label = "high";
     } else {
-        m_sensornode[sensornodedata.getSensorNodeID()] = "unknown";
+        health_risk_label = "unknown";
+    }
+
+
+    //Take action if sensornode data risk has changed
+    if(m_sensornode[sensornodedata.getSensorNodeID()].compare(health_risk_label) != 0){
+        m_sensornode[sensornodedata.getSensorNodeID()] = health_risk_label;
+        m_healthrisk_counter = 0;
+
+        Request request(Request::SENSOR_DATA, m_id, sensornodedata.getSensorNodeID(), health_risk_label);
+        Container c_req(request);
+        getConference().send(c_req);
+        CLOG1 << request.toString();
+    } else {
+        m_healthrisk_counter++;
+    }
+
+    if(m_healthrisk_counter == 2){
+        m_patient_healthrisk = health_risk_label;
     }
 
     //Persist Data
-    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., Health Risk, Sent at, Received at, Processed at";
+    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., SensorNode Category, Patient Health Risk, Sent at, Received at, Processed at";
     m_datalog << sensornodedata.getSensorNodeID() << ",";
     m_datalog << sensor_data_map.size() << ",";
 
@@ -109,7 +146,8 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
         }
     }
 
-    m_datalog << m_sensornode[sensornodedata.getSensorNodeID()] << ",";
+    m_datalog << health_risk_label << ",";
+    m_datalog << m_patient_healthrisk << ",";
     m_datalog << sentTS.getYYYYMMDD_HHMMSS() << ",";
     m_datalog << receivedTS.getYYYYMMDD_HHMMSS() << ",";
     m_datalog << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
@@ -121,7 +159,6 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
     CLOG1 << " sent at " << sentTS.getYYYYMMDD_HHMMSS() << endl;
     CLOG1 << " received at " << receivedTS.getYYYYMMDD_HHMMSS() << endl;
     CLOG1 << " processed at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
-    CLOG1 << " clock tick: " << m_clock << endl;
     CLOG1 << "-------------------------------------------------" << endl;
 }
 
@@ -169,42 +206,22 @@ double BodyHubModule::evaluateSensorDataRisk(uint32_t type, double data) {
     }
 }
 
-void BodyHubModule::requestSensorNodeData(string health_risk_label) {
-    map<uint32_t, string>::iterator it = m_sensornode.begin();
-    for (pair<uint32_t, string> element : m_sensornode) {
-        if( element.second.compare(health_risk_label) == 0) {
-            Request request(Request::SENSOR_DATA, m_id, element.first);
-            Container c_req(request);
-            getConference().send(c_req);
-        }
-    }
-}
-
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        Container c = m_buffer.leave();
+        while(!m_buffer.isEmpty()){
+            Container c = m_buffer.leave();
 
-        if(c.getDataType() == Request::ID()) {
-            BodyHubModule::processRequest(c.getData<Request>());
-        } else if (c.getDataType() == SensorNodeData::ID()) {
-            BodyHubModule::processSensorNodeData(c.getData<SensorNodeData>(),c.getSentTimeStamp(),c.getReceivedTimeStamp());
-        } else {
-            m_clock++;
-
-            if(m_clock%15 == 0) {
-                BodyHubModule::requestSensorNodeData("low");
-            } 
-
-            if(m_clock%5 == 0) { 
-                BodyHubModule::requestSensorNodeData("moderate");
+            if(c.getDataType() == Request::ID()) {
+                BodyHubModule::processRequest(c.getData<Request>());
+            } else if (c.getDataType() == SensorNodeData::ID()) {
+                BodyHubModule::processSensorNodeData(c.getData<SensorNodeData>(),c.getSentTimeStamp(),c.getReceivedTimeStamp());
             }
+        } 
 
-            BodyHubModule::requestSensorNodeData("high");
-            BodyHubModule::requestSensorNodeData("unknown");
-
-                
-        }
+        PulseAckMessage pulseackmessage;
+        Container ccc(pulseackmessage);
+        getConference().send(ccc);
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

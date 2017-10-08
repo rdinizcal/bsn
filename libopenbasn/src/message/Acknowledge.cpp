@@ -43,10 +43,10 @@ namespace openbasn {
         }
 
         int32_t Acknowledge::ID() {
-            return 4;
+            return 871;
         }
         int32_t Acknowledge::getID() const {
-            return 4;
+            return 871;
         }
         const string Acknowledge::getShortName() const {
             return "Acknowledge";

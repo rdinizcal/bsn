@@ -36,7 +36,7 @@ namespace openbasn {
         }
         
         int32_t SensorNodeData::ID() {
-            return 7;
+            return 873;
         }
         const string SensorNodeData::ShortName() {
             return "SensorNodeData";

@@ -14,6 +14,8 @@ namespace openbasn {
             public:
                 Request(const int32_t &/*type*/, const uint32_t &/*source_id*/);
                 Request(const int32_t &/*type*/, const uint32_t &/*source_id*/, const uint32_t &/*destination_id*/);
+                Request(const int32_t &/*type*/, const uint32_t &/*source_id*/, const string &/*content*/);
+                Request(const int32_t &/*type*/, const uint32_t &/*source_id*/, const uint32_t &/*destination_id*/, const string &/*content*/);
 
                 Request();
                 virtual ~Request();
@@ -49,10 +51,15 @@ namespace openbasn {
                 void setDestinationID(const uint32_t &/*m_destination_id*/);
                 uint32_t getDestinationID() const;
 
+                void setContent(const uint32_t &/*m_content*/);
+                string getContent() const;
+
             private:
                 int32_t m_type;
                 uint32_t m_source_id;
                 uint32_t m_destination_id;
+
+                string m_content;
         };
     }
 }
