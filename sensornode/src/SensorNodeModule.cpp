@@ -102,6 +102,24 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
             }
 
         } else {
+
+            while(!m_buffer.isEmpty()){
+                Container c = m_buffer.leave();
+
+                if(c.getDataType() == Request::ID()){
+                    Request req = c.getData<Request>();
+                
+                    if(req.getDestinationID() == m_id){ 
+
+                        if(req.getType() == Request::SENSOR_DATA){
+                            m_risk = req.getContent();
+                        } 
+                        
+                    }
+                }
+
+            }
+
             if( (m_risk.compare("low") == 0 && m_clock_tick == 15) 
                 || (m_risk.compare("moderate") == 0 && m_clock_tick == 5) 
                 || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0) ){
@@ -118,23 +136,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
                 m_clock_tick = 0;
             } 
             
-            while(!m_buffer.isEmpty()){
-                Container c = m_buffer.leave();
-    
-                if(c.getDataType() == Request::ID()){
-                    Request req = c.getData<Request>();
-    
-                    CLOG1 << req.toString(); 
-    
-                    if(req.getDestinationID() == m_id){ 
-                        if(req.getType() == Request::SENSOR_DATA){
-                            m_risk = req.getContent();
-                        } else if (req.getType() == Request::UNREGISTER) {
-                            return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;  
-                        }
-                    }
-                }
-            }
         } 
 
         PulseAckMessage pulseackmessage;
