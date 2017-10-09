@@ -78,30 +78,27 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
         
         if(!m_isRegistered){
 
-            //Send REGISTER request
-            if(m_clock_tick==1){
+            if(m_clock_tick == 15){
+                return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
+            } else if (m_clock_tick == 1) {
                 Request req(Request::REGISTER, m_id);
                 Container c_req(req);
                 getConference().send(c_req);
                 CLOG1 << req.toString() << " sent" << endl;
-            }
-
-            while(!m_buffer.isEmpty()){
-                Container c_ack = m_buffer.leave();
-
-                if(c_ack.getDataType() == Acknowledge::ID()){
-                    Acknowledge ack = c_ack.getData<Acknowledge>();
-                    
-                    if(ack.getDestinationID() == m_id && ack.getType() == Acknowledge::OK){
-                        m_isRegistered = true;
-                        m_clock_tick = 0;
-                        CLOG1 << "SensorNode" << m_id << " successfully registered." << endl;
+            } else {
+                while(!m_buffer.isEmpty()){
+                    Container c_ack = m_buffer.leave();
+    
+                    if(c_ack.getDataType() == Acknowledge::ID()){
+                        Acknowledge ack = c_ack.getData<Acknowledge>();
+                        
+                        if(ack.getDestinationID() == m_id && ack.getType() == Acknowledge::OK){
+                            m_isRegistered = true;
+                            m_clock_tick = 0;
+                            CLOG1 << "SensorNode" << m_id << " successfully registered." << endl;
+                        }
                     }
                 }
-            }
-
-            if(m_clock_tick == 15){
-                return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
             }
 
         } else {
