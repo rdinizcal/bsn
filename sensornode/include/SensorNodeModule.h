@@ -29,10 +29,11 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         virtual void tearDown();
 
         void getSensorConfiguration();
+        void SensorNodeModule::sendSensorNodeData(SensorNodeData /*sensornodedata*/)
         void sendRequest(Request /*request*/);
         void processRequest(Request /*request*/);
         void processAcknowledge(Acknowledge /*acknowledge*/);
-        
+
     private:
         uint32_t m_id;
         bool m_isRegistered;
