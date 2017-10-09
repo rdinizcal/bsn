@@ -33,7 +33,7 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
     private:
         uint32_t m_id;
         bool m_isRegistered;
-        int32_t m_clock;
+        int32_t m_clock_tick;
         FIFOQueue m_buffer;
 
         vector<Sensor> m_sensor_vector;

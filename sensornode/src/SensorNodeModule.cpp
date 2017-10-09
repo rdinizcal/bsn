@@ -26,7 +26,7 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
     m_id(getIdentifier()),
     m_isRegistered(false),
-    m_clock(0),
+    m_clock_tick(0),
     m_buffer(),
     m_sensor_vector(),
     m_number_of_sensors(),
@@ -74,12 +74,12 @@ void SensorNodeModule::getSensorConfiguration(){
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-         m_clock++;
+         m_clock_tick++;
         
         if(!m_isRegistered){
 
             //Send REGISTER request
-            if(m_clock==1){
+            if(m_clock_tick==1){
                 Request req(Request::REGISTER, m_id);
                 Container c_req(req);
                 getConference().send(c_req);
@@ -94,19 +94,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
                     
                     if(ack.getDestinationID() == m_id && ack.getType() == Acknowledge::OK){
                         m_isRegistered = true;
-                        m_clock = 0;
+                        m_clock_tick = 0;
                         CLOG1 << "SensorNode" << m_id << " successfully registered." << endl;
                     }
                 }
             }
 
-            if(m_clock == 15){
+            if(m_clock_tick == 15){
                 return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
             }
 
         } else {
-            if( (m_risk.compare("low") == 0 && m_clock == 15) 
-                || (m_risk.compare("moderate") == 0 && m_clock == 5) 
+            if( (m_risk.compare("low") == 0 && m_clock_tick == 15) 
+                || (m_risk.compare("moderate") == 0 && m_clock_tick == 5) 
                 || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0) ){
                 SensorNodeData snData(m_id);
     
@@ -118,7 +118,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
                 getConference().send(c_send);
                 cout << snData.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
     
-                m_clock = 0;
+                m_clock_tick = 0;
             } 
             
             while(!m_buffer.isEmpty()){
