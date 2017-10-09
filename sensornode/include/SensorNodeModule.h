@@ -30,8 +30,9 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
 
         void getSensorConfiguration();
         void sendRequest(Request /*request*/);
+        void processRequest(Request /*request*/);
         void processAcknowledge(Acknowledge /*acknowledge*/);
-
+        
     private:
         uint32_t m_id;
         bool m_isRegistered;
