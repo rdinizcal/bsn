@@ -71,6 +71,20 @@ void SensorNodeModule::getSensorConfiguration(){
     }
 }
 
+void SensorNodeModule::sendRequest(Request request){
+    Container c(request);
+    getConference().send(c);
+    CLOG1 << req.toString() << " sent" << endl;
+}
+
+void SensorNodeModule::processAcknowledge(Acknowledge acknowledge){
+    if(acknowledge.getDestinationID() == m_id && acknowledge.getType() == Acknowledge::OK){
+        m_isRegistered = true;
+        m_clock_tick = 0;
+        CLOG1 << "SensorNode" << m_id << " successfully registered." << endl;
+    }
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -81,22 +95,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
             if(m_clock_tick == 15){
                 return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
             } else if (m_clock_tick == 1) {
-                Request req(Request::REGISTER, m_id);
-                Container c_req(req);
-                getConference().send(c_req);
-                CLOG1 << req.toString() << " sent" << endl;
+                Request request(Request::REGISTER, m_id);
+                SensorNodeModule::sendRequest(request)
             } else {
                 while(!m_buffer.isEmpty()){
-                    Container c_ack = m_buffer.leave();
+                    Container c = m_buffer.leave();
     
-                    if(c_ack.getDataType() == Acknowledge::ID()){
-                        Acknowledge ack = c_ack.getData<Acknowledge>();
-                        
-                        if(ack.getDestinationID() == m_id && ack.getType() == Acknowledge::OK){
-                            m_isRegistered = true;
-                            m_clock_tick = 0;
-                            CLOG1 << "SensorNode" << m_id << " successfully registered." << endl;
-                        }
+                    if(c.getDataType() == Acknowledge::ID()){
+                        SensorNodeModule::processAcknowledge(c.getData<Acknowledge>());
                     }
                 }
             }
@@ -114,7 +120,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
                         if(req.getType() == Request::SENSOR_DATA){
                             m_risk = req.getContent();
                         } 
-                        
+
                     }
                 }
 

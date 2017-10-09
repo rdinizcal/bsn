@@ -29,6 +29,8 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         virtual void tearDown();
 
         void getSensorConfiguration();
+        void sendRequest(Request /*request*/);
+        void processAcknowledge(Acknowledge /*acknowledge*/);
 
     private:
         uint32_t m_id;
