@@ -3,10 +3,6 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
 
-#include "openbasn/data/SensorNodeData.h"
-#include "openbasn/message/Request.h"
-#include "openbasn/message/Acknowledge.h"
-
 #include <iostream>
 
 using namespace std;
@@ -84,7 +80,6 @@ void SensorNodeModule::sendSensorNodeData(SensorNodeData sensornodedata){
 void SensorNodeModule::sendRequest(Request request){
     Container c(request);
     getConference().send(c);
-    CLOG1 << req.toString() << " sent" << endl;
 }
 
 void SensorNodeModule::processRequest(Request request){
@@ -114,7 +109,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
                 return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
             } else if (m_clock_tick == 1) {
                 Request request(Request::REGISTER, m_id);
-                SensorNodeModule::sendRequest(request)
+                SensorNodeModule::sendRequest(request);
             } else {
                 while(!m_buffer.isEmpty()){
                     Container c = m_buffer.leave();
@@ -139,8 +134,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
             if( (m_risk.compare("low") == 0 && m_clock_tick == 15) 
                 || (m_risk.compare("moderate") == 0 && m_clock_tick == 5) 
                 || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0) ){
-
-                SensorNodeModule::sendSensorNodeData(SensorNodeData sensornodedata(m_id));
+                
+                SensorNodeModule::sendSensorNodeData(SensorNodeData(m_id));
                 m_clock_tick = 0;
             } 
             
