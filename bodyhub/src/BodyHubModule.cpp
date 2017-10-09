@@ -63,7 +63,6 @@ void BodyHubModule::tearDown() {
         Container c_req(req);
         getConference().send(c_req);
 
-        CLOG1 << req.toString() << endl;
         m_sensornode.erase(element.first); 
         CLOG1 << "SensorNode" << element.first << " successfully unregistered." << endl;
     }
@@ -122,7 +121,6 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
         Request request(Request::SENSOR_DATA, m_id, sensornodedata.getSensorNodeID(), health_risk_label);
         Container c_req(request);
         getConference().send(c_req);
-        CLOG1 << request.toString();
     } else {
         m_healthrisk_counter++;
     }
