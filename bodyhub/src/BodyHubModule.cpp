@@ -28,9 +28,9 @@ BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     m_id(getIdentifier()),
     m_buffer(),
     m_health_risk("low"),
-    m_healthrisk_counter(0),
     m_sensornode(),
-    m_datalog()
+    m_sensornodedata_log(),
+    m_status_log()
     {}
 
 BodyHubModule::~BodyHubModule() {}
@@ -41,20 +41,25 @@ void BodyHubModule::setUp() {
     addDataStoreFor(872, m_buffer);
     addDataStoreFor(873, m_buffer);
 
-    //setup m_datalog
-    m_datalog.open("bodyhub"+to_string(m_id)+".csv");
+    //setup m_sensornodedata_log
+    m_sensornodedata_log.open("sensornodedata_log.csv");
     
-    //"SensorNode, data, data, ..., Sensor risk category, Health risk, Sent at, Received at, Processed at"
-    m_datalog << "SensorNode,";
+    //"SensorNode#ID, data, data, ..., Sensor risk category, Sent at, Received at, Processed at"
+    m_sensornodedata_log << "SensorNode#ID,";
     for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.sensortypes"); i++) {
         uint32_t sensor_id = i+1;
-        m_datalog << getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id)) << ",";
+        m_sensornodedata_log << getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id)) << ",";
     }
-    m_datalog << "Sensor risk category,Health risk,Sent at,Received at,Processed at\n";
+    m_sensornodedata_log << "Sensor risk category,Sent at,Received at,Processed at\n";
+
+    m_status_log.open("status_log.csv");
+
+    //"Active sensors,low risk,moderate risk,high risk,health risk,timestamp"
+    m_status_log << "Active sensors,low risk,moderate risk,high risk,health risk,timestamp\n";
 }
 
 void BodyHubModule::tearDown() {
-    m_datalog.close();
+    m_sensornodedata_log.close();
 
     map<uint32_t,string>::iterator it = m_sensornode.begin();
     for(pair<uint32_t,string> element : m_sensornode){
@@ -87,103 +92,63 @@ void BodyHubModule::processRequest(Request request){
     }
 }
 
-void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeStamp sentTS,TimeStamp receivedTS){
-    double sensor_risk;
-    string sensor_risk_category;
+void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata){
 
-    //Evaluate Data
-    sensor_risk = BodyHubModule::evaluateSensorDataRisk(sensornodedata.getSensorType(), sensornodedata.getSensorData());
-
-    //Categorize Data
-    if(0 < sensor_risk && sensor_risk < 1) {
-        sensor_risk_category = "low";
-    } else if (1 <= sensor_risk && sensor_risk < 5) {
-        sensor_risk_category = "moderate";
-    } else if (5 <= sensor_risk && sensor_risk < 20) {
-        sensor_risk_category = "high";
-    } else {
-        sensor_risk_category = "unknown";
-    }
+    //Evaluate and categorize data
+    string sensor_risk_category = BodyHubModule::categorizeSensorNodeData(sensornodedata);
     
-    //Persist Data
-    //"SensorNode, data, data, ..., Sensor risk category, Health risk, Sent at, Received at, Processed at"
-    m_datalog << sensornodedata.getSensorNodeID() << ",";
-    for(int32_t i = 0; i < getKeyValueConfiguration().getValue<int32_t>("global.sensortypes"); i++){
-        int32_t sensor_id = i+1;
-        if(sensornodedata.getSensorType() == sensor_id){
-            m_datalog << sensornodedata.getSensorData() << ",";
-        } else {
-            m_datalog << "-,";
-        }
-    }
-    m_datalog << sensor_risk_category << ",";
-    m_datalog << m_health_risk << ",";
-    m_datalog << sentTS.getYYYYMMDD_HHMMSS() << ",";
-    m_datalog << receivedTS.getYYYYMMDD_HHMMSS() << ",";
-    m_datalog << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
-
-    //Take action if sensornode data risk has changed
+    //Take action if data has changed
     if(m_sensornode[sensornodedata.getSensorNodeID()].compare(sensor_risk_category) != 0){
         m_sensornode[sensornodedata.getSensorNodeID()] = sensor_risk_category;
-        m_healthrisk_counter = 0;
 
         Request request(Request::SENSOR_DATA, m_id, sensornodedata.getSensorNodeID(), sensor_risk_category);
         Container c_req(request);
         getConference().send(c_req);
-    } else {
-        m_healthrisk_counter++;
     }
-
-    //Evaluate health risk
-    if(m_healthrisk_counter == 2){
-        m_health_risk = sensor_risk_category;
-    }
-
-    //View Data
-    CLOG1 << "-------------------------------------------------" << endl;
-    CLOG1 << " RECEIVED CONTENT " << endl;
-    CLOG1 << " " << sensornodedata.toString() << " risk: " << m_sensornode[sensornodedata.getSensorNodeID()] << endl;
-    CLOG1 << " sent at " << sentTS.getYYYYMMDD_HHMMSS() << endl;
-    CLOG1 << " received at " << receivedTS.getYYYYMMDD_HHMMSS() << endl;
-    CLOG1 << " processed at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
-    CLOG1 << "-------------------------------------------------" << endl;
 }
 
-double BodyHubModule::evaluateSensorDataRisk(uint32_t type, double data) {
+string BodyHubModule::categorizeSensorNodeData(SensorNodeData sensornodedata) {
+    
+    int32_t sensor_risk = BodyHubModule::evaluateSensorDataRisk(sensornodedata.getSensorType(), sensornodedata.getSensorData());
+
+    return (sensor_risk==0)?"low":(sensor_risk==1)?"moderate":(sensor_risk==2)?"high":"unknown";
+}
+
+int32_t BodyHubModule::evaluateSensorDataRisk(uint32_t type, double data) {
     
     switch(type){
 
         case Sensor::THERMOMETER:
             if(37 >= data && data > 35){
-                return 0.1; 
+                return 0; 
             } else if ( (35 >= data && data > 30) || (38 >= data && data > 37) ) {
                 return 1;
             } else if ( (50 >= data && data > 38) || (30 >= data && data > 0) ) {
-                return 5;
+                return 2;
             } else {
-                return 0; 
+                return -1; 
             }
             break;
 
         case Sensor::ECG:
             if ( (150 >= data && data > 120) || (80 >= data && data > 0) ) {
-                return 5;
+                return 2;
             } else if (120 >= data && data > 80) {
-                return 0.1;
-            } else {
                 return 0;
+            } else {
+                return -1;
             }
             break;
 
         case Sensor::OXIMETER:
             if( 100 >= data && data > 94) {
-                return 0.1;
+                return 0;
             } else if ( 94 >= data && data > 90) {
                 return 1;
             } else if ( 90 >= data && data > 0) {
-                return 5;
+                return 2;
             } else {
-                return 0;
+                return -1;
             }
             break;
 
@@ -193,22 +158,90 @@ double BodyHubModule::evaluateSensorDataRisk(uint32_t type, double data) {
     }
 }
 
+void BodyHubModule::persistSensorNodeData(SensorNodeData sensornodedata, TimeStamp sent_timestamp, TimeStamp received_timestamp){
+
+    //"SensorNode#ID, data, data, ..., Sensor risk category, Sent at, Received at, Processed at"
+    m_sensornodedata_log << "SensorNode#" << sensornodedata.getSensorNodeID() << ",";
+    for(int32_t i = 0; i < getKeyValueConfiguration().getValue<int32_t>("global.sensortypes"); i++){
+        int32_t sensor_id = i+1;
+        if(sensornodedata.getSensorType() == sensor_id){
+            m_sensornodedata_log << sensornodedata.getSensorData() << ",";
+        } else {
+            m_sensornodedata_log << "-,";
+        }
+    }
+
+    m_sensornodedata_log << m_sensornode[sensornodedata.getSensorNodeID()] << ",";
+    m_sensornodedata_log << sent_timestamp.getYYYYMMDD_HHMMSS() << ",";
+    m_sensornodedata_log << received_timestamp.getYYYYMMDD_HHMMSS() << ",";
+    m_sensornodedata_log << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
+}
+
+string BodyHubModule::calculateHealthRisk(){
+    double hr = 0;
+    for(uint32_t i = 0; i < m_sensornode.size(); i++){
+        if (m_sensornode[i].compare("low") == 0) {
+            hr += 0.1;
+        } else if (m_sensornode[i].compare("moderate") == 0) {
+            hr += 1;
+        } else if (m_sensornode[i].compare("high") == 0) {
+            hr += 5;
+        } else {
+            hr += 20;
+        }
+    }
+
+    return (hr<=0)?"unknown":(hr<1)?"low":(hr<5)?"moderate":(hr<20)?"high":"unknown";
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         while(!m_buffer.isEmpty()){
-            Container c = m_buffer.leave();
+            Container container = m_buffer.leave();
 
-            if(c.getDataType() == Request::ID()) {
-                BodyHubModule::processRequest(c.getData<Request>());
-            } else if (c.getDataType() == SensorNodeData::ID()) {
-                BodyHubModule::processSensorNodeData(c.getData<SensorNodeData>(),c.getSentTimeStamp(),c.getReceivedTimeStamp());
+            if(container.getDataType() == Request::ID()) {
+                BodyHubModule::processRequest(container.getData<Request>());
+            } else if (container.getDataType() == SensorNodeData::ID()) {
+                SensorNodeData sensornodedata = container.getData<SensorNodeData>(); 
+                BodyHubModule::processSensorNodeData(sensornodedata);
+                BodyHubModule::persistSensorNodeData(sensornodedata, container.getSentTimeStamp(), container.getReceivedTimeStamp());
             }
         } 
 
+        
+        //Evaluate and categorize health risk
+        m_health_risk = BodyHubModule::calculateHealthRisk();
+
+        //Persist Data
+        //"Active sensors,low risk,moderate risk,high risk,health risk,timestamp"
+        m_status_log << m_sensornode.size() << ",";
+
+        uint32_t low=0;
+        uint32_t moderate=0;
+        uint32_t high=0;
+        for(uint32_t i=0;  i < m_sensornode.size(); i++){
+            
+            if(m_sensornode[i].compare("low") == 0){
+                low++;
+            } else if(m_sensornode[i].compare("moderate") == 0) {
+                moderate++;
+            } else if(m_sensornode[i].compare("high") == 0) {
+                high++;
+            } else {
+                unknown++;
+            }
+        }
+
+        m_status_log << low << ",";
+        m_status_log << moderate << ",";
+        m_status_log << high << ",";
+        m_status_log << m_health_risk << ",";
+        m_status_log << TimeStamp().getYYYYMMDD_HHMMSS() << "\n"; 
+
         PulseAckMessage pulseackmessage;
-        Container ccc(pulseackmessage);
-        getConference().send(ccc);
+        Container container(pulseackmessage);
+        getConference().send(container);
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
