@@ -83,8 +83,7 @@ void BodyHubModule::processRequest(Request request){
             m_sensornode.erase(request.getSourceID()); 
             CLOG1 << "SensorNode" << request.getSourceID() << " successfully unregistered." << endl;
             break;
-        case Request::SENSOR_DATA : break;
-        default : cerr << "Could not recognize request"; break;
+        default: break;
     }
 }
 
