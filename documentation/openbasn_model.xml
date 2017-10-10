@@ -1,375 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
-	<declaration>// Place global declarations here.</declaration>
+	<declaration>const int SIZE = 10;    //FIFOQueue size
+
+// Container datatype IDs
+const int c_acknowledge = 871;
+const int c_request = 872;
+const int c_sensornodedata = 873;
+
+typedef struct  {
+    int[0,SIZE] len;
+    int list[SIZE+1];
+} FIFOQueue;
+
+chan pulse, pulse_ack, kill_module;
+
+// Coloca um elemento no final da fila
+void enqueue(FIFOQueue buffer, int element){
+    buffer.list[buffer.len++] = element;
+}
+
+// Remove e retorna um elemento do comeco da fila
+int dequeue(FIFOQueue buffer) {
+    
+    int tail = buffer.list[buffer.len-1];
+    int i = 0;
+    buffer.len-=1;
+    while (i &lt; buffer.len) {
+        buffer.list[i] = buffer.list[i+1];
+        i++;
+    }
+    buffer.list[i] = 0;
+
+    return tail;
+}
+
+int tail(FIFOQueue buffer){
+    return buffer.list[buffer.len-1];
+}
+
+bool isEmpty(FIFOQueue buffer){
+    return (buffer.list[0]==0)?true:false;
+}</declaration>
 	<template>
 		<name x="5" y="5">odsupercomponent</name>
-		<declaration>// Place local declarations here.</declaration>
-		<location id="id0" x="-816" y="-705">
-			<name x="-858" y="-688">sensornode</name>
+		<declaration>clock x;
+int y;</declaration>
+		<location id="id0" x="-969" y="-731">
+			<name x="-1003" y="-714">bodyhub</name>
 		</location>
-		<location id="id1" x="-969" y="-705">
-			<name x="-1003" y="-688">bodyhub</name>
+		<location id="id1" x="-892" y="-969">
+			<name x="-902" y="-1003">wait</name>
 		</location>
-		<location id="id2" x="-816" y="-910">
-			<name x="-826" y="-944">wait</name>
+		<location id="id2" x="-893" y="-833">
+			<name x="-1028" y="-867">odsupercomponent</name>
+			<label kind="invariant" x="-969" y="-850">x&lt;=1</label>
 		</location>
-		<location id="id3" x="-893" y="-833">
-			<name x="-953" y="-875">odsupercomponent</name>
+		<location id="id3" x="-1088" y="-833">
+			<name x="-1098" y="-867">start</name>
 		</location>
-		<location id="id4" x="-1037" y="-833">
-			<name x="-1047" y="-867">start</name>
-		</location>
-		<init ref="id4"/>
+		<init ref="id3"/>
 		<transition>
 			<source ref="id0"/>
-			<target ref="id3"/>
-			<nail x="-816" y="-782"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-952" y="-790">pulse_ack?</label>
+			<label kind="assignment" x="-952" y="-773">y+=1</label>
+			<nail x="-960" y="-748"/>
+			<nail x="-960" y="-790"/>
+			<nail x="-901" y="-790"/>
+			<nail x="-901" y="-816"/>
 		</transition>
 		<transition>
-			<source ref="id3"/>
+			<source ref="id2"/>
 			<target ref="id0"/>
-			<nail x="-875" y="-731"/>
+			<label kind="guard" x="-1020" y="-799">x&gt;=0 
+&amp;&amp; 
+y==0</label>
+			<label kind="synchronisation" x="-969" y="-816">pulse!</label>
+			<nail x="-909" y="-824"/>
+			<nail x="-909" y="-799"/>
+			<nail x="-969" y="-799"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-858" y="-935">y==1</label>
+			<nail x="-858" y="-833"/>
+			<nail x="-858" y="-969"/>
 		</transition>
 		<transition>
 			<source ref="id1"/>
-			<target ref="id3"/>
-			<nail x="-909" y="-731"/>
-		</transition>
-		<transition>
-			<source ref="id3"/>
-			<target ref="id1"/>
-			<nail x="-969" y="-782"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-943" y="-943">x&gt;=1</label>
+			<label kind="assignment" x="-943" y="-926">(x:=0),
+(y:=0)</label>
+			<nail x="-892" y="-926"/>
 		</transition>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id2"/>
-			<nail x="-833" y="-859"/>
-		</transition>
-		<transition>
-			<source ref="id2"/>
-			<target ref="id3"/>
-			<nail x="-876" y="-893"/>
-		</transition>
-		<transition>
-			<source ref="id4"/>
-			<target ref="id3"/>
-		</transition>
-	</template>
-	<template>
-		<name>bodyhubmodule</name>
-		<location id="id5" x="-646" y="-229">
-			<name x="-656" y="-263">end</name>
-		</location>
-		<location id="id6" x="-450" y="-212">
-			<name x="-460" y="-246">teardown</name>
-		</location>
-		<location id="id7" x="-450" y="-314">
-			<name x="-467" y="-348">setup</name>
-		</location>
-		<location id="id8" x="-646" y="-297">
-			<name x="-656" y="-331">start</name>
-		</location>
-		<location id="id9" x="-221" y="-34">
-			<name x="-315" y="-59">bodyhub::processSensorNodeData</name>
-		</location>
-		<location id="id10" x="-263" y="136">
-			<name x="-373" y="153">bodyhub::processRequest</name>
-		</location>
-		<location id="id11" x="-102" y="-195">
-			<name x="-204" y="-187">getConference().send(pulse_ack)</name>
-		</location>
-		<location id="id12" x="-382" y="-8">
-		</location>
-		<location id="id13" x="-306" y="-255">
-			<name x="-366" y="-289">bodyhub::body</name>
-		</location>
-		<init ref="id8"/>
-		<transition>
-			<source ref="id11"/>
-			<target ref="id13"/>
-			<nail x="-187" y="-263"/>
-		</transition>
-		<transition>
-			<source ref="id6"/>
-			<target ref="id5"/>
-			<nail x="-552" y="-195"/>
-		</transition>
-		<transition>
-			<source ref="id13"/>
-			<target ref="id6"/>
-			<nail x="-340" y="-212"/>
-		</transition>
-		<transition>
-			<source ref="id7"/>
-			<target ref="id13"/>
-			<nail x="-340" y="-314"/>
-		</transition>
-		<transition>
-			<source ref="id8"/>
-			<target ref="id7"/>
-			<nail x="-561" y="-331"/>
-		</transition>
-		<transition>
-			<source ref="id12"/>
-			<target ref="id13"/>
-			<label kind="guard" x="-348" y="-119">c.getDataType()==other</label>
-			<nail x="-289" y="-136"/>
-		</transition>
-		<transition>
-			<source ref="id9"/>
-			<target ref="id11"/>
-			<nail x="-167" y="-114"/>
-		</transition>
-		<transition>
-			<source ref="id10"/>
-			<target ref="id11"/>
-			<nail x="-153" y="76"/>
-		</transition>
-		<transition>
-			<source ref="id12"/>
-			<target ref="id9"/>
-			<label kind="guard" x="-425" y="25">c.getDataType()==SensorNodeData::ID()</label>
-			<nail x="-297" y="17"/>
-		</transition>
-		<transition>
-			<source ref="id12"/>
-			<target ref="id10"/>
-			<label kind="guard" x="-515" y="116">c.getDataType()==Request::ID()</label>
-			<nail x="-365" y="85"/>
-		</transition>
-		<transition>
-			<source ref="id13"/>
-			<target ref="id12"/>
-			<label kind="guard" x="-539" y="-149">m_buffer.isEmpty()==false</label>
-			<nail x="-365" y="-110"/>
-		</transition>
-		<transition>
-			<source ref="id13"/>
-			<target ref="id11"/>
-			<label kind="guard" x="-289" y="-229">m_buffer.isEmpty()==true</label>
-			<nail x="-221" y="-195"/>
+			<label kind="assignment" x="-1054" y="-833">x:=0</label>
 		</transition>
 	</template>
 	<template>
 		<name>sensornodemodule</name>
-		<location id="id14" x="-994" y="-450">
-			<name x="-1004" y="-484">end</name>
+	</template>
+	<template>
+		<name>bodyhubmodule</name>
+		<declaration>FIFOQueue m_buffer;
+int container;</declaration>
+		<location id="id4" x="-442" y="-314">
+			<name x="-484" y="-323">wait</name>
 		</location>
-		<location id="id15" x="-858" y="-433">
-			<name x="-868" y="-467">teardown</name>
+		<location id="id5" x="-672" y="-264">
+			<name x="-688" y="-246">end</name>
 		</location>
-		<location id="id16" x="-850" y="-535">
-			<name x="-860" y="-569">setup</name>
+		<location id="id6" x="-544" y="-272">
+			<name x="-570" y="-255">teardown</name>
 		</location>
-		<location id="id17" x="-994" y="-527">
-			<name x="-1004" y="-561">start</name>
+		<location id="id7" x="-552" y="-357">
+			<name x="-578" y="-391">setup</name>
 		</location>
-		<location id="id18" x="-739" y="119">
-			<name x="-841" y="145">sensornode::sendSensorNodeData</name>
+		<location id="id8" x="-672" y="-339">
+			<name x="-688" y="-374">start</name>
 		</location>
-		<location id="id19" x="-458" y="-94">
-			<name x="-535" y="-77">sensornode::processRequest</name>
+		<location id="id9" x="-255" y="-59">
+			<name x="-348" y="-93">processSensorNodeData</name>
 		</location>
-		<location id="id20" x="-849" y="-51">
+		<location id="id10" x="-322" y="119">
+			<name x="-374" y="136">processRequest</name>
 		</location>
-		<location id="id21" x="-586" y="-85">
+		<location id="id11" x="-161" y="-212">
+			<name x="-153" y="-204">notrunning</name>
 		</location>
-		<location id="id22" x="-93" y="-399">
-			<name x="-204" y="-433">sensornode::processAcknowledge</name>
+		<location id="id12" x="-425" y="-42">
 		</location>
-		<location id="id23" x="-59" y="-264">
+		<location id="id13" x="-314" y="-263">
+			<name x="-348" y="-297">running</name>
 		</location>
-		<location id="id24" x="-229" y="-281">
-		</location>
-		<location id="id25" x="-475" y="-408">
-			<name x="-586" y="-434">sensornode::sendRegisterRequest</name>
-		</location>
-		<location id="id26" x="-535" y="-229">
-			<name x="-594" y="-263">return ExitCode</name>
-		</location>
-		<location id="id27" x="-739" y="-170">
-		</location>
-		<location id="id28" x="-467" y="-306">
-		</location>
-		<location id="id29" x="-654" y="-400">
-			<name x="-756" y="-442">m_buffer.isEmpty()==false</name>
-		</location>
-		<location id="id30" x="-688" y="-493">
-			<name x="-765" y="-519">sensornode::body</name>
-		</location>
-		<location id="id31" x="-552" y="-587">
-			<name x="-628" y="-578">getConference().send(pulse_ack)</name>
-		</location>
-		<init ref="id17"/>
+		<init ref="id8"/>
 		<transition>
-			<source ref="id31"/>
-			<target ref="id30"/>
-			<nail x="-671" y="-578"/>
+			<source ref="id4"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-518" y="-272">kill_module?</label>
+			<nail x="-467" y="-272"/>
 		</transition>
 		<transition>
-			<source ref="id26"/>
-			<target ref="id15"/>
-			<nail x="-782" y="-323"/>
+			<source ref="id11"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-348" y="-340">pulse_ack!</label>
+			<nail x="-272" y="-314"/>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id14"/>
-			<nail x="-935" y="-416"/>
+			<source ref="id4"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-408" y="-280">pulse?</label>
+			<nail x="-416" y="-263"/>
 		</transition>
 		<transition>
-			<source ref="id30"/>
-			<target ref="id15"/>
-			<nail x="-756" y="-442"/>
+			<source ref="id7"/>
+			<target ref="id4"/>
+			<nail x="-468" y="-356"/>
 		</transition>
 		<transition>
-			<source ref="id16"/>
-			<target ref="id30"/>
-			<nail x="-782" y="-544"/>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<nail x="-595" y="-238"/>
 		</transition>
 		<transition>
-			<source ref="id17"/>
-			<target ref="id16"/>
-			<nail x="-926" y="-544"/>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<nail x="-612" y="-374"/>
 		</transition>
 		<transition>
-			<source ref="id18"/>
-			<target ref="id31"/>
-			<nail x="-484" y="161"/>
-			<nail x="-25" y="-18"/>
-			<nail x="162" y="-281"/>
-			<nail x="102" y="-527"/>
-			<nail x="-238" y="-621"/>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-561" y="-161">container!=873 
+||  container!=872</label>
+			<nail x="-425" y="-204"/>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id31"/>
-			<label kind="guard" x="-731" y="-42">else</label>
-			<nail x="-560" y="16"/>
-			<nail x="-17" y="-136"/>
-			<nail x="85" y="-272"/>
-			<nail x="43" y="-468"/>
-			<nail x="-254" y="-570"/>
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<nail x="-229" y="-144"/>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id18"/>
-			<label kind="guard" x="-1190" y="25">(m_risk.compare("low") == 0 &amp;&amp; m_clock_tick == 15) 
-                || (m_risk.compare("moderate") == 0 &amp;&amp; m_clock_tick == 5) 
-                || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0)</label>
-			<nail x="-875" y="8"/>
-			<nail x="-859" y="60"/>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<nail x="-212" y="59"/>
 		</transition>
 		<transition>
-			<source ref="id19"/>
-			<target ref="id27"/>
-			<nail x="-484" y="-162"/>
-			<nail x="-594" y="-187"/>
+			<source ref="id12"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-399" y="-25">container==873</label>
+			<nail x="-357" y="-17"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id27"/>
-			<label kind="guard" x="-696" y="-136">c.getDataType()==other</label>
-			<nail x="-637" y="-153"/>
+			<source ref="id12"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-459" y="59">container==872</label>
+			<nail x="-424" y="68"/>
 		</transition>
 		<transition>
-			<source ref="id27"/>
-			<target ref="id20"/>
-			<label kind="guard" x="-943" y="-145">m_buffer.isEmpty()==true</label>
-			<nail x="-807" y="-128"/>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-374" y="-178">!isEmpty(m_buffer)</label>
+			<label kind="assignment" x="-416" y="-161">container:=dequeue(m_buffer)</label>
+			<nail x="-348" y="-110"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id19"/>
-			<label kind="guard" x="-628" y="-43">c.getDataType()==Request::ID()</label>
-			<nail x="-535" y="-43"/>
-		</transition>
-		<transition>
-			<source ref="id27"/>
-			<target ref="id21"/>
-			<label kind="guard" x="-798" y="-102">m_buffer.isEmpty()==false</label>
-			<nail x="-688" y="-102"/>
-		</transition>
-		<transition>
-			<source ref="id22"/>
-			<target ref="id24"/>
-			<nail x="-136" y="-391"/>
-		</transition>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id24"/>
-			<label kind="guard" x="-195" y="-247">c.getDataType()==other</label>
-			<nail x="-170" y="-238"/>
-		</transition>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id22"/>
-			<label kind="guard" x="-127" y="-357">c.getDataType()==Acknowledge::ID()</label>
-			<nail x="0" y="-349"/>
-		</transition>
-		<transition>
-			<source ref="id24"/>
-			<target ref="id23"/>
-			<label kind="guard" x="-255" y="-323">m_buffer.isEmpty()==false</label>
-			<nail x="-136" y="-306"/>
-		</transition>
-		<transition>
-			<source ref="id24"/>
-			<target ref="id30"/>
-			<label kind="guard" x="-357" y="-374">m_buffer.isEmpty()==true</label>
-			<nail x="-365" y="-459"/>
-		</transition>
-		<transition>
-			<source ref="id25"/>
-			<target ref="id30"/>
-			<nail x="-543" y="-442"/>
-		</transition>
-		<transition>
-			<source ref="id28"/>
-			<target ref="id24"/>
-			<label kind="guard" x="-416" y="-315">m_clock_tick==other</label>
-			<nail x="-390" y="-315"/>
-		</transition>
-		<transition>
-			<source ref="id28"/>
-			<target ref="id25"/>
-			<label kind="guard" x="-484" y="-383">m_clock_tick==1</label>
-			<nail x="-441" y="-366"/>
-		</transition>
-		<transition>
-			<source ref="id28"/>
-			<target ref="id26"/>
-			<label kind="guard" x="-459" y="-246">m_clock_tick==15</label>
-			<nail x="-450" y="-247"/>
-		</transition>
-		<transition>
-			<source ref="id29"/>
-			<target ref="id28"/>
-			<label kind="guard" x="-620" y="-357">m_isRegistered==false</label>
-			<nail x="-518" y="-374"/>
-		</transition>
-		<transition>
-			<source ref="id29"/>
-			<target ref="id27"/>
-			<label kind="guard" x="-798" y="-298">m_isRegistered==true</label>
-			<nail x="-696" y="-349"/>
-		</transition>
-		<transition>
-			<source ref="id30"/>
-			<target ref="id29"/>
-			<nail x="-671" y="-442"/>
-		</transition>
-		<transition>
-			<source ref="id30"/>
-			<target ref="id31"/>
-			<label kind="guard" x="-654" y="-544">m_buffer.isEmpty()==true</label>
-			<nail x="-620" y="-536"/>
+			<source ref="id13"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-280" y="-238">isEmpty(m_buffer)</label>
+			<nail x="-280" y="-212"/>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
-Process = Template();
+//Process = Template();
+
 // List one or more processes to be composed into a system.
-system Process;
+system odsupercomponent,bodyhubmodule;
     </system>
 	<queries>
 	</queries>
