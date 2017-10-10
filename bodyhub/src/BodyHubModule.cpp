@@ -110,7 +110,24 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
     } else {
         health_risk_label = "unknown";
     }
-
+    
+    //Persist Data
+    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., SensorNode Category, Patient Health Risk, Sent at, Received at, Processed at";
+    m_datalog << sensornodedata.getSensorNodeID() << ",";
+    m_datalog << sensor_data_map.size() << ",";
+    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++){
+        uint32_t sensor_id = i+1;
+        if(sensor_data_map.find(sensor_id) != sensor_data_map.end()){
+            m_datalog << sensor_data_map.find(sensor_id)->second<<",";
+        } else {
+         m_datalog << "-,";
+        }
+    }
+    m_datalog << health_risk_label << ",";
+    m_datalog << m_patient_healthrisk << ",";
+    m_datalog << sentTS.getYYYYMMDD_HHMMSS() << ",";
+    m_datalog << receivedTS.getYYYYMMDD_HHMMSS() << ",";
+    m_datalog << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
 
     //Take action if sensornode data risk has changed
     if(m_sensornode[sensornodedata.getSensorNodeID()].compare(health_risk_label) != 0){
@@ -127,27 +144,6 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeSta
     if(m_healthrisk_counter == 2){
         m_patient_healthrisk = health_risk_label;
     }
-
-    //Persist Data
-    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., SensorNode Category, Patient Health Risk, Sent at, Received at, Processed at";
-    m_datalog << sensornodedata.getSensorNodeID() << ",";
-    m_datalog << sensor_data_map.size() << ",";
-
-    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++){
-        uint32_t sensor_id = i+1;
-
-        if(sensor_data_map.find(sensor_id) != sensor_data_map.end()){
-            m_datalog << sensor_data_map.find(sensor_id)->second<<",";
-        } else {
-            m_datalog << "-,";
-        }
-    }
-
-    m_datalog << health_risk_label << ",";
-    m_datalog << m_patient_healthrisk << ",";
-    m_datalog << sentTS.getYYYYMMDD_HHMMSS() << ",";
-    m_datalog << receivedTS.getYYYYMMDD_HHMMSS() << ",";
-    m_datalog << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
 
     //View Data
     CLOG1 << "-------------------------------------------------" << endl;
