@@ -92,9 +92,9 @@ void BodyHubModule::processRequest(Request request){
     }
 }
 
-void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata){
+void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeStamp sent_timestamp, TimeStamp received_timestamp){
 
-    //Evaluate and categorize data
+    //Categorize data
     string sensor_risk_category = BodyHubModule::categorizeSensorNodeData(sensornodedata);
     
     //Take action if data has changed
@@ -105,6 +105,8 @@ void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata){
         Container c_req(request);
         getConference().send(c_req);
     }
+
+    BodyHubModule::persistSensorNodeData(sensornodedata, sent_timestamp, received_timestamp);  
 }
 
 string BodyHubModule::categorizeSensorNodeData(SensorNodeData sensornodedata) {
@@ -204,8 +206,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                 BodyHubModule::processRequest(container.getData<Request>());
             } else if (container.getDataType() == SensorNodeData::ID()) {
                 SensorNodeData sensornodedata = container.getData<SensorNodeData>(); 
-                BodyHubModule::processSensorNodeData(sensornodedata);
-                BodyHubModule::persistSensorNodeData(sensornodedata, container.getSentTimeStamp(), container.getReceivedTimeStamp());
+                BodyHubModule::processSensorNodeData(sensornodedata, container.getSentTimeStamp(), container.getReceivedTimeStamp());
             }
         } 
 
@@ -228,9 +229,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                 moderate++;
             } else if(m_sensornode[i].compare("high") == 0) {
                 high++;
-            } else {
-                unknown++;
-            }
+            } 
         }
 
         m_status_log << low << ",";
