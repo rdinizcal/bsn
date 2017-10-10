@@ -41,7 +41,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         uint32_t m_id;
         FIFOQueue m_buffer;
         
-        string m_patient_healthrisk;
+        string m_health_risk;
         uint32_t m_healthrisk_counter;
         
         map<uint32_t, string> m_sensornode;

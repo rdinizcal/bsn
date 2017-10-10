@@ -37,8 +37,8 @@ namespace openbasn {
                     Sensor& operator=(const Sensor &/*obj*/);
                    
                 public:        
-                    void setSensorType(const uint32_t &);
-                    uint32_t getSensorType() const;
+                    void setType(const uint32_t &);
+                    uint32_t getType() const;
                         
                     void setSampleRate(const float &);
                     float getSampleRate() const;

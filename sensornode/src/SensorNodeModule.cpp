@@ -24,8 +24,7 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     m_isRegistered(false),
     m_clock_tick(0),
     m_buffer(),
-    m_sensor_vector(),
-    m_number_of_sensors(),
+    m_sensor(),
     m_risk("low")
     {}
 
@@ -47,11 +46,11 @@ void SensorNodeModule::tearDown() {
 }
 
 void SensorNodeModule::getSensorConfiguration(){
-    m_number_of_sensors = getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors");
+    int32_t sensortypes = getKeyValueConfiguration().getValue<int32_t>("global.sensortypes");
     
-    for(uint32_t i = 0; i < m_number_of_sensors; i++) {
+    for(int32_t i = 0; i < sensortypes; i++) {
         string sensor_type;
-        uint32_t sensor_id = i+1;
+        int32_t sensor_id = i+1;
 
         sensor_type = getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id));
 
@@ -62,24 +61,21 @@ void SensorNodeModule::getSensorConfiguration(){
             double stddev = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".stddev");
             double mean = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".mean."+mean_behavior);
 
-            m_sensor_vector.push_back(Sensor(sensor_id, samplerate, active, mean, stddev));
+            m_sensor = Sensor(sensor_id, samplerate, active, mean, stddev);
         }
     }
 }
 
 void SensorNodeModule::sendSensorNodeData(SensorNodeData sensornodedata){
-    for(uint32_t i = 0; i < m_sensor_vector.size(); i++) {
-        sensornodedata.addSensorData(m_sensor_vector[i].getSensorType(), m_sensor_vector[i].getData());
-    }
-
-    Container c(sensornodedata);
-    getConference().send(c);
-    cout << sensornodedata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
+    Container container(sensornodedata);
+    getConference().send(container);
+    CLOG1 << sensornodedata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
 void SensorNodeModule::sendRequest(Request request){
-    Container c(request);
-    getConference().send(c);
+    Container container(request);
+    getConference().send(container);
+    CLOG1 << request.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
 void SensorNodeModule::processRequest(Request request){
@@ -135,7 +131,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
                 || (m_risk.compare("moderate") == 0 && m_clock_tick == 5) 
                 || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0) ){
                 
-                SensorNodeModule::sendSensorNodeData(SensorNodeData(m_id));
+                SensorNodeModule::sendSensorNodeData(SensorNodeData(m_id, m_sensor.getType(), m_sensor.getData()));
                 m_clock_tick = 0;
             } 
             

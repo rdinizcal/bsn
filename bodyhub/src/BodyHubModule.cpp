@@ -27,7 +27,7 @@ BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "bodyhub"),
     m_id(getIdentifier()),
     m_buffer(),
-    m_patient_healthrisk("low"),
+    m_health_risk("low"),
     m_healthrisk_counter(0),
     m_sensornode(),
     m_datalog()
@@ -44,13 +44,13 @@ void BodyHubModule::setUp() {
     //setup m_datalog
     m_datalog.open("bodyhub"+to_string(m_id)+".csv");
     
-    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., , SensorNode Category, Patient Health Risk, Sent at, Received at, Processed at";
-    m_datalog << "SensorNodeID,Active Sensors,";
-    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++) {
+    //"SensorNode, data, data, ..., Sensor risk category, Health risk, Sent at, Received at, Processed at"
+    m_datalog << "SensorNode,";
+    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.sensortypes"); i++) {
         uint32_t sensor_id = i+1;
         m_datalog << getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id)) << ",";
     }
-    m_datalog << "SensorNode Category,Health Risk,Sent at,Received at,Processed at\n";
+    m_datalog << "Sensor risk category,Health risk,Sent at,Received at,Processed at\n";
 }
 
 void BodyHubModule::tearDown() {
@@ -88,61 +88,55 @@ void BodyHubModule::processRequest(Request request){
 }
 
 void BodyHubModule::processSensorNodeData(SensorNodeData sensornodedata, TimeStamp sentTS,TimeStamp receivedTS){
-    double health_risk = 0;
-    string health_risk_label;
-    map<int32_t,double> sensor_data_map = sensornodedata.getSensorDataMap();
+    double sensor_risk;
+    string sensor_risk_category;
 
     //Evaluate Data
-    map<int32_t,double>::iterator it = sensor_data_map.begin();
-    for(pair<int32_t,double> element : sensor_data_map){
-        double sensor_risk = BodyHubModule::evaluateSensorDataRisk(element.first, element.second);
-
-        health_risk += (sensor_risk>0)?sensor_risk:0;
-    }
+    sensor_risk = BodyHubModule::evaluateSensorDataRisk(sensornodedata.getSensorType(), sensornodedata.getSensorData());
 
     //Categorize Data
-    if(0 < health_risk && health_risk < 1) {
-        health_risk_label = "low";
-    } else if (1 <= health_risk && health_risk < 5) {
-        health_risk_label = "moderate";
-    } else if (5 <= health_risk && health_risk < 20) {
-        health_risk_label = "high";
+    if(0 < sensor_risk && sensor_risk < 1) {
+        sensor_risk_category = "low";
+    } else if (1 <= sensor_risk && sensor_risk < 5) {
+        sensor_risk_category = "moderate";
+    } else if (5 <= sensor_risk && sensor_risk < 20) {
+        sensor_risk_category = "high";
     } else {
-        health_risk_label = "unknown";
+        sensor_risk_category = "unknown";
     }
     
     //Persist Data
-    //"SensorNodeID, Number of active sensors, SensorData, SensorData, ..., SensorNode Category, Patient Health Risk, Sent at, Received at, Processed at";
+    //"SensorNode, data, data, ..., Sensor risk category, Health risk, Sent at, Received at, Processed at"
     m_datalog << sensornodedata.getSensorNodeID() << ",";
-    m_datalog << sensor_data_map.size() << ",";
-    for(uint32_t i = 0; i < getKeyValueConfiguration().getValue<uint32_t>("global.numberOfSensors"); i++){
-        uint32_t sensor_id = i+1;
-        if(sensor_data_map.find(sensor_id) != sensor_data_map.end()){
-            m_datalog << sensor_data_map.find(sensor_id)->second<<",";
+    for(int32_t i = 0; i < getKeyValueConfiguration().getValue<int32_t>("global.sensortypes"); i++){
+        int32_t sensor_id = i+1;
+        if(sensornodedata.getSensorType() == sensor_id){
+            m_datalog << sensornodedata.getSensorData() << ",";
         } else {
-         m_datalog << "-,";
+            m_datalog << "-,";
         }
     }
-    m_datalog << health_risk_label << ",";
-    m_datalog << m_patient_healthrisk << ",";
+    m_datalog << sensor_risk_category << ",";
+    m_datalog << m_health_risk << ",";
     m_datalog << sentTS.getYYYYMMDD_HHMMSS() << ",";
     m_datalog << receivedTS.getYYYYMMDD_HHMMSS() << ",";
     m_datalog << TimeStamp().getYYYYMMDD_HHMMSS() << "\n";
 
     //Take action if sensornode data risk has changed
-    if(m_sensornode[sensornodedata.getSensorNodeID()].compare(health_risk_label) != 0){
-        m_sensornode[sensornodedata.getSensorNodeID()] = health_risk_label;
+    if(m_sensornode[sensornodedata.getSensorNodeID()].compare(sensor_risk_category) != 0){
+        m_sensornode[sensornodedata.getSensorNodeID()] = sensor_risk_category;
         m_healthrisk_counter = 0;
 
-        Request request(Request::SENSOR_DATA, m_id, sensornodedata.getSensorNodeID(), health_risk_label);
+        Request request(Request::SENSOR_DATA, m_id, sensornodedata.getSensorNodeID(), sensor_risk_category);
         Container c_req(request);
         getConference().send(c_req);
     } else {
         m_healthrisk_counter++;
     }
 
+    //Evaluate health risk
     if(m_healthrisk_counter == 2){
-        m_patient_healthrisk = health_risk_label;
+        m_health_risk = sensor_risk_category;
     }
 
     //View Data

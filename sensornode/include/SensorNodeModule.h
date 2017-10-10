@@ -45,9 +45,7 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         int32_t m_clock_tick;
         FIFOQueue m_buffer;
 
-        vector<Sensor> m_sensor_vector;
-        uint32_t m_number_of_sensors;
-
+        Sensor m_sensor;
         string m_risk;
 };
 

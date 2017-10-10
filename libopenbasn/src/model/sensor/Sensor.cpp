@@ -32,7 +32,7 @@ namespace openbasn {
             Sensor::~Sensor() {}
             
             Sensor::Sensor(const Sensor &obj) :
-                m_type(obj.getSensorType()),
+                m_type(obj.getType()),
                 m_samplerate(obj.getSampleRate()),
                 m_active(obj.isActive()),
                 m_mean(obj.getMean()),
@@ -43,7 +43,7 @@ namespace openbasn {
                 m_data(0) {}
         
             Sensor& Sensor::operator=(const Sensor &obj) {
-                m_type = obj.getSensorType();
+                m_type = obj.getType();
                 m_samplerate = obj.getSampleRate();
                 m_active = obj.isActive();
                 m_mean = obj.getMean();
@@ -54,11 +54,11 @@ namespace openbasn {
                 return (*this);
             }
 
-            void Sensor::setSensorType(const uint32_t &sensorType) {
+            void Sensor::setType(const uint32_t &sensorType) {
                 m_type = sensorType;
             }
             
-            uint32_t Sensor::getSensorType() const {
+            uint32_t Sensor::getType() const {
                 return m_type;
             }
             
