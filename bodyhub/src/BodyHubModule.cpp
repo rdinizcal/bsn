@@ -205,8 +205,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
             if(container.getDataType() == Request::ID()) {
                 BodyHubModule::processRequest(container.getData<Request>());
             } else if (container.getDataType() == SensorNodeData::ID()) {
-                SensorNodeData sensornodedata = container.getData<SensorNodeData>(); 
-                BodyHubModule::processSensorNodeData(sensornodedata, container.getSentTimeStamp(), container.getReceivedTimeStamp());
+                BodyHubModule::processSensorNodeData(container.getData<SensorNodeData>(), container.getSentTimeStamp(), container.getReceivedTimeStamp());
             }
         } 
 
