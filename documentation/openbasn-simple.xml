@@ -9,16 +9,11 @@ const int BUFFER_SIZE = 20;
    
 // Container datatype IDs
 const int acknowledge_id = 1;
-const int request_id = 2;
-const int sensornodedata_id = 3;
-// Request types
-const int UNDEFINED = 0;
-const int SENSOR_DATA = 1;
-const int REGISTER = 2;
-const int UNREGISTER = 3;
-// Acknowledge types
-const int NOT_OK = 0;
-const int OK = 1;
+const int reg_request_id = 2;
+const int unreg_request_id = 3;
+const int snd_request_id = 4;
+const int sensornodedata_id = 5;
+
 // Sensor risks (for readability)
 const int low = 0;
 const int moderate = 1;
@@ -29,8 +24,8 @@ const int unknown = 3;
 
 /*******************Global Variables*******************/
 chan pulse, pulse_ack;
-chan send_req, send_ack, send_snd;
-broadcast chan b_send_req, b_send_ack, b_send_snd;
+chan send_reg_req, send_unr_req, send_snd_req, send_ack, send_snd;
+broadcast chan b_send_reg_req, b_send_unr_req, b_send_snd_req, b_send_ack, b_send_snd;
 broadcast chan reset, killmodule;
 
 /*******************Global Functions*******************/</declaration>
@@ -40,7 +35,7 @@ broadcast chan reset, killmodule;
 int y;
 
 //buffer attributes
-int[0,3] m_buffer[BUFFER_SIZE];
+int[0,5] m_buffer[BUFFER_SIZE];
 int len, aux;</declaration>
 		<location id="id0" x="-1385" y="-459">
 			<name x="-1419" y="-442">shiftdown</name>
@@ -63,6 +58,24 @@ int len, aux;</declaration>
 		</location>
 		<init ref="id5"/>
 		<transition>
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1623" y="-875">send_unr_req?</label>
+			<label kind="assignment" x="-1623" y="-858">m_buffer[len]:=unreg_request_id,
+len++</label>
+			<nail x="-1436" y="-824"/>
+			<nail x="-1385" y="-824"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1674" y="-824">send_snd_req?</label>
+			<label kind="assignment" x="-1674" y="-807">m_buffer[len]:=snd_request_id,
+len++</label>
+			<nail x="-1453" y="-765"/>
+			<nail x="-1453" y="-824"/>
+		</transition>
+		<transition>
 			<source ref="id0"/>
 			<target ref="id0"/>
 			<label kind="guard" x="-1411" y="-391">aux &lt; len</label>
@@ -83,11 +96,13 @@ aux:=0</label>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id0"/>
-			<label kind="guard" x="-1487" y="-586">len&gt;=1</label>
-			<label kind="synchronisation" x="-1776" y="-535">((m_buffer[len-1]==acknowledge_id)?(b_send_ack):
-(m_buffer[len-1]==request_id)?(b_send_req):
+			<label kind="guard" x="-1487" y="-612">len&gt;=1</label>
+			<label kind="synchronisation" x="-1810" y="-561">((m_buffer[len-1]==acknowledge_id)?(b_send_ack):
+(m_buffer[len-1]==reg_request_id)?(b_send_reg_req):
+(m_buffer[len-1]==unreg_request_id)?(b_send_unr_req):
+(m_buffer[len-1]==snd_request_id)?(b_send_snd_req):
 (b_send_snd))!</label>
-			<label kind="assignment" x="-1487" y="-569">len--,
+			<label kind="assignment" x="-1487" y="-595">len--,
 aux:=0</label>
 			<nail x="-1419" y="-586"/>
 			<nail x="-1419" y="-518"/>
@@ -100,8 +115,8 @@ aux:=0</label>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id1"/>
-			<label kind="synchronisation" x="-1470" y="-731">pulse_ack?</label>
-			<label kind="assignment" x="-1445" y="-714">y+=1</label>
+			<label kind="synchronisation" x="-1462" y="-714">pulse_ack?</label>
+			<label kind="assignment" x="-1436" y="-688">y+=1</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
@@ -115,20 +130,20 @@ len++</label>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id2"/>
-			<label kind="synchronisation" x="-1453" y="-884">send_req?</label>
-			<label kind="assignment" x="-1453" y="-867">m_buffer[len]:=request_id,
+			<label kind="synchronisation" x="-1385" y="-875">send_reg_req?</label>
+			<label kind="assignment" x="-1385" y="-858">m_buffer[len]:=reg_request_id,
 len++</label>
-			<nail x="-1436" y="-825"/>
-			<nail x="-1342" y="-825"/>
+			<nail x="-1385" y="-824"/>
+			<nail x="-1343" y="-824"/>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id2"/>
-			<label kind="synchronisation" x="-1674" y="-816">send_ack?</label>
-			<label kind="assignment" x="-1674" y="-799">m_buffer[len]:=acknowledge_id,
+			<label kind="synchronisation" x="-1674" y="-765">send_ack?</label>
+			<label kind="assignment" x="-1674" y="-748">m_buffer[len]:=acknowledge_id,
 len++</label>
+			<nail x="-1453" y="-714"/>
 			<nail x="-1453" y="-765"/>
-			<nail x="-1453" y="-825"/>
 		</transition>
 		<transition>
 			<source ref="id5"/>
@@ -171,9 +186,8 @@ int m_id;
 int m_health_risk=low;
 
 //buffer attributes
-int[0,3] m_buffer[BUFFER_SIZE];
+int[0,5] m_buffer[BUFFER_SIZE];
 int len, aux;
-chan leave;
 
 /*******************Temporary Variables*******************/
 bool flag;
@@ -211,8 +225,8 @@ int dequeue(){
 		<location id="id9" x="-569" y="-16">
 			<name x="-654" y="0">processSensorNodeData</name>
 		</location>
-		<location id="id10" x="-110" y="-16">
-			<name x="-178" y="-8">processRequest</name>
+		<location id="id10" x="-51" y="-17">
+			<name x="-119" y="-9">processRequest</name>
 		</location>
 		<location id="id11" x="-127" y="-263">
 			<name x="-110" y="-272">stop</name>
@@ -226,6 +240,15 @@ int dequeue(){
 		<transition>
 			<source ref="id6"/>
 			<target ref="id6"/>
+			<label kind="synchronisation" x="-527" y="-433">b_send_unr_req?</label>
+			<label kind="assignment" x="-527" y="-416">m_buffer[len]:=unreg_request_id,
+len++</label>
+			<nail x="-535" y="-442"/>
+			<nail x="-535" y="-382"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
 			<label kind="synchronisation" x="-731" y="-365">reset?</label>
 			<label kind="assignment" x="-756" y="-348">flag:=false</label>
 			<nail x="-681" y="-314"/>
@@ -234,28 +257,28 @@ int dequeue(){
 		<transition>
 			<source ref="id9"/>
 			<target ref="id13"/>
-			<label kind="synchronisation" x="-654" y="-34">send_req!</label>
-			<nail x="-663" y="-17"/>
-			<nail x="-663" y="-221"/>
+			<label kind="synchronisation" x="-697" y="-34">send_snd_req!</label>
+			<nail x="-705" y="-17"/>
+			<nail x="-705" y="-221"/>
 			<nail x="-391" y="-221"/>
 		</transition>
 		<transition>
 			<source ref="id6"/>
 			<target ref="id6"/>
-			<label kind="synchronisation" x="-535" y="-361">b_send_snd?</label>
-			<label kind="assignment" x="-535" y="-344">m_buffer[len]:=sensornodedata_id,
+			<label kind="synchronisation" x="-527" y="-374">b_send_snd?</label>
+			<label kind="assignment" x="-527" y="-357">m_buffer[len]:=sensornodedata_id,
 len++</label>
-			<nail x="-535" y="-365"/>
-			<nail x="-535" y="-306"/>
+			<nail x="-535" y="-382"/>
+			<nail x="-535" y="-323"/>
 		</transition>
 		<transition>
 			<source ref="id6"/>
 			<target ref="id6"/>
-			<label kind="synchronisation" x="-535" y="-450">b_send_req?</label>
-			<label kind="assignment" x="-535" y="-433">m_buffer[len]:=request_id,
+			<label kind="synchronisation" x="-578" y="-493">b_send_reg_req?</label>
+			<label kind="assignment" x="-578" y="-476">m_buffer[len]:=reg_request_id,
 len++</label>
-			<nail x="-535" y="-395"/>
-			<nail x="-535" y="-455"/>
+			<nail x="-535" y="-442"/>
+			<nail x="-586" y="-442"/>
 		</transition>
 		<transition>
 			<source ref="id13"/>
@@ -265,9 +288,9 @@ len++</label>
 		<transition>
 			<source ref="id10"/>
 			<target ref="id13"/>
-			<label kind="synchronisation" x="-85" y="-33">send_ack!</label>
-			<nail x="8" y="-16"/>
-			<nail x="8" y="-212"/>
+			<label kind="synchronisation" x="-26" y="-34">send_ack!</label>
+			<nail x="67" y="-17"/>
+			<nail x="59" y="-212"/>
 			<nail x="-221" y="-212"/>
 		</transition>
 		<transition>
@@ -279,9 +302,9 @@ len++</label>
 		<transition>
 			<source ref="id11"/>
 			<target ref="id6"/>
-			<label kind="synchronisation" x="-442" y="-502">pulse_ack!</label>
-			<nail x="-127" y="-476"/>
-			<nail x="-595" y="-476"/>
+			<label kind="synchronisation" x="-442" y="-553">pulse_ack!</label>
+			<nail x="-127" y="-527"/>
+			<nail x="-595" y="-527"/>
 		</transition>
 		<transition>
 			<source ref="id6"/>
@@ -300,7 +323,8 @@ len++</label>
 			<source ref="id12"/>
 			<target ref="id13"/>
 			<label kind="guard" x="-289" y="-195">container!=sensornodedata_id
-&amp;&amp;  container!=request_id</label>
+&amp;&amp;  container!=reg_request_id
+&amp;&amp;  container!=unreg_request_id</label>
 			<nail x="-297" y="-127"/>
 			<nail x="-297" y="-246"/>
 		</transition>
@@ -313,8 +337,9 @@ len++</label>
 		<transition>
 			<source ref="id12"/>
 			<target ref="id10"/>
-			<label kind="guard" x="-289" y="-127">container==request_id</label>
-			<nail x="-110" y="-109"/>
+			<label kind="guard" x="-289" y="-127">container==reg_request_id
+|| container==unreg_request_id</label>
+			<nail x="-51" y="-110"/>
 		</transition>
 		<transition>
 			<source ref="id13"/>
@@ -336,7 +361,7 @@ int m_clock_tick = 0;
 int m_risk;
 
 //buffer attributes
-int[0,3] m_buffer[BUFFER_SIZE];
+int[0,5] m_buffer[BUFFER_SIZE];
 int len;
 
 /*******************Temporary Variables*******************/
@@ -393,8 +418,8 @@ int dequeue(){
 		</location>
 		<location id="id23" x="-25602" y="-1564">
 		</location>
-		<location id="id24" x="-25441" y="-1683">
-			<name x="-25483" y="-1666">send_request</name>
+		<location id="id24" x="-25449" y="-1683">
+			<name x="-25491" y="-1666">send_request</name>
 		</location>
 		<location id="id25" x="-26044" y="-1657">
 		</location>
@@ -431,8 +456,8 @@ len++</label>
 		<transition>
 			<source ref="id14"/>
 			<target ref="id14"/>
-			<label kind="synchronisation" x="-25959" y="-2006">b_send_req?</label>
-			<label kind="assignment" x="-25959" y="-1989">m_buffer[len]:=request_id,
+			<label kind="synchronisation" x="-25959" y="-2006">b_send_snd_req?</label>
+			<label kind="assignment" x="-25959" y="-1989">m_buffer[len]:=snd_request_id,
 len++</label>
 			<nail x="-25959" y="-1946"/>
 			<nail x="-25959" y="-2006"/>
@@ -446,8 +471,8 @@ len++</label>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id25"/>
-			<label kind="select" x="-26052" y="-1436">rand:int[0,3]</label>
-			<label kind="assignment" x="-26052" y="-1419">m_risk:=rand</label>
+			<label kind="select" x="-26035" y="-1436">rand:int[0,3]</label>
+			<label kind="assignment" x="-26035" y="-1419">m_risk:=rand</label>
 			<nail x="-26078" y="-1436"/>
 			<nail x="-26078" y="-1649"/>
 		</transition>
@@ -470,7 +495,7 @@ m_clock_tick:=0</label>
 		<transition>
 			<source ref="id24"/>
 			<target ref="id29"/>
-			<label kind="synchronisation" x="-25423" y="-1700">send_req!</label>
+			<label kind="synchronisation" x="-25432" y="-1700">send_reg_req!</label>
 			<nail x="-25330" y="-1683"/>
 			<nail x="-25330" y="-1827"/>
 		</transition>
@@ -531,7 +556,7 @@ m_clock_tick:=0</label>
 		<transition>
 			<source ref="id20"/>
 			<target ref="id25"/>
-			<label kind="guard" x="-26044" y="-1564">container!=request_id</label>
+			<label kind="guard" x="-26044" y="-1564">container!=snd_request_id</label>
 			<nail x="-26061" y="-1547"/>
 			<nail x="-26061" y="-1640"/>
 		</transition>
@@ -544,7 +569,7 @@ m_clock_tick:=0</label>
 		<transition>
 			<source ref="id20"/>
 			<target ref="id18"/>
-			<label kind="guard" x="-25959" y="-1496">container==request_id</label>
+			<label kind="guard" x="-25959" y="-1496">container==snd_request_id</label>
 		</transition>
 		<transition>
 			<source ref="id25"/>
