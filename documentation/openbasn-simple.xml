@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>/*******************Global Constants*******************/
+//Number of sensornodes to be instantiated
+const int N = 1;   
+//FIFOQueue size     
+const int SIZE = 10;    
+// Container datatype IDs
+const int acknowledge_id = 1;
+const int request_id = 2;
+const int sensornodedata_id = 3;
+// Request types
+const int UNDEFINED = 0;
+const int SENSOR_DATA = 1;
+const int REGISTER = 2;
+const int UNREGISTER = 3;
+// Acknowledge types
+const int NOT_OK = 0;
+const int OK = 1;
+// Sensor risks (for readability)
+const int low = 0;
+const int moderate = 1;
+const int high = 2;
+const int unknown = 3;
+
+/****************Global Data Structures****************/
+typedef struct  {
+    int[0,SIZE] len;
+    int list[SIZE+1];
+} FIFOQueue;
+
+/*******************Global Variables*******************/
+chan pulse, pulse_ack, killmodule;
+chan send_req, send_ack, send_snd;
+broadcast chan b_send_req, b_send_ack, b_send_snd;
+
+/*******************Global Functions*******************/</declaration>
+	<template>
+		<name x="5" y="5">odsupercomponent</name>
+		<declaration>clock x;
+int y;
+
+//buffer attributes
+int[0,3] m_buffer[20];
+int len, aux;</declaration>
+		<location id="id0" x="-748" y="-739">
+			<name x="-782" y="-722">shiftdown</name>
+			<committed/>
+		</location>
+		<location id="id1" x="-994" y="-739">
+			<name x="-1062" y="-714">broadcast_containers</name>
+		</location>
+		<location id="id2" x="-1207" y="-637">
+			<name x="-1249" y="-671">run_module</name>
+		</location>
+		<location id="id3" x="-1206" y="-960">
+			<name x="-1216" y="-994">wait</name>
+		</location>
+		<location id="id4" x="-1207" y="-824">
+			<name x="-1334" y="-850">supercomponent</name>
+		</location>
+		<location id="id5" x="-1385" y="-824">
+			<name x="-1402" y="-858">start</name>
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-671" y="-765">aux &lt; len</label>
+			<label kind="assignment" x="-671" y="-748">m_buffer[aux]:=m_buffer[aux+1],
+aux++</label>
+			<nail x="-680" y="-688"/>
+			<nail x="-680" y="-790"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-884" y="-841">len==aux</label>
+			<label kind="assignment" x="-884" y="-816">m_buffer[aux]:=0,
+aux:=0</label>
+			<nail x="-799" y="-782"/>
+			<nail x="-926" y="-782"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-892" y="-688">len&gt;=1</label>
+			<label kind="synchronisation" x="-892" y="-671">((m_buffer[len-1]==acknowledge_id)?(b_send_ack):
+(m_buffer[len-1]==request_id)?(b_send_req):
+(b_send_snd))!</label>
+			<label kind="assignment" x="-892" y="-620">len--,
+aux:=0</label>
+			<nail x="-926" y="-697"/>
+			<nail x="-799" y="-697"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-1130" y="-824">len==0</label>
+			<nail x="-994" y="-807"/>
+			<nail x="-1181" y="-807"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-1130" y="-680">pulse_ack?</label>
+			<label kind="assignment" x="-1122" y="-663">y+=1</label>
+			<nail x="-1190" y="-663"/>
+			<nail x="-994" y="-663"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1130" y="-637">send_snd?</label>
+			<label kind="assignment" x="-1130" y="-620">m_buffer[len]:=sensornodedata_id,
+len++</label>
+			<nail x="-1147" y="-586"/>
+			<nail x="-1130" y="-637"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1241" y="-586">send_req?</label>
+			<label kind="assignment" x="-1249" y="-569">m_buffer[len]:=request_id,
+len++</label>
+			<nail x="-1249" y="-586"/>
+			<nail x="-1156" y="-586"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1462" y="-629">send_ack?</label>
+			<label kind="assignment" x="-1462" y="-612">m_buffer[len]:=acknowledge_id,
+len++</label>
+			<nail x="-1258" y="-586"/>
+			<nail x="-1283" y="-637"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-1343" y="-824">x:=0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-1275" y="-765">x&gt;=0
+&amp;&amp;
+y&lt;2</label>
+			<label kind="synchronisation" x="-1275" y="-782">pulse!</label>
+			<nail x="-1232" y="-807"/>
+			<nail x="-1232" y="-663"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1173" y="-918">y&gt;=2</label>
+			<nail x="-1172" y="-824"/>
+			<nail x="-1172" y="-960"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-1283" y="-926">x&gt;=1000</label>
+			<label kind="assignment" x="-1283" y="-909">x:=0,
+y:=0</label>
+			<nail x="-1206" y="-917"/>
+		</transition>
+	</template>
+	<template>
+		<name>bodyhubmodule</name>
+		<declaration>/*******************Constants*******************/
+
+/*******************Variables*******************/
+int m_id;
+int m_health_risk;
+
+//buffer attributes
+int[0,3] m_buffer[20];
+int len, aux;
+chan leave;
+
+/*******************Temporary Variables*******************/
+int container;
+
+/*******************Functions*******************/
+bool isEmpty(){
+    return (len==0)?true:false;
+}
+
+int dequeue(){
+    
+    int el = m_buffer[len-1];
+    int i = 0;
+    len--;
+    while(i &lt; len){
+        m_buffer[i] = m_buffer[i+1];
+        i++;
+    }
+
+    m_buffer[i] = 0;
+    
+    return el;
+}</declaration>
+		<location id="id6" x="-595" y="-382">
+			<name x="-637" y="-391">wait</name>
+		</location>
+		<location id="id7" x="-705" y="-340">
+			<name x="-731" y="-323">end</name>
+		</location>
+		<location id="id8" x="-705" y="-425">
+			<name x="-731" y="-459">start</name>
+			<committed/>
+		</location>
+		<location id="id9" x="-569" y="-16">
+			<name x="-663" y="0">processSensorNodeData</name>
+		</location>
+		<location id="id10" x="-110" y="-16">
+			<name x="-178" y="-8">processRequest</name>
+		</location>
+		<location id="id11" x="-127" y="-263">
+			<name x="-110" y="-272">stop</name>
+		</location>
+		<location id="id12" x="-314" y="-110">
+		</location>
+		<location id="id13" x="-314" y="-263">
+			<name x="-340" y="-289">running</name>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-535" y="-361">b_send_snd?</label>
+			<label kind="assignment" x="-535" y="-344">m_buffer[len]:=sensornodedata_id,
+len++</label>
+			<nail x="-535" y="-365"/>
+			<nail x="-535" y="-306"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-535" y="-450">b_send_req?</label>
+			<label kind="assignment" x="-535" y="-433">m_buffer[len]:=request_id,
+len++</label>
+			<nail x="-535" y="-395"/>
+			<nail x="-535" y="-455"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-263" y="-280">isEmpty()</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-85" y="-33">send_ack!</label>
+			<nail x="8" y="-16"/>
+			<nail x="8" y="-212"/>
+			<nail x="-221" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id13"/>
+			<nail x="-612" y="-16"/>
+			<nail x="-612" y="-212"/>
+			<nail x="-408" y="-212"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-680" y="-340">killmodule?</label>
+			<nail x="-620" y="-340"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-442" y="-502">pulse_ack!</label>
+			<nail x="-127" y="-476"/>
+			<nail x="-595" y="-476"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-408" y="-280">pulse?</label>
+			<nail x="-595" y="-263"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id6"/>
+			<nail x="-621" y="-424"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-289" y="-187">!(container==sensornodedata_id
+&amp;&amp;  container==request_id)</label>
+			<nail x="-297" y="-127"/>
+			<nail x="-297" y="-246"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-561" y="-127">container==sensornodedata_id</label>
+			<nail x="-569" y="-110"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id10"/>
+			<label kind="guard" x="-289" y="-127">container==request_id</label>
+			<nail x="-110" y="-109"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-408" y="-195">!isEmpty()</label>
+			<label kind="assignment" x="-484" y="-178">container:=dequeue()</label>
+			<nail x="-331" y="-246"/>
+			<nail x="-331" y="-127"/>
+		</transition>
+	</template>
+	<template>
+		<name>sensornodemodule</name>
+		<declaration>/*******************Constants*******************/
+
+/*******************Variables*******************/
+int m_id;
+bool m_isRegistered = false;
+int m_clock_tick = 0;
+int m_risk;
+
+int container;
+
+//buffer attributes
+int[0,3] m_buffer[20];
+int len;
+
+/*******************Functions*******************/
+bool isEmpty(){
+    return (len==0)?true:false;
+}
+
+int dequeue(){
+    
+    int el = m_buffer[len-1];
+    int i = 0;
+    len--;
+    while(i &lt; len){
+        m_buffer[i] = m_buffer[i+1];
+        i++;
+    }
+
+    m_buffer[i] = 0;
+    
+    return el;
+}
+
+</declaration>
+		<location id="id14" x="-26018" y="-1938">
+			<name x="-26061" y="-1946">wait</name>
+		</location>
+		<location id="id15" x="-26137" y="-1895">
+			<name x="-26147" y="-1929">end</name>
+		</location>
+		<location id="id16" x="-26137" y="-1980">
+			<name x="-26147" y="-2014">start</name>
+			<committed/>
+		</location>
+		<location id="id17" x="-26197" y="-1164">
+			<name x="-26265" y="-1147">send_sensornodedata</name>
+		</location>
+		<location id="id18" x="-25865" y="-1436">
+			<name x="-25942" y="-1419">processRequest</name>
+		</location>
+		<location id="id19" x="-26197" y="-1266">
+		</location>
+		<location id="id20" x="-25865" y="-1547">
+			<name x="-25933" y="-1538">consume_request</name>
+		</location>
+		<location id="id21" x="-25364" y="-1385">
+			<name x="-25441" y="-1368">processAcknowledge</name>
+		</location>
+		<location id="id22" x="-25364" y="-1479">
+			<name x="-25483" y="-1470">consume_acknowledge</name>
+		</location>
+		<location id="id23" x="-25602" y="-1564">
+		</location>
+		<location id="id24" x="-25441" y="-1683">
+			<name x="-25483" y="-1666">send_request</name>
+		</location>
+		<location id="id25" x="-26044" y="-1657">
+		</location>
+		<location id="id26" x="-25602" y="-1683">
+		</location>
+		<location id="id27" x="-25823" y="-1751">
+			<name x="-25874" y="-1742">check_register</name>
+		</location>
+		<location id="id28" x="-25823" y="-1853">
+			<name x="-25848" y="-1887">running</name>
+		</location>
+		<location id="id29" x="-25296" y="-1853">
+			<name x="-25279" y="-1870">stop</name>
+		</location>
+		<init ref="id16"/>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-25959" y="-1929">b_send_ack?</label>
+			<label kind="assignment" x="-25959" y="-1912">m_buffer[len]:=acknowledge_id,
+len++</label>
+			<nail x="-25959" y="-1930"/>
+			<nail x="-25959" y="-1879"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-25959" y="-2006">b_send_req?</label>
+			<label kind="assignment" x="-25959" y="-1989">m_buffer[len]:=request_id,
+len++</label>
+			<nail x="-25959" y="-1946"/>
+			<nail x="-25959" y="-2006"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id15"/>
+			<label kind="guard" x="-25763" y="-1700">m_clock_tick&gt;=15</label>
+			<nail x="-26137" y="-1683"/>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id25"/>
+			<label kind="select" x="-26052" y="-1436">rand:int[0,3]</label>
+			<label kind="assignment" x="-26052" y="-1419">m_risk:=rand</label>
+			<nail x="-26078" y="-1436"/>
+			<nail x="-26078" y="-1649"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id23"/>
+			<label kind="assignment" x="-25602" y="-1385">m_isRegistered:=true,
+m_clock_tick:=0</label>
+			<nail x="-25619" y="-1385"/>
+			<nail x="-25619" y="-1538"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id29"/>
+			<label kind="guard" x="-25577" y="-1606">isEmpty()</label>
+			<nail x="-25585" y="-1589"/>
+			<nail x="-25313" y="-1589"/>
+			<nail x="-25313" y="-1819"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-25423" y="-1700">send_req!</label>
+			<nail x="-25330" y="-1683"/>
+			<nail x="-25330" y="-1827"/>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id27"/>
+			<label kind="assignment" x="-25874" y="-1802">m_clock_tick+=1</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-25661" y="-2048">pulse_ack!</label>
+			<nail x="-25296" y="-2031"/>
+			<nail x="-26018" y="-2031"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-26112" y="-1895">killmodule?</label>
+			<nail x="-26044" y="-1895"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id14"/>
+			<nail x="-26044" y="-1980"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="-25942" y="-1870">pulse?</label>
+			<nail x="-26018" y="-1853"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-26069" y="-1164">send_snd!</label>
+			<label kind="assignment" x="-26069" y="-1147">m_clock_tick:=0</label>
+			<nail x="-25279" y="-1157"/>
+			<nail x="-25279" y="-1827"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id29"/>
+			<label kind="guard" x="-26180" y="-1326">!((m_risk==low &amp;&amp; m_clock_tick == 15) 
+|| (m_risk==moderate &amp;&amp; m_clock_tick == 5) 
+|| (m_risk==high || m_risk==unknown))</label>
+			<nail x="-25296" y="-1259"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-26188" y="-1240">(m_risk==low &amp;&amp; m_clock_tick == 15) 
+|| (m_risk==moderate &amp;&amp; m_clock_tick == 5) 
+|| (m_risk==high || m_risk==unknown)</label>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id25"/>
+			<label kind="guard" x="-26044" y="-1564">container!=request_id</label>
+			<nail x="-26061" y="-1547"/>
+			<nail x="-26061" y="-1640"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-26154" y="-1674">isEmpty()</label>
+			<nail x="-26197" y="-1657"/>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id18"/>
+			<label kind="guard" x="-25959" y="-1496">container==request_id</label>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id20"/>
+			<label kind="guard" x="-26018" y="-1674">!isEmpty()</label>
+			<label kind="assignment" x="-26026" y="-1657">container:=dequeue()</label>
+			<nail x="-25865" y="-1657"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-25594" y="-1504">container!=acknowledge_id</label>
+			<nail x="-25602" y="-1479"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id21"/>
+			<label kind="guard" x="-25526" y="-1436">container==acknowledge_id</label>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id22"/>
+			<label kind="guard" x="-25576" y="-1555">!isEmpty()</label>
+			<label kind="assignment" x="-25567" y="-1538">container:=dequeue()</label>
+			<nail x="-25585" y="-1538"/>
+			<nail x="-25364" y="-1538"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-25645" y="-1657">m_clock_tick!=1
+&amp;&amp; m_clock_tick &lt; 15</label>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id24"/>
+			<label kind="guard" x="-25585" y="-1700">m_clock_tick==1</label>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id26"/>
+			<label kind="guard" x="-25806" y="-1768">m_isRegistered==false</label>
+			<nail x="-25602" y="-1751"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id25"/>
+			<label kind="guard" x="-26010" y="-1768">m_isRegistered==true</label>
+			<nail x="-26044" y="-1751"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+//Process = Template();
+
+// List one or more processes to be composed into a system.
+system odsupercomponent,bodyhubmodule,sensornodemodule;
+    </system>
+	<queries>
+	</queries>
+</nta>
