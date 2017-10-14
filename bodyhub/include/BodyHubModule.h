@@ -33,22 +33,16 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         virtual void tearDown();
 
     private:
-        void processRequest(Request /*obj*/);
-        void processSensorData(SensorData /*obj*/, TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
-        string categorizeSensorData(SensorData /*obj*/);
-        int32_t evaluateSensorDataRisk(uint32_t /*type*/, double /*data*/);
-        void persistSensorData(SensorData /*obj*/, TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
-        string calculateHealthRisk();
-        
+        string calculateHealthStatus();
+        void updateHealthStatus(SensorData /*sensordata*/);
+        void persistHealthStatus(TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
+        void printHealthStatus();
             
     private:
         uint32_t m_id;
         FIFOQueue m_buffer;
-        
-        string m_health_risk;
-        map<uint32_t, string> m_sensor;
-
-        ofstream m_sensordata_log;
+        string m_health_status;
+        map<uint32_t, pair<double,string>> m_sensor;
         ofstream m_status_log;
 };
 

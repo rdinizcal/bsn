@@ -112,7 +112,7 @@ string SensorModule::categorize(uint32_t type, double data) {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
 
     TimeStamp previous;
-    string sensor_risk;
+    string sensor_risk="low";
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -126,7 +126,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
         } */
         
         m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
-        sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
 
         if(!m_emergency_state) {
 
@@ -135,12 +134,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
                 ||(sensor_risk=="low" && m_clock>15)) {
 
                     SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+                    sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
                     previous = TimeStamp();
                 }
 
             
         } else {
             SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+            sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
             previous = TimeStamp();
         } 
         

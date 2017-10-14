@@ -113,7 +113,7 @@ namespace openbasn {
             d->read(1, m_sensor_id);
             d->read(2, m_sensor_type);
             d->read(3, m_sensor_data);
-            d->read(3, m_sensor_risk);
+            d->read(4, m_sensor_risk);
         
             return in;
         }
