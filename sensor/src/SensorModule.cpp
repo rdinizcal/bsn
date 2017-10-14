@@ -112,35 +112,36 @@ string SensorModule::categorize(uint32_t type, double data) {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
 
     TimeStamp previous;
-    string data_category;
+    string sensor_risk;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         /* while(!m_buffer.isEmpty()){
             Container c = m_buffer.leave();
 
-            if(c.getDataType() == Request::ID()){
-                SensorModule::processRequest(c.getData<Request>());
+            if(c.getDataType() == Alert::ID()){
+                m_emergency_state=true;
             }
 
         } */
+        
         m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
-        data_category = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
+        sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
 
         if(!m_emergency_state) {
 
-            if((data_category=="high" && m_clock>1) 
-                ||(data_category=="moderate" && m_clock>5)
-                ||(data_category=="low" && m_clock>15)) {
+            if((sensor_risk=="high" && m_clock>1) 
+                ||(sensor_risk=="moderate" && m_clock>5)
+                ||(sensor_risk=="low" && m_clock>15)) {
 
-                    SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData()));
-                    m_clock = 0;
+                    SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+                    previous = TimeStamp();
                 }
 
             
         } else {
-            SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData()));
-            m_clock = 0;
+            SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+            previous = TimeStamp();
         } 
         
         PulseAckMessage pulseackmessage;
