@@ -35,17 +35,17 @@ broadcast chan reset, killmodule;
 int[0,1] m_buffer[BUFFER_SIZE];
 int len, aux;</declaration>
 		<location id="id0" x="-1385" y="-459">
-			<name x="-1419" y="-442">shiftdown</name>
+			<name x="-1368" y="-467">shiftdown</name>
 			<committed/>
 		</location>
 		<location id="id1" x="-1385" y="-654">
-			<name x="-1453" y="-629">broadcast_containers</name>
+			<name x="-1564" y="-654">broadcast_containers</name>
 		</location>
 		<location id="id2" x="-1385" y="-765">
 			<name x="-1428" y="-756">run_module</name>
 		</location>
 		<location id="id3" x="-1190" y="-654">
-			<name x="-1249" y="-637">supercomponent</name>
+			<name x="-1241" y="-697">supercomponent</name>
 		</location>
 		<location id="id4" x="-1190" y="-544">
 			<name x="-1207" y="-527">start</name>
@@ -90,10 +90,10 @@ aux:=0</label>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id0"/>
-			<label kind="guard" x="-1479" y="-612">len&gt;=1</label>
-			<label kind="synchronisation" x="-1666" y="-561">((m_buffer[len-1]==sensordata_id)?
+			<label kind="guard" x="-1479" y="-595">len&gt;=1</label>
+			<label kind="synchronisation" x="-1666" y="-544">((m_buffer[len-1]==sensordata_id)?
 (send_sensordata):(send_alert))!</label>
-			<label kind="assignment" x="-1479" y="-595">len--,
+			<label kind="assignment" x="-1479" y="-578">len--,
 aux:=0</label>
 			<nail x="-1419" y="-586"/>
 			<nail x="-1419" y="-518"/>
@@ -304,22 +304,22 @@ int len;
 /*******************Functions*******************/
 
 </declaration>
-		<location id="id14" x="-25508" y="-1394">
-			<name x="-25568" y="-1385">categorize_data</name>
+		<location id="id14" x="-25508" y="-1462">
+			<name x="-25568" y="-1453">categorize_data</name>
 		</location>
-		<location id="id15" x="-25610" y="-1547">
+		<location id="id15" x="-25610" y="-1615">
 		</location>
-		<location id="id16" x="-25814" y="-1547">
+		<location id="id16" x="-25814" y="-1615">
 		</location>
-		<location id="id17" x="-25712" y="-1547">
+		<location id="id17" x="-25712" y="-1615">
 		</location>
-		<location id="id18" x="-25712" y="-1640">
+		<location id="id18" x="-25712" y="-1708">
 		</location>
-		<location id="id19" x="-25712" y="-1394">
-			<name x="-25729" y="-1385">send</name>
+		<location id="id19" x="-25712" y="-1462">
+			<name x="-25729" y="-1453">send</name>
 		</location>
-		<location id="id20" x="-25882" y="-1708">
-			<name x="-25916" y="-1699">check_state</name>
+		<location id="id20" x="-25882" y="-1776">
+			<name x="-25916" y="-1767">check_state</name>
 		</location>
 		<location id="id21" x="-26018" y="-1938">
 			<name x="-26061" y="-1946">wait</name>
@@ -345,89 +345,89 @@ int len;
 		<transition>
 			<source ref="id14"/>
 			<target ref="id25"/>
-			<label kind="select" x="-25508" y="-1479">rand_category:int[1,3]</label>
-			<label kind="assignment" x="-25508" y="-1462">m_category:=rand_category</label>
+			<label kind="select" x="-25508" y="-1547">rand_category:int[1,3]</label>
+			<label kind="assignment" x="-25508" y="-1530">m_category:=rand_category</label>
 			<nail x="-25508" y="-1853"/>
 		</transition>
 		<transition>
 			<source ref="id19"/>
 			<target ref="id14"/>
-			<label kind="synchronisation" x="-25653" y="-1411">sensordata!</label>
-			<label kind="assignment" x="-25653" y="-1394">x:=0</label>
+			<label kind="synchronisation" x="-25653" y="-1479">sensordata!</label>
+			<label kind="assignment" x="-25653" y="-1462">x:=0</label>
 		</transition>
 		<transition>
 			<source ref="id15"/>
 			<target ref="id25"/>
-			<label kind="guard" x="-25585" y="-1555">x&lt;1000</label>
-			<nail x="-25593" y="-1555"/>
-			<nail x="-25517" y="-1555"/>
+			<label kind="guard" x="-25585" y="-1623">x&lt;1000</label>
+			<nail x="-25593" y="-1623"/>
+			<nail x="-25517" y="-1623"/>
 			<nail x="-25517" y="-1844"/>
 			<nail x="-25619" y="-1844"/>
 		</transition>
 		<transition>
 			<source ref="id17"/>
 			<target ref="id25"/>
-			<label kind="guard" x="-25695" y="-1564">x&lt;5000</label>
-			<nail x="-25695" y="-1564"/>
-			<nail x="-25525" y="-1564"/>
+			<label kind="guard" x="-25695" y="-1632">x&lt;5000</label>
+			<nail x="-25695" y="-1632"/>
+			<nail x="-25525" y="-1632"/>
 			<nail x="-25525" y="-1836"/>
 			<nail x="-25627" y="-1836"/>
 		</transition>
 		<transition>
 			<source ref="id16"/>
 			<target ref="id25"/>
-			<label kind="guard" x="-25789" y="-1572">x&lt;15000</label>
-			<nail x="-25797" y="-1572"/>
-			<nail x="-25534" y="-1572"/>
+			<label kind="guard" x="-25789" y="-1640">x&lt;15000</label>
+			<nail x="-25797" y="-1640"/>
+			<nail x="-25534" y="-1640"/>
 			<nail x="-25534" y="-1827"/>
 			<nail x="-25636" y="-1827"/>
 		</transition>
 		<transition>
 			<source ref="id16"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-25814" y="-1496">x&gt;=15000</label>
-			<nail x="-25814" y="-1462"/>
+			<label kind="guard" x="-25814" y="-1564">x&gt;=15000</label>
+			<nail x="-25814" y="-1530"/>
 		</transition>
 		<transition>
 			<source ref="id17"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-25712" y="-1496">x&gt;=5000</label>
+			<label kind="guard" x="-25712" y="-1564">x&gt;=5000</label>
 		</transition>
 		<transition>
 			<source ref="id15"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-25610" y="-1496">x&gt;=1000</label>
-			<nail x="-25610" y="-1453"/>
+			<label kind="guard" x="-25610" y="-1564">x&gt;=1000</label>
+			<nail x="-25610" y="-1521"/>
 		</transition>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id15"/>
-			<label kind="guard" x="-25695" y="-1657">m_category==high</label>
-			<nail x="-25610" y="-1640"/>
+			<label kind="guard" x="-25695" y="-1725">m_category==high</label>
+			<nail x="-25610" y="-1708"/>
 		</transition>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id17"/>
-			<label kind="guard" x="-25789" y="-1623">m_category==moderate</label>
+			<label kind="guard" x="-25789" y="-1691">m_category==moderate</label>
 		</transition>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id16"/>
-			<label kind="guard" x="-25857" y="-1657">m_category==low</label>
-			<nail x="-25814" y="-1640"/>
+			<label kind="guard" x="-25857" y="-1725">m_category==low</label>
+			<nail x="-25814" y="-1708"/>
 		</transition>
 		<transition>
 			<source ref="id20"/>
 			<target ref="id18"/>
-			<label kind="guard" x="-25865" y="-1725">!m_emergency_state</label>
-			<nail x="-25712" y="-1708"/>
+			<label kind="guard" x="-25865" y="-1793">!m_emergency_state</label>
+			<nail x="-25712" y="-1776"/>
 		</transition>
 		<transition>
 			<source ref="id20"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-26044" y="-1725">m_emergency_state</label>
-			<nail x="-26052" y="-1708"/>
-			<nail x="-26052" y="-1394"/>
+			<label kind="guard" x="-26044" y="-1793">m_emergency_state</label>
+			<nail x="-26052" y="-1776"/>
+			<nail x="-26052" y="-1462"/>
 		</transition>
 		<transition>
 			<source ref="id21"/>
