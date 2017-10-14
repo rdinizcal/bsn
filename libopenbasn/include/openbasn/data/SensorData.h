@@ -14,7 +14,7 @@ namespace openbasn {
         class SensorData : public SerializableData {
         
             public:
-                SensorData(const uint32_t &/*sensor_id*/, const int32_t &/*sensor_type*/, const double &/*sensor_data*/);
+                SensorData(const uint32_t &/*sensor_id*/, const int32_t &/*sensor_type*/, const double &/*sensor_data*/, const string &/*sensor_risk*/);
         
                 SensorData();
                 virtual ~SensorData();
@@ -47,11 +47,14 @@ namespace openbasn {
                 void setSensorData(const double &/*sensor_data*/);
                 double getSensorData() const;
 
+                void setSensorRisk(const string &/*sensor_risk*/);
+                string getSensorRisk() const;
             
             private:
                 uint32_t m_sensor_id;
                 int32_t m_sensor_type;
                 double m_sensor_data;
+                string m_sensor_risk;
         };
     }
 }

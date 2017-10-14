@@ -16,12 +16,13 @@ namespace openbasn {
         
         using namespace std;
         
-        SensorData::SensorData() : m_sensor_id(), m_sensor_type(), m_sensor_data() {}
+        SensorData::SensorData() : m_sensor_id(), m_sensor_type(), m_sensor_data(), m_sensor_risk() {}
         
-        SensorData::SensorData(const uint32_t &sensor_id, const int32_t &sensor_type, const double &sensor_data) : 
+        SensorData::SensorData(const uint32_t &sensor_id, const int32_t &sensor_type, const double &sensor_data, const string &sensor_risk) : 
             m_sensor_id(sensor_id),
             m_sensor_type(sensor_type),
-            m_sensor_data(sensor_data) {}
+            m_sensor_data(sensor_data),
+            m_sensor_risk(sensor_risk) {}
         
         SensorData::~SensorData() {}
         
@@ -29,12 +30,14 @@ namespace openbasn {
             SerializableData(),
             m_sensor_id(obj.getSensorID()),
             m_sensor_type(obj.getSensorType()),
-            m_sensor_data(obj.getSensorData()) {}
+            m_sensor_data(obj.getSensorData()),
+            m_sensor_risk(obj.getSensorRisk()) {}
         
         SensorData& SensorData::operator=(const SensorData &obj) {
             m_sensor_id = obj.getSensorID();
             m_sensor_type = obj.getSensorType();
             m_sensor_data = obj.getSensorData();
+            m_sensor_risk = obj.getSensorRisk();
             return (*this);
         }
         
@@ -81,6 +84,14 @@ namespace openbasn {
         double SensorData::getSensorData() const {
             return m_sensor_data;
         }
+
+        void SensorData::setSensorRisk(const string &sensor_risk) {
+            m_sensor_risk = sensor_risk;
+        }
+        
+        string SensorData::getSensorRisk() const {
+            return m_sensor_risk;
+        }
         
         
         ostream& SensorData::operator<<(ostream &out) const {
@@ -90,6 +101,7 @@ namespace openbasn {
             s->write(1, m_sensor_id);
             s->write(2, m_sensor_type);
             s->write(3, m_sensor_data);
+            s->write(4, m_sensor_risk);
 
             return out;
         }
@@ -101,6 +113,7 @@ namespace openbasn {
             d->read(1, m_sensor_id);
             d->read(2, m_sensor_type);
             d->read(3, m_sensor_data);
+            d->read(3, m_sensor_risk);
         
             return in;
         }
@@ -109,7 +122,7 @@ namespace openbasn {
             stringstream sstr;
 
             sstr << "Sensor#" << m_sensor_id << " - ";
-            sstr << " SensorType#" << m_sensor_type << " : " << m_sensor_data << " |";
+            sstr << " SensorType#" << m_sensor_type << " : " << m_sensor_data << " (" << m_sensor_risk << ")";
 
             return sstr.str();
         }
