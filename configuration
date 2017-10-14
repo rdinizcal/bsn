@@ -12,7 +12,7 @@ global.sensortype.3 = oximeter
 odsupercomponent.pulsetimeack.timeout = 5000 # In milliseconds.
 odsupercomponent.pulsetimeack.yield = 5000 # In milliseconds.
 
-### SensorNodeModule configuration
+### SensorModule configuration
 
 ## Thermometer configuration patterns
 ## 50 >= "high" > 38 >= "moderate" > 37 >= "normal" > 35 >= "moderate" > 30 >= "high" > 0
@@ -20,12 +20,12 @@ odsupercomponent.pulsetimeack.yield = 5000 # In milliseconds.
 # risky     - thermometer(mean = 37, stddev = 0.5) || thermometer(mean = 33, stddev = 0.5)
 # critical  - thermometer(mean = 40, stddev = 0.5) || thermometer(mean = 28, stddev = 0.5)   
 
-sensornode.thermometer.stddev = 0.5
-sensornode.thermometer.mean.norisk = 36
-sensornode.thermometer.mean.risky = 38
-sensornode.thermometer.mean.risky2 = 33
-sensornode.thermometer.mean.critical = 40
-sensornode.thermometer.mean.critical2 = 28
+sensor.thermometer.stddev = 0.5
+sensor.thermometer.mean.norisk = 36
+sensor.thermometer.mean.risky = 38
+sensor.thermometer.mean.risky2 = 33
+sensor.thermometer.mean.critical = 40
+sensor.thermometer.mean.critical2 = 28
 
 ## Oximeter configuration patterns
 ## 100 >= "normal" > 94 >= "moderate" > 90 >= "high" > 0
@@ -33,74 +33,74 @@ sensornode.thermometer.mean.critical2 = 28
 # risky     - oxiemeter(mean = 92, stddev = 2)
 # critical  - oxiemeter(mean = 85, stddev = 2)
 
-sensornode.oximeter.stddev = 2
-sensornode.oximeter.mean.norisk = 97
-sensornode.oximeter.mean.risky = 92
-sensornode.oximeter.mean.critical = 85
+sensor.oximeter.stddev = 2
+sensor.oximeter.mean.norisk = 97
+sensor.oximeter.mean.risky = 92
+sensor.oximeter.mean.critical = 85
 
 ## Ecg configuration patterns
 ## 150 >= "high" > 120 >= "normal" > 80 >= "high" > 0
 # no risk   - ecg(mean = 100, stddev = 10)
 # critical  - ecg(mean = 125, stddev = 10) || ecg(mean = 60, stddev = 10)
 
-sensornode.ecg.stddev = 10
-sensornode.ecg.mean.norisk = 100
-sensornode.ecg.mean.critical = 125
-sensornode.ecg.mean.critical2 = 60
+sensor.ecg.stddev = 10
+sensor.ecg.mean.norisk = 100
+sensor.ecg.mean.critical = 125
+sensor.ecg.mean.critical2 = 60
 
 ## Node Module Sensor configurations
 # temperature sensor (low risk)
-sensornode:0.thermometer.active = 1
-sensornode:0.thermometer.samplerate = 1
-sensornode:0.thermometer.mean.behavior = norisk
-sensornode:0.ecg.active = 0
-sensornode:0.oximeter.active = 0
+sensor:0.thermometer.active = 1
+sensor:0.thermometer.samplerate = 1
+sensor:0.thermometer.mean.behavior = norisk
+sensor:0.ecg.active = 0
+sensor:0.oximeter.active = 0
 
 # heart rate sensor (low risk)
-sensornode:1.ecg.active = 1
-sensornode:1.ecg.samplerate = 1
-sensornode:1.ecg.mean.behavior = norisk
-sensornode:1.thermometer.active = 0
-sensornode:1.oximeter.active = 0
+sensor:1.ecg.active = 1
+sensor:1.ecg.samplerate = 1
+sensor:1.ecg.mean.behavior = norisk
+sensor:1.thermometer.active = 0
+sensor:1.oximeter.active = 0
 
 # oxygen sensor (low risk)
-sensornode:2.oximeter.active = 1
-sensornode:2.oximeter.samplerate = 1
-sensornode:2.oximeter.mean.behavior = norisk
-sensornode:2.thermometer.active = 0
-sensornode:2.ecg.active = 0
+sensor:2.oximeter.active = 1
+sensor:2.oximeter.samplerate = 1
+sensor:2.oximeter.mean.behavior = norisk
+sensor:2.thermometer.active = 0
+sensor:2.ecg.active = 0
 
 # temperature sensor (moderate risk)
-sensornode:10.thermometer.active = 1
-sensornode:10.thermometer.samplerate = 1
-sensornode:10.thermometer.mean.behavior = risky
-sensornode:10.ecg.active = 0
-sensornode:10.oximeter.active = 0
+sensor:10.thermometer.active = 1
+sensor:10.thermometer.samplerate = 1
+sensor:10.thermometer.mean.behavior = risky
+sensor:10.ecg.active = 0
+sensor:10.oximeter.active = 0
 
 # oxygen sensor (moderate risk)
-sensornode:12.oximeter.active = 1
-sensornode:12.oximeter.samplerate = 1
-sensornode:12.oximeter.mean.behavior = risky
-sensornode:12.thermometer.active = 0
-sensornode:12.ecg.active = 0
+sensor:12.oximeter.active = 1
+sensor:12.oximeter.samplerate = 1
+sensor:12.oximeter.mean.behavior = risky
+sensor:12.thermometer.active = 0
+sensor:12.ecg.active = 0
 
 # temperature sensor (high risk)
-sensornode:20.thermometer.active = 1
-sensornode:20.thermometer.samplerate = 1
-sensornode:20.thermometer.mean.behavior = critical
-sensornode:20.ecg.active = 0
-sensornode:20.oximeter.active = 0
+sensor:20.thermometer.active = 1
+sensor:20.thermometer.samplerate = 1
+sensor:20.thermometer.mean.behavior = critical
+sensor:20.ecg.active = 0
+sensor:20.oximeter.active = 0
 
 # heart rate  sensor (high risk)
-sensornode:21.ecg.active = 1
-sensornode:21.ecg.samplerate = 1
-sensornode:21.ecg.mean.behavior = critical
-sensornode:21.thermometer.active = 0
-sensornode:21.oximeter.active = 0
+sensor:21.ecg.active = 1
+sensor:21.ecg.samplerate = 1
+sensor:21.ecg.mean.behavior = critical
+sensor:21.thermometer.active = 0
+sensor:21.oximeter.active = 0
 
 # oxygen sensor (high risk)
-sensornode:22.oximeter.active = 1
-sensornode:22.oximeter.samplerate = 1
-sensornode:22.oximeter.mean.behavior = critical
-sensornode:22.thermometer.active = 0
-sensornode:22.ecg.active = 0
+sensor:22.oximeter.active = 1
+sensor:22.oximeter.samplerate = 1
+sensor:22.oximeter.mean.behavior = critical
+sensor:22.thermometer.active = 0
+sensor:22.ecg.active = 0

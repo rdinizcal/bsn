@@ -5,7 +5,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "openbasn/message/Request.h"
-#include "openbasn/data/SensorNodeData.h"
+#include "openbasn/data/SensorData.h"
 
 #include <fstream>
 
@@ -34,10 +34,10 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
 
     private:
         void processRequest(Request /*obj*/);
-        void processSensorNodeData(SensorNodeData /*obj*/, TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
-        string categorizeSensorNodeData(SensorNodeData /*obj*/);
+        void processSensorData(SensorData /*obj*/, TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
+        string categorizeSensorData(SensorData /*obj*/);
         int32_t evaluateSensorDataRisk(uint32_t /*type*/, double /*data*/);
-        void persistSensorNodeData(SensorNodeData /*obj*/, TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
+        void persistSensorData(SensorData /*obj*/, TimeStamp /*sent_timestamp*/, TimeStamp /*received_timestamp*/);
         string calculateHealthRisk();
         
             
@@ -46,9 +46,9 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         FIFOQueue m_buffer;
         
         string m_health_risk;
-        map<uint32_t, string> m_sensornode;
+        map<uint32_t, string> m_sensor;
 
-        ofstream m_sensornodedata_log;
+        ofstream m_sensordata_log;
         ofstream m_status_log;
 };
 
