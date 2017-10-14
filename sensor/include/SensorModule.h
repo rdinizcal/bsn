@@ -35,18 +35,14 @@ class SensorModule : public TimeTriggeredConferenceClientModule {
 
         void getSensorConfiguration();
         void sendSensorData(SensorData /*sensordata*/);
-        void sendRequest(Request /*request*/);
-        void processRequest(Request /*request*/);
-        void processAcknowledge(Acknowledge /*acknowledge*/);
+        string categorize(uint32_t /*type*/, double /*data*/);
 
     private:
         uint32_t m_id;
-        bool m_isRegistered;
-        int32_t m_clock_tick;
         FIFOQueue m_buffer;
-
+        int32_t m_clock;
         Sensor m_sensor;
-        string m_risk;
+        bool m_emergency_state;
 };
 
 #endif

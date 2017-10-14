@@ -21,12 +21,10 @@ using namespace openbasn::model::sensor;
 SensorModule::SensorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensor"),
     m_id(getIdentifier()),
-    m_isRegistered(false),
-    m_clock_tick(0),
     m_buffer(),
+    m_clock(0),
     m_sensor(),
-    m_risk("low")
-    {}
+    m_emergency_state(false) {}
 
 SensorModule::~SensorModule() {}
 
@@ -38,12 +36,7 @@ void SensorModule::setUp() {
     SensorModule::getSensorConfiguration();
 }
 
-void SensorModule::tearDown() {
-    //Send UNREGISTER request
-    Request req(Request::UNREGISTER, m_id);
-    Container c_req(req);
-    getConference().send(c_req);
-}
+void SensorModule::tearDown() {}
 
 void SensorModule::getSensorConfiguration(){
     int32_t sensortypes = getKeyValueConfiguration().getValue<int32_t>("global.sensortypes");
@@ -72,74 +65,87 @@ void SensorModule::sendSensorData(SensorData sensordata){
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
-void SensorModule::sendRequest(Request request){
-    Container container(request);
-    getConference().send(container);
-    CLOG1 << request.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
-}
+string SensorModule::categorize(uint32_t type, double data) {
+    
+    switch(type){
 
-void SensorModule::processRequest(Request request){
-    if(request.getDestinationID() == m_id){ 
-        if(request.getType() == Request::SENSOR_DATA){
-            m_risk = request.getContent();
-        } 
-    }
-}
+        case Sensor::THERMOMETER:
+            if(37 >= data && data > 35){
+                return "low"; 
+            } else if ( (35 >= data && data > 30) || (38 >= data && data > 37) ) {
+                return "moderate";
+            } else if ( (50 >= data && data > 38) || (30 >= data && data > 0) ) {
+                return "high";
+            } else {
+                return "unknown"; 
+            }
+            break;
 
-void SensorModule::processAcknowledge(Acknowledge acknowledge){
-    if(acknowledge.getDestinationID() == m_id && acknowledge.getType() == Acknowledge::OK){
-        m_isRegistered = true;
-        m_clock_tick = 0;
-        CLOG1 << "Sensor" << m_id << " successfully registered." << endl;
+        case Sensor::ECG:
+            if ( (150 >= data && data > 120) || (80 >= data && data > 0) ) {
+                return "high";
+            } else if (120 >= data && data > 80) {
+                return "low";
+            } else {
+                return "unknown";
+            }
+            break;
+
+        case Sensor::OXIMETER:
+            if( 100 >= data && data > 94) {
+                return "low";
+            } else if ( 94 >= data && data > 90) {
+                return "moderate";
+            } else if ( 90 >= data && data > 0) {
+                return "high";
+            } else {
+                return "unknown";
+            }
+            break;
+
+        default:
+            return "unknown";
+            break;
     }
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
 
+    TimeStamp previous;
+    string data_category;
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-         m_clock_tick++;
         
-        if(!m_isRegistered){
+        /* while(!m_buffer.isEmpty()){
+            Container c = m_buffer.leave();
 
-            if(m_clock_tick == 15){
-                return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
-            } else if (m_clock_tick == 1) {
-                Request request(Request::REGISTER, m_id);
-                SensorModule::sendRequest(request);
-            } else {
-                while(!m_buffer.isEmpty()){
-                    Container c = m_buffer.leave();
-    
-                    if(c.getDataType() == Acknowledge::ID()){
-                        SensorModule::processAcknowledge(c.getData<Acknowledge>());
-                    }
-                }
+            if(c.getDataType() == Request::ID()){
+                SensorModule::processRequest(c.getData<Request>());
             }
 
-        } else {
+        } */
+        m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
+        data_category = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
 
-            while(!m_buffer.isEmpty()){
-                Container c = m_buffer.leave();
+        if(!m_emergency_state) {
 
-                if(c.getDataType() == Request::ID()){
-                    SensorModule::processRequest(c.getData<Request>());
+            if((data_category=="high" && m_clock>1) 
+                ||(data_category=="moderate" && m_clock>5)
+                ||(data_category=="low" && m_clock>15)) {
+
+                    SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData()));
+                    m_clock = 0;
                 }
 
-            }
-
-            if( (m_risk.compare("low") == 0 && m_clock_tick == 15) 
-                || (m_risk.compare("moderate") == 0 && m_clock_tick == 5) 
-                || (m_risk.compare("high") == 0 || m_risk.compare("unknown") == 0) ){
-                
-                SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData()));
-                m_clock_tick = 0;
-            } 
             
+        } else {
+            SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData()));
+            m_clock = 0;
         } 
-
+        
         PulseAckMessage pulseackmessage;
-        Container ccc(pulseackmessage);
-        getConference().send(ccc);
+        Container c(pulseackmessage);
+        getConference().send(c);
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
