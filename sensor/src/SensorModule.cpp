@@ -113,6 +113,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
 
     TimeStamp previous;
     string sensor_risk="low";
+    bool flag = true;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -124,24 +125,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
             }
 
         } */
-        
+        if(flag){
+            sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
+            flag=false;
+        } 
+
         m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
 
         if(!m_emergency_state) {
 
-            if((sensor_risk=="high" && m_clock>1) 
+            if(((sensor_risk=="high" || sensor_risk=="unknown") && m_clock>1) 
                 ||(sensor_risk=="moderate" && m_clock>5)
                 ||(sensor_risk=="low" && m_clock>15)) {
 
                     SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
-                    sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
+                    flag=true;
                     previous = TimeStamp();
                 }
 
             
         } else {
             SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
-            sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
+            flag=true;
             previous = TimeStamp();
         } 
         
