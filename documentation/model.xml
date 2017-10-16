@@ -3,9 +3,9 @@
 <nta>
 	<declaration>/*******************Global Constants*******************/
 //Number of modules to be instantiated
-const int N = 4;   
+const int N = 5;   
 //FIFOQueue size     
-const int BUFFER_SIZE = 20; 
+const int BUFFER_SIZE = 100; 
    
 // Container datatype IDs
 const int sensordata_id = 0;
@@ -30,6 +30,7 @@ broadcast chan reset, killmodule;
 	<template>
 		<name x="5" y="5">odsupercomponent</name>
 		<declaration>clock x;
+int y=0;
 
 //buffer attributes
 int[0,1] m_buffer[BUFFER_SIZE];
@@ -39,13 +40,13 @@ int len, aux;</declaration>
 			<committed/>
 		</location>
 		<location id="id1" x="-1385" y="-654">
-			<name x="-1564" y="-654">broadcast_containers</name>
+			<name x="-1547" y="-646">broadcast_containers</name>
 		</location>
 		<location id="id2" x="-1385" y="-765">
 			<name x="-1428" y="-756">run_module</name>
 		</location>
 		<location id="id3" x="-1190" y="-654">
-			<name x="-1241" y="-697">supercomponent</name>
+			<name x="-1266" y="-688">supercomponent</name>
 		</location>
 		<location id="id4" x="-1190" y="-544">
 			<name x="-1207" y="-527">start</name>
@@ -54,10 +55,12 @@ int len, aux;</declaration>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-1096" y="-680">x&gt;=1000</label>
+			<label kind="guard" x="-1096" y="-697">x&gt;=1000 &amp;&amp;
+y&gt;=N</label>
 			<label kind="synchronisation" x="-1096" y="-663">reset!</label>
-			<label kind="assignment" x="-1096" y="-646">x:=0</label>
-			<nail x="-1105" y="-603"/>
+			<label kind="assignment" x="-1096" y="-646">x:=0,
+y:=0</label>
+			<nail x="-1105" y="-612"/>
 			<nail x="-1105" y="-688"/>
 		</transition>
 		<transition>
@@ -75,7 +78,7 @@ len++</label>
 			<label kind="guard" x="-1411" y="-391">aux &lt; len</label>
 			<label kind="assignment" x="-1470" y="-374">m_buffer[aux]:=m_buffer[aux+1],
 aux++</label>
-			<nail x="-1326" y="-391"/>
+			<nail x="-1334" y="-391"/>
 			<nail x="-1428" y="-391"/>
 		</transition>
 		<transition>
@@ -102,6 +105,7 @@ aux:=0</label>
 			<source ref="id1"/>
 			<target ref="id3"/>
 			<label kind="guard" x="-1317" y="-654">len==0</label>
+			<label kind="assignment" x="-1317" y="-637">y++</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
@@ -305,8 +309,8 @@ int len;
 /*******************Functions*******************/
 
 </declaration>
-		<location id="id14" x="-25882" y="-1708">
-			<name x="-25865" y="-1717">categorize_data</name>
+		<location id="id14" x="-25882" y="-1700">
+			<name x="-25865" y="-1709">categorize_data</name>
 		</location>
 		<location id="id15" x="-25882" y="-1768">
 		</location>
@@ -496,10 +500,23 @@ bodyhub = bodyhubmodule();
 thermometer = sensormodule();
 oximeter = sensormodule();
 ecg = sensormodule();
+acc = sensormodule();
 
 // List one or more processes to be composed into a system.
-system odsupercomponent,bodyhub,thermometer,oximeter,ecg;
+system odsupercomponent,bodyhub,thermometer,oximeter,ecg,acc;
     </system>
 	<queries>
+		<query>
+			<formula>E&lt;&gt; deadlock
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] not deadlock
+			</formula>
+			<comment>
+			</comment>
+		</query>
 	</queries>
 </nta>
