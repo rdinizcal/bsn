@@ -3,7 +3,7 @@
 <nta>
 	<declaration>/*******************Global Constants*******************/
 //Number of modules to be instantiated
-const int N = 5;   
+const int N = 3;   
 //FIFOQueue size     
 const int BUFFER_SIZE = 100; 
    
@@ -29,8 +29,8 @@ broadcast chan reset, killmodule;
 /*******************Global Functions*******************/</declaration>
 	<template>
 		<name x="5" y="5">odsupercomponent</name>
-		<declaration>clock x;
-int y=0;
+		<declaration>int y=0;
+clock x;
 
 //buffer attributes
 int[0,1] m_buffer[BUFFER_SIZE];
@@ -43,7 +43,7 @@ int len, aux;</declaration>
 			<name x="-1547" y="-646">broadcast_containers</name>
 		</location>
 		<location id="id2" x="-1385" y="-765">
-			<name x="-1428" y="-756">run_module</name>
+			<name x="-1436" y="-748">run_module</name>
 		</location>
 		<location id="id3" x="-1190" y="-654">
 			<name x="-1266" y="-688">supercomponent</name>
@@ -94,7 +94,7 @@ aux:=0</label>
 			<source ref="id1"/>
 			<target ref="id0"/>
 			<label kind="guard" x="-1479" y="-595">len&gt;=1</label>
-			<label kind="synchronisation" x="-1666" y="-544">((m_buffer[len-1]==sensordata_id)?
+			<label kind="synchronisation" x="-1674" y="-544">((m_buffer[len-1]==sensordata_id)?
 (send_sensordata):(send_alert))!</label>
 			<label kind="assignment" x="-1479" y="-578">len--,
 aux:=0</label>
@@ -129,8 +129,7 @@ len++</label>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id2"/>
-			<label kind="synchronisation" x="-1292" y="-731">pulse!</label>
-			<nail x="-1309" y="-722"/>
+			<label kind="synchronisation" x="-1300" y="-731">pulse!</label>
 		</transition>
 	</template>
 	<template>
@@ -147,7 +146,7 @@ int[0,1] m_buffer[BUFFER_SIZE];
 int len, aux;
 
 /**************Temporary Variables**************/
-bool flag=false;
+bool enable=false;
 int container;
 
 /*******************Functions*******************/
@@ -219,13 +218,13 @@ int dequeue(){
 		<transition>
 			<source ref="id6"/>
 			<target ref="id5"/>
-			<label kind="guard" x="-399" y="25">m_health_status==1</label>
+			<label kind="guard" x="-408" y="25">m_health_status==1</label>
 		</transition>
 		<transition>
 			<source ref="id7"/>
 			<target ref="id7"/>
 			<label kind="synchronisation" x="-527" y="-433">reset?</label>
-			<label kind="assignment" x="-527" y="-416">flag:=false</label>
+			<label kind="assignment" x="-527" y="-416">enable:=false</label>
 			<nail x="-535" y="-442"/>
 			<nail x="-535" y="-382"/>
 		</transition>
@@ -259,9 +258,9 @@ len++</label>
 		<transition>
 			<source ref="id7"/>
 			<target ref="id13"/>
-			<label kind="guard" x="-578" y="-297">!flag</label>
-			<label kind="synchronisation" x="-544" y="-297">pulse?</label>
-			<label kind="assignment" x="-578" y="-280">flag:=true</label>
+			<label kind="guard" x="-578" y="-297">!enable</label>
+			<label kind="synchronisation" x="-518" y="-297">pulse?</label>
+			<label kind="assignment" x="-578" y="-280">enable:=true</label>
 			<nail x="-595" y="-280"/>
 		</transition>
 		<transition>
@@ -309,10 +308,10 @@ int len;
 /*******************Functions*******************/
 
 </declaration>
-		<location id="id14" x="-25882" y="-1700">
-			<name x="-25865" y="-1709">categorize_data</name>
+		<location id="id14" x="-25882" y="-1708">
+			<name x="-25865" y="-1717">categorize_data</name>
 		</location>
-		<location id="id15" x="-25882" y="-1768">
+		<location id="id15" x="-25882" y="-1785">
 		</location>
 		<location id="id16" x="-25610" y="-1453">
 		</location>
@@ -361,7 +360,7 @@ flag:=false</label>
 			<source ref="id15"/>
 			<target ref="id21"/>
 			<label kind="guard" x="-25976" y="-1708">!flag</label>
-			<nail x="-25942" y="-1725"/>
+			<nail x="-25942" y="-1742"/>
 			<nail x="-25942" y="-1666"/>
 		</transition>
 		<transition>
@@ -372,7 +371,7 @@ flag:=false</label>
 			<source ref="id20"/>
 			<target ref="id26"/>
 			<label kind="synchronisation" x="-25636" y="-1317">sensordata!</label>
-			<label kind="assignment" x="-25636" y="-1300">x:=0, flag:=true</label>
+			<label kind="assignment" x="-25653" y="-1300">flag:=true, x:=0</label>
 			<nail x="-25508" y="-1300"/>
 			<nail x="-25508" y="-1853"/>
 		</transition>
@@ -453,19 +452,18 @@ flag:=false</label>
 		<transition>
 			<source ref="id22"/>
 			<target ref="id22"/>
-			<label kind="synchronisation" x="-25959" y="-1933">send_alert?</label>
-			<label kind="assignment" x="-25959" y="-1916">m_emergency_state:=true</label>
-			<nail x="-25959" y="-1938"/>
-			<nail x="-25959" y="-1887"/>
+			<label kind="synchronisation" x="-25959" y="-1938">send_alert?</label>
+			<label kind="assignment" x="-25959" y="-1921">m_emergency_state:=true</label>
+			<nail x="-25967" y="-1938"/>
+			<nail x="-25967" y="-1887"/>
 		</transition>
 		<transition>
 			<source ref="id22"/>
 			<target ref="id22"/>
 			<label kind="synchronisation" x="-25959" y="-1980">reset?</label>
 			<label kind="assignment" x="-25959" y="-1963">enable:=false</label>
-			<nail x="-26001" y="-1938"/>
-			<nail x="-25959" y="-1938"/>
-			<nail x="-25959" y="-1989"/>
+			<nail x="-25967" y="-1938"/>
+			<nail x="-25967" y="-1989"/>
 		</transition>
 		<transition>
 			<source ref="id26"/>
@@ -503,19 +501,19 @@ ecg = sensormodule();
 acc = sensormodule();
 
 // List one or more processes to be composed into a system.
-system odsupercomponent,bodyhub,thermometer,oximeter,ecg,acc;
+system odsupercomponent,bodyhub,thermometer,oximeter;//,ecg,acc;
     </system>
 	<queries>
 		<query>
-			<formula>E&lt;&gt; deadlock
+			<formula>A[] (thermometer.run imply odsupercomponent.x&lt;=1000)
 			</formula>
-			<comment>
+			<comment>"Existe pelo menos uma situacao em que o sensor esta sendo executado, porem o clock do supercomponent ultrapassou o limite" Real-time property fail
 			</comment>
 		</query>
 		<query>
 			<formula>A[] not deadlock
 			</formula>
-			<comment>
+			<comment>"Nenhum caminho possui deadlock"
 			</comment>
 		</query>
 	</queries>
