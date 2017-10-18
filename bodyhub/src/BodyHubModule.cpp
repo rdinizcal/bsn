@@ -4,6 +4,7 @@
 #include "openbasn/message/Acknowledge.h"
 
 #include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
+#include "opendavinci/odcore/base/Thread.h"
 
 #include <iostream>
 
@@ -114,9 +115,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
         
         BodyHubModule::printHealthStatus();
 
-        PulseAckMessage pulseackmessage;
+        cout<<TimeStamp().getYYYYMMDD_HHMMSS();
+        /* PulseAckMessage pulseackmessage;
         Container container(pulseackmessage);
-        getConference().send(container);
+        getConference().send(container); */
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

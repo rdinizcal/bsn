@@ -2,6 +2,7 @@
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
+#include "opendavinci/odcore/base/Thread.h"
 
 #include <iostream>
 
@@ -131,7 +132,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
         } 
 
         m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
-
+        CLOG1<<"M_CLOCK: "<<m_clock<<endl;
         if(!m_emergency_state) {
 
             if(((sensor_risk=="high" || sensor_risk=="unknown") && m_clock>1) 
