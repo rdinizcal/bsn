@@ -1,4 +1,4 @@
-#include "SensorModule.h"
+#include "SensorNodeModule.h"
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
@@ -19,27 +19,27 @@ using namespace openbasn::message;
 using namespace openbasn::model::sensor;
 
 
-SensorModule::SensorModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "sensor"),
+SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
     m_id(getIdentifier()),
     m_buffer(),
     m_clock(0),
     m_sensor(),
     m_emergency_state(false) {}
 
-SensorModule::~SensorModule() {}
+    SensorNodeModule::~SensorNodeModule() {}
 
-void SensorModule::setUp() {
+void SensorNodeModule::setUp() {
     //setup module buffer
     addDataStoreFor(871, m_buffer);
     addDataStoreFor(872, m_buffer);
 
-    SensorModule::getSensorConfiguration();
+    SensorNodeModule::getSensorConfiguration();
 }
 
-void SensorModule::tearDown() {}
+void SensorNodeModule::tearDown() {}
 
-void SensorModule::getSensorConfiguration(){
+void SensorNodeModule::getSensorConfiguration(){
     int32_t sensortypes = getKeyValueConfiguration().getValue<int32_t>("global.sensortypes");
     
     for(int32_t i = 0; i < sensortypes; i++) {
@@ -48,25 +48,25 @@ void SensorModule::getSensorConfiguration(){
 
         sensor_type = getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id));
 
-        if((getKeyValueConfiguration().getValue<bool>("sensor."+ sensor_type +".active") == 1)){
-            bool   active = (getKeyValueConfiguration().getValue<bool>("sensor."+ sensor_type +".active") == 1);
-            float  samplerate = getKeyValueConfiguration().getValue<float>("sensor."+ sensor_type +".samplerate");
-            string mean_behavior = getKeyValueConfiguration().getValue<string>("sensor."+ sensor_type +".mean.behavior");
-            double stddev = getKeyValueConfiguration().getValue<double>("sensor."+ sensor_type +".stddev");
-            double mean = getKeyValueConfiguration().getValue<double>("sensor."+ sensor_type +".mean."+mean_behavior);
+        if((getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1)){
+            bool   active = (getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1);
+            float  samplerate = getKeyValueConfiguration().getValue<float>("sensornode."+ sensor_type +".samplerate");
+            string mean_behavior = getKeyValueConfiguration().getValue<string>("sensornode."+ sensor_type +".mean.behavior");
+            double stddev = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".stddev");
+            double mean = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".mean."+mean_behavior);
 
             m_sensor = Sensor(sensor_id, samplerate, active, mean, stddev);
         }
     }
 }
 
-void SensorModule::sendSensorData(SensorData sensordata){
+void SensorNodeModule::sendSensorData(SensorData sensordata){
     Container container(sensordata);
     getConference().send(container);
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
-string SensorModule::categorize(uint32_t type, double data) {
+string SensorNodeModule::categorize(uint32_t type, double data) {
     
     switch(type){
 
@@ -110,7 +110,7 @@ string SensorModule::categorize(uint32_t type, double data) {
     }
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
     TimeStamp previous;
     string sensor_risk="low";
@@ -118,16 +118,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        /* while(!m_buffer.isEmpty()){
+        /*while(!m_buffer.isEmpty()){
             Container c = m_buffer.leave();
 
             if(c.getDataType() == Alert::ID()){
                 m_emergency_state=true;
             }
 
-        } */
+        }*/
+        
         if(flag){
-            sensor_risk = SensorModule::categorize(m_sensor.getType(),m_sensor.getData());
+            sensor_risk = SensorNodeModule::categorize(m_sensor.getType(),m_sensor.getData());
             flag=false;
         } 
 
@@ -139,14 +140,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorModule::body() {
                 ||(sensor_risk=="moderate" && m_clock>5)
                 ||(sensor_risk=="low" && m_clock>15)) {
 
-                    SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+                    SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
                     flag=true;
                     previous = TimeStamp();
                 }
 
             
         } else {
-            SensorModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+            SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
             flag=true;
             previous = TimeStamp();
         } 

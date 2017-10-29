@@ -115,10 +115,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
         
         BodyHubModule::printHealthStatus();
 
-        cout<<TimeStamp().getYYYYMMDD_HHMMSS();
-        /* PulseAckMessage pulseackmessage;
+        PulseAckMessage pulseackmessage;
         Container container(pulseackmessage);
-        getConference().send(container); */
+        getConference().send(container);
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

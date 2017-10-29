@@ -18,15 +18,15 @@ using namespace openbasn::data;
 using namespace openbasn::message;
 using namespace openbasn::model::sensor;
 
-class SensorModule : public TimeTriggeredConferenceClientModule {
+class SensorNodeModule : public TimeTriggeredConferenceClientModule {
 
     private:      
-        SensorModule(const SensorModule &/*obj*/);
-        SensorModule& operator=(const SensorModule &/*obj*/); 
+        SensorNodeModule(const SensorNodeModule &/*obj*/);
+        SensorNodeModule& operator=(const SensorNodeModule &/*obj*/); 
 
     public:
-        SensorModule(const int32_t &argc, char **argv);
-        virtual ~SensorModule();
+        SensorNodeModule(const int32_t &argc, char **argv);
+        virtual ~SensorNodeModule();
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
