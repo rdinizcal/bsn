@@ -32,8 +32,6 @@
 #include "opendavinci/generated/odcore/data/dmcp/ModuleDescriptor.h"
 #include "opendavinci/generated/odcore/data/dmcp/PulseMessage.h"
 
-#include <iostream>
-
 namespace odsupercomponent {
 
     using namespace std;

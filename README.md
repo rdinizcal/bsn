@@ -1,43 +1,5 @@
 # OpenBASN
 
-**Open** **B**ody **A**rea **S**ensor **N**etwork
+**Open** **B**ody **A**rea **S**ensor **N**etwork 'e um prot'otipo de uma rede de sensores para o corpo humano desenvolvida em cima da arquitetura de base OpenDaVINCI (em C++). O sistema utiliza das caracter'isticas de execu'c~ao de _software_ distribuido e tempo real do OpenDaVINCI para assegurar resposta no menor tempo poss'ivel em caso de detec'c~ao de estado grave do paciente.
 
-1. Instruções
-
-    1. Clonar repositório
-
-        ```
-        git clone https://github.com/rdinizcal/OpenBASN.git
-        ```
-
-    2. Instalar OpenDaVinci
-
-        If you are on Ubuntu 16.04 Linux distribution:
-
-        1. Add the public key from our repository:
-
-            ```
-            $ wget -O - -q http://opendavinci.cse.chalmers.se/opendavinci.cse.chalmers.se.gpg.key | sudo apt-key add -
-            ```
-
-        2. Add our repository:
-
-            ```
-            $ sudo sh -c 'echo "deb [arch=amd64] http://opendavinci.cse.chalmers.se/ubuntu xenial main" > /etc/apt/sources.list.d/opendavinci.list'
-            ```
-
-        3. Update your package database:
-
-            ```
-            $ sudo apt-get update
-            ```
-
-        4. Install OpenDaVINCI:
-
-            ```
-            $ sudo apt-get install opendavinci-lib opendavinci-odtools opendavinci-odsupercomponent
-            ```
-
-        Otherwise:
-
-        Consult http://opendavinci.readthedocs.io/en/latest/installation.pre-compiled.html#
+No reposit'orio encontram-se o modelo e valida'c~ao do prot'otipo por meio da ferramenta UPPAAL no arquivo _./documentation/model.xml_, o modulo desenvolvido pelos pr'oprios criadores do OpenDaVINCI o _middleware ./odsupercomponent/*_ e os modulos necess'arios para execuc'c~ao do OpenBASN, desenvolvidos para trabalho de gradua'c~ao em engenharia mecatr^onica na Universidade de Bras'ilia. 
