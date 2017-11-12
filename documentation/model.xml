@@ -239,125 +239,141 @@ int dequeue(){
     
     return el;
 }</declaration>
-		<location id="id7" x="-306" y="0" color="#00ff00">
-			<name x="-289" y="-8">emergency_detected</name>
+		<location id="id7" x="-408" y="119">
+			<name x="-433" y="85">persisted</name>
 			<committed/>
 		</location>
-		<location id="id8" x="-306" y="-204" color="#ff0000">
+		<location id="id8" x="-408" y="-8">
+			<name x="-442" y="-42">received</name>
+			<committed/>
+		</location>
+		<location id="id9" x="-306" y="42" color="#00ff00">
+			<name x="-289" y="34">emergency_detected</name>
+			<committed/>
+		</location>
+		<location id="id10" x="-306" y="-204" color="#ff0000">
 			<name x="-323" y="-238">error</name>
 		</location>
-		<location id="id9" x="-238" y="-204">
+		<location id="id11" x="-238" y="-204">
 			<name x="-221" y="-212">done</name>
 			<committed/>
 		</location>
-		<location id="id10" x="-408" y="-102">
+		<location id="id12" x="-408" y="-102">
 			<committed/>
 		</location>
-		<location id="id11" x="-408" y="77">
-			<name x="-459" y="94">check_hstatus</name>
+		<location id="id13" x="-408" y="187">
+			<name x="-433" y="204">update</name>
 			<committed/>
 		</location>
-		<location id="id12" x="-544" y="-204">
+		<location id="id14" x="-544" y="-204">
 			<name x="-544" y="-195">wait</name>
 		</location>
-		<location id="id13" x="-408" y="-340">
+		<location id="id15" x="-408" y="-340">
 			<name x="-434" y="-374">idle</name>
 		</location>
-		<location id="id14" x="-408" y="0">
-			<name x="-459" y="-34">process_data</name>
+		<location id="id16" x="-408" y="51">
+			<name x="-442" y="18">processed</name>
 			<committed/>
 		</location>
-		<location id="id15" x="-408" y="-204">
+		<location id="id17" x="-408" y="-204">
 			<name x="-433" y="-255">run</name>
 			<label kind="invariant" x="-501" y="-238">y&lt;=Texecb &amp;&amp; y&lt;=tm</label>
 		</location>
-		<init ref="id12"/>
+		<init ref="id14"/>
 		<transition>
 			<source ref="id7"/>
-			<target ref="id10"/>
+			<target ref="id13"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id16"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id12"/>
 			<nail x="-306" y="-85"/>
 		</transition>
 		<transition>
-			<source ref="id11"/>
-			<target ref="id7"/>
-			<label kind="guard" x="-365" y="68">m_health_status==high</label>
-			<nail x="-306" y="51"/>
+			<source ref="id13"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-365" y="178">m_health_status==high</label>
+			<nail x="-306" y="161"/>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id13"/>
+			<source ref="id17"/>
+			<target ref="id15"/>
 			<label kind="guard" x="-408" y="-297">y&gt;=tm &amp;&amp;
 x&lt;T</label>
 			<label kind="synchronisation" x="-408" y="-314">timeout!</label>
 			<nail x="-408" y="-221"/>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id8"/>
+			<source ref="id17"/>
+			<target ref="id10"/>
 			<label kind="guard" x="-382" y="-221">x&gt;=T</label>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id10"/>
+			<source ref="id17"/>
+			<target ref="id12"/>
 			<label kind="guard" x="-399" y="-178">x&lt;T &amp;&amp;
 y&lt;tm</label>
 		</transition>
 		<transition>
-			<source ref="id10"/>
-			<target ref="id9"/>
+			<source ref="id12"/>
+			<target ref="id11"/>
 			<label kind="guard" x="-374" y="-119">isEmpty()</label>
 			<nail x="-238" y="-102"/>
 		</transition>
 		<transition>
-			<source ref="id11"/>
-			<target ref="id10"/>
-			<label kind="guard" x="-603" y="68">m_health_status!=high</label>
-			<nail x="-510" y="51"/>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-603" y="178">m_health_status!=high</label>
+			<nail x="-510" y="161"/>
 			<nail x="-510" y="-85"/>
 		</transition>
 		<transition>
-			<source ref="id14"/>
-			<target ref="id11"/>
-			<label kind="assignment" x="-501" y="17">m_health_status:=container</label>
+			<source ref="id16"/>
+			<target ref="id7"/>
+			<label kind="assignment" x="-501" y="68">m_health_status:=container</label>
 		</transition>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id12"/>
+			<source ref="id14"/>
+			<target ref="id14"/>
 			<label kind="synchronisation" x="-671" y="-204">bsensordata?</label>
 			<label kind="assignment" x="-654" y="-187">insert(sd)</label>
 			<nail x="-578" y="-204"/>
 			<nail x="-578" y="-170"/>
 		</transition>
 		<transition>
-			<source ref="id9"/>
-			<target ref="id13"/>
+			<source ref="id11"/>
+			<target ref="id15"/>
 			<label kind="synchronisation" x="-348" y="-357">pulse_ack!</label>
 			<nail x="-238" y="-340"/>
 		</transition>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id15"/>
+			<source ref="id14"/>
+			<target ref="id17"/>
 			<label kind="synchronisation" x="-501" y="-221">pulse?</label>
 			<label kind="assignment" x="-501" y="-204">y:=0</label>
 		</transition>
 		<transition>
-			<source ref="id13"/>
-			<target ref="id12"/>
+			<source ref="id15"/>
+			<target ref="id14"/>
 			<label kind="synchronisation" x="-526" y="-357">reset?</label>
 			<nail x="-544" y="-340"/>
 		</transition>
 		<transition>
-			<source ref="id10"/>
-			<target ref="id14"/>
-			<label kind="guard" x="-442" y="-68">!isEmpty()</label>
-			<label kind="assignment" x="-467" y="-51">container:=dequeue()</label>
+			<source ref="id12"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-433" y="-85">!isEmpty()</label>
+			<label kind="assignment" x="-476" y="-68">container:=dequeue()</label>
 		</transition>
 	</template>
 	<template>
 		<name>sensornodemodule</name>
 		<parameter>const id_s id </parameter>
 		<declaration>/*******************Constants*******************/
-const int Tps = 260;    //Tempo de processamento do sensornode
+const int Tps = 100;    //Tempo de processamento do sensornode
 const int Texecs = Tps; //Tempo de execução do sensornode
 
 /*******************Variables*******************/
@@ -372,162 +388,162 @@ clock y;
 /*******************Functions*******************/
 
 </declaration>
-		<location id="id16" x="-25806" y="-1836">
-			<name x="-25789" y="-1844">receive</name>
+		<location id="id18" x="-25806" y="-1836">
+			<name x="-25789" y="-1844">collect</name>
 			<committed/>
 		</location>
-		<location id="id17" x="-25704" y="-1938" color="#ff0000">
+		<location id="id19" x="-25704" y="-1938" color="#ff0000">
 			<name x="-25687" y="-1946">error</name>
 		</location>
-		<location id="id18" x="-25806" y="-1768">
+		<location id="id20" x="-25806" y="-1768">
 			<name x="-25789" y="-1785">categorize</name>
 			<committed/>
 		</location>
-		<location id="id19" x="-25704" y="-1589">
+		<location id="id21" x="-25704" y="-1589">
 			<committed/>
 		</location>
-		<location id="id20" x="-25908" y="-1589">
+		<location id="id22" x="-25908" y="-1589">
 			<committed/>
 		</location>
-		<location id="id21" x="-25806" y="-1589">
+		<location id="id23" x="-25806" y="-1589">
 			<committed/>
 		</location>
-		<location id="id22" x="-25806" y="-1496">
+		<location id="id24" x="-25806" y="-1496">
 			<name x="-25823" y="-1487">send</name>
 			<urgent/>
 		</location>
-		<location id="id23" x="-25806" y="-1700">
+		<location id="id25" x="-25806" y="-1700">
 			<committed/>
 		</location>
-		<location id="id24" x="-25942" y="-1938">
+		<location id="id26" x="-25942" y="-1938">
 			<name x="-25985" y="-1946">wait</name>
 		</location>
-		<location id="id25" x="-25806" y="-2074">
+		<location id="id27" x="-25806" y="-2074">
 			<name x="-25816" y="-2108">idle</name>
 		</location>
-		<location id="id26" x="-25806" y="-1938">
+		<location id="id28" x="-25806" y="-1938">
 			<name x="-25831" y="-1989">run</name>
 			<label kind="invariant" x="-25865" y="-1972">y&lt;=Texecs &amp;&amp; y&lt;=tm</label>
 		</location>
-		<location id="id27" x="-25602" y="-1938">
+		<location id="id29" x="-25602" y="-1938">
 			<name x="-25585" y="-1963">done</name>
 			<committed/>
 		</location>
-		<init ref="id24"/>
+		<init ref="id26"/>
 		<transition>
-			<source ref="id26"/>
-			<target ref="id25"/>
+			<source ref="id28"/>
+			<target ref="id27"/>
 			<label kind="guard" x="-25797" y="-2023">x&lt;T &amp;&amp;
 y&gt;=tm</label>
 			<label kind="synchronisation" x="-25797" y="-2040">timeout!</label>
 		</transition>
 		<transition>
-			<source ref="id16"/>
-			<target ref="id18"/>
+			<source ref="id18"/>
+			<target ref="id20"/>
 		</transition>
 		<transition>
-			<source ref="id26"/>
-			<target ref="id16"/>
+			<source ref="id28"/>
+			<target ref="id18"/>
 			<label kind="guard" x="-25797" y="-1904">x&lt;T &amp;&amp;
 y&lt;tm</label>
 		</transition>
 		<transition>
-			<source ref="id26"/>
-			<target ref="id17"/>
+			<source ref="id28"/>
+			<target ref="id19"/>
 			<label kind="guard" x="-25789" y="-1955">x&gt;=T</label>
 		</transition>
 		<transition>
-			<source ref="id18"/>
-			<target ref="id23"/>
+			<source ref="id20"/>
+			<target ref="id25"/>
 			<label kind="select" x="-25976" y="-1759">rand_category:int[1,3]</label>
 			<label kind="assignment" x="-26010" y="-1742">m_category:=rand_category</label>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id27"/>
+			<source ref="id24"/>
+			<target ref="id29"/>
 			<label kind="assignment" x="-25721" y="-1496">t[id]:=0</label>
 			<nail x="-25593" y="-1496"/>
 			<nail x="-25593" y="-1912"/>
 		</transition>
 		<transition>
-			<source ref="id19"/>
-			<target ref="id27"/>
+			<source ref="id21"/>
+			<target ref="id29"/>
 			<label kind="guard" x="-25687" y="-1598">t[id]&lt;1</label>
 			<nail x="-25687" y="-1597"/>
 			<nail x="-25602" y="-1598"/>
 			<nail x="-25602" y="-1913"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id27"/>
+			<source ref="id23"/>
+			<target ref="id29"/>
 			<label kind="guard" x="-25780" y="-1606">t[id]&lt;5</label>
 			<nail x="-25789" y="-1606"/>
 			<nail x="-25611" y="-1606"/>
 			<nail x="-25611" y="-1913"/>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id27"/>
+			<source ref="id22"/>
+			<target ref="id29"/>
 			<label kind="guard" x="-25891" y="-1606">t[id]&lt;15</label>
 			<nail x="-25891" y="-1614"/>
 			<nail x="-25619" y="-1615"/>
 			<nail x="-25619" y="-1913"/>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id22"/>
+			<source ref="id22"/>
+			<target ref="id24"/>
 			<label kind="guard" x="-25984" y="-1572">t[id]&gt;=15</label>
 			<label kind="synchronisation" x="-25993" y="-1555">sensordata!</label>
 			<label kind="assignment" x="-25967" y="-1538">sd:=low</label>
 			<nail x="-25908" y="-1530"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id22"/>
+			<source ref="id23"/>
+			<target ref="id24"/>
 			<label kind="guard" x="-25831" y="-1572">t[id]&gt;=5</label>
 			<label kind="synchronisation" x="-25840" y="-1555">sensordata!</label>
 			<label kind="assignment" x="-25857" y="-1538">sd:=moderate</label>
 		</transition>
 		<transition>
-			<source ref="id19"/>
-			<target ref="id22"/>
+			<source ref="id21"/>
+			<target ref="id24"/>
 			<label kind="guard" x="-25704" y="-1572">t[id]&gt;=1</label>
 			<label kind="synchronisation" x="-25704" y="-1555">sensordata!</label>
 			<label kind="assignment" x="-25704" y="-1538">sd:=high</label>
 			<nail x="-25704" y="-1530"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id19"/>
+			<source ref="id25"/>
+			<target ref="id21"/>
 			<label kind="guard" x="-25772" y="-1700">m_category==high</label>
 			<nail x="-25704" y="-1666"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id21"/>
+			<source ref="id25"/>
+			<target ref="id23"/>
 			<label kind="guard" x="-25874" y="-1674">m_category==moderate</label>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id20"/>
+			<source ref="id25"/>
+			<target ref="id22"/>
 			<label kind="guard" x="-25967" y="-1700">m_category==low</label>
 			<nail x="-25908" y="-1666"/>
 		</transition>
 		<transition>
-			<source ref="id27"/>
-			<target ref="id25"/>
+			<source ref="id29"/>
+			<target ref="id27"/>
 			<label kind="synchronisation" x="-25721" y="-2091">pulse_ack!</label>
 			<nail x="-25602" y="-2074"/>
 		</transition>
 		<transition>
-			<source ref="id25"/>
-			<target ref="id24"/>
+			<source ref="id27"/>
+			<target ref="id26"/>
 			<label kind="synchronisation" x="-25908" y="-2091">reset?</label>
 			<nail x="-25942" y="-2074"/>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id26"/>
+			<source ref="id26"/>
+			<target ref="id28"/>
 			<label kind="synchronisation" x="-25908" y="-1955">pulse?</label>
 			<label kind="assignment" x="-25908" y="-1938">y:=0</label>
 		</transition>
@@ -535,13 +551,13 @@ y&lt;tm</label>
 	<template>
 		<name>timer</name>
 		<parameter>const id_s id</parameter>
-		<location id="id28" x="-306" y="-68">
+		<location id="id30" x="-306" y="-68">
 			<name x="-348" y="-85">idle</name>
 		</location>
-		<init ref="id28"/>
+		<init ref="id30"/>
 		<transition>
-			<source ref="id28"/>
-			<target ref="id28"/>
+			<source ref="id30"/>
+			<target ref="id30"/>
 			<label kind="synchronisation" x="-229" y="-93">reset?</label>
 			<label kind="assignment" x="-229" y="-68">t[id]++</label>
 			<nail x="-238" y="-102"/>
@@ -552,15 +568,9 @@ y&lt;tm</label>
 bodyhub = bodyhubmodule();
 
 // List one or more processes to be composed into a system.
-system scheduler,buffer,bodyhub,sensornodemodule,timer;//,oximeter,ecg,acc;
+system scheduler,buffer,bodyhub,sensornodemodule,timer;
     </system>
 	<queries>
-		<query>
-			<formula>A[] bodyhub.emergency_detected imply (t[0]&lt;2 or t[1]&lt;2 or t[2] &lt; 2)
-			</formula>
-			<comment>Todo estado emergency_detected implica que não mais que 1 tick do relógio do sensor que enviou o estado high aconteceu
-			</comment>
-		</query>
 		<query>
 			<formula>E&lt;&gt; bodyhub.emergency_detected
 			</formula>
@@ -568,33 +578,45 @@ system scheduler,buffer,bodyhub,sensornodemodule,timer;//,oximeter,ecg,acc;
 			</comment>
 		</query>
 		<query>
-			<formula>A[] (sensornodemodule(0).m_category==high and sensornodemodule(0).send) imply (t[0]&gt;=1 and t[0]&lt;=15)
+			<formula>A&lt;&gt; (sensornodemodule(0).collect imply sensornodemodule(0).send)
 			</formula>
-			<comment>Sempre que a categoria for moderate e o estado send for alcançado o t deve ser maior que 1 e menor ou igual a 15
+			<comment>Em todos os caminhos, eventualmente um dado coletado será enviado.
 			</comment>
 		</query>
 		<query>
-			<formula>A[] (sensornodemodule(0).m_category==moderate and sensornodemodule(0).send) imply (t[0]&gt;4 and t[0]&lt;=15)
+			<formula>bodyhub.received --&gt; bodyhub.persisted
 			</formula>
-			<comment>Sempre que a categoria for moderate e o estado send for alcançado o t deve ser maior que 4 e menor ou igual a 15
+			<comment>Se dados forem recebidos pelo bodyhub, eles devem ser persistidos
 			</comment>
 		</query>
 		<query>
-			<formula>A[] (sensornodemodule(0).m_category==low and sensornodemodule(0).send) imply t[0]==15
+			<formula>bodyhub.received --&gt; bodyhub.processed
 			</formula>
-			<comment>Sempre que a categoria for low e o estado send for alcançado o t deve ser igual a 15
+			<comment>Se dados forem recebidos pelo bodyhub, eles devem ser processados
+			</comment>
+		</query>
+		<query>
+			<formula>bodyhub.received --&gt; bodyhub.update
+			</formula>
+			<comment>Se dados forem recebidos pelo bodyhub, o estado so paciente deve ser atualizado
 			</comment>
 		</query>
 		<query>
 			<formula>A[] not (t[0]&gt;15)
 			</formula>
-			<comment>Garante que o numero maximo de ticks para um dado ser enviado e de 15
+			<comment>O relogio de envio de daos nunca passará de 15 ticks, ou seja, o tempo maximo de envio de um dado é de 15 ticks
+			</comment>
+		</query>
+		<query>
+			<formula>A[] (bodyhub.emergency_detected imply (t[2]&lt;2 or t[1]&lt;2 or t[0]&lt;2))
+			</formula>
+			<comment>Em todos os caminhos, todos os estados em que a emergencia for detectada pelo menos um dos relógios, o que representa o tempo do nó sensor que enviou um dado de alto risco, deve apresentar número de ticks igual a 1. 
 			</comment>
 		</query>
 		<query>
 			<formula>A[] not deadlock
 			</formula>
-			<comment>"Nenhum caminho possui deadlock"
+			<comment>Nenhum estado terminal pode ser alcançado, ou seja, a soma dos tempos de processamento dos módulos não deve exceder T
 			</comment>
 		</query>
 	</queries>
