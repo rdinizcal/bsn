@@ -3,24 +3,19 @@
 <nta>
 	<declaration>/*******************Global Constants*******************/
 // Number of Sensors
-const int N = 2;   
+const int N = 3;   
 
 //FIFOQueue size     
 const int BUFFER_SIZE = N; 
  
-// Container datatype IDs
-const int sensordata_id = 0;
-
 // Sensor risks (for readability)
-const int unknown = 0;
 const int low = 1;
 const int moderate = 2;
 const int high = 3;
-const int critical = 0;
 
 // Time Constraints (ms)
-const int DL = 1000;
-const int tm = 200;
+const int T = 1000; //Período dd ciclo
+const int tm = 250; //timeout
 
 /****************Global Data Structures****************/
 typedef int[0,N-1] id_s;
@@ -54,7 +49,7 @@ int y = 0;
 		</location>
 		<location id="id1" x="-1401" y="-544">
 			<name x="-1452" y="-552">wait</name>
-			<label kind="invariant" x="-1462" y="-535">x&lt;=DL</label>
+			<label kind="invariant" x="-1462" y="-535">x&lt;=T</label>
 		</location>
 		<location id="id2" x="-1292" y="-544">
 			<name x="-1351" y="-552">select</name>
@@ -79,7 +74,7 @@ int y = 0;
 		<transition>
 			<source ref="id1"/>
 			<target ref="id0"/>
-			<label kind="guard" x="-1419" y="-501">x&gt;=DL</label>
+			<label kind="guard" x="-1419" y="-501">x&gt;=T</label>
 			<label kind="synchronisation" x="-1419" y="-484">reset!</label>
 			<label kind="assignment" x="-1419" y="-467">y:=0,
 x:=0</label>
@@ -89,7 +84,7 @@ x:=0</label>
 			<source ref="id2"/>
 			<target ref="id1"/>
 			<label kind="guard" x="-1377" y="-612">y&gt;=(N+1)
-&amp;&amp; x&lt;DL</label>
+&amp;&amp; x&lt;T</label>
 			<nail x="-1309" y="-578"/>
 			<nail x="-1385" y="-578"/>
 		</transition>
@@ -202,8 +197,8 @@ sd:=m_buffer[len]</label>
 	<template>
 		<name>bodyhubmodule</name>
 		<declaration>/*******************Constants*******************/
-const int a = 1;  //min processing time
-const int b = 100;//max processing time
+const int Tpb = 50;         //Tempo de processamento do bodyhub
+const int Texecb = Tpb*N;    //Tempo de execução do bodyhub
 
 /*******************Variables*******************/
 int m_health_status=low;
@@ -273,8 +268,8 @@ int dequeue(){
 			<committed/>
 		</location>
 		<location id="id15" x="-408" y="-204">
-			<name x="-442" y="-255">run</name>
-			<label kind="invariant" x="-467" y="-238">y&lt;=b &amp;&amp; y&lt;=tm</label>
+			<name x="-433" y="-255">run</name>
+			<label kind="invariant" x="-501" y="-238">y&lt;=Texecb &amp;&amp; y&lt;=tm</label>
 		</location>
 		<init ref="id12"/>
 		<transition>
@@ -292,19 +287,19 @@ int dequeue(){
 			<source ref="id15"/>
 			<target ref="id13"/>
 			<label kind="guard" x="-408" y="-297">y&gt;=tm &amp;&amp;
-x&lt;DL</label>
+x&lt;T</label>
 			<label kind="synchronisation" x="-408" y="-314">timeout!</label>
 			<nail x="-408" y="-221"/>
 		</transition>
 		<transition>
 			<source ref="id15"/>
 			<target ref="id8"/>
-			<label kind="guard" x="-382" y="-221">x&gt;=DL</label>
+			<label kind="guard" x="-382" y="-221">x&gt;=T</label>
 		</transition>
 		<transition>
 			<source ref="id15"/>
 			<target ref="id10"/>
-			<label kind="guard" x="-399" y="-178">x&lt;DL &amp;&amp;
+			<label kind="guard" x="-399" y="-178">x&lt;T &amp;&amp;
 y&lt;tm</label>
 		</transition>
 		<transition>
@@ -362,8 +357,8 @@ y&lt;tm</label>
 		<name>sensornodemodule</name>
 		<parameter>const id_s id </parameter>
 		<declaration>/*******************Constants*******************/
-const int a = 30; //min processing time
-const int b = 100;//max processing time
+const int Tps = 260;    //Tempo de processamento do sensornode
+const int Texecs = Tps; //Tempo de execução do sensornode
 
 /*******************Variables*******************/
 int m_category;
@@ -412,7 +407,7 @@ clock y;
 		</location>
 		<location id="id26" x="-25806" y="-1938">
 			<name x="-25831" y="-1989">run</name>
-			<label kind="invariant" x="-25865" y="-1972">y&lt;=b &amp;&amp; y&lt;=tm</label>
+			<label kind="invariant" x="-25865" y="-1972">y&lt;=Texecs &amp;&amp; y&lt;=tm</label>
 		</location>
 		<location id="id27" x="-25602" y="-1938">
 			<name x="-25585" y="-1963">done</name>
@@ -422,7 +417,7 @@ clock y;
 		<transition>
 			<source ref="id26"/>
 			<target ref="id25"/>
-			<label kind="guard" x="-25797" y="-2023">x&lt;DL &amp;&amp;
+			<label kind="guard" x="-25797" y="-2023">x&lt;T &amp;&amp;
 y&gt;=tm</label>
 			<label kind="synchronisation" x="-25797" y="-2040">timeout!</label>
 		</transition>
@@ -433,13 +428,13 @@ y&gt;=tm</label>
 		<transition>
 			<source ref="id26"/>
 			<target ref="id16"/>
-			<label kind="guard" x="-25797" y="-1904">x&lt;DL &amp;&amp;
+			<label kind="guard" x="-25797" y="-1904">x&lt;T &amp;&amp;
 y&lt;tm</label>
 		</transition>
 		<transition>
 			<source ref="id26"/>
 			<target ref="id17"/>
-			<label kind="guard" x="-25789" y="-1955">x&gt;=DL</label>
+			<label kind="guard" x="-25789" y="-1955">x&gt;=T</label>
 		</transition>
 		<transition>
 			<source ref="id18"/>
@@ -561,7 +556,7 @@ system scheduler,buffer,bodyhub,sensornodemodule,timer;//,oximeter,ecg,acc;
     </system>
 	<queries>
 		<query>
-			<formula>A[] bodyhub.emergency_detected imply (t[0]&lt;2 or t[1]&lt;2)
+			<formula>A[] bodyhub.emergency_detected imply (t[0]&lt;2 or t[1]&lt;2 or t[2] &lt; 2)
 			</formula>
 			<comment>Todo estado emergency_detected implica que não mais que 1 tick do relógio do sensor que enviou o estado high aconteceu
 			</comment>

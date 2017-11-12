@@ -114,44 +114,27 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
     TimeStamp previous;
     string sensor_risk="low";
-    bool flag = true;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        /*while(!m_buffer.isEmpty()){
-            Container c = m_buffer.leave();
-
-            if(c.getDataType() == Alert::ID()){
-                m_emergency_state=true;
-            }
-
-        }*/
-        
-        if(flag){
-            sensor_risk = SensorNodeModule::categorize(m_sensor.getType(),m_sensor.getData());
-            flag=false;
-        } 
-
+        //atualiza relogio
         m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
         CLOG1<<"M_CLOCK: "<<m_clock<<endl;
-        if(!m_emergency_state) {
 
-            if(((sensor_risk=="high" || sensor_risk=="unknown") && m_clock>1) 
-                ||(sensor_risk=="moderate" && m_clock>5)
-                ||(sensor_risk=="low" && m_clock>15)) {
+        //amostra dados do sensor
+        sensor_risk = SensorNodeModule::categorize(m_sensor.getType(),m_sensor.getData());
 
-                    SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
-                    flag=true;
-                    previous = TimeStamp();
-                }
+        //avalia
+        if(((sensor_risk=="high" || sensor_risk=="unknown") && m_clock>1) 
+            ||(sensor_risk=="moderate" && m_clock>5)
+            ||(sensor_risk=="low" && m_clock>15)) {
 
-            
-        } else {
-            SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
-            flag=true;
-            previous = TimeStamp();
-        } 
+                //envia dado
+                SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
+                previous = TimeStamp();
+        }
         
+        //envia pulse_ack
         PulseAckMessage pulseackmessage;
         Container c(pulseackmessage);
         getConference().send(c);

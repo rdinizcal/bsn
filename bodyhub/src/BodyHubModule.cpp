@@ -105,16 +105,23 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+        //avalia buffer
         while(!m_buffer.isEmpty()){
+            //consome dado
             Container container = m_buffer.leave();
             if (container.getDataType() == SensorData::ID()) {
+                //atualiza estado do paciente
                 BodyHubModule::updateHealthStatus(container.getData<SensorData>());
+                //detecta emergencia
+
+                //persiste
                 BodyHubModule::persistHealthStatus(container.getSentTimeStamp(), container.getReceivedTimeStamp());
             }
         }            
         
         BodyHubModule::printHealthStatus();
 
+        //envia pulse_ack
         PulseAckMessage pulseackmessage;
         Container container(pulseackmessage);
         getConference().send(container);
