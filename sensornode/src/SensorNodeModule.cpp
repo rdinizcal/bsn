@@ -4,6 +4,7 @@
 #include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
 #include "opendavinci/odcore/base/Thread.h"
 
+#include <time.h>
 #include <iostream>
 
 using namespace std;
@@ -112,11 +113,15 @@ string SensorNodeModule::categorize(uint32_t type, double data) {
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
+    srand(time(NULL));
+    double tps = getKeyValueConfiguration().getValue<double>("sensornode.tps");
     TimeStamp previous;
     string sensor_risk="low";
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+        Thread::usleepFor(rand() % tps);
+
         //atualiza relogio
         m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
         CLOG1<<"M_CLOCK: "<<m_clock<<endl;

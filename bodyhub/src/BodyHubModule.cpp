@@ -3,9 +3,11 @@
 #include "openbasn/model/sensor/Sensor.h"
 #include "openbasn/message/Acknowledge.h"
 
+#include "opendavinci/odcore/data/TimeStamp.h"
 #include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
 #include "opendavinci/odcore/base/Thread.h"
 
+#include <time.h>
 #include <iostream>
 
 #include <map>
@@ -103,17 +105,23 @@ void BodyHubModule::printHealthStatus(){
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
+    srand(time(NULL));
+    double tpb = getKeyValueConfiguration().getValue<double>("bodyhub.tpb");
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         //avalia buffer
         while(!m_buffer.isEmpty()){
+
+            Thread::usleepFor(rand() % tpb);
+            
             //consome dado
             Container container = m_buffer.leave();
             if (container.getDataType() == SensorData::ID()) {
                 //atualiza estado do paciente
                 BodyHubModule::updateHealthStatus(container.getData<SensorData>());
                 //detecta emergencia
-
+                if(container.getData<SensorData>().getSensorRisk() == "high" ) cout << "EMERGENCY DETECTED!!" << endl;
                 //persiste
                 BodyHubModule::persistHealthStatus(container.getSentTimeStamp(), container.getReceivedTimeStamp());
             }
