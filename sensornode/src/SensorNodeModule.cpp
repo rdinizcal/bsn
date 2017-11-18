@@ -1,7 +1,6 @@
 #include "SensorNodeModule.h"
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
-#include "opendavinci/generated/odcore/data/dmcp/PulseAckMessage.h"
 #include "opendavinci/odcore/base/Thread.h"
 
 #include <time.h>
@@ -9,32 +8,25 @@
 
 using namespace std;
 
-
 using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace odcore::data;
 using namespace odcore::data::dmcp;
 
 using namespace openbasn::data;
-using namespace openbasn::message;
 using namespace openbasn::model::sensor;
 
 
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
     m_id(getIdentifier()),
-    m_buffer(),
-    m_clock(0),
     m_sensor(),
-    m_emergency_state(false) {}
+    m_status("low"),
+    m_data_queue(){}
 
     SensorNodeModule::~SensorNodeModule() {}
 
 void SensorNodeModule::setUp() {
-    //setup module buffer
-    addDataStoreFor(871, m_buffer);
-    addDataStoreFor(872, m_buffer);
-
     SensorNodeModule::getSensorConfiguration();
 }
 
@@ -61,88 +53,130 @@ void SensorNodeModule::getSensorConfiguration(){
     }
 }
 
+string SensorNodeModule::generateData(string actual_status){
+
+    string category;
+    int p = (rand() % 100) + 1;
+
+    if(actual_status == "low"){
+        if(1 <= p && p <= 5) {
+            category = "high";
+        } else if (5 < p && p <= 30) {
+            category = "moderate";
+        } else {
+            category = actual_status;
+        }
+    } else if(actual_status == "moderate") {
+        if(1 <= p && p <= 15) {
+            category = "high";
+        } else if (15 < p && p <= 30) {
+            category = "low";
+        } else {
+            category = actual_status;
+        }
+    } else if(actual_status == "high"){
+        if(1 <= p && p <= 5) {
+            category = "low";
+        } else if (5 < p && p <= 30) {
+            category = "moderate";
+        } else {
+            category = actual_status;
+        }
+    } else {
+        category = actual_status;
+    }
+
+    return category;
+}
+
+string SensorNodeModule::statusAnalysis(string categorized_data, string actual_status) {
+
+    string new_status;
+    int l=0, m=0, h=0;
+
+    if(m_data_queue.size()>=5){
+        m_data_queue.pop_front();
+    }
+
+    m_data_queue.push_back(categorized_data);
+
+    for(uint32_t i = 0; i < m_data_queue.size(); i++) {
+        if(m_data_queue[i]=="low"){
+            l++;
+        } else if(m_data_queue[i]=="moderate") {
+            m++;
+        } else if (m_data_queue[i]=="high"){
+            h++;
+        }
+    }
+
+    if(l>=3){
+        new_status = "low";
+    } else if (m>=3) {
+        new_status = "moderate";
+    } else if (h>=3) {
+        new_status = "high";
+    } else {
+        new_status = actual_status;
+    }
+
+    return new_status;
+}
+
 void SensorNodeModule::sendSensorData(SensorData sensordata){
     Container container(sensordata);
     getConference().send(container);
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
-string SensorNodeModule::categorize(uint32_t type, double data) {
-    
-    switch(type){
-
-        case Sensor::THERMOMETER:
-            if(37 >= data && data > 35){
-                return "low"; 
-            } else if ( (35 >= data && data > 30) || (38 >= data && data > 37) ) {
-                return "moderate";
-            } else if ( (50 >= data && data > 38) || (30 >= data && data > 0) ) {
-                return "high";
-            } else {
-                return "unknown"; 
-            }
-            break;
-
-        case Sensor::ECG:
-            if ( (150 >= data && data > 120) || (80 >= data && data > 0) ) {
-                return "high";
-            } else if (120 >= data && data > 80) {
-                return "low";
-            } else {
-                return "unknown";
-            }
-            break;
-
-        case Sensor::OXIMETER:
-            if( 100 >= data && data > 94) {
-                return "low";
-            } else if ( 94 >= data && data > 90) {
-                return "moderate";
-            } else if ( 90 >= data && data > 0) {
-                return "high";
-            } else {
-                return "unknown";
-            }
-            break;
-
-        default:
-            return "unknown";
-            break;
-    }
-}
-
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
     srand(time(NULL));
-    double tps = getKeyValueConfiguration().getValue<double>("sensornode.tps");
-    TimeStamp previous;
-    string sensor_risk="low";
+    string categorized_data, new_m_status;
+    int counter = 0, freq = 10;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        Thread::usleepFor(rand() % tps);
+        counter++;
 
-        //atualiza relogio
-        m_clock = ((TimeStamp()-previous).toMicroseconds())/1000000L;
-        CLOG1<<"M_CLOCK: "<<m_clock<<endl;
+        if(counter==freq){
+            counter=0;
 
-        //amostra dados do sensor
-        sensor_risk = SensorNodeModule::categorize(m_sensor.getType(),m_sensor.getData());
+            /* 
+             * MONITOR
+             * Sample Data - obter novo dado do sensor
+             * Process Data - processar dado do sensor
+             * Categorize Data - categorizar dado do sensor de acordo com conhecimento de domínio
+             */
+            categorized_data = generateData(m_status);
+            cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 
-        //avalia
-        if(((sensor_risk=="high" || sensor_risk=="unknown") && m_clock>1) 
-            ||(sensor_risk=="moderate" && m_clock>5)
-            ||(sensor_risk=="low" && m_clock>15)) {
+            /* 
+             * ANALYZE
+             * Analyze sensornode status 
+             */
+            new_m_status = statusAnalysis(categorized_data, m_status);
 
-                //envia dado
-                SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), m_sensor.getData(), sensor_risk));
-                previous = TimeStamp();
+            //
+            /* 
+             * PLAN AND EXECUTE
+             * alterar a frequencia de sampling e enviar estado atual
+             */
+            if(m_status != new_m_status) {
+                m_status = new_m_status;
+
+                if(m_status=="low"){
+                    freq = 10;
+                } else if (m_status=="moderate"){
+                    freq = 5;
+                } else if (m_status=="high"){
+                    freq = 1;
+                }
+                
+                SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), 0, m_status));
+            }
         }
         
-        //envia pulse_ack
-        PulseAckMessage pulseackmessage;
-        Container c(pulseackmessage);
-        getConference().send(c);
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

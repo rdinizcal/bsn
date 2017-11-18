@@ -46,8 +46,8 @@ void BodyHubModule::setUp() {
     //setup m_status_log
     m_status_log.open("healthstatus_log.csv");
     
-    //"Thermometer data, Thermometer risk, ECG data, ECG risk, Oximeter data, Oximeter risk, Health Status, Sent at, Received at, Processed at"
-    m_status_log << "Thermometer data, Thermometer risk, ECG data, ECG risk, Oximeter data, Oximeter risk, Health Status, Sent at, Received at, Processed at\n";
+    //"Thermometer risk, ECG risk, Oximeter risk, Patient status, Sent at, Received at, Processed at"
+    m_status_log << "Thermometer status, ECG status, Oximeter status, Patient status, Sent at, Received at, Processed at\n";
 }
 
 void BodyHubModule::tearDown() {
@@ -80,9 +80,8 @@ void BodyHubModule::updateHealthStatus(SensorData sensordata){
 
 void BodyHubModule::persistHealthStatus(TimeStamp sent_timestamp, TimeStamp received_timestamp){
     
-    //"Thermometer data, Thermometer risk, ECG data, ECG risk, Oximeter data, Oximeter risk, Health Status, Sent at, Received at, Processed at"
+    //"Thermometer risk, ECG risk, Oximeter risk, Patient Status, Sent at, Received at, Processed at"
     for(uint32_t i = 0; i < m_sensor.size(); i++){
-        m_status_log << m_sensor[i].first << ",";
         m_status_log << m_sensor[i].second << ",";
     }
 
@@ -96,8 +95,7 @@ void BodyHubModule::printHealthStatus(){
     cout << "----------------------------------------"<<endl;
     for(uint32_t i = 0; i < 3; i++){
         cout << ((i==0)?"Thermometer: ":(i==1)?"ECG: ":"Oximeter: ");
-        cout << m_sensor[i].first << " | ";
-        cout << m_sensor[i].second << " | " << endl;
+        cout << m_sensor[i].second << endl;
     }
     cout << "Health Status: " << m_health_status << endl;
     cout << "----------------------------------------"<<endl;
@@ -106,17 +104,14 @@ void BodyHubModule::printHealthStatus(){
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
     srand(time(NULL));
-    double tpb = getKeyValueConfiguration().getValue<double>("bodyhub.tpb");
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        //avalia buffer
         while(!m_buffer.isEmpty()){
 
-            Thread::usleepFor(rand() % tpb);
-            
             //consome dado
             Container container = m_buffer.leave();
+
             if (container.getDataType() == SensorData::ID()) {
                 //atualiza estado do paciente
                 BodyHubModule::updateHealthStatus(container.getData<SensorData>());
@@ -125,14 +120,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
                 //persiste
                 BodyHubModule::persistHealthStatus(container.getSentTimeStamp(), container.getReceivedTimeStamp());
             }
+
+            BodyHubModule::printHealthStatus();
         }            
         
-        BodyHubModule::printHealthStatus();
+//        BodyHubModule::printHealthStatus();
 
-        //envia pulse_ack
-        PulseAckMessage pulseackmessage;
-        Container container(pulseackmessage);
-        getConference().send(container);
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

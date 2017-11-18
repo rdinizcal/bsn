@@ -9,8 +9,9 @@ global.sensortype.3 = oximeter
 
 ### Supercomponent execution pattern configurations
 
-odsupercomponent.pulsetimeack.timeout=250000 # 0.250 seconds in microseconds.
+odsupercomponent.pulsetimeack.timeout=1000 # 0.250 seconds in microseconds.
 odsupercomponent.pulsetimeack.yield=5000 # 0.005 seconds in microseconds.
+#odsupercomponent.pulsetimeack.exclude=sensornode
 
 ### SensorNodeModule configuration
 
