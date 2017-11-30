@@ -7,6 +7,11 @@
 #include "openbasn/model/sensor/Sensor.h"
 
 #include <deque>
+#include <fstream>
+#include <time.h>
+#include <iostream>
+#include <chrono>
+#include <string>
 
 using namespace std;
 
@@ -35,13 +40,17 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         string generateData(string /*actual status*/);
         string statusAnalysis(string /*categorized data*/, string /*actual status*/);
         void sendSensorData(SensorData /*sensordata*/);
-        // string categorize(uint32_t /*type*/, double /*data*/);
 
     private:
         uint32_t m_id;
-        Sensor m_sensor;
+        int32_t m_sensor_type;
         string m_status;
         deque<string> m_data_queue;
+
+        ofstream m_status_log;
+        ofstream m_sensornode_log;
+
+        int32_t n;
 };
 
 #endif

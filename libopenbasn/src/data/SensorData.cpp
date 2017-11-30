@@ -6,6 +6,7 @@
 #include <string>
 #include <iterator>
 #include <algorithm>
+#include <sys/time.h>
 
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
@@ -16,13 +17,13 @@ namespace openbasn {
         
         using namespace std;
         
-        SensorData::SensorData() : m_sensor_id(), m_sensor_type(), m_sensor_data(), m_sensor_risk() {}
+        SensorData::SensorData() : m_sensor_id(), m_sensor_type(), m_sensor_status(), m_sent_ts() {}
         
-        SensorData::SensorData(const uint32_t &sensor_id, const int32_t &sensor_type, const double &sensor_data, const string &sensor_risk) : 
+        SensorData::SensorData(const uint32_t &sensor_id, const int32_t &sensor_type, const string &sensor_status, const timespec &sent_ts) : 
             m_sensor_id(sensor_id),
             m_sensor_type(sensor_type),
-            m_sensor_data(sensor_data),
-            m_sensor_risk(sensor_risk) {}
+            m_sensor_status(sensor_status),
+            m_sent_ts(sent_ts) {}
         
         SensorData::~SensorData() {}
         
@@ -30,14 +31,14 @@ namespace openbasn {
             SerializableData(),
             m_sensor_id(obj.getSensorID()),
             m_sensor_type(obj.getSensorType()),
-            m_sensor_data(obj.getSensorData()),
-            m_sensor_risk(obj.getSensorRisk()) {}
+            m_sensor_status(obj.getSensorStatus()),
+            m_sent_ts(obj.getSentTimespec()) {}
         
         SensorData& SensorData::operator=(const SensorData &obj) {
             m_sensor_id = obj.getSensorID();
             m_sensor_type = obj.getSensorType();
-            m_sensor_data = obj.getSensorData();
-            m_sensor_risk = obj.getSensorRisk();
+            m_sensor_status = obj.getSensorStatus();
+            m_sent_ts = obj.getSentTimespec();            
             return (*this);
         }
         
@@ -77,31 +78,31 @@ namespace openbasn {
             return m_sensor_type;
         }
 
-        void SensorData::setSensorData(const double &sensor_data) {
-            m_sensor_data = sensor_data;
+        void SensorData::setSensorStatus(const string &sensor_status) {
+            m_sensor_status = sensor_status;
         }
         
-        double SensorData::getSensorData() const {
-            return m_sensor_data;
+        string SensorData::getSensorStatus() const {
+            return m_sensor_status;
+        }
+        
+        void SensorData::setSentTimespec(const timespec &sent_ts){
+            m_sent_ts = sent_ts;
         }
 
-        void SensorData::setSensorRisk(const string &sensor_risk) {
-            m_sensor_risk = sensor_risk;
+        timespec SensorData::getSentTimespec() const {
+            return m_sent_ts;
         }
-        
-        string SensorData::getSensorRisk() const {
-            return m_sensor_risk;
-        }
-        
-        
+
         ostream& SensorData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
             s->write(1, m_sensor_id);
             s->write(2, m_sensor_type);
-            s->write(3, m_sensor_data);
-            s->write(4, m_sensor_risk);
+            s->write(3, m_sensor_status);
+            s->write(4, m_sent_ts.tv_sec);
+            s->write(5, m_sent_ts.tv_nsec);
 
             return out;
         }
@@ -112,8 +113,9 @@ namespace openbasn {
             
             d->read(1, m_sensor_id);
             d->read(2, m_sensor_type);
-            d->read(3, m_sensor_data);
-            d->read(4, m_sensor_risk);
+            d->read(3, m_sensor_status);
+            d->read(4, m_sent_ts.tv_sec);
+            d->read(5, m_sent_ts.tv_nsec);
         
             return in;
         }
@@ -122,7 +124,7 @@ namespace openbasn {
             stringstream sstr;
 
             sstr << "Sensor#" << m_sensor_id << " - ";
-            sstr << " SensorType#" << m_sensor_type << " : " << m_sensor_data << " (" << m_sensor_risk << ")";
+            sstr << " SensorType#" << m_sensor_type << " Status: " << m_sensor_status << "" << endl;
 
             return sstr.str();
         }

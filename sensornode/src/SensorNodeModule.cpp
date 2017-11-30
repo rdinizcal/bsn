@@ -1,12 +1,9 @@
 #include "SensorNodeModule.h"
 
-#include "opendavinci/odcore/base/FIFOQueue.h"
-#include "opendavinci/odcore/base/Thread.h"
-
-#include <time.h>
-#include <iostream>
+#include <sys/time.h>
 
 using namespace std;
+using namespace std::chrono;
 
 using namespace odcore::base;
 using namespace odcore::base::module;
@@ -20,37 +17,37 @@ using namespace openbasn::model::sensor;
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
     m_id(getIdentifier()),
-    m_sensor(),
+    m_sensor_type(),
     m_status("low"),
-    m_data_queue(){}
+    m_data_queue(),
+    m_status_log(),
+    m_sensornode_log(),
+    n(0) {}
 
     SensorNodeModule::~SensorNodeModule() {}
 
 void SensorNodeModule::setUp() {
-    SensorNodeModule::getSensorConfiguration();
+
+    m_sensor_type = m_id+1;
+
+    string path = "output/";
+    string filename = "sensornode" + to_string(m_id);
+    /* m_sensornode_log.open(path + filename + "_log.csv");
+    m_sensornode_log << "Cycle, Status, Sampled Data, is Emergency?, Monitor(us), Analyze(us), Plan&Execute(us), Total(us), Timestamp\n"; */
+
+    m_status_log.open(path + filename + "_status_log.csv");
+    m_status_log << "Sensor Status, Timestamp (s)\n";
 }
 
-void SensorNodeModule::tearDown() {}
+void SensorNodeModule::tearDown() {
 
-void SensorNodeModule::getSensorConfiguration(){
-    int32_t sensortypes = getKeyValueConfiguration().getValue<int32_t>("global.sensortypes");
-    
-    for(int32_t i = 0; i < sensortypes; i++) {
-        string sensor_type;
-        int32_t sensor_id = i+1;
+    /* m_sensornode_log << "-,-,-,-," << "=AVERAGE(E2:E"+to_string((n+1))+")," << "=AVERAGE(F2:F"+to_string((n+1))+")," << "=AVERAGE(G2:G"+to_string((n+1))+")," << "=AVERAGE(H2:H"+to_string((n+1))+")," << "AVG" << "\n";
+    m_sensornode_log << "-,-,-,-," << "=MAX(E2:E"+to_string((n+1))+")," << "=MAX(F2:F"+to_string((n+1))+")," << "=MAX(G2:G"+to_string((n+1))+")," << "=MAX(H2:H"+to_string((n+1))+")," << "MAX"  << "\n";
+    m_sensornode_log << "-,-,-,-," << "=MIN(E2:E"+to_string((n+1))+")," << "=MIN(F2:F"+to_string((n+1))+")," << "=MIN(G2:G"+to_string((n+1))+")," << "=MIN(H2:H"+to_string((n+1))+")," << "MIN"  << "\n";
+    m_sensornode_log << "-,-,-,-," << "=STDEV(E2:E"+to_string((n+1))+")," << "=STDEV(F2:F"+to_string((n+1))+")," << "=STDEV(G2:G"+to_string((n+1))+")," << "=STDEV(H2:H"+to_string((n+1))+")," << "STDEV"  << "\n";
+    m_sensornode_log << "-,-,-,-," << "=E"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=F"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=G"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=H"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "ERROR"  << "\n";
 
-        sensor_type = getKeyValueConfiguration().getValue<string>("global.sensortype."+ to_string(sensor_id));
-
-        if((getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1)){
-            bool   active = (getKeyValueConfiguration().getValue<bool>("sensornode."+ sensor_type +".active") == 1);
-            float  samplerate = getKeyValueConfiguration().getValue<float>("sensornode."+ sensor_type +".samplerate");
-            string mean_behavior = getKeyValueConfiguration().getValue<string>("sensornode."+ sensor_type +".mean.behavior");
-            double stddev = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".stddev");
-            double mean = getKeyValueConfiguration().getValue<double>("sensornode."+ sensor_type +".mean."+mean_behavior);
-
-            m_sensor = Sensor(sensor_id, samplerate, active, mean, stddev);
-        }
-    }
+    m_sensornode_log.close(); */
 }
 
 string SensorNodeModule::generateData(string actual_status){
@@ -131,15 +128,22 @@ void SensorNodeModule::sendSensorData(SensorData sensordata){
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
-    srand(time(NULL));
     string categorized_data, new_m_status;
     int counter = 0, freq = 10;
+    /* bool is_emergency=false; */
+
+    timespec ts; 
+
+    /* high_resolution_clock::time_point t1,t2,t3,t4; */
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         counter++;
 
         if(counter==freq){
+            
+            /* t1 = high_resolution_clock::now(); */
+            
             counter=0;
 
             /* 
@@ -149,15 +153,16 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
              * Categorize Data - categorizar dado do sensor de acordo com conhecimento de domínio
              */
             categorized_data = generateData(m_status);
-            cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
+            cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSSms() << endl;
+            /* t2 = high_resolution_clock::now(); */
 
             /* 
              * ANALYZE
              * Analyze sensornode status 
              */
             new_m_status = statusAnalysis(categorized_data, m_status);
-
-            //
+            /* t3 = high_resolution_clock::now(); */
+            
             /* 
              * PLAN AND EXECUTE
              * alterar a frequencia de sampling e enviar estado atual
@@ -167,14 +172,38 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
                 if(m_status=="low"){
                     freq = 10;
+                    /* is_emergency=false; */
                 } else if (m_status=="moderate"){
                     freq = 5;
+                    /* is_emergency=false; */
                 } else if (m_status=="high"){
                     freq = 1;
+                    /* is_emergency=true; */
                 }
-                
-                SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor.getType(), 0, m_status));
+
+                clock_gettime(CLOCK_REALTIME, &ts);
+                SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor_type, m_status, ts));
+
+                m_status_log << m_status << ",";
+                m_status_log << (ts.tv_sec) + (ts.tv_nsec/1E9) << "\n";
             }
+
+            /* t4 = high_resolution_clock::now();
+        
+            auto duration = duration_cast<microseconds>(t4-t1).count();
+            CLOG1 << "Execution time elapsed: " << duration << endl;
+
+            m_sensornode_log << cycle << ",";
+            m_sensornode_log << m_status  << ",";
+            m_sensornode_log << categorized_data  << ",";
+            m_sensornode_log << is_emergency  << ",";
+            m_sensornode_log << duration_cast<microseconds>(t2-t1).count() << ",";
+            m_sensornode_log << duration_cast<microseconds>(t3-t2).count() << ",";
+            m_sensornode_log << duration_cast<microseconds>(t4-t3).count() << ",";
+            m_sensornode_log << duration_cast<microseconds>(t4-t1).count() << ",";
+            m_sensornode_log << TimeStamp().getYYYYMMDD_HHMMSSms() << "\n";
+
+            n++; */
         }
         
     }
