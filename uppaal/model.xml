@@ -21,17 +21,18 @@ const int Texecs = 35;        //Tempo de processamento do sensornode
 /****************Global Data Structures****************/
 typedef int[0,N-1] id_s;
 int t[N];
+int[low,high] m_state[N];
 
 /*******************Global Variables*******************/
-broadcast chan pulse, pulse_ack;
-broadcast chan sensordata, bc;
+chan pulse, pulse_ack;
+chan sensordata, bc;
+chan c, exe, not_exe;
+
 broadcast chan bsensordata;
 broadcast chan reset;
 
 int[low,high] sd;
-
 int[0,N+1] m_exec;
-
 clock g_clk;
 
 //For debugging
@@ -364,123 +365,207 @@ int dequeue(){
 /*******************Variables*******************/
 int m_category;
 int container;
-int m_state=low;
 
 clock i_clk;
-
 /**************Temporary Variables**************/
 
 
 /*******************Functions*******************/
 
 </declaration>
-		<location id="id18" x="-25806" y="-1776">
-			<name x="-25789" y="-1785">generate</name>
+		<location id="id18" x="-25882" y="-1938">
 			<committed/>
 		</location>
-		<location id="id19" x="-25806" y="-1470">
-			<name x="-25823" y="-1461">send</name>
+		<location id="id19" x="-25806" y="-1870">
+			<name x="-25891" y="-1879">generate</name>
+			<committed/>
+		</location>
+		<location id="id20" x="-25806" y="-1700">
+			<name x="-25823" y="-1691">send</name>
 			<urgent/>
 		</location>
-		<location id="id20" x="-25806" y="-1674">
+		<location id="id21" x="-25806" y="-1785">
+			<name x="-25899" y="-1794">categorize</name>
 			<committed/>
 		</location>
-		<location id="id21" x="-25941" y="-1938">
-			<name x="-26001" y="-1955">ready</name>
+		<location id="id22" x="-26001" y="-1938">
+			<name x="-26061" y="-1955">ready</name>
 		</location>
-		<location id="id22" x="-25806" y="-2074">
+		<location id="id23" x="-25806" y="-2074">
 			<name x="-25816" y="-2108">idle</name>
 		</location>
-		<location id="id23" x="-25806" y="-1938">
+		<location id="id24" x="-25806" y="-1938">
 			<name x="-25823" y="-1989">run</name>
-			<label kind="invariant" x="-25857" y="-1972">i_clk&lt;=Texecs</label>
+			<label kind="invariant" x="-25848" y="-1972">i_clk&lt;=Texecs</label>
 		</location>
-		<location id="id24" x="-25500" y="-1938">
-			<name x="-25483" y="-1963">done</name>
+		<location id="id25" x="-25704" y="-1938">
+			<name x="-25687" y="-1963">done</name>
 			<committed/>
 		</location>
-		<init ref="id21"/>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id24"/>
-			<label kind="guard" x="-25789" y="-1938">((m_state==low &amp;&amp; t[id]&lt;10) ||
-(m_state==moderate &amp;&amp; t[id]&lt;5) ||
-(m_state==high &amp;&amp; t[id]&lt;1))</label>
-		</transition>
-		<transition>
-			<source ref="id23"/>
-			<target ref="id18"/>
-			<label kind="guard" x="-25925" y="-1861">((m_state==low &amp;&amp; t[id]&gt;=10) ||
-(m_state==moderate &amp;&amp; t[id]&gt;=5) ||
-(m_state==high &amp;&amp; t[id]&gt;=1))</label>
-		</transition>
+		<init ref="id22"/>
 		<transition>
 			<source ref="id18"/>
-			<target ref="id20"/>
-			<label kind="select" x="-25882" y="-1734">rand_category:int[1,3]</label>
-			<label kind="assignment" x="-25891" y="-1717">m_state:=rand_category</label>
-		</transition>
-		<transition>
-			<source ref="id19"/>
 			<target ref="id24"/>
-			<label kind="assignment" x="-25721" y="-1470">t[id]:=0</label>
-			<nail x="-25500" y="-1470"/>
-		</transition>
-		<transition>
-			<source ref="id20"/>
-			<target ref="id19"/>
-			<label kind="guard" x="-26018" y="-1599">m_state==low</label>
-			<label kind="synchronisation" x="-25993" y="-1581">sensordata!</label>
-			<label kind="assignment" x="-25967" y="-1564">sd:=low</label>
-			<nail x="-25908" y="-1598"/>
-			<nail x="-25908" y="-1530"/>
-		</transition>
-		<transition>
-			<source ref="id20"/>
-			<target ref="id19"/>
-			<label kind="guard" x="-25874" y="-1598">m_state==moderate</label>
-			<label kind="synchronisation" x="-25840" y="-1581">sensordata!</label>
-			<label kind="assignment" x="-25857" y="-1564">sd:=moderate</label>
-		</transition>
-		<transition>
-			<source ref="id20"/>
-			<target ref="id19"/>
-			<label kind="guard" x="-25704" y="-1598">m_state==high</label>
-			<label kind="synchronisation" x="-25704" y="-1581">sensordata!</label>
-			<label kind="assignment" x="-25704" y="-1564">sd:=high</label>
-			<nail x="-25704" y="-1598"/>
-			<nail x="-25704" y="-1530"/>
+			<label kind="synchronisation" x="-25848" y="-1955">c!</label>
 		</transition>
 		<transition>
 			<source ref="id24"/>
-			<target ref="id22"/>
-			<label kind="synchronisation" x="-25721" y="-2091">pulse_ack!</label>
-			<nail x="-25500" y="-2074"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-25788" y="-1955">not_exe?</label>
 		</transition>
 		<transition>
-			<source ref="id22"/>
+			<source ref="id24"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-25840" y="-1912">exe?</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
 			<target ref="id21"/>
-			<label kind="synchronisation" x="-25908" y="-2091">reset?</label>
-			<nail x="-25942" y="-2074"/>
+			<label kind="select" x="-25967" y="-1853">rand_category:int[1,3]</label>
+			<label kind="assignment" x="-25984" y="-1836">m_state[id]:=rand_category</label>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id25"/>
+			<label kind="assignment" x="-25755" y="-1700">t[id]:=0</label>
+			<nail x="-25704" y="-1700"/>
 		</transition>
 		<transition>
 			<source ref="id21"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="-25908" y="-1768">sensordata!</label>
+			<label kind="assignment" x="-25908" y="-1751">sd:=m_state[id]</label>
+		</transition>
+		<transition>
+			<source ref="id25"/>
 			<target ref="id23"/>
-			<label kind="guard" x="-25933" y="-1938">m_exec==id+1</label>
-			<label kind="synchronisation" x="-25908" y="-1955">pulse?</label>
-			<label kind="assignment" x="-25908" y="-1921">i_clk:=0</label>
+			<label kind="synchronisation" x="-25772" y="-2091">pulse_ack!</label>
+			<nail x="-25704" y="-2074"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-25968" y="-2091">reset?</label>
+			<nail x="-26002" y="-2074"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id18"/>
+			<label kind="guard" x="-25984" y="-1938">m_exec==id+1</label>
+			<label kind="synchronisation" x="-25976" y="-1955">pulse?</label>
+			<label kind="assignment" x="-25976" y="-1921">i_clk:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>controller</name>
+		<parameter>const id_s id </parameter>
+		<location id="id26" x="-272" y="0">
+			<name x="-314" y="-8">wait</name>
+		</location>
+		<location id="id27" x="204" y="68">
+		</location>
+		<location id="id28" x="204" y="-68">
+		</location>
+		<location id="id29" x="17" y="68">
+		</location>
+		<location id="id30" x="17" y="0">
+		</location>
+		<location id="id31" x="17" y="-68">
+		</location>
+		<location id="id32" x="-170" y="0">
+			<name x="-187" y="-34">run</name>
+		</location>
+		<init ref="id26"/>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id32"/>
+			<label kind="guard" x="-263" y="17">m_exec==id+1</label>
+			<label kind="synchronisation" x="-246" y="-17">c?</label>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="-34" y="-127">exe!</label>
+			<nail x="204" y="-102"/>
+			<nail x="-238" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="-34" y="110">not_exe!</label>
+			<nail x="204" y="102"/>
+			<nail x="-238" y="102"/>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id27"/>
+			<label kind="guard" x="52" y="51">t[id]&lt;1</label>
+			<nail x="34" y="85"/>
+			<nail x="170" y="85"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id27"/>
+			<label kind="guard" x="52" y="-17">t[id]&lt;5</label>
+			<nail x="34" y="17"/>
+			<nail x="170" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id27"/>
+			<label kind="guard" x="51" y="-68">t[id]&lt;10</label>
+			<nail x="34" y="-51"/>
+			<nail x="170" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id28"/>
+			<label kind="guard" x="51" y="34">t[id]&gt;=1</label>
+			<nail x="34" y="51"/>
+			<nail x="170" y="51"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id28"/>
+			<label kind="guard" x="51" y="-34">t[id]&gt;=5</label>
+			<nail x="34" y="-17"/>
+			<nail x="178" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id28"/>
+			<label kind="guard" x="51" y="-102">t[id]&gt;=10</label>
+			<nail x="34" y="-85"/>
+			<nail x="170" y="-85"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id29"/>
+			<label kind="guard" x="-136" y="68">m_state[id]==high</label>
+			<nail x="-136" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id30"/>
+			<label kind="guard" x="-161" y="-17">m_state[id]==moderate</label>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id31"/>
+			<label kind="guard" x="-127" y="-85">m_state[id]==low</label>
+			<nail x="-136" y="-68"/>
 		</transition>
 	</template>
 	<template>
 		<name>timer</name>
 		<parameter>const id_s id</parameter>
-		<location id="id25" x="-306" y="-68">
+		<location id="id33" x="-306" y="-68">
 			<name x="-348" y="-85">idle</name>
 		</location>
-		<init ref="id25"/>
+		<init ref="id33"/>
 		<transition>
-			<source ref="id25"/>
-			<target ref="id25"/>
+			<source ref="id33"/>
+			<target ref="id33"/>
 			<label kind="guard" x="-288" y="-119">t[id]&lt;100</label>
 			<label kind="synchronisation" x="-229" y="-93">reset?</label>
 			<label kind="assignment" x="-229" y="-68">t[id]++</label>
@@ -491,7 +576,7 @@ clock i_clk;
 	<system>// Place template instantiations here.
 
 // List one or more processes to be composed into a system.
-system scheduler,buffer,bodyhub,sensornode,timer;
+system scheduler,buffer,bodyhub,sensornode,controller,timer;
     </system>
 	<queries>
 		<query>
