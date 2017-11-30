@@ -48,37 +48,29 @@ int __reach__ = 0;
 /**************Temporary Variables**************/
 
 /*******************Functions*******************/</declaration>
-		<location id="id0" x="-1292" y="-654" color="#ff0000">
-			<name x="-1309" y="-688">error</name>
+		<location id="id0" x="-1343" y="-510">
 		</location>
-		<location id="id1" x="-1343" y="-510">
-		</location>
-		<location id="id2" x="-1401" y="-544">
+		<location id="id1" x="-1401" y="-544">
 			<name x="-1452" y="-552">wait</name>
 			<label kind="invariant" x="-1479" y="-535">g_clk&lt;=T</label>
 		</location>
-		<location id="id3" x="-1292" y="-544">
+		<location id="id2" x="-1292" y="-544">
 			<name x="-1351" y="-552">select</name>
 			<committed/>
 		</location>
-		<location id="id4" x="-1156" y="-544">
+		<location id="id3" x="-1156" y="-544">
 			<name x="-1139" y="-552">schedule</name>
 		</location>
-		<init ref="id3"/>
+		<init ref="id2"/>
 		<transition>
-			<source ref="id3"/>
-			<target ref="id0"/>
-			<label kind="guard" x="-1283" y="-629">g_clk &gt;T</label>
-		</transition>
-		<transition>
-			<source ref="id1"/>
-			<target ref="id3"/>
+			<source ref="id0"/>
+			<target ref="id2"/>
 			<label kind="synchronisation" x="-1317" y="-510">bc?</label>
 			<nail x="-1309" y="-510"/>
 		</transition>
 		<transition>
-			<source ref="id2"/>
-			<target ref="id1"/>
+			<source ref="id1"/>
+			<target ref="id0"/>
 			<label kind="guard" x="-1428" y="-501">g_clk&gt;=T</label>
 			<label kind="synchronisation" x="-1428" y="-484">reset!</label>
 			<label kind="assignment" x="-1428" y="-467">m_exec:=0,
@@ -86,24 +78,23 @@ g_clk:=0</label>
 			<nail x="-1385" y="-510"/>
 		</transition>
 		<transition>
-			<source ref="id3"/>
-			<target ref="id2"/>
-			<label kind="guard" x="-1419" y="-612">m_exec&gt;=(N+1)
-&amp;&amp; g_clk&lt;=T</label>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-1411" y="-595">m_exec&gt;=(N+1)</label>
 			<nail x="-1309" y="-578"/>
 			<nail x="-1385" y="-578"/>
 		</transition>
 		<transition>
-			<source ref="id4"/>
-			<target ref="id3"/>
+			<source ref="id3"/>
+			<target ref="id2"/>
 			<label kind="synchronisation" x="-1258" y="-595">pulse_ack?</label>
 			<label kind="assignment" x="-1258" y="-578">m_exec++</label>
 			<nail x="-1172" y="-578"/>
 			<nail x="-1275" y="-578"/>
 		</transition>
 		<transition>
-			<source ref="id3"/>
-			<target ref="id4"/>
+			<source ref="id2"/>
+			<target ref="id3"/>
 			<label kind="guard" x="-1275" y="-527">m_exec&lt;(N+1)</label>
 			<label kind="synchronisation" x="-1249" y="-510">pulse!</label>
 			<nail x="-1275" y="-510"/>
@@ -134,44 +125,44 @@ void insert(int[low,high] message){
     m_buffer[len]=message;
     len++;
 }</declaration>
-		<location id="id5" x="0" y="0">
+		<location id="id4" x="0" y="0">
 			<name x="25" y="0">receive</name>
 		</location>
-		<location id="id6" x="0" y="280">
+		<location id="id5" x="0" y="280">
 			<name x="17" y="272">shiftdown</name>
 			<committed/>
 		</location>
-		<location id="id7" x="0" y="136">
+		<location id="id6" x="0" y="136">
 			<name x="25" y="127">bcast</name>
 			<committed/>
 		</location>
-		<init ref="id5"/>
+		<init ref="id4"/>
 		<transition>
-			<source ref="id5"/>
-			<target ref="id5"/>
+			<source ref="id4"/>
+			<target ref="id4"/>
 			<label kind="synchronisation" x="-42" y="-59">sensordata?</label>
 			<label kind="assignment" x="-34" y="-76">insert(sd)</label>
 			<nail x="-34" y="-42"/>
 			<nail x="34" y="-42"/>
 		</transition>
 		<transition>
-			<source ref="id7"/>
-			<target ref="id5"/>
+			<source ref="id6"/>
+			<target ref="id4"/>
 			<label kind="guard" x="42" y="51">isEmpty()</label>
 			<label kind="synchronisation" x="42" y="68">bc!</label>
 			<nail x="34" y="102"/>
 			<nail x="34" y="34"/>
 		</transition>
 		<transition>
-			<source ref="id5"/>
-			<target ref="id7"/>
+			<source ref="id4"/>
+			<target ref="id6"/>
 			<label kind="synchronisation" x="-85" y="51">reset?</label>
 			<nail x="-34" y="34"/>
 			<nail x="-34" y="102"/>
 		</transition>
 		<transition>
-			<source ref="id6"/>
-			<target ref="id6"/>
+			<source ref="id5"/>
+			<target ref="id5"/>
 			<label kind="guard" x="-34" y="340">aux &lt; len</label>
 			<label kind="assignment" x="-85" y="357">m_buffer[aux]:=m_buffer[aux+1],
 aux++</label>
@@ -179,8 +170,8 @@ aux++</label>
 			<nail x="-34" y="340"/>
 		</transition>
 		<transition>
-			<source ref="id6"/>
-			<target ref="id7"/>
+			<source ref="id5"/>
+			<target ref="id6"/>
 			<label kind="guard" x="43" y="179">len==aux</label>
 			<label kind="assignment" x="43" y="196">m_buffer[aux]:=1,
 aux:=0</label>
@@ -188,8 +179,8 @@ aux:=0</label>
 			<nail x="34" y="170"/>
 		</transition>
 		<transition>
-			<source ref="id7"/>
-			<target ref="id6"/>
+			<source ref="id6"/>
+			<target ref="id5"/>
 			<label kind="guard" x="-127" y="170">!isEmpty()</label>
 			<label kind="synchronisation" x="-127" y="238">bsensordata!</label>
 			<label kind="assignment" x="-127" y="187">len--,
@@ -243,116 +234,116 @@ int dequeue(){
     
     return el;
 }</declaration>
-		<location id="id8" x="-408" y="68">
+		<location id="id7" x="-408" y="68">
 			<name x="-391" y="60">detect</name>
 			<committed/>
 		</location>
-		<location id="id9" x="-408" y="-34" color="#00ff00">
+		<location id="id8" x="-408" y="-34" color="#00ff00">
 			<name x="-391" y="-43">receive</name>
 			<committed/>
 		</location>
-		<location id="id10" x="-493" y="169" color="#00ff00">
+		<location id="id9" x="-493" y="169" color="#00ff00">
 			<name x="-518" y="187">detected</name>
 			<committed/>
 		</location>
-		<location id="id11" x="-238" y="-204">
+		<location id="id10" x="-238" y="-204">
 			<name x="-221" y="-212">done</name>
 			<committed/>
 		</location>
-		<location id="id12" x="-408" y="-102">
+		<location id="id11" x="-408" y="-102">
 			<name x="-484" y="-127">consume</name>
 			<committed/>
 		</location>
-		<location id="id13" x="-578" y="68">
+		<location id="id12" x="-578" y="68">
 			<name x="-646" y="60">persist</name>
 			<committed/>
 		</location>
-		<location id="id14" x="-544" y="-204">
+		<location id="id13" x="-544" y="-204">
 			<name x="-535" y="-238">ready</name>
 		</location>
-		<location id="id15" x="-408" y="-340">
+		<location id="id14" x="-408" y="-340">
 			<name x="-425" y="-374">idle</name>
 		</location>
-		<location id="id16" x="-408" y="17">
+		<location id="id15" x="-408" y="17">
 			<name x="-391" y="9">update</name>
 			<committed/>
 		</location>
-		<location id="id17" x="-408" y="-204">
+		<location id="id16" x="-408" y="-204">
 			<name x="-416" y="-255">run</name>
 			<label kind="invariant" x="-450" y="-238">i_clk&lt;=Texecb</label>
 		</location>
-		<init ref="id14"/>
+		<init ref="id13"/>
 		<transition>
-			<source ref="id14"/>
-			<target ref="id14"/>
+			<source ref="id13"/>
+			<target ref="id13"/>
 			<label kind="synchronisation" x="-688" y="-238">bsensordata?</label>
 			<label kind="assignment" x="-663" y="-221">insert(sd)</label>
 			<nail x="-595" y="-204"/>
 			<nail x="-595" y="-238"/>
 		</transition>
 		<transition>
-			<source ref="id8"/>
-			<target ref="id13"/>
+			<source ref="id7"/>
+			<target ref="id12"/>
 			<label kind="guard" x="-578" y="68">m_health_status!=high</label>
 		</transition>
 		<transition>
-			<source ref="id9"/>
-			<target ref="id16"/>
+			<source ref="id8"/>
+			<target ref="id15"/>
 		</transition>
 		<transition>
-			<source ref="id10"/>
-			<target ref="id13"/>
+			<source ref="id9"/>
+			<target ref="id12"/>
 			<nail x="-578" y="170"/>
 		</transition>
 		<transition>
-			<source ref="id8"/>
-			<target ref="id10"/>
+			<source ref="id7"/>
+			<target ref="id9"/>
 			<label kind="guard" x="-399" y="110">m_health_status==high</label>
 			<nail x="-408" y="170"/>
 		</transition>
 		<transition>
-			<source ref="id17"/>
-			<target ref="id12"/>
+			<source ref="id16"/>
+			<target ref="id11"/>
 		</transition>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id11"/>
+			<source ref="id11"/>
+			<target ref="id10"/>
 			<label kind="guard" x="-382" y="-127">isEmpty()</label>
 			<nail x="-374" y="-136"/>
 			<nail x="-238" y="-136"/>
 		</transition>
 		<transition>
-			<source ref="id13"/>
-			<target ref="id12"/>
+			<source ref="id12"/>
+			<target ref="id11"/>
 			<nail x="-578" y="-68"/>
 		</transition>
 		<transition>
-			<source ref="id16"/>
-			<target ref="id8"/>
+			<source ref="id15"/>
+			<target ref="id7"/>
 			<label kind="assignment" x="-399" y="34">m_health_status:=dequeue()</label>
 		</transition>
 		<transition>
-			<source ref="id11"/>
-			<target ref="id15"/>
+			<source ref="id10"/>
+			<target ref="id14"/>
 			<label kind="synchronisation" x="-348" y="-357">pulse_ack!</label>
 			<nail x="-238" y="-340"/>
 		</transition>
 		<transition>
-			<source ref="id14"/>
-			<target ref="id17"/>
+			<source ref="id13"/>
+			<target ref="id16"/>
 			<label kind="guard" x="-518" y="-204">m_exec==0</label>
 			<label kind="synchronisation" x="-501" y="-221">pulse?</label>
 			<label kind="assignment" x="-501" y="-187">i_clk:=0</label>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id14"/>
+			<source ref="id14"/>
+			<target ref="id13"/>
 			<label kind="synchronisation" x="-501" y="-357">reset?</label>
 			<nail x="-544" y="-340"/>
 		</transition>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id9"/>
+			<source ref="id11"/>
+			<target ref="id8"/>
 			<label kind="guard" x="-399" y="-76">!isEmpty()</label>
 		</transition>
 	</template>
@@ -373,84 +364,84 @@ clock i_clk;
 /*******************Functions*******************/
 
 </declaration>
-		<location id="id18" x="-25882" y="-1938">
+		<location id="id17" x="-25882" y="-1938">
 			<committed/>
 		</location>
-		<location id="id19" x="-25806" y="-1870">
+		<location id="id18" x="-25806" y="-1870">
 			<name x="-25891" y="-1879">generate</name>
 			<committed/>
 		</location>
-		<location id="id20" x="-25806" y="-1700">
+		<location id="id19" x="-25806" y="-1700">
 			<name x="-25823" y="-1691">send</name>
 			<urgent/>
 		</location>
-		<location id="id21" x="-25806" y="-1785">
+		<location id="id20" x="-25806" y="-1785">
 			<name x="-25899" y="-1794">categorize</name>
 			<committed/>
 		</location>
-		<location id="id22" x="-26001" y="-1938">
+		<location id="id21" x="-26001" y="-1938">
 			<name x="-26061" y="-1955">ready</name>
 		</location>
-		<location id="id23" x="-25806" y="-2074">
+		<location id="id22" x="-25806" y="-2074">
 			<name x="-25816" y="-2108">idle</name>
 		</location>
-		<location id="id24" x="-25806" y="-1938">
+		<location id="id23" x="-25806" y="-1938">
 			<name x="-25823" y="-1989">run</name>
 			<label kind="invariant" x="-25848" y="-1972">i_clk&lt;=Texecs</label>
 		</location>
-		<location id="id25" x="-25704" y="-1938">
+		<location id="id24" x="-25704" y="-1938">
 			<name x="-25687" y="-1963">done</name>
 			<committed/>
 		</location>
-		<init ref="id22"/>
+		<init ref="id21"/>
 		<transition>
-			<source ref="id18"/>
-			<target ref="id24"/>
+			<source ref="id17"/>
+			<target ref="id23"/>
 			<label kind="synchronisation" x="-25848" y="-1955">c!</label>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id25"/>
+			<source ref="id23"/>
+			<target ref="id24"/>
 			<label kind="synchronisation" x="-25788" y="-1955">not_exe?</label>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id19"/>
+			<source ref="id23"/>
+			<target ref="id18"/>
 			<label kind="synchronisation" x="-25840" y="-1912">exe?</label>
 		</transition>
 		<transition>
-			<source ref="id19"/>
-			<target ref="id21"/>
+			<source ref="id18"/>
+			<target ref="id20"/>
 			<label kind="select" x="-25967" y="-1853">rand_category:int[1,3]</label>
 			<label kind="assignment" x="-25984" y="-1836">m_state[id]:=rand_category</label>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id25"/>
+			<source ref="id19"/>
+			<target ref="id24"/>
 			<label kind="assignment" x="-25755" y="-1700">t[id]:=0</label>
 			<nail x="-25704" y="-1700"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id20"/>
+			<source ref="id20"/>
+			<target ref="id19"/>
 			<label kind="synchronisation" x="-25908" y="-1768">sensordata!</label>
 			<label kind="assignment" x="-25908" y="-1751">sd:=m_state[id]</label>
 		</transition>
 		<transition>
-			<source ref="id25"/>
-			<target ref="id23"/>
+			<source ref="id24"/>
+			<target ref="id22"/>
 			<label kind="synchronisation" x="-25772" y="-2091">pulse_ack!</label>
 			<nail x="-25704" y="-2074"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id22"/>
+			<source ref="id22"/>
+			<target ref="id21"/>
 			<label kind="synchronisation" x="-25968" y="-2091">reset?</label>
 			<nail x="-26002" y="-2074"/>
 		</transition>
 		<transition>
-			<source ref="id22"/>
-			<target ref="id18"/>
+			<source ref="id21"/>
+			<target ref="id17"/>
 			<label kind="guard" x="-25984" y="-1938">m_exec==id+1</label>
 			<label kind="synchronisation" x="-25976" y="-1955">pulse?</label>
 			<label kind="assignment" x="-25976" y="-1921">i_clk:=0</label>
@@ -459,99 +450,104 @@ clock i_clk;
 	<template>
 		<name>controller</name>
 		<parameter>const id_s id </parameter>
-		<location id="id26" x="-272" y="0">
+		<location id="id25" x="-272" y="0">
 			<name x="-314" y="-8">wait</name>
 		</location>
-		<location id="id27" x="204" y="68">
+		<location id="id26" x="204" y="68">
+			<name x="221" y="59">not_execute</name>
 		</location>
-		<location id="id28" x="204" y="-68">
+		<location id="id27" x="204" y="-68">
+			<name x="221" y="-76">execute</name>
 		</location>
-		<location id="id29" x="17" y="68">
+		<location id="id28" x="17" y="68">
+			<name x="-8" y="85">high_state</name>
 		</location>
-		<location id="id30" x="17" y="0">
+		<location id="id29" x="17" y="0">
+			<name x="-25" y="17">moderate_state</name>
 		</location>
-		<location id="id31" x="17" y="-68">
+		<location id="id30" x="17" y="-68">
+			<name x="-8" y="-51">low_state</name>
 		</location>
-		<location id="id32" x="-170" y="0">
+		<location id="id31" x="-170" y="0">
 			<name x="-187" y="-34">run</name>
 		</location>
-		<init ref="id26"/>
+		<init ref="id25"/>
 		<transition>
-			<source ref="id26"/>
-			<target ref="id32"/>
-			<label kind="guard" x="-263" y="17">m_exec==id+1</label>
+			<source ref="id25"/>
+			<target ref="id31"/>
+			<label kind="guard" x="-255" y="0">m_exec==id+1</label>
 			<label kind="synchronisation" x="-246" y="-17">c?</label>
 		</transition>
 		<transition>
-			<source ref="id28"/>
-			<target ref="id26"/>
+			<source ref="id27"/>
+			<target ref="id25"/>
 			<label kind="synchronisation" x="-34" y="-127">exe!</label>
 			<nail x="204" y="-102"/>
 			<nail x="-238" y="-102"/>
 		</transition>
 		<transition>
-			<source ref="id27"/>
-			<target ref="id26"/>
+			<source ref="id26"/>
+			<target ref="id25"/>
 			<label kind="synchronisation" x="-34" y="110">not_exe!</label>
 			<nail x="204" y="102"/>
 			<nail x="-238" y="102"/>
 		</transition>
 		<transition>
-			<source ref="id29"/>
-			<target ref="id27"/>
-			<label kind="guard" x="52" y="51">t[id]&lt;1</label>
+			<source ref="id28"/>
+			<target ref="id26"/>
+			<label kind="guard" x="51" y="68">t[id]&lt;1</label>
 			<nail x="34" y="85"/>
 			<nail x="170" y="85"/>
 		</transition>
 		<transition>
-			<source ref="id30"/>
-			<target ref="id27"/>
-			<label kind="guard" x="52" y="-17">t[id]&lt;5</label>
+			<source ref="id29"/>
+			<target ref="id26"/>
+			<label kind="guard" x="51" y="0">t[id]&lt;5</label>
 			<nail x="34" y="17"/>
 			<nail x="170" y="17"/>
 		</transition>
 		<transition>
-			<source ref="id31"/>
-			<target ref="id27"/>
+			<source ref="id30"/>
+			<target ref="id26"/>
 			<label kind="guard" x="51" y="-68">t[id]&lt;10</label>
 			<nail x="34" y="-51"/>
 			<nail x="170" y="-51"/>
 		</transition>
 		<transition>
-			<source ref="id29"/>
-			<target ref="id28"/>
+			<source ref="id28"/>
+			<target ref="id27"/>
 			<label kind="guard" x="51" y="34">t[id]&gt;=1</label>
 			<nail x="34" y="51"/>
 			<nail x="170" y="51"/>
 		</transition>
 		<transition>
-			<source ref="id30"/>
-			<target ref="id28"/>
+			<source ref="id29"/>
+			<target ref="id27"/>
 			<label kind="guard" x="51" y="-34">t[id]&gt;=5</label>
 			<nail x="34" y="-17"/>
 			<nail x="178" y="-17"/>
 		</transition>
 		<transition>
-			<source ref="id31"/>
-			<target ref="id28"/>
+			<source ref="id30"/>
+			<target ref="id27"/>
 			<label kind="guard" x="51" y="-102">t[id]&gt;=10</label>
 			<nail x="34" y="-85"/>
 			<nail x="170" y="-85"/>
 		</transition>
 		<transition>
-			<source ref="id32"/>
-			<target ref="id29"/>
+			<source ref="id31"/>
+			<target ref="id28"/>
 			<label kind="guard" x="-136" y="68">m_state[id]==high</label>
 			<nail x="-136" y="68"/>
 		</transition>
 		<transition>
-			<source ref="id32"/>
-			<target ref="id30"/>
+			<source ref="id31"/>
+			<target ref="id29"/>
 			<label kind="guard" x="-161" y="-17">m_state[id]==moderate</label>
 		</transition>
 		<transition>
-			<source ref="id32"/>
-			<target ref="id31"/>
+			<source ref="id31"/>
+			<target ref="id30"/>
 			<label kind="guard" x="-127" y="-85">m_state[id]==low</label>
 			<nail x="-136" y="-68"/>
 		</transition>
@@ -559,13 +555,13 @@ clock i_clk;
 	<template>
 		<name>timer</name>
 		<parameter>const id_s id</parameter>
-		<location id="id33" x="-306" y="-68">
+		<location id="id32" x="-306" y="-68">
 			<name x="-348" y="-85">idle</name>
 		</location>
-		<init ref="id33"/>
+		<init ref="id32"/>
 		<transition>
-			<source ref="id33"/>
-			<target ref="id33"/>
+			<source ref="id32"/>
+			<target ref="id32"/>
 			<label kind="guard" x="-288" y="-119">t[id]&lt;100</label>
 			<label kind="synchronisation" x="-229" y="-93">reset?</label>
 			<label kind="assignment" x="-229" y="-68">t[id]++</label>
@@ -579,6 +575,12 @@ clock i_clk;
 system scheduler,buffer,bodyhub,sensornode,controller,timer;
     </system>
 	<queries>
+		<query>
+			<formula>==============================PLANTA==============================
+			</formula>
+			<comment>
+			</comment>
+		</query>
 		<query>
 			<formula>E&lt;&gt; bodyhub.detected
 			</formula>
@@ -604,43 +606,55 @@ system scheduler,buffer,bodyhub,sensornode,controller,timer;
 			</comment>
 		</query>
 		<query>
-			<formula>A&lt;&gt; bodyhub.receive imply bodyhub.detected
-			</formula>
-			<comment>
-			</comment>
-		</query>
-		<query>
 			<formula>A[] (bodyhub.detected imply (t[2]&lt;2 or t[1]&lt;2 or t[0]&lt;2))
 			</formula>
 			<comment>X
 			</comment>
 		</query>
 		<query>
-			<formula>A[] sensornode(0).send imply t[0]&lt;=10
-			</formula>
-			<comment>XI
-			</comment>
-		</query>
-		<query>
-			<formula>A[] sensornode(1).send imply t[1]&lt;=10
-			</formula>
-			<comment>XII
-			</comment>
-		</query>
-		<query>
-			<formula>A[] sensornode(2).send imply t[2]&lt;=10
-			</formula>
-			<comment>XIII
-			</comment>
-		</query>
-		<query>
-			<formula>A[] not scheduler.error
-			</formula>
-			<comment>XIV
-			</comment>
-		</query>
-		<query>
 			<formula>A[] not deadlock
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>==============================CONTROLADOR==============================
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] controller(0).not_execute imply ((m_state[0]==low and t[0]&lt;10) or (m_state[0]==moderate and t[0]&lt;5) or (m_state[0]==high and t[0]&lt;1))
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] controller(0).execute imply ((m_state[0]==low and t[0]&gt;=10) or (m_state[0]==moderate and t[0]&gt;=5) or (m_state[0]==high and t[0]&gt;=1))
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>============================== MALHA FECHADA ==============================
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] (m_state[0]==low and sensornode(0).generate) imply t[0]==10
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] (m_state[0]==moderate and sensornode(0).generate) imply t[0]==5
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>A[] (m_state[0]==high and sensornode(0).generate) imply t[0]==1
 			</formula>
 			<comment>
 			</comment>
