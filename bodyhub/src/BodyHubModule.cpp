@@ -20,7 +20,6 @@ BodyHubModule::BodyHubModule(const int32_t &argc, char **argv) :
     m_health_status("-"),
     m_sensor(),
     m_status_log(),
-    m_bodyhub_log(),
     m_ref() {}
 
 BodyHubModule::~BodyHubModule() {}
@@ -40,14 +39,6 @@ void BodyHubModule::setUp() {
 
 void BodyHubModule::tearDown() {
     m_status_log.close();
-
-    /* m_bodyhub_log << "-,-,-,-," << "=AVERAGE(E2:E"+to_string((n+1))+")," << "=AVERAGE(F2:F"+to_string((n+1))+")," << "=AVERAGE(G2:G"+to_string((n+1))+")," << "=AVERAGE(H2:H"+to_string((n+1))+")," << "=AVERAGE(I2:I"+to_string((n+1))+")," << "=AVERAGE(J2:J"+to_string((n+1))+")," << "=AVERAGE(K2:K"+to_string((n+1))+")," << "AVG" <<  "\n";
-    m_bodyhub_log << "-,-,-,-," << "=MAX(E2:E"+to_string((n+1))+")," << "=MAX(F2:F"+to_string((n+1))+")," << "=MAX(G2:G"+to_string((n+1))+")," << "=MAX(H2:H"+to_string((n+1))+")," << "=MAX(I2:I"+to_string((n+1))+")," << "=MAX(J2:J"+to_string((n+1))+")," << "=MAX(K2:K"+to_string((n+1))+"),"  << "MAX"  << "\n";
-    m_bodyhub_log << "-,-,-,-," << "=MIN(E2:E"+to_string((n+1))+")," << "=MIN(F2:F"+to_string((n+1))+")," << "=MIN(G2:G"+to_string((n+1))+")," << "=MIN(H2:H"+to_string((n+1))+")," << "=MIN(I2:I"+to_string((n+1))+")," << "=MIN(J2:J"+to_string((n+1))+")," << "=MIN(K2:K"+to_string((n+1))+")," << "MIN"  << "\n";
-    m_bodyhub_log << "-,-,-,-," << "=STDEV(E2:E"+to_string((n+1))+")," << "=STDEV(F2:F"+to_string((n+1))+")," << "=STDEV(G2:G"+to_string((n+1))+")," << "=STDEV(H2:H"+to_string((n+1))+")," << "=STDEV(I2:I"+to_string((n+1))+")," << "=STDEV(J2:J"+to_string((n+1))+")," << "=STDEV(K2:K"+to_string((n+1))+")," << "STDEV"  << "\n";
-    m_bodyhub_log << "-,-,-,-," << "=E"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=F"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=G"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=H"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=I"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=J"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=K"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "ERROR"  << "\n";
-    
-    m_bodyhub_log.close(); */
 }
 
 string BodyHubModule::calculateHealthStatus(){
@@ -123,87 +114,37 @@ void BodyHubModule::printHealthStatus(){
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
-    int cycle = 0;
-    int counter = 0;
     bool is_emergency = false;
     uint32_t sensor_id = 0;
 
     timespec ts;
-    /* timespec  old_ts , rs , tk; */
-
-    /* high_resolution_clock::time_point t1, t2, t3, t4, t5, t6, t7, t8; */
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        counter=0;
-        cycle++;
-        
-        /* clock_gettime(CLOCK_REALTIME, &tk);
-        if ((tk.tv_nsec - old_ts.tv_nsec) < 0) {
-            rs.tv_sec = tk.tv_sec - old_ts.tv_sec - 1;
-            rs.tv_nsec = tk.tv_nsec - old_ts.tv_nsec + 1000000000L;
-        } else {
-            rs.tv_sec = tk.tv_sec - old_ts.tv_sec;
-            rs.tv_nsec = tk.tv_nsec - old_ts.tv_nsec;
-        }
-
-        auto measured_cycle = std::chrono::seconds{rs.tv_sec} + std::chrono::nanoseconds{rs.tv_nsec};
-        cout<< "cycle time: " << measured_cycle.count() << endl;
-        old_ts=tk; */
-        /* t1 = high_resolution_clock::now(); */
-
         while(!m_buffer.isEmpty()){
 
             clock_gettime(CLOCK_REALTIME, &ts);
 
-            /* t2 = high_resolution_clock::now(); */
             //Consome dado
             Container container = m_buffer.leave();
 
             if (container.getDataType() == SensorData::ID()) {
-                counter++;
-                /* t3 = high_resolution_clock::now(); */
+
                 //Atualiza estado do paciente
                 BodyHubModule::updateHealthStatus(container.getData<SensorData>());
                 sensor_id= container.getData<SensorData>().getSensorID();
-                /* t4 = high_resolution_clock::now(); */
+
                 //Detecta emergencia
                 is_emergency=(container.getData<SensorData>().getSensorStatus() == "high")?true:false;
                 CLOG1<<"Emergencia?"<<is_emergency<<endl;
-                /* t5 = high_resolution_clock::now(); */
+
                 //Persiste
                 BodyHubModule::persistHealthStatus(sensor_id, container.getData<SensorData>().getSentTimespec(), ts);
-                /* t6 = high_resolution_clock::now(); */
             }
 
             BodyHubModule::printHealthStatus();
-            /* t7 = high_resolution_clock::now(); */
         }            
         
-        /* 
-        t8 = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(t8-t1).count(); 
-        */
-        
-        /* 
-        if(duration !=0 && counter>=1){
-            n++;
-            cout << "Execution time elapsed: " << duration << endl;
-
-            m_bodyhub_log << cycle << ",";
-            m_bodyhub_log << m_health_status  << ",";
-            m_bodyhub_log << is_emergency  << ",";
-            m_bodyhub_log << sensor_id  << ",";
-            m_bodyhub_log << duration_cast<microseconds>(t3-t2).count() << ",";
-            m_bodyhub_log << duration_cast<microseconds>(t4-t3).count() << ",";
-            m_bodyhub_log << duration_cast<microseconds>(t5-t4).count() << ",";
-            m_bodyhub_log << duration_cast<microseconds>(t6-t5).count() << ",";
-            m_bodyhub_log << duration_cast<microseconds>(t7-t6).count() << ",";
-            m_bodyhub_log << duration_cast<microseconds>(t8-t1).count() << ",";
-            m_bodyhub_log << counter << ",";
-            m_bodyhub_log << TimeStamp().getYYYYMMDD_HHMMSSms() << "\n";
-        } 
-        */
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

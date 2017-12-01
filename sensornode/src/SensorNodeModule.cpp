@@ -21,33 +21,39 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     m_status("low"),
     m_data_queue(),
     m_status_log(),
-    m_sensornode_log(),
-    n(0) {}
+    m_ref() {}
 
     SensorNodeModule::~SensorNodeModule() {}
 
 void SensorNodeModule::setUp() {
-
     m_sensor_type = m_id+1;
+
+    clock_gettime(CLOCK_REALTIME, &m_ref);
 
     string path = "output/";
     string filename = "sensornode" + to_string(m_id);
     /* m_sensornode_log.open(path + filename + "_log.csv");
     m_sensornode_log << "Cycle, Status, Sampled Data, is Emergency?, Monitor(us), Analyze(us), Plan&Execute(us), Total(us), Timestamp\n"; */
 
-    m_status_log.open(path + filename + "_status_log.csv");
-    m_status_log << "Sensor Status, Timestamp (s)\n";
+    m_status_log.open(path + filename + "_status_log_1.csv");
+    m_status_log << "Elapsed Time(s), Sensor Status, Time Since Last (s)\n";
 }
 
 void SensorNodeModule::tearDown() {
+}
 
-    /* m_sensornode_log << "-,-,-,-," << "=AVERAGE(E2:E"+to_string((n+1))+")," << "=AVERAGE(F2:F"+to_string((n+1))+")," << "=AVERAGE(G2:G"+to_string((n+1))+")," << "=AVERAGE(H2:H"+to_string((n+1))+")," << "AVG" << "\n";
-    m_sensornode_log << "-,-,-,-," << "=MAX(E2:E"+to_string((n+1))+")," << "=MAX(F2:F"+to_string((n+1))+")," << "=MAX(G2:G"+to_string((n+1))+")," << "=MAX(H2:H"+to_string((n+1))+")," << "MAX"  << "\n";
-    m_sensornode_log << "-,-,-,-," << "=MIN(E2:E"+to_string((n+1))+")," << "=MIN(F2:F"+to_string((n+1))+")," << "=MIN(G2:G"+to_string((n+1))+")," << "=MIN(H2:H"+to_string((n+1))+")," << "MIN"  << "\n";
-    m_sensornode_log << "-,-,-,-," << "=STDEV(E2:E"+to_string((n+1))+")," << "=STDEV(F2:F"+to_string((n+1))+")," << "=STDEV(G2:G"+to_string((n+1))+")," << "=STDEV(H2:H"+to_string((n+1))+")," << "STDEV"  << "\n";
-    m_sensornode_log << "-,-,-,-," << "=E"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=F"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=G"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "=H"+to_string((n+2))+"/SQRT("+to_string((n))+")," << "ERROR"  << "\n";
+bool SensorNodeModule::controllerFSM(int t){
+    bool exe = false;
+    
+    if(m_status=="low"){
+        exe = (t>=10)?true:false;
+    } else if (m_status=="moderate") {
+        exe = (t>=5)?true:false;
+    } else if (m_status=="high") {
+        exe = (t>=1)?true:false;
+    } 
 
-    m_sensornode_log.close(); */
+    return exe;
 }
 
 string SensorNodeModule::generateData(string actual_status){
@@ -126,86 +132,59 @@ void SensorNodeModule::sendSensorData(SensorData sensordata){
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
+timespec SensorNodeModule::elapsedTime(timespec &now, timespec &ref) {
+
+    timespec diff;
+
+    if ((now.tv_nsec - ref.tv_nsec) < 0) {
+        diff.tv_sec = now.tv_sec - ref.tv_sec - 1;
+        diff.tv_nsec = now.tv_nsec - ref.tv_nsec + 1000000000L;
+    } else {
+        diff.tv_sec = now.tv_sec - ref.tv_sec;
+        diff.tv_nsec = now.tv_nsec - ref.tv_nsec;
+    }
+
+    return diff;
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
-    string categorized_data, new_m_status;
-    int counter = 0, freq = 10;
-    /* bool is_emergency=false; */
-
+    srand(time(NULL));
     timespec ts; 
 
-    /* high_resolution_clock::time_point t1,t2,t3,t4; */
+    bool exe;
+    int cycles = 0;
+    
+    int ccc=0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        counter++;
+        cycles++;
+        ccc++;
+        exe = controllerFSM(cycles);
+        //exe = true;
 
-        if(counter==freq){
-            
-            /* t1 = high_resolution_clock::now(); */
-            
-            counter=0;
+        if(exe){
+            /*GERAR DADOS*/
+            string categorized_data = generateData(m_status);
 
-            /* 
-             * MONITOR
-             * Sample Data - obter novo dado do sensor
-             * Process Data - processar dado do sensor
-             * Categorize Data - categorizar dado do sensor de acordo com conhecimento de domínio
-             */
-            categorized_data = generateData(m_status);
+            /*CAPTURAR INSTANTE DO PROCESSADOR*/
+            clock_gettime(CLOCK_REALTIME, &ts);
+
+            /*ANALISAR DADOS*/
+            m_status = statusAnalysis(categorized_data, m_status);
+
+            /*ENVIAR ESTADO*/
+            SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor_type, m_status, ts));
+
+            cycles = 0;
+
             cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSSms() << endl;
-            /* t2 = high_resolution_clock::now(); */
-
-            /* 
-             * ANALYZE
-             * Analyze sensornode status 
-             */
-            new_m_status = statusAnalysis(categorized_data, m_status);
-            /* t3 = high_resolution_clock::now(); */
-            
-            /* 
-             * PLAN AND EXECUTE
-             * alterar a frequencia de sampling e enviar estado atual
-             */
-            if(m_status != new_m_status) {
-                m_status = new_m_status;
-
-                if(m_status=="low"){
-                    freq = 10;
-                    /* is_emergency=false; */
-                } else if (m_status=="moderate"){
-                    freq = 5;
-                    /* is_emergency=false; */
-                } else if (m_status=="high"){
-                    freq = 1;
-                    /* is_emergency=true; */
-                }
-
-                clock_gettime(CLOCK_REALTIME, &ts);
-                SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor_type, m_status, ts));
-
-                m_status_log << m_status << ",";
-                m_status_log << (ts.tv_sec) + (ts.tv_nsec/1E9) << "\n";
-            }
-
-            /* t4 = high_resolution_clock::now();
-        
-            auto duration = duration_cast<microseconds>(t4-t1).count();
-            CLOG1 << "Execution time elapsed: " << duration << endl;
-
-            m_sensornode_log << cycle << ",";
-            m_sensornode_log << m_status  << ",";
-            m_sensornode_log << categorized_data  << ",";
-            m_sensornode_log << is_emergency  << ",";
-            m_sensornode_log << duration_cast<microseconds>(t2-t1).count() << ",";
-            m_sensornode_log << duration_cast<microseconds>(t3-t2).count() << ",";
-            m_sensornode_log << duration_cast<microseconds>(t4-t3).count() << ",";
-            m_sensornode_log << duration_cast<microseconds>(t4-t1).count() << ",";
-            m_sensornode_log << TimeStamp().getYYYYMMDD_HHMMSSms() << "\n";
-
-            n++; */
+            timespec t_esy = elapsedTime(ts, m_ref);
+            m_status_log << (double)((t_esy.tv_sec) + (t_esy.tv_nsec/1E9)) << ",";
+            m_status_log << ((m_status=="low")?1:(m_status=="moderate")?2:3) << ",";
+            m_status_log << " " << "\n";
         }
-        
     }
     
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

@@ -36,10 +36,11 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         virtual void setUp();
         virtual void tearDown();
 
-        void getSensorConfiguration();
+        bool controllerFSM(int /*cycles*/);
         string generateData(string /*actual status*/);
         string statusAnalysis(string /*categorized data*/, string /*actual status*/);
         void sendSensorData(SensorData /*sensordata*/);
+        timespec elapsedTime(timespec &/*now*/, timespec &/*ref*/);
 
     private:
         uint32_t m_id;
@@ -48,9 +49,8 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         deque<string> m_data_queue;
 
         ofstream m_status_log;
-        ofstream m_sensornode_log;
 
-        int32_t n;
+        timespec m_ref;
 };
 
 #endif

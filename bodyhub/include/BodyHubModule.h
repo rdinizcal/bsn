@@ -54,7 +54,6 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         map<uint32_t, string> m_sensor;
 
         ofstream m_status_log;
-        ofstream m_bodyhub_log;
 
         timespec m_ref;
 };
