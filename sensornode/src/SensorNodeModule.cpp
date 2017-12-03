@@ -9,25 +9,30 @@ using namespace odcore::data;
 using namespace odcore::data::dmcp;
 
 using namespace openbasn::data;
-using namespace openbasn::model::sensor;
-
 
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
     m_id(getIdentifier()),
     m_sensor_type(),
-    m_status("low"),
+    m_status("baixo"),
     m_data_queue(),
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
     m_status_log(),
-    m_ref() {}
+    m_ref() 
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
+    {}
 
     SensorNodeModule::~SensorNodeModule() {}
 
+/*
+ * CONFIGURAÇÃO
+ * */
 void SensorNodeModule::setUp() {
+    //CONFIGURAÇÃO DO TIPO DO SENSOR
     m_sensor_type = m_id+1;
 
     /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
-    //REFERÊNCIA PARA MEDIDAS DE TEMPO NO NÒ SENSOR
+    //REFERÊNCIA PARA MEDIDAS DE TEMPO NO NÓ SENSOR
     clock_gettime(CLOCK_REALTIME, &m_ref);
 
     string path = "output/";
@@ -40,49 +45,60 @@ void SensorNodeModule::setUp() {
     /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
 }
 
+/*
+ * DESTRUIÇÃO
+ * */
 void SensorNodeModule::tearDown() {
 }
 
+/*
+ * Máquina de estados finitos do controlador
+ * Recebe o calor do contador de ciclos
+ * retorna verdadeiro ou falso habilitando ou não a execução nó sensor no atual ciclo
+ * */
 bool SensorNodeModule::controllerFSM(int t){
     bool exe = false;
     
-    if(m_status=="low"){
+    if(m_status=="baixo"){
         exe = (t>=10)?true:false;
-    } else if (m_status=="moderate") {
+    } else if (m_status=="moderado") {
         exe = (t>=5)?true:false;
-    } else if (m_status=="high") {
+    } else if (m_status=="alto") {
         exe = (t>=1)?true:false;
     } 
 
     return exe;
 }
 
+/*
+ * Automato probabilistico para geração de dados já classificados
+ * */
 string SensorNodeModule::generateData(string actual_status){
 
     string category;
     int p = (rand() % 100) + 1;
 
-    if(actual_status == "low"){
+    if(actual_status == "baixo"){
         if(1 <= p && p <= 5) {
-            category = "high";
+            category = "alto";
         } else if (5 < p && p <= 30) {
-            category = "moderate";
+            category = "moderado";
         } else {
             category = actual_status;
         }
-    } else if(actual_status == "moderate") {
+    } else if(actual_status == "moderado") {
         if(1 <= p && p <= 15) {
-            category = "high";
+            category = "alto";
         } else if (15 < p && p <= 30) {
-            category = "low";
+            category = "baixo";
         } else {
             category = actual_status;
         }
-    } else if(actual_status == "high"){
+    } else if(actual_status == "alto"){
         if(1 <= p && p <= 5) {
-            category = "low";
+            category = "baixo";
         } else if (5 < p && p <= 30) {
-            category = "moderate";
+            category = "moderado";
         } else {
             category = actual_status;
         }
@@ -93,6 +109,9 @@ string SensorNodeModule::generateData(string actual_status){
     return category;
 }
 
+/*
+ * Análise do estado do nó sensor
+ * */
 string SensorNodeModule::statusAnalysis(string categorized_data, string actual_status) {
 
     string new_status;
@@ -105,21 +124,21 @@ string SensorNodeModule::statusAnalysis(string categorized_data, string actual_s
     m_data_queue.push_back(categorized_data);
 
     for(uint32_t i = 0; i < m_data_queue.size(); i++) {
-        if(m_data_queue[i]=="low"){
+        if(m_data_queue[i]=="baixo"){
             l++;
-        } else if(m_data_queue[i]=="moderate") {
+        } else if(m_data_queue[i]=="moderado") {
             m++;
-        } else if (m_data_queue[i]=="high"){
+        } else if (m_data_queue[i]=="alto"){
             h++;
         }
     }
 
     if(l>=3){
-        new_status = "low";
+        new_status = "baixo";
     } else if (m>=3) {
-        new_status = "moderate";
+        new_status = "moderado";
     } else if (h>=3) {
-        new_status = "high";
+        new_status = "alto";
     } else {
         new_status = actual_status;
     }
@@ -127,12 +146,18 @@ string SensorNodeModule::statusAnalysis(string categorized_data, string actual_s
     return new_status;
 }
 
+/*
+ * Envia dados do sensor empacotados pelo container
+ * */
 void SensorNodeModule::sendSensorData(SensorData sensordata){
     Container container(sensordata);
     getConference().send(container);
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
+/*
+ * Calcula a diferença de tempo entre a timestamp do primeiro parametro com o segundo
+ * */
 timespec SensorNodeModule::elapsedTime(timespec &now, timespec &ref) {
 
     timespec diff;
@@ -148,20 +173,23 @@ timespec SensorNodeModule::elapsedTime(timespec &now, timespec &ref) {
     return diff;
 }
 
+/*
+ * CORPO
+ * */
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
-    srand(time(NULL));
-    timespec ts; 
-
-    bool exe;
-    int cycles = 0;
     
-    int ccc=0;
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
+    timespec ts;        // timestamp do processador
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
 
+    srand(time(NULL));  // raíz da função de randomização
+    bool exe;           // variável do atuador
+    int cycles = 0;     // contador de ciclos desde a ultima execução
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         cycles++;
-        ccc++;
         exe = controllerFSM(cycles);
         //exe = true;
 
@@ -180,11 +208,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
             cycles = 0;
 
+            /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
             cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSSms() << endl;
             timespec t_esy = elapsedTime(ts, m_ref);
             m_status_log << (double)((t_esy.tv_sec) + (t_esy.tv_nsec/1E9)) << ",";
-            m_status_log << ((m_status=="low")?1:(m_status=="moderate")?2:3) << ",";
+            m_status_log << ((m_status=="baixo")?1:(m_status=="moderado")?2:3) << ",";
             m_status_log << " " << "\n";
+            /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
         }
     }
     

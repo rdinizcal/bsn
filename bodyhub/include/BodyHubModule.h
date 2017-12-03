@@ -4,7 +4,6 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
-#include "openbasn/message/Request.h"
 #include "openbasn/data/SensorData.h"
 
 #include <sys/time.h>
@@ -15,15 +14,11 @@
 #include <string>
 #include <iterator>
 #include <algorithm>
-#include <chrono>
 
 using namespace std;
-
 using namespace odcore::base;
 using namespace odcore::base::module;
-
 using namespace openbasn::data;
-using namespace openbasn::message;
 
 class BodyHubModule : public TimeTriggeredConferenceClientModule {
 

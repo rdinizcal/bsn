@@ -9,9 +9,9 @@ const int N = 3;
 const int BUFFER_SIZE = N; 
  
 // Sensor risks (for readability)
-const int low = 1;
-const int moderate = 2;
-const int high = 3;
+const int baixo = 1;
+const int moderado = 2;
+const int alto = 3;
 
 // Time Constraints (ms)
 const int T = 1000;           //Período de ciclo
@@ -21,7 +21,7 @@ const int Texecs = 35;        //Tempo de processamento do sensornode
 /****************Global Data Structures****************/
 typedef int[0,N-1] id_s;
 int t[N];
-int[low,high] m_state[N];
+int[baixo,alto] m_state[N];
 
 /*******************Global Variables*******************/
 chan pulse, pulse_ack;
@@ -31,7 +31,7 @@ chan c, exe, not_exe;
 broadcast chan bsensordata;
 broadcast chan reset;
 
-int[low,high] sd;
+int[baixo,alto] sd;
 int[0,N+1] m_exec;
 clock g_clk;
 
@@ -107,7 +107,7 @@ g_clk:=0</label>
 
 /*******************Variables*******************/
 //buffer attributes
-int[low,high] m_buffer[BUFFER_SIZE];
+int[baixo,alto] m_buffer[BUFFER_SIZE];
 int len, aux;
 
 /**************Temporary Variables**************/
@@ -121,7 +121,7 @@ bool isFull(){
     return (len==BUFFER_SIZE)?true:false;
 }
 
-void insert(int[low,high] message){
+void insert(int[baixo,alto] message){
     m_buffer[len]=message;
     len++;
 }</declaration>
@@ -196,11 +196,11 @@ sd:=m_buffer[len]</label>
 
 
 /*******************Variables*******************/
-int m_health_status=low;
+int m_health_status=baixo;
 clock i_clk;
 
 //buffer attributes
-int[low,high] m_buffer[BUFFER_SIZE];
+int[baixo,alto] m_buffer[BUFFER_SIZE];
 int len, aux;
 
 /**************Temporary Variables**************/
@@ -215,7 +215,7 @@ bool isFull(){
     return (len==BUFFER_SIZE)?true:false;
 }
 
-void insert(int[low,high] message){
+void insert(int[baixo,alto] message){
     m_buffer[len]=message;
     len++;
 }
@@ -284,7 +284,7 @@ int dequeue(){
 		<transition>
 			<source ref="id7"/>
 			<target ref="id12"/>
-			<label kind="guard" x="-578" y="68">m_health_status!=high</label>
+			<label kind="guard" x="-578" y="68">m_health_status!=alto</label>
 		</transition>
 		<transition>
 			<source ref="id8"/>
@@ -298,7 +298,7 @@ int dequeue(){
 		<transition>
 			<source ref="id7"/>
 			<target ref="id9"/>
-			<label kind="guard" x="-399" y="110">m_health_status==high</label>
+			<label kind="guard" x="-399" y="110">m_health_status==alto</label>
 			<nail x="-408" y="170"/>
 		</transition>
 		<transition>
@@ -533,18 +533,18 @@ clock i_clk;
 		<transition>
 			<source ref="id31"/>
 			<target ref="id28"/>
-			<label kind="guard" x="-136" y="68">m_state[id]==high</label>
+			<label kind="guard" x="-136" y="68">m_state[id]==alto</label>
 			<nail x="-136" y="68"/>
 		</transition>
 		<transition>
 			<source ref="id31"/>
 			<target ref="id29"/>
-			<label kind="guard" x="-161" y="-17">m_state[id]==moderate</label>
+			<label kind="guard" x="-161" y="-17">m_state[id]==moderado</label>
 		</transition>
 		<transition>
 			<source ref="id31"/>
 			<target ref="id30"/>
-			<label kind="guard" x="-127" y="-85">m_state[id]==low</label>
+			<label kind="guard" x="-127" y="-85">m_state[id]==baixo</label>
 			<nail x="-136" y="-68"/>
 		</transition>
 	</template>
@@ -626,13 +626,13 @@ system scheduler,buffer,bodyhub,sensornode,controller,timer;
 			</comment>
 		</query>
 		<query>
-			<formula>A[] controller(0).not_execute imply ((m_state[0]==low and t[0]&lt;10) or (m_state[0]==moderate and t[0]&lt;5) or (m_state[0]==high and t[0]&lt;1))
+			<formula>A[] controller(0).not_execute imply ((m_state[0]==baixo and t[0]&lt;10) or (m_state[0]==moderado and t[0]&lt;5) or (m_state[0]==alto and t[0]&lt;1))
 			</formula>
 			<comment>
 			</comment>
 		</query>
 		<query>
-			<formula>A[] controller(0).execute imply ((m_state[0]==low and t[0]&gt;=10) or (m_state[0]==moderate and t[0]&gt;=5) or (m_state[0]==high and t[0]&gt;=1))
+			<formula>A[] controller(0).execute imply ((m_state[0]==baixo and t[0]&gt;=10) or (m_state[0]==moderado and t[0]&gt;=5) or (m_state[0]==alto and t[0]&gt;=1))
 			</formula>
 			<comment>
 			</comment>
@@ -650,19 +650,19 @@ system scheduler,buffer,bodyhub,sensornode,controller,timer;
 			</comment>
 		</query>
 		<query>
-			<formula>A[] (m_state[0]==low and sensornode(0).generate) imply t[0]==10
+			<formula>A[] (m_state[0]==baixo and sensornode(0).generate) imply t[0]==10
 			</formula>
 			<comment>
 			</comment>
 		</query>
 		<query>
-			<formula>A[] (m_state[0]==moderate and sensornode(0).generate) imply t[0]==5
+			<formula>A[] (m_state[0]==moderado and sensornode(0).generate) imply t[0]==5
 			</formula>
 			<comment>
 			</comment>
 		</query>
 		<query>
-			<formula>A[] (m_state[0]==high and sensornode(0).generate) imply t[0]==1
+			<formula>A[] (m_state[0]==alto and sensornode(0).generate) imply t[0]==1
 			</formula>
 			<comment>
 			</comment>

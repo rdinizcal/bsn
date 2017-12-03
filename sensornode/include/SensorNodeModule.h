@@ -4,7 +4,6 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "openbasn/data/SensorData.h"
-#include "openbasn/model/sensor/Sensor.h"
 
 #include <deque>
 #include <fstream>
@@ -19,7 +18,6 @@ using namespace odcore::base;
 using namespace odcore::base::module;
 
 using namespace openbasn::data;
-using namespace openbasn::model::sensor;
 
 class SensorNodeModule : public TimeTriggeredConferenceClientModule {
 
