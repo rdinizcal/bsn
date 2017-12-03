@@ -602,13 +602,13 @@ system scheduler,buffer,bodyhub,sensornode,controller,timer;
 			</comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; bodyhub.persist
+			<formula>A&lt;&gt; bodyhub.persist
 			</formula>
 			<comment>
 			</comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; bodyhub.update
+			<formula>A&lt;&gt; bodyhub.update
 			</formula>
 			<comment>
 			</comment>

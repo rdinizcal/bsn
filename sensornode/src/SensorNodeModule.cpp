@@ -1,7 +1,5 @@
 #include "SensorNodeModule.h"
 
-#include <sys/time.h>
-
 using namespace std;
 using namespace std::chrono;
 
@@ -28,6 +26,8 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
 void SensorNodeModule::setUp() {
     m_sensor_type = m_id+1;
 
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
+    //REFERÊNCIA PARA MEDIDAS DE TEMPO NO NÒ SENSOR
     clock_gettime(CLOCK_REALTIME, &m_ref);
 
     string path = "output/";
@@ -37,6 +37,7 @@ void SensorNodeModule::setUp() {
 
     m_status_log.open(path + filename + "_status_log_1.csv");
     m_status_log << "Elapsed Time(s), Sensor Status, Time Since Last (s)\n";
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
 }
 
 void SensorNodeModule::tearDown() {

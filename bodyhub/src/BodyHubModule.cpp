@@ -27,6 +27,7 @@ BodyHubModule::~BodyHubModule() {}
 void BodyHubModule::setUp() {
     addDataStoreFor(873, m_buffer);
 
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
     clock_gettime(CLOCK_REALTIME, &m_ref);
 
     string path = "output/";
@@ -34,7 +35,8 @@ void BodyHubModule::setUp() {
     m_bodyhub_log << "Ciclo, Estado do paciente, Detectou emergência?, Sensor, Consume pacote(us), Atualiza estado(us), Detecta emergência(us), Persiste(us), Imprime(us), Total(us), Packages consumed(#) , Timestamp\n"; */
     
     m_status_log.open(path+"bodyhub_status_log-2.csv");
-    m_status_log << "Sender Sensor ID, Temperature, Heart Rate, Blood oxigenation, Patient status, Sent at (s), Received at (s), Processed at (s), Diff (s)\n";
+    m_status_log << "ID do sensor, Estado do Termômetro, Estado do ECG, Estado do Oxímetro, Estado do Paciente, Enviado às (s), Recebido às (s), Processado às (s), Diff (s)\n";
+    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
 }
 
 void BodyHubModule::tearDown() {
@@ -54,7 +56,7 @@ string BodyHubModule::calculateHealthStatus(){
         } 
     }
     
-    return (hr<=0)?"unknown":(hr<1)?"Good":(hr<5)?"Moderate":(hr<20)?"Bad":"unknown";
+    return (hr<=0)?"unknown":(hr<1)?"Good":(hr<5)?"Medium":(hr<20)?"Bad":"unknown";
 }
 
 void BodyHubModule::updateHealthStatus(SensorData sensordata){

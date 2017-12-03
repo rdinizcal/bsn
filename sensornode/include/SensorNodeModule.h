@@ -8,7 +8,7 @@
 
 #include <deque>
 #include <fstream>
-#include <time.h>
+#include <sys/time.h>
 #include <iostream>
 #include <chrono>
 #include <string>
