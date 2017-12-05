@@ -86,7 +86,13 @@ make
 
 ### Execução
 
-Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então executá-los:
+Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então emakxecutá-los:
+
+Antes de executar, o arquivo configuration.txt do diretorio *configs* deve ser colocado em */opt/od/bin/*
+
+```
+cp ./configs/configuration.txt /opt/od/bin/
+```
 
 Exemplo de execução do odsupercomponent:
 

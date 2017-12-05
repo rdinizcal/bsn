@@ -9,6 +9,9 @@
 #define DATA_SENSOR_H_
 
 #include "opendavinci/odcore/data/SerializableData.h"
+#include "opendavinci/odcore/serialization/Deserializer.h"
+#include "opendavinci/odcore/serialization/SerializationFactory.h"
+#include "opendavinci/odcore/serialization/Serializer.h"
 
 namespace openbasn {
     namespace data {
