@@ -1,14 +1,11 @@
+/*
+ * Módulo do Nó Sensor
+ * 
+ * @author Ricardo Diniz Caldas
+ * @version v1.0
+ */
+
 #include "SensorNodeModule.h"
-
-using namespace std;
-using namespace std::chrono;
-
-using namespace odcore::base;
-using namespace odcore::base::module;
-using namespace odcore::data;
-using namespace odcore::data::dmcp;
-
-using namespace openbasn::data;
 
 SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "sensornode"),
@@ -16,46 +13,27 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     m_sensor_type(),
     m_status("baixo"),
     m_data_queue(),
-    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
     m_status_log(),
-    m_ref() 
-    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
-    {}
+    m_ref() {}
 
-    SensorNodeModule::~SensorNodeModule() {}
+SensorNodeModule::~SensorNodeModule() {}
 
-/*
- * CONFIGURAÇÃO
- * */
+// CONFIGURAÇÃO
 void SensorNodeModule::setUp() {
-    //CONFIGURAÇÃO DO TIPO DO SENSOR
-    m_sensor_type = m_id+1;
+    m_sensor_type = m_id+1; // configuração do tipo de sensor
 
-    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
-    //REFERÊNCIA PARA MEDIDAS DE TEMPO NO NÓ SENSOR
-    clock_gettime(CLOCK_REALTIME, &m_ref);
+    clock_gettime(CLOCK_REALTIME, &m_ref); // referência para medidas de tempo  
 
     string path = "output/";
     string filename = "sensornode" + to_string(m_id);
-    /* m_sensornode_log.open(path + filename + "_log.csv");
-    m_sensornode_log << "Cycle, Status, Sampled Data, is Emergency?, Monitor(us), Analyze(us), Plan&Execute(us), Total(us), Timestamp\n"; */
-
-    m_status_log.open(path + filename + "_status_log_1.csv");
+    m_status_log.open(path + filename + "_status_log.csv");
     m_status_log << "Elapsed Time(s), Sensor Status, Time Since Last (s)\n";
-    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
 }
 
-/*
- * DESTRUIÇÃO
- * */
+// DESTRUIÇÃO
 void SensorNodeModule::tearDown() {
 }
 
-/*
- * Máquina de estados finitos do controlador
- * Recebe o calor do contador de ciclos
- * retorna verdadeiro ou falso habilitando ou não a execução nó sensor no atual ciclo
- * */
 bool SensorNodeModule::controllerFSM(int t){
     bool exe = false;
     
@@ -70,9 +48,7 @@ bool SensorNodeModule::controllerFSM(int t){
     return exe;
 }
 
-/*
- * Automato probabilistico para geração de dados já classificados
- * */
+
 string SensorNodeModule::generateData(string actual_status){
 
     string category;
@@ -109,9 +85,7 @@ string SensorNodeModule::generateData(string actual_status){
     return category;
 }
 
-/*
- * Análise do estado do nó sensor
- * */
+
 string SensorNodeModule::statusAnalysis(string categorized_data, string actual_status) {
 
     string new_status;
@@ -146,18 +120,12 @@ string SensorNodeModule::statusAnalysis(string categorized_data, string actual_s
     return new_status;
 }
 
-/*
- * Envia dados do sensor empacotados pelo container
- * */
 void SensorNodeModule::sendSensorData(SensorData sensordata){
     Container container(sensordata);
     getConference().send(container);
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
-/*
- * Calcula a diferença de tempo entre a timestamp do primeiro parametro com o segundo
- * */
 timespec SensorNodeModule::elapsedTime(timespec &now, timespec &ref) {
 
     timespec diff;
@@ -173,15 +141,10 @@ timespec SensorNodeModule::elapsedTime(timespec &now, timespec &ref) {
     return diff;
 }
 
-/*
- * CORPO
- * */
+// CORPO
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
-    
-    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
     timespec ts;        // timestamp do processador
-    /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
 
     srand(time(NULL));  // raíz da função de randomização
     bool exe;           // variável do atuador
@@ -190,8 +153,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         cycles++;
-        exe = controllerFSM(cycles);
-        //exe = true;
+        exe = controllerFSM(cycles);    // para execução com controlador
+        //exe = true;                   // para execuçao sem controlador
 
         if(exe){
             /*GERAR DADOS*/
@@ -208,13 +171,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
             cycles = 0;
 
-            /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
             cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSSms() << endl;
             timespec t_esy = elapsedTime(ts, m_ref);
             m_status_log << (double)((t_esy.tv_sec) + (t_esy.tv_nsec/1E9)) << ",";
             m_status_log << ((m_status=="baixo")?1:(m_status=="moderado")?2:3) << ",";
             m_status_log << " " << "\n";
-            /**************** CODIGO USADO PARA VALIDACAO DO PROTOTIPO ************************/
         }
     }
     

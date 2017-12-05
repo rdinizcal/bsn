@@ -1,16 +1,11 @@
+/*
+ * Mensagem com dados do sensor remetente
+ * 
+ * @author Ricardo Diniz Caldas
+ * @version v1.0
+ */
+
 #include "openbasn/data/SensorData.h"
-
-#include <iostream>
-#include <sstream>
-#include <map>
-#include <string>
-#include <iterator>
-#include <algorithm>
-#include <sys/time.h>
-
-#include "opendavinci/odcore/serialization/Deserializer.h"
-#include "opendavinci/odcore/serialization/SerializationFactory.h"
-#include "opendavinci/odcore/serialization/Serializer.h"
 
 namespace openbasn {
     namespace data {
