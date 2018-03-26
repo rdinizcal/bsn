@@ -28,60 +28,12 @@ git clone -b tcc https://github.com/rdinizcal/OpenBASN.git
 
 Entre na pasta da biblioteca libopenbasn
 
-```
-cd ./OpenBASN/libopenbasn
-```
-
-Crie uma pasta build e entre nela
-
-```
-mkdir build && build
-```
-
-Utilize o CMAKE para criar os arquivos para compilar o código
-
-```
-cmake ..
-```
-
-Compile a biblioteca
-
-```
-make
-```
-
-E o instale usando permissão de administrador
-
-```
-sudo make install
-```
-
 ## Compilação
 
-Para compilar os módulos deve-se executar os seguintes passos, tanto para o bodyhub quanto para o sensornode:
-
-Entre na pasta da plataforma central
+Apenas rode o script com:
 
 ```
-cd ./bodyhub
-```
-
-Crie uma pasta build e entre nela
-
-```
-mkdir build && build
-```
-
-Utilize o CMAKE para criar os arquivos para compilar o código
-
-```
-cmake ..
-```
-
-Compile o código
-
-```
-make
+bash script.sh
 ```
 
 ### Execução
@@ -91,19 +43,20 @@ Para executar o protótipo deve-se executar o escalonador dos módulos do própr
 Antes de executar, o arquivo configuration.txt do diretorio *configs* deve ser colocado em */opt/od/bin/*
 
 ```
-cp ./configs/configuration.txt /opt/od/bin/
+sudo cp /configs/configuration /opt/od/bin/
 ```
 
-Exemplo de execução do odsupercomponent:
+Exemplo de execução do odsupercomponent(Na pasta configs):
 
 ```
 sudo odsupercomponent --cid=111 --freq=10 --realtime=20 --managed=simulation_rt
 ```
 
-E os módulos:
+E o módulo bodyhub(Na pasta bodyhub/build):
 ```
 ./bodyhub --cid=111
 ```
+E o módulo sensornode(Na pasta sensornode/build):
 ```
 ./sensornode --cid=111 --id=0
 ```
