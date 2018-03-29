@@ -43,7 +43,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         virtual ~BodyHubModule();
     
 
-    private:
+    
         /**
          * Cálculo da diferença de tempo entre dois timespecs
          * (agora - referencia)
@@ -89,7 +89,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         void printHealthStatus();
     
     // Atributos da classe
-    private:
+    
         uint32_t m_id; // identificador
         FIFOQueue m_buffer; // fila de caontainers
         string m_health_status; // estado do paciente
