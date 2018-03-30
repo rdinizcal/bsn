@@ -14,6 +14,7 @@ cd build
 mkdir output
 cmake ..
 make
+g++ -std=c++11 -I ../include -c ../src/BodyHubModule.cpp -o BodyHubModule.o
 cd ..
 cd ..
 cd sensornode
