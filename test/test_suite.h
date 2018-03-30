@@ -2,7 +2,8 @@
 #include <stdint.h>
 #include "../bodyhub/include/BodyHubModule.h"
             
-  using namespace std;
+using namespace std;
+
   class MyTestSuite : public CxxTest::TestSuite{
   public:
       void testAddition( void ){
@@ -15,9 +16,9 @@
         TS_TRACE("Finishing multiplication test");
     }
     
-      void testOpd( void ){
+      void testOpd(){
         int32_t argc; 
-        char **argv;
+        char ** argv = NULL;
         BodyHubModule inst(argc, argv);
         inst.m_id = 1;
         TS_ASSERT_EQUALS(inst.m_id, 1);  
