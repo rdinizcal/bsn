@@ -25,23 +25,11 @@ bool suite_MyTestSuite_init = false;
 static MyTestSuite suite_MyTestSuite;
 
 static CxxTest::List Tests_MyTestSuite = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_MyTestSuite( "test_suite.h", 6, "MyTestSuite", suite_MyTestSuite, Tests_MyTestSuite );
-
-static class TestDescription_suite_MyTestSuite_testAddition : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_MyTestSuite_testAddition() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 8, "testAddition" ) {}
- void runTest() { suite_MyTestSuite.testAddition(); }
-} testDescription_suite_MyTestSuite_testAddition;
-
-static class TestDescription_suite_MyTestSuite_testMultiplication : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_MyTestSuite_testMultiplication() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 12, "testMultiplication" ) {}
- void runTest() { suite_MyTestSuite.testMultiplication(); }
-} testDescription_suite_MyTestSuite_testMultiplication;
+CxxTest::StaticSuiteDescription suiteDescription_MyTestSuite( "test_suite.h", 7, "MyTestSuite", suite_MyTestSuite, Tests_MyTestSuite );
 
 static class TestDescription_suite_MyTestSuite_testOpd : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_testOpd() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 18, "testOpd" ) {}
+ TestDescription_suite_MyTestSuite_testOpd() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 10, "testOpd" ) {}
  void runTest() { suite_MyTestSuite.testOpd(); }
 } testDescription_suite_MyTestSuite_testOpd;
 
