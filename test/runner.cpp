@@ -25,11 +25,11 @@ bool suite_MyTestSuite_init = false;
 static MyTestSuite suite_MyTestSuite;
 
 static CxxTest::List Tests_MyTestSuite = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_MyTestSuite( "test_suite.h", 7, "MyTestSuite", suite_MyTestSuite, Tests_MyTestSuite );
+CxxTest::StaticSuiteDescription suiteDescription_MyTestSuite( "test_suite.h", 6, "MyTestSuite", suite_MyTestSuite, Tests_MyTestSuite );
 
 static class TestDescription_suite_MyTestSuite_testOpd : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_testOpd() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 10, "testOpd" ) {}
+ TestDescription_suite_MyTestSuite_testOpd() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 9, "testOpd" ) {}
  void runTest() { suite_MyTestSuite.testOpd(); }
 } testDescription_suite_MyTestSuite_testOpd;
 
