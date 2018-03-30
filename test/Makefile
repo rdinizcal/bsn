@@ -1,4 +1,5 @@
 all:	
 	cxxtestgen --error-printer -o runner.cpp test_suite.h
-	g++ -std=c++11 -c runner.cpp -o aux/a.o
-	g++ -o main aux/SensorData.o aux/a.o aux/BodyHubModule.o -lopendavinci -lpthread	
+	g++ -std=c++11 -c runner.cpp -o a.o
+	g++ -o main ../libopenbasn/build/SensorData.o a.o ../bodyhub/build/BodyHubModule.o -lopendavinci -lpthread	
+	./main

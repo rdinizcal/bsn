@@ -2,3 +2,4 @@
 build/
 output/
 tests/main
+tests/a.o
