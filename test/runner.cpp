@@ -19,19 +19,42 @@ int main( int argc, char *argv[] ) {
     status = CxxTest::Main< CxxTest::ErrorPrinter >( tmp, argc, argv );
     return status;
 }
-bool suite_MyTestSuite_init = false;
+bool suite_BodyHubTestSuite_init = false;
 #include "test_suite.h"
 
-static MyTestSuite suite_MyTestSuite;
+static BodyHubTestSuite suite_BodyHubTestSuite;
 
-static CxxTest::List Tests_MyTestSuite = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_MyTestSuite( "test_suite.h", 7, "MyTestSuite", suite_MyTestSuite, Tests_MyTestSuite );
+static CxxTest::List Tests_BodyHubTestSuite = { 0, 0 };
+CxxTest::StaticSuiteDescription suiteDescription_BodyHubTestSuite( "test_suite.h", 8, "BodyHubTestSuite", suite_BodyHubTestSuite, Tests_BodyHubTestSuite );
 
-static class TestDescription_suite_MyTestSuite_testOpd : public CxxTest::RealTestDescription {
+static class TestDescription_suite_BodyHubTestSuite_test_class_variables : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MyTestSuite_testOpd() : CxxTest::RealTestDescription( Tests_MyTestSuite, suiteDescription_MyTestSuite, 10, "testOpd" ) {}
- void runTest() { suite_MyTestSuite.testOpd(); }
-} testDescription_suite_MyTestSuite_testOpd;
+ TestDescription_suite_BodyHubTestSuite_test_class_variables() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 24, "test_class_variables" ) {}
+ void runTest() { suite_BodyHubTestSuite.test_class_variables(); }
+} testDescription_suite_BodyHubTestSuite_test_class_variables;
+
+static class TestDescription_suite_BodyHubTestSuite_test_CHS : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_BodyHubTestSuite_test_CHS() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 36, "test_CHS" ) {}
+ void runTest() { suite_BodyHubTestSuite.test_CHS(); }
+} testDescription_suite_BodyHubTestSuite_test_CHS;
+
+static class TestDescription_suite_BodyHubTestSuite_test_UHS : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_BodyHubTestSuite_test_UHS() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 56, "test_UHS" ) {}
+ void runTest() { suite_BodyHubTestSuite.test_UHS(); }
+} testDescription_suite_BodyHubTestSuite_test_UHS;
+
+static SensorNodeTestSuite suite_SensorNodeTestSuite;
+
+static CxxTest::List Tests_SensorNodeTestSuite = { 0, 0 };
+CxxTest::StaticSuiteDescription suiteDescription_SensorNodeTestSuite( "test_suite.h", 75, "SensorNodeTestSuite", suite_SensorNodeTestSuite, Tests_SensorNodeTestSuite );
+
+static class TestDescription_suite_SensorNodeTestSuite_test_class_variables : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_SensorNodeTestSuite_test_class_variables() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 96, "test_class_variables" ) {}
+ void runTest() { suite_SensorNodeTestSuite.test_class_variables(); }
+} testDescription_suite_SensorNodeTestSuite_test_class_variables;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

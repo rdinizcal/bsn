@@ -1,5 +1,5 @@
 .vscode/*
 build/
 output/
-tests/main
-tests/a.o
+test/main
+test/a.o

@@ -23,5 +23,6 @@ cd build
 mkdir output
 cmake ..
 make
+g++ -std=c++11 -I ../include -c ../src/SensorNodeModule.cpp -o SensorNodeModule.o
 cd ..
 cd ..

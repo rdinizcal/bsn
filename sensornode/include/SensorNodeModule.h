@@ -45,7 +45,7 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
     
     
     // Métodos privados do funcionamento interno da classe.
-    private:
+    
         /**
          * Controlador da execução do nó sensor.
          * 
@@ -90,7 +90,7 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         timespec elapsedTime(timespec &/*now*/, timespec &/*ref*/);
 
     // Atributos da classe
-    private:
+    
         uint32_t m_id; // identificador
         int32_t m_sensor_type; // tipo do sensor associado
         string m_status; // estado atual
