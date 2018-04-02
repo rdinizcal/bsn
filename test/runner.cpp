@@ -52,9 +52,21 @@ CxxTest::StaticSuiteDescription suiteDescription_SensorNodeTestSuite( "test_suit
 
 static class TestDescription_suite_SensorNodeTestSuite_test_class_variables : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_SensorNodeTestSuite_test_class_variables() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 96, "test_class_variables" ) {}
+ TestDescription_suite_SensorNodeTestSuite_test_class_variables() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 95, "test_class_variables" ) {}
  void runTest() { suite_SensorNodeTestSuite.test_class_variables(); }
 } testDescription_suite_SensorNodeTestSuite_test_class_variables;
+
+static class TestDescription_suite_SensorNodeTestSuite_test_controllerFSM : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_SensorNodeTestSuite_test_controllerFSM() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 106, "test_controllerFSM" ) {}
+ void runTest() { suite_SensorNodeTestSuite.test_controllerFSM(); }
+} testDescription_suite_SensorNodeTestSuite_test_controllerFSM;
+
+static class TestDescription_suite_SensorNodeTestSuite_test_statusAnalysis : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_SensorNodeTestSuite_test_statusAnalysis() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 124, "test_statusAnalysis" ) {}
+ void runTest() { suite_SensorNodeTestSuite.test_statusAnalysis(); }
+} testDescription_suite_SensorNodeTestSuite_test_statusAnalysis;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";
