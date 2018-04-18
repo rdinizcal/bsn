@@ -87,6 +87,12 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
          * @return 
          */
         void printHealthStatus();
+
+        /*
+        Printa num arquivo texto os pacotes que chegaram
+        para comparar se tudo que se enviou chegou.
+        */
+        void persist_data_received(Container /*container*/);
     
     // Atributos da classe
     
@@ -96,6 +102,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         map<uint32_t, string> m_sensor; // registro de sensores e estado atual
         ofstream m_status_log; // arquivo para log
         timespec m_ref; // referencia temporal
+        ofstream packages_file; //arquivo para escrita dos pacotes recebidos
 };
 
 #endif

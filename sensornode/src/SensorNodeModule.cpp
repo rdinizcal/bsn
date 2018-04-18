@@ -14,6 +14,7 @@ SensorNodeModule::SensorNodeModule(const int32_t &argc, char **argv) :
     m_status("baixo"),
     m_data_queue(),
     m_status_log(),
+    packages_file(),
     m_ref() {}
 
 SensorNodeModule::~SensorNodeModule() {}
@@ -22,8 +23,8 @@ SensorNodeModule::~SensorNodeModule() {}
 void SensorNodeModule::setUp() {
     m_sensor_type = m_id+1; // configuração do tipo de sensor
 
-    clock_gettime(CLOCK_REALTIME, &m_ref); // referência para medidas de tempo  
-
+    clock_gettime(CLOCK_REALTIME, &m_ref); // referência para medidas de tempo 
+    packages_file.open("output/packages_sent.txt");
     string path = "output/";
     string filename = "sensornode" + to_string(m_id);
     m_status_log.open(path + filename + "_status_log.csv");
@@ -32,6 +33,8 @@ void SensorNodeModule::setUp() {
 
 // DESTRUIÇÃO
 void SensorNodeModule::tearDown() {
+    packages_file.close();
+    m_status_log.close();
 }
 
 bool SensorNodeModule::controllerFSM(int t){
@@ -141,6 +144,18 @@ timespec SensorNodeModule::elapsedTime(timespec &now, timespec &ref) {
     return diff;
 }
 
+void SensorNodeModule::persist_sensor_status(timespec ts, string categorized_data){
+    cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSSms() << endl;
+    timespec t_esy = elapsedTime(ts, m_ref);
+    m_status_log << (double)((t_esy.tv_sec) + (t_esy.tv_nsec/1E9)) << ",";
+    m_status_log << ((m_status=="baixo")?1:(m_status=="moderado")?2:3) << ",";
+    m_status_log << " " << "\n";
+}
+
+void SensorNodeModule::persist_packages_sent(uint32_t id, string status){
+    packages_file << id << ' ' << status <<  "\n";
+}
+
 // CORPO
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body() {
 
@@ -168,14 +183,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
 
             /*ENVIAR ESTADO*/
             SensorNodeModule::sendSensorData(SensorData(m_id, m_sensor_type, m_status, ts));
+            persist_packages_sent(m_id,m_status);
+            cycles = 0;    
 
-            cycles = 0;
-
-            cout << "Actual status: " << m_status << " | Data sampled: " << categorized_data << " at " << TimeStamp().getYYYYMMDD_HHMMSSms() << endl;
-            timespec t_esy = elapsedTime(ts, m_ref);
-            m_status_log << (double)((t_esy.tv_sec) + (t_esy.tv_nsec/1E9)) << ",";
-            m_status_log << ((m_status=="baixo")?1:(m_status=="moderado")?2:3) << ",";
-            m_status_log << " " << "\n";
+            persist_sensor_status(ts,categorized_data);        
         }
     }
     

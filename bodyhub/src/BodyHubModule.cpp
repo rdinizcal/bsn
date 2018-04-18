@@ -26,6 +26,7 @@ void BodyHubModule::setUp() {
     clock_gettime(CLOCK_REALTIME, &m_ref); // referência para medidas de tempo  
 
     // Abre arquivo para persistencia de dados
+    packages_file.open ("output/packages_received.txt");
     string path = "output/";    
     m_status_log.open(path+"bodyhub_status_log.csv");
     m_status_log << "ID do sensor, Estado do Termômetro, Estado do ECG, Estado do Oxímetro, Estado do Paciente, Enviado às (s), Recebido às (s), Processado às (s), Diff (s)\n";
@@ -34,6 +35,7 @@ void BodyHubModule::setUp() {
 // DESTRUIÇÃO
 void BodyHubModule::tearDown() {
     m_status_log.close(); // Fecha arquivo para persistencia de dados
+    packages_file.close();
 }
 
 string BodyHubModule::calculateHealthStatus(){
@@ -106,6 +108,11 @@ void BodyHubModule::printHealthStatus(){
     cout << "----------------------------------------"<<endl;
 }
 
+void BodyHubModule::persist_data_received(Container container){    
+    packages_file << container.getData<SensorData>().getSensorID() << " " 
+    << container.getData<SensorData>().getSensorStatus() <<  "\n";
+}
+
 // CORPO
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
@@ -135,6 +142,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() 
 
                 // PERSISTE
                 BodyHubModule::persistHealthStatus(sensor_id, container.getData<SensorData>().getSentTimespec(), ts);
+
+                persist_data_received(container);
             }
 
             //imprime dados atuais

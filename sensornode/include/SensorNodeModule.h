@@ -89,14 +89,20 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
          */        
         timespec elapsedTime(timespec &/*now*/, timespec &/*ref*/);
 
+        void persist_packages_sent(uint32_t /*id*/, string /*status*/);
+
+        void persist_sensor_status(timespec /*ts*/, string /*categorized_data*/);
+        
+
     // Atributos da classe
     
-        uint32_t m_id; // identificador
-        int32_t m_sensor_type; // tipo do sensor associado
-        string m_status; // estado atual
+        uint32_t m_id;              // identificador
+        int32_t m_sensor_type;      // tipo do sensor associado
+        string m_status;            // estado atual
         deque<string> m_data_queue; // fila de dados
-        ofstream m_status_log; // arquivo de log
-        timespec m_ref; // referencia temporal
+        ofstream m_status_log;      // arquivo de log
+        ofstream packages_file;     // log de pacotes enviados
+        timespec m_ref;             // referencia temporal
 };
 
 #endif
