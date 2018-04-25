@@ -25,23 +25,17 @@ bool suite_BodyHubTestSuite_init = false;
 static BodyHubTestSuite suite_BodyHubTestSuite;
 
 static CxxTest::List Tests_BodyHubTestSuite = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_BodyHubTestSuite( "test_bodyhub.h", 7, "BodyHubTestSuite", suite_BodyHubTestSuite, Tests_BodyHubTestSuite );
+CxxTest::StaticSuiteDescription suiteDescription_BodyHubTestSuite( "test_bodyhub.h", 8, "BodyHubTestSuite", suite_BodyHubTestSuite, Tests_BodyHubTestSuite );
 
 static class TestDescription_suite_BodyHubTestSuite_test_class_variables : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_BodyHubTestSuite_test_class_variables() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 23, "test_class_variables" ) {}
+ TestDescription_suite_BodyHubTestSuite_test_class_variables() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 24, "test_class_variables" ) {}
  void runTest() { suite_BodyHubTestSuite.test_class_variables(); }
 } testDescription_suite_BodyHubTestSuite_test_class_variables;
 
-static class TestDescription_suite_BodyHubTestSuite_test_CHS : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_BodyHubTestSuite_test_CHS() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 35, "test_CHS" ) {}
- void runTest() { suite_BodyHubTestSuite.test_CHS(); }
-} testDescription_suite_BodyHubTestSuite_test_CHS;
-
 static class TestDescription_suite_BodyHubTestSuite_test_UHS : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_BodyHubTestSuite_test_UHS() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 55, "test_UHS" ) {}
+ TestDescription_suite_BodyHubTestSuite_test_UHS() : CxxTest::RealTestDescription( Tests_BodyHubTestSuite, suiteDescription_BodyHubTestSuite, 36, "test_UHS" ) {}
  void runTest() { suite_BodyHubTestSuite.test_UHS(); }
 } testDescription_suite_BodyHubTestSuite_test_UHS;
 
@@ -58,17 +52,30 @@ public:
  void runTest() { suite_SensorNodeTestSuite.test_class_variables(); }
 } testDescription_suite_SensorNodeTestSuite_test_class_variables;
 
-static class TestDescription_suite_SensorNodeTestSuite_test_controllerFSM : public CxxTest::RealTestDescription {
-public:
- TestDescription_suite_SensorNodeTestSuite_test_controllerFSM() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 36, "test_controllerFSM" ) {}
- void runTest() { suite_SensorNodeTestSuite.test_controllerFSM(); }
-} testDescription_suite_SensorNodeTestSuite_test_controllerFSM;
+#include "test_vital_statistics.h"
 
-static class TestDescription_suite_SensorNodeTestSuite_test_statusAnalysis : public CxxTest::RealTestDescription {
+static VitalStatisticsTestSuite suite_VitalStatisticsTestSuite;
+
+static CxxTest::List Tests_VitalStatisticsTestSuite = { 0, 0 };
+CxxTest::StaticSuiteDescription suiteDescription_VitalStatisticsTestSuite( "test_vital_statistics.h", 7, "VitalStatisticsTestSuite", suite_VitalStatisticsTestSuite, Tests_VitalStatisticsTestSuite );
+
+static class TestDescription_suite_VitalStatisticsTestSuite_test_CHS : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_SensorNodeTestSuite_test_statusAnalysis() : CxxTest::RealTestDescription( Tests_SensorNodeTestSuite, suiteDescription_SensorNodeTestSuite, 54, "test_statusAnalysis" ) {}
- void runTest() { suite_SensorNodeTestSuite.test_statusAnalysis(); }
-} testDescription_suite_SensorNodeTestSuite_test_statusAnalysis;
+ TestDescription_suite_VitalStatisticsTestSuite_test_CHS() : CxxTest::RealTestDescription( Tests_VitalStatisticsTestSuite, suiteDescription_VitalStatisticsTestSuite, 9, "test_CHS" ) {}
+ void runTest() { suite_VitalStatisticsTestSuite.test_CHS(); }
+} testDescription_suite_VitalStatisticsTestSuite_test_CHS;
+
+static class TestDescription_suite_VitalStatisticsTestSuite_test_controllerFSM : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_VitalStatisticsTestSuite_test_controllerFSM() : CxxTest::RealTestDescription( Tests_VitalStatisticsTestSuite, suiteDescription_VitalStatisticsTestSuite, 29, "test_controllerFSM" ) {}
+ void runTest() { suite_VitalStatisticsTestSuite.test_controllerFSM(); }
+} testDescription_suite_VitalStatisticsTestSuite_test_controllerFSM;
+
+static class TestDescription_suite_VitalStatisticsTestSuite_test_statusAnalysis : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_VitalStatisticsTestSuite_test_statusAnalysis() : CxxTest::RealTestDescription( Tests_VitalStatisticsTestSuite, suiteDescription_VitalStatisticsTestSuite, 46, "test_statusAnalysis" ) {}
+ void runTest() { suite_VitalStatisticsTestSuite.test_statusAnalysis(); }
+} testDescription_suite_VitalStatisticsTestSuite_test_statusAnalysis;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

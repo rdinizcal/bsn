@@ -10,6 +10,7 @@
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "openbasn/data/SensorData.h"
+#include "../../VitalStatistics/include/VitalStatistics.h"
 
 #include <deque>
 #include <fstream>
@@ -44,33 +45,7 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         virtual ~SensorNodeModule(); 
     
     
-    // Métodos privados do funcionamento interno da classe.
-    
-        /**
-         * Controlador da execução do nó sensor.
-         * 
-         * @param número de ciclos desde a última execução
-         * @return booleano com autorização ou não da
-         *         execução do módulo
-         */
-        bool controllerFSM(int /*cycles*/);
-
-        /**
-         * Gerador de dados classificados do sensor
-         * 
-         * @param estado atual do nó sensor
-         * @return um novo estado
-         */
-        string generateData(string /*actual status*/);
-
-        /**
-         * Faz a análise do novo dado gerado para garantir 
-         * confiabilidade dos dados gerados.
-         * 
-         * @param novo estado gerado na iteração, estado atual do nó sensor 
-         * @return estado que será enviado pelo nó
-         */
-        string statusAnalysis(string /*categorized data*/, string /*actual status*/);
+    // Métodos privados do funcionamento interno da classe.            
 
         /**
          * Envio do dado analisado

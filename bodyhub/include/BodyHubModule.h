@@ -11,6 +11,7 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "openbasn/data/SensorData.h"
+#include "../../VitalStatistics/include/VitalStatistics.h"
 
 #include <sys/time.h>
 #include <iostream>
@@ -42,8 +43,6 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         BodyHubModule(const int32_t &argc, char **argv);
         virtual ~BodyHubModule();
     
-
-    
         /**
          * Cálculo da diferença de tempo entre dois timespecs
          * (agora - referencia)
@@ -52,14 +51,6 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
          * @return resultado da diferença
          */
         timespec elapsedTime(timespec &/*now*/, timespec &/*ref*/);
-
-        /**
-         * Cálculo do estado do paciente
-         * 
-         * @param  
-         * @return novo estado do paciente
-         */ 
-        string calculateHealthStatus();
 
         /**
          * Atribui estado do nó sensor recebido no registro e

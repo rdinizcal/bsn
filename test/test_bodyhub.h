@@ -1,5 +1,6 @@
 #include <cxxtest/TestSuite.h>
 #include <stdint.h>
+#include "../VitalStatistics/include/VitalStatistics.h"
 #include "../bodyhub/include/BodyHubModule.h"
             
 using namespace std;
@@ -30,26 +31,6 @@ class BodyHubTestSuite : public CxxTest::TestSuite{
       inst.m_health_status = "baixo";
       TS_ASSERT_EQUALS(inst.m_id, 1);
       TS_ASSERT_EQUALS(inst.m_health_status, "baixo");    
-    }
-
-    void test_CHS (void) {
-      cout << "\n    Testando metodo 'calculateHealthStatus': ";   
-      initialize_bh_instance();
-      BodyHubModule inst(argc, argv);
-      inst.m_sensor[0] = "baixo";
-      inst.m_sensor[1] = "baixo";
-      inst.m_sensor[2] = "baixo";
-      TS_ASSERT_EQUALS(inst.calculateHealthStatus(), "bom");    
-
-      inst.m_sensor[0] = "moderado";
-      inst.m_sensor[1] = "moderado";
-      inst.m_sensor[2] = "moderado";
-      TS_ASSERT_EQUALS(inst.calculateHealthStatus(), "medio");    
-
-      inst.m_sensor[0] = "alto";
-      inst.m_sensor[1] = "alto";
-      inst.m_sensor[2] = "alto";
-      TS_ASSERT_EQUALS(inst.calculateHealthStatus(), "ruim");    
     }
 
     void test_UHS(void) {

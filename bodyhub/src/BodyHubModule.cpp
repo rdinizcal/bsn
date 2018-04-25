@@ -38,25 +38,9 @@ void BodyHubModule::tearDown() {
     packages_file.close();
 }
 
-string BodyHubModule::calculateHealthStatus(){
-    double hr = 0;
-    for(uint32_t i = 0; i < m_sensor.size(); i++){
-
-        if (m_sensor[i] == "baixo") {
-            hr += 0.1;
-        } else if (m_sensor[i] == "moderado") {
-            hr += 1;
-        } else if (m_sensor[i] == "alto") {
-            hr += 5;
-        } 
-    }
-    
-    return (hr<=0)?"unknown":(hr<1)?"bom":(hr<5)?"medio":(hr<20)?"ruim":"unknown";
-}
-
 void BodyHubModule::updateHealthStatus(SensorData sensordata){
     m_sensor[sensordata.getSensorType()-1] = sensordata.getSensorStatus();
-    m_health_status = BodyHubModule::calculateHealthStatus();
+    m_health_status = calculateHealthStatus(m_sensor);
 }
 
 timespec BodyHubModule::elapsedTime(timespec &now, timespec &ref) {
