@@ -23,15 +23,11 @@ BodyHubModule::~BodyHubModule() {}
 // CONFIGURAÇÃO
 void BodyHubModule::setUp() {
     addDataStoreFor(873, m_buffer); // "Avisa" ao buffer que vai receber dados do tipo SensorNodeData
-
     clock_gettime(CLOCK_REALTIME, &m_ref); // referência para medidas de tempo  
-
 }
 
 // DESTRUIÇÃO
-void BodyHubModule::tearDown() {
-    delete &persist;
-}
+void BodyHubModule::tearDown() {}
 
 void BodyHubModule::updateHealthStatus(SensorData sensordata){
     m_sensor[sensordata.getSensorType()-1] = sensordata.getSensorStatus();

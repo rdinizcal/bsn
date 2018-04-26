@@ -27,9 +27,7 @@ void SensorNodeModule::setUp() {
 }
 
 // DESTRUIÇÃO
-void SensorNodeModule::tearDown() {
-    delete &persist;
-}
+void SensorNodeModule::tearDown() {}
 
 void SensorNodeModule::sendSensorData(SensorData sensordata){
     Container container(sensordata);

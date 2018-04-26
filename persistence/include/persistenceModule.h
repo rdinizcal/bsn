@@ -12,7 +12,7 @@ using namespace std;
 class SensorPersistence{
     public:
         SensorPersistence(uint32_t s_id);
-        ~SensorPersistence();
+        virtual ~SensorPersistence();
         void persist_sensor_status(timespec ts, string categorized_data, string sensor_status, timespec s_ref, string timestamp);
         void persist_packages_sent(uint32_t id, string status);
     private:
@@ -23,7 +23,7 @@ class SensorPersistence{
 class BodyHubPersistence{
     public:
         BodyHubPersistence();
-        ~BodyHubPersistence();
+        virtual ~BodyHubPersistence();
         void persistHealthStatus(uint32_t sensor_id, timespec t_sen, timespec t_rec, timespec m_ref,
                                 map<uint32_t, string> m_sensor, string m_health_status);
         void persist_data_received(uint32_t a, string b);
