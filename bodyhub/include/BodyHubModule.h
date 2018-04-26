@@ -12,6 +12,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "openbasn/data/SensorData.h"
 #include "../../VitalStatistics/include/VitalStatistics.h"
+#include "../../persistence/include/persistenceModule.h"
 
 #include <sys/time.h>
 #include <iostream>
@@ -37,6 +38,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
     private:
         virtual void setUp();
         virtual void tearDown();
+        void call_persist(Container container);
     
     // Construtor e Destrutor da classe.
     public:
@@ -94,6 +96,7 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         ofstream m_status_log; // arquivo para log
         timespec m_ref; // referencia temporal
         ofstream packages_file; //arquivo para escrita dos pacotes recebidos
+        BodyHubPersistence persist;
 };
 
 #endif

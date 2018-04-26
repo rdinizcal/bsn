@@ -1,3 +1,6 @@
+#ifndef VITAL_STATISTICS_H
+#define VITAL_STATISTICS_H
+
 #include <map>
 #include <deque>
 
@@ -14,3 +17,5 @@ bool controllerFSM(int t, string status);
 
 // Cálculo do estado do paciente
 string calculateHealthStatus(map<uint32_t,string> buffer );
+
+#endif

@@ -11,6 +11,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "openbasn/data/SensorData.h"
 #include "../../VitalStatistics/include/VitalStatistics.h"
+#include "../../persistence/include/persistenceModule.h"
 
 #include <deque>
 #include <fstream>
@@ -78,6 +79,7 @@ class SensorNodeModule : public TimeTriggeredConferenceClientModule {
         ofstream m_status_log;      // arquivo de log
         ofstream packages_file;     // log de pacotes enviados
         timespec m_ref;             // referencia temporal
+        SensorPersistence persist;
 };
 
 #endif

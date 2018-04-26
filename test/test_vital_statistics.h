@@ -5,7 +5,7 @@
 using namespace std;
 
 class VitalStatisticsTestSuite : public CxxTest::TestSuite{    
-    public:
+  public:
     void test_CHS (void) {
       cout << "\n\nTestes do módulo vital stats";
       cout << "\n    Testando metodo 'calculateHealthStatus': ";   
