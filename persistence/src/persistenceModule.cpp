@@ -19,8 +19,7 @@ SensorPersistence::~SensorPersistence(){
     sensor_status_log.close();
 }
 
-void SensorPersistence::persist_sensor_status(timespec ts, string categorized_data, string sensor_status, timespec s_ref, string timestamp){
-    cout << "Actual status: " << sensor_status << " | Data sampled: " << categorized_data << " at " << timestamp << endl;
+void SensorPersistence::persist_sensor_status(timespec ts, string categorized_data, string sensor_status, timespec s_ref, string timestamp){    
     timespec t_esy = elapsedTime(ts, s_ref);
     sensor_status_log << (double)((t_esy.tv_sec) + (t_esy.tv_nsec / 1E9)) << ",";
     sensor_status_log << ((sensor_status == "baixo") ? 1 : (sensor_status == "moderado") ? 2 : 3) << ",";

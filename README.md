@@ -6,7 +6,7 @@
 
 Estas instruções descrevem o conteúdo do galho (tcc) do repositório OpenBASN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
 
-##Descrição
+## Descrição
 
 No presente galho do repositório encontram-se o protótipo no OpenDaVINCI, e modelo do UPPAAL utilizados na apresentação do Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília do aluno Ricardo Diniz Caldas, na data de 08/12/2017, de título "Prototipação e Verificação Formal de Sistema Autônomo com Propriedades Tempo-Real: Um estudo de caso no Body Sensor Network".
 
