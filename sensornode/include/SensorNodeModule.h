@@ -12,6 +12,7 @@
 #include "openbasn/data/SensorData.h"
 #include "../../VitalStatistics/include/VitalStatistics.h"
 #include "../../persistence/include/persistenceModule.h"
+#include "../../communications/include/data_receiver.hpp"
 
 #include <deque>
 #include <fstream>

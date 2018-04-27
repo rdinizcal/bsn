@@ -60,11 +60,11 @@ E o módulo sensornode(Na pasta sensornode/build):
 ```
 ./sensornode --cid=111 --id=0
 ```
+
+E o módulo sensor(Na pasta sensor/build):
+
 ```
-./sensornode --cid=111 --id=1
-```
-```
-./sensornode --cid=111 --id=2
+./sensor
 ```
 
 Nesta configuração o protótipo será executado com uma plataforma central, três sensores (termômetro, eletrocardiógrafo e oxímetro). O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
