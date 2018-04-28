@@ -1,7 +1,7 @@
 #ifndef data_sender_H
 #define data_sender_H
 
-#include "../../sockets/include/sockets.hpp"
+#include "../../communications/sockets/include/sockets.hpp"
 #include <bits/stdc++.h>
 
 using namespace std;

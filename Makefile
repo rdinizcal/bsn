@@ -1,9 +1,9 @@
 all:
 	$(info Compiling communications)
-	mkdir -p sockets/build 
+	mkdir -p communications/sockets/build 
 	mkdir -p communications/build 
 	mkdir -p sensor/build 
-	g++ -c sockets/src/sockets.cpp -o sockets/build/sockets.o -I sockets/include -std=c++11 -g3 -ggdb3
+	g++ -c communications/sockets/src/sockets.cpp -o communications/sockets/build/sockets.o -I communications/sockets/include -std=c++11 -g3 -ggdb3
 	g++  -I communications/include -c communications/src/data_sender.cpp -o communications/build/data_sender.o -std=c++11 -g3 -ggdb3
 	g++  -I communications/include -c communications/src/data_receiver.cpp -o communications/build/data_receiver.o -std=c++11 -g3 -ggdb3	
 
@@ -33,9 +33,9 @@ all:
 	$(info Compiling sensornode)
 	g++ -std=c++11 -g3 -ggdb3 -I sensornode/include -c sensornode/src/SensorNodeModule.cpp -o sensornode/build/SensorNodeModule.o
 	g++ -std=c++11 -I sensornode/include -c sensornode/apps/sensornode.cpp -o sensornode/build/SensorNode.o
-	g++ -o sensornode/build/sensornode sockets/build/sockets.o persistence/build/persistence.o communications/build/data_receiver.o VitalStatistics/build/VitalStatistics.o libopenbasn/build/SensorData.o sensornode/build/SensorNode.o sensornode/build/SensorNodeModule.o -lopendavinci -lpthread	
+	g++ -o sensornode/build/sensornode communications/sockets/build/sockets.o persistence/build/persistence.o communications/build/data_receiver.o VitalStatistics/build/VitalStatistics.o libopenbasn/build/SensorData.o sensornode/build/SensorNode.o sensornode/build/SensorNodeModule.o -lopendavinci -lpthread	
 	
 
 	$(info Compiling sensor)
 	g++ -c sensor/sensor.cpp -o sensor/build/sensor.o -std=c++11 -g3 -ggdb3
-	g++ -o sensor/build/sensor sockets/build/sockets.o VitalStatistics/build/VitalStatistics.o communications/build/data_sender.o sensor/build/sensor.o
+	g++ -o sensor/build/sensor communications/sockets/build/sockets.o VitalStatistics/build/VitalStatistics.o communications/build/data_sender.o sensor/build/sensor.o

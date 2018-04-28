@@ -20,28 +20,24 @@ m_ref() {}
 SensorNodeModule::~SensorNodeModule() {}
 
 // CONFIGURAÇÃO
-void SensorNodeModule::setUp()
-{
+void SensorNodeModule::setUp(){
     m_sensor_type = m_id + 1;              // configuração do tipo de sensor
     clock_gettime(CLOCK_REALTIME, &m_ref); // referência para medidas de tempo
 }
 
 // DESTRUIÇÃO
-void SensorNodeModule::tearDown()
-{
+void SensorNodeModule::tearDown(){
     delete &persist;
 }
 
-void SensorNodeModule::sendSensorData(SensorData sensordata)
-{
+void SensorNodeModule::sendSensorData(SensorData sensordata){
     Container container(sensordata);
     getConference().send(container);
     CLOG1 << sensordata.toString() << " sent at " << TimeStamp().getYYYYMMDD_HHMMSS() << endl;
 }
 
 template <typename Out>
-void split(const string &s, char delim, Out result)
-{
+void split(const string &s, char delim, Out result){
     //Função de dividir uma string a partir de um char delimitador.
     //algoritmo retirado do stack overflow
     //link: https://stackoverflow.com/questions/236129/most-elegant-way-to-split-a-string
@@ -54,8 +50,7 @@ void split(const string &s, char delim, Out result)
     }
 }
 
-vector<string> split(const string &s, char delim)
-{
+vector<string> split(const string &s, char delim){
     //retorna um vetor com as strings delimitadas.
     //algoritmo retirado do stack overflow
     //referencia: https://stackoverflow.com/questions/236129/most-elegant-way-to-split-a-string
@@ -65,8 +60,7 @@ vector<string> split(const string &s, char delim)
 }
 
 // CORPO
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body()
-{
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body(){
 
     timespec ts; // timestamp do processador
 
@@ -75,14 +69,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode SensorNodeModule::body
     int cycles = 0;           // contador de ciclos desde a ultima execução
     data_receiver connection; //conexão com o sensor
 
-    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING)
-    {
+    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
         cycles++;
         exe = controllerFSM(cycles, m_status); // para execução com controlador
         //exe = true;                            // para execuçao sem controlador
 
-        if (exe)
-        {
+        if (exe){
             /*GERAR DADOS*/
 
             string packages = connection.receive();
