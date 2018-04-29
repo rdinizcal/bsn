@@ -21,3 +21,7 @@ vitalstatistics:
 	@g++ -std=c++11 -c runner.cpp -o a.o
 	@g++ -o main.out ../VitalStatistics/build/VitalStatistics.o a.o -lopendavinci -lpthread	
 	./main.out	
+
+clean:
+	$(info Clean all)
+	rm -f *~ *.out *.o runner.cpp

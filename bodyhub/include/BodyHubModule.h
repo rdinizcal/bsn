@@ -46,15 +46,6 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         virtual ~BodyHubModule();
     
         /**
-         * Cálculo da diferença de tempo entre dois timespecs
-         * (agora - referencia)
-         * 
-         * @param agora, referencia 
-         * @return resultado da diferença
-         */
-        timespec elapsedTime(timespec &/*now*/, timespec &/*ref*/);
-
-        /**
          * Atribui estado do nó sensor recebido no registro e
          * Atualiza o estado do paciente
          * 
@@ -88,15 +79,23 @@ class BodyHubModule : public TimeTriggeredConferenceClientModule {
         void persist_data_received(Container /*container*/);
     
     // Atributos da classe
-    
+    private:
         uint32_t m_id; // identificador
-        FIFOQueue m_buffer; // fila de caontainers
+        FIFOQueue m_buffer; // fila de containers
         string m_health_status; // estado do paciente
         map<uint32_t, string> m_sensor; // registro de sensores e estado atual
         ofstream m_status_log; // arquivo para log
         timespec m_ref; // referencia temporal
         ofstream packages_file; //arquivo para escrita dos pacotes recebidos
         BodyHubPersistence persist;
+
+    // Getters & Setters
+    public:
+        string getHealthStatus() const;
+        void setHealthStatus(string /*health status*/);
+
+        map<uint32_t, string> getSensors() const;
+        void setSensors(map<uint32_t, string> /*sensors map*/);
 };
 
 #endif

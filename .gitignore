@@ -3,3 +3,5 @@ build/
 output/
 *.out
 *.o
+
+runner.cpp

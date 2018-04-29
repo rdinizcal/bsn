@@ -39,3 +39,7 @@ all:
 	$(info Compiling sensor)
 	g++ -c sensor/sensor.cpp -o sensor/build/sensor.o -std=c++11 -g3 -ggdb3
 	g++ -o sensor/build/sensor communications/sockets/build/sockets.o VitalStatistics/build/VitalStatistics.o communications/build/data_sender.o sensor/build/sensor.o
+
+clean:
+	$(info Clean all)
+	rm -f *~ *.out *.o runner.cpp

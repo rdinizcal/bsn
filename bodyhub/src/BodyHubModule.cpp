@@ -48,6 +48,22 @@ void BodyHubModule::call_persist(Container container){
     persist.persist_data_received(container.getData<SensorData>().getSensorID(),container.getData<SensorData>().getSensorStatus());
 }
 
+string BodyHubModule::getHealthStatus() const {
+    return m_health_status;
+}
+
+void BodyHubModule::setHealthStatus(string health_status) {
+    m_health_status = health_status;
+}
+
+map<uint32_t, string> BodyHubModule::getSensors() const {
+    return m_sensor;
+}
+
+void BodyHubModule::setSensors(map<uint32_t, string> sensors) {
+    m_sensor = sensors;
+}
+
 // CORPO
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BodyHubModule::body() { 
     
