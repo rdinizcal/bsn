@@ -9,7 +9,7 @@
 #define SENSORNODE_MODULE_H_
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
-#include "openbasn/data/SensorData.h"
+#include "bsn/data/SensorData.h"
 #include "../../VitalStatistics/include/VitalStatistics.h"
 #include "../../persistence/include/persistenceModule.h"
 #include "../../communications/include/data_receiver.hpp"
@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace odcore::base::module;
-using namespace openbasn::data;
+using namespace bsn::data;
 
 class SensorNodeModule : public TimeTriggeredConferenceClientModule {
 

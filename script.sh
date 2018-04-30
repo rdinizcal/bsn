@@ -1,5 +1,5 @@
 #!/bin/bash
-cd libopenbasn
+cd libbsn
 mkdir build
 cd build
 cmake ..

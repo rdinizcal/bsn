@@ -25,20 +25,20 @@ SET(OPENDAVINCI_DIR "${CMAKE_INSTALL_PREFIX}")
 FIND_PACKAGE (OpenDaVINCI REQUIRED)
 
 # Find OpenBASN.
-SET(OPENBASN_DIR "${CMAKE_INSTALL_PREFIX}")
+SET(BSN_DIR "${CMAKE_INSTALL_PREFIX}")
 FIND_PACKAGE (OpenBASN REQUIRED)
 
 ###########################################################################
 # Set linking libraries to successfully link test suites and binaries.
 SET (LIBRARIES ${OPENDAVINCI_LIBRARIES}
-                ${OPENBASN_LIBRARIES})
+                ${BSN_LIBRARIES})
 
 ###########################################################################
 # Set header files from OpenDaVINCI.
 INCLUDE_DIRECTORIES (${OPENDAVINCI_INCLUDE_DIRS})
 
 # Set header files from OpenBASN.
-INCLUDE_DIRECTORIES (${OPENBASN_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES (${BSN_INCLUDE_DIRS})
 
 # Set include directory.
 INCLUDE_DIRECTORIES(include)

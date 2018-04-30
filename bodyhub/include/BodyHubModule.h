@@ -10,7 +10,7 @@
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
-#include "openbasn/data/SensorData.h"
+#include "bsn/data/SensorData.h"
 #include "../../VitalStatistics/include/VitalStatistics.h"
 #include "../../persistence/include/persistenceModule.h"
 
@@ -22,7 +22,7 @@
 using namespace std;
 using namespace odcore::base;
 using namespace odcore::base::module;
-using namespace openbasn::data;
+using namespace bsn::data;
 
 class BodyHubModule : public TimeTriggeredConferenceClientModule {
 

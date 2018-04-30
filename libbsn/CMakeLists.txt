@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-PROJECT (libopenbasn)
+PROJECT (libbsn)
 
 ###########################################################################
 # Set the search path for .cmake files.
@@ -29,9 +29,9 @@ FIND_PACKAGE (OpenDaVINCI REQUIRED)
 SET (LIBRARIES ${OPENDAVINCI_LIBRARIES})
 
 IF(WIN32)
-    SET (OPENBASN_LIB openbasn-static)
+    SET (BSN_LIB bsn-static)
 ELSE()
-    SET (OPENBASN_LIB openbasn)
+    SET (BSN_LIB bsn)
 ENDIF()
 
 ###########################################################################
@@ -42,26 +42,26 @@ INCLUDE_DIRECTORIES(include)
 
 ###########################################################################
 # Collect all resource files.
-FILE(GLOB_RECURSE libopenbasn-sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+FILE(GLOB_RECURSE libbsn-sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 ###########################################################################
 # Resulting artifacts.
-ADD_LIBRARY (openbasn-core   OBJECT ${libopenbasn-sources})
-ADD_LIBRARY (openbasn-static STATIC $<TARGET_OBJECTS:openbasn-core>)
+ADD_LIBRARY (bsn-core   OBJECT ${libbsn-sources})
+ADD_LIBRARY (bsn-static STATIC $<TARGET_OBJECTS:bsn-core>)
 IF(NOT WIN32)
-    ADD_LIBRARY (openbasn    SHARED $<TARGET_OBJECTS:openbasn-core>)
+    ADD_LIBRARY (bsn    SHARED $<TARGET_OBJECTS:bsn-core>)
 ENDIF()
 
-TARGET_LINK_LIBRARIES (openbasn-static ${LIBRARIES}) 
+TARGET_LINK_LIBRARIES (bsn-static ${LIBRARIES}) 
 IF(NOT WIN32)
-    TARGET_LINK_LIBRARIES (openbasn ${LIBRARIES}) 
+    TARGET_LINK_LIBRARIES (bsn ${LIBRARIES}) 
 ENDIF()
 
 ###########################################################################
 # Install this project.
-INSTALL(TARGETS openbasn-static DESTINATION lib COMPONENT lib)
+INSTALL(TARGETS bsn-static DESTINATION lib COMPONENT lib)
 IF(NOT WIN32)
-    INSTALL(TARGETS openbasn DESTINATION lib COMPONENT lib)
+    INSTALL(TARGETS bsn DESTINATION lib COMPONENT lib)
 ENDIF()
 
 # Install header files.

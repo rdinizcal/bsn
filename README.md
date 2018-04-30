@@ -1,6 +1,6 @@
-# OpenBASN
+# BSN
 
-**Open** **B**ody **A**rea **S**ensor **N**etwork é o protótipo de rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo desenvolvido para o Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília de Ricardo Diniz Caldas.
+**B**ody **S**ensor **N**etwork é o protótipo de rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo desenvolvido para o Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília de Ricardo Diniz Caldas.
 
 ## Introdução
 
@@ -26,7 +26,7 @@ Clone o galho específico do repositório
 git clone -b tcc https://github.com/rdinizcal/OpenBASN.git
 ```
 
-Entre na pasta da biblioteca libopenbasn
+Entre na pasta da biblioteca libbsn
 
 ## Compilação
 

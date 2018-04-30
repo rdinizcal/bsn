@@ -5,9 +5,9 @@
  * @version v1.0
  */
 
-#include "openbasn/data/SensorData.h"
+#include "bsn/data/SensorData.h"
 
-namespace openbasn {
+namespace bsn {
     namespace data {
         
         using namespace std;

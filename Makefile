@@ -16,24 +16,24 @@ all:
 	@mkdir -p VitalStatistics/build
 	g++ -std=c++11 -I VitalStatistics/include/ -c VitalStatistics/src/VitalStatistics.cpp -o VitalStatistics/build/VitalStatistics.o	
 	
-	@mkdir -p libopenbasn/build
+	@mkdir -p libbsn/build
 
 	$(info Compiling sensordata)
-	g++ -std=c++11 -I libopenbasn/include/openbasn/data -c libopenbasn/src/data/SensorData.cpp -o libopenbasn/build/SensorData.o
+	g++ -std=c++11 -I libbsn/include/bsn/data -c libbsn/src/data/SensorData.cpp -o libbsn/build/SensorData.o
 
 	@mkdir -p bodyhub/build
 
 	$(info Compiling bodyhub)
 	g++ -std=c++11 -I bodyhub/include -c bodyhub/src/BodyHubModule.cpp -o bodyhub/build/BodyHubModule.o
 	g++ -std=c++11 -I bodyhub/include -c bodyhub/apps/bodyhub.cpp -o bodyhub/build/BodyHub.o
-	g++ -o bodyhub/build/bodyhub persistence/build/persistence.o VitalStatistics/build/VitalStatistics.o libopenbasn/build/SensorData.o bodyhub/build/BodyHub.o bodyhub/build/BodyHubModule.o -lopendavinci -lpthread
+	g++ -o bodyhub/build/bodyhub persistence/build/persistence.o VitalStatistics/build/VitalStatistics.o libbsn/build/SensorData.o bodyhub/build/BodyHub.o bodyhub/build/BodyHubModule.o -lopendavinci -lpthread
 
 	@mkdir -p sensornode/build
 
 	$(info Compiling sensornode)
 	g++ -std=c++11 -g3 -ggdb3 -I sensornode/include -c sensornode/src/SensorNodeModule.cpp -o sensornode/build/SensorNodeModule.o
 	g++ -std=c++11 -I sensornode/include -c sensornode/apps/sensornode.cpp -o sensornode/build/SensorNode.o
-	g++ -o sensornode/build/sensornode communications/sockets/build/sockets.o persistence/build/persistence.o communications/build/data_receiver.o VitalStatistics/build/VitalStatistics.o libopenbasn/build/SensorData.o sensornode/build/SensorNode.o sensornode/build/SensorNodeModule.o -lopendavinci -lpthread	
+	g++ -o sensornode/build/sensornode communications/sockets/build/sockets.o persistence/build/persistence.o communications/build/data_receiver.o VitalStatistics/build/VitalStatistics.o libbsn/build/SensorData.o sensornode/build/SensorNode.o sensornode/build/SensorNodeModule.o -lopendavinci -lpthread	
 	
 
 	$(info Compiling sensor)

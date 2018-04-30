@@ -13,7 +13,7 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
-namespace openbasn {
+namespace bsn {
     namespace data {
         
         using namespace std;
