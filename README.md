@@ -4,7 +4,7 @@
 
 ## Introdução
 
-Estas instruções descrevem o conteúdo do galho (tcc) do repositório OpenBASN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
+Estas instruções descrevem o conteúdo do galho (tcc) do repositório BSN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
 
 ## Descrição
 
@@ -18,12 +18,12 @@ Para execução em tempo real (*realtime*) o sistema operacional de execução d
 
 ### Instalação
 
-Um passo-a-passo com exemplos descrevem como instalar o OpenBASN (testado em Linux Ubuntu 16.04).
+Um passo-a-passo com exemplos descrevem como instalar o BSN (testado em Linux Ubuntu 16.04).
 
 Clone o galho específico do repositório
 
 ```
-git clone -b tcc https://github.com/rdinizcal/OpenBASN.git
+git clone -b tcc https://github.com/rdinizcal/bsn.git
 ```
 
 Entre na pasta da biblioteca libbsn

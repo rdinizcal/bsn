@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-PROJECT (libbsn)
+PROJECT (sensornode)
 
 ###########################################################################
 # Set the search path for .cmake files.
@@ -24,55 +24,32 @@ INCLUDE (${CMAKE_CURRENT_SOURCE_DIR}/cmake.Modules/CompileFlags.cmake)
 SET(OPENDAVINCI_DIR "${CMAKE_INSTALL_PREFIX}")
 FIND_PACKAGE (OpenDaVINCI REQUIRED)
 
+# Find BSN.
+SET(BSN_DIR "${CMAKE_INSTALL_PREFIX}")
+FIND_PACKAGE (BSN REQUIRED)
+
 ###########################################################################
 # Set linking libraries to successfully link test suites and binaries.
-SET (LIBRARIES ${OPENDAVINCI_LIBRARIES})
-
-IF(WIN32)
-    SET (BSN_LIB bsn-static)
-ELSE()
-    SET (BSN_LIB bsn)
-ENDIF()
+SET (LIBRARIES ${OPENDAVINCI_LIBRARIES}
+                ${BSN_LIBRARIES})
 
 ###########################################################################
 # Set header files from OpenDaVINCI.
 INCLUDE_DIRECTORIES (${OPENDAVINCI_INCLUDE_DIRS})
+
+# Set header files from BSN.
+INCLUDE_DIRECTORIES (${BSN_INCLUDE_DIRS})
+
 # Set include directory.
 INCLUDE_DIRECTORIES(include)
 
 ###########################################################################
-# Collect all resource files.
-FILE(GLOB_RECURSE libbsn-sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-
-###########################################################################
-# Resulting artifacts.
-ADD_LIBRARY (bsn-core   OBJECT ${libbsn-sources})
-ADD_LIBRARY (bsn-static STATIC $<TARGET_OBJECTS:bsn-core>)
-IF(NOT WIN32)
-    ADD_LIBRARY (bsn    SHARED $<TARGET_OBJECTS:bsn-core>)
-ENDIF()
-
-TARGET_LINK_LIBRARIES (bsn-static ${LIBRARIES}) 
-IF(NOT WIN32)
-    TARGET_LINK_LIBRARIES (bsn ${LIBRARIES}) 
-ENDIF()
+# Build this project.
+FILE(GLOB_RECURSE thisproject-sources "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+ADD_LIBRARY (${PROJECT_NAME}lib-static STATIC ${thisproject-sources})
+ADD_EXECUTABLE (${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/apps/${PROJECT_NAME}.cpp")
+TARGET_LINK_LIBRARIES (${PROJECT_NAME} ${PROJECT_NAME}lib-static ${LIBRARIES}) 
 
 ###########################################################################
 # Install this project.
-INSTALL(TARGETS bsn-static DESTINATION lib COMPONENT lib)
-IF(NOT WIN32)
-    INSTALL(TARGETS bsn DESTINATION lib COMPONENT lib)
-ENDIF()
-
-# Install header files.
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/" DESTINATION include COMPONENT lib)
-
-# Install CMake modules locally.
-IF(UNIX)
-    INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake.Modules/FindBSN.cmake" DESTINATION share/cmake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules COMPONENT lib)
-    INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake.Modules/FindBSN.cmake" DESTINATION share/cmake-2.8/Modules COMPONENT lib)
-    INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake.Modules/FindBSN.cmake" DESTINATION share/cmake-3.0/Modules COMPONENT lib)
-ENDIF()
-IF(WIN32)
-    INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake.Modules/FindBSN.cmake" DESTINATION CMake-${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}/Modules COMPONENT lib)
-ENDIF()
+INSTALL(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin COMPONENT sensornode)
