@@ -76,4 +76,6 @@ Nesta configuração o protótipo será executado com uma plataforma central, tr
 
 ## Autores
 
-* **Ricardo D. Caldas** - (https://github.com/rdinizcal)
+* **Ricardo D. Caldas** - https://github.com/rdinizcal
+* **Gabriel Levi** - https://github.com/gabrielevi10
+* **Léo Moraes** - https://github.com/leooleo 
