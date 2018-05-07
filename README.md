@@ -1,10 +1,10 @@
-# OpenBASN
+# BSN
 
-**Open** **B**ody **A**rea **S**ensor **N**etwork é o protótipo de rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo desenvolvido para o Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília de Ricardo Diniz Caldas.
+**B**ody **S**ensor **N**etwork é o protótipo de rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo desenvolvido para o Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília de Ricardo Diniz Caldas.
 
 ## Introdução
 
-Estas instruções descrevem o conteúdo do galho (tcc) do repositório OpenBASN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
+Estas instruções descrevem o conteúdo do galho (tcc) do repositório BSN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
 
 ## Descrição
 
@@ -18,15 +18,15 @@ Para execução em tempo real (*realtime*) o sistema operacional de execução d
 
 ### Instalação
 
-Um passo-a-passo com exemplos descrevem como instalar o OpenBASN (testado em Linux Ubuntu 16.04).
+Um passo-a-passo com exemplos descrevem como instalar o BSN (testado em Linux Ubuntu 16.04).
 
 Clone o galho específico do repositório
 
 ```
-git clone -b tcc https://github.com/rdinizcal/OpenBASN.git
+git clone -b tcc https://github.com/rdinizcal/bsn.git
 ```
 
-Entre na pasta da biblioteca libopenbasn
+Entre na pasta da biblioteca libbsn
 
 ## Compilação
 
@@ -76,4 +76,6 @@ Nesta configuração o protótipo será executado com uma plataforma central, tr
 
 ## Autores
 
-* **Ricardo D. Caldas** - (https://github.com/rdinizcal)
+* **Ricardo D. Caldas** - https://github.com/rdinizcal
+* **Gabriel Levi** - https://github.com/gabrielevi10
+* **Léo Moraes** - https://github.com/leooleo 
