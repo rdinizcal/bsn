@@ -1,12 +1,17 @@
 # NOTE
 # Se a estrutura do projeto mudar, os includes feitos pelos arquivos devem alterar
 # Feito isso, o script irá se adaptar à nova estrutura
-
+# TODO
+# fazer estrutura dos testes(linkagem + comandos)
+# detectar tds os modulos do projeto automaticamente 
+# add input src include e apps
 import glob
+import os
 import re
 
 # modules_hash contem os modulos(nome -> var's)
 modules_hash = {}
+# outputfile contem o resultado do script
 outputfile = open("output.txt","w")
 
 class Module:
@@ -28,14 +33,15 @@ class Module:
         src = self.path_src
         return "g++ -std=c++11 -I " + inc + " -c " + src + " -o " + obj
         
-def print_array(array):
-    print('%s' % '\n'.join(map(str, array)))
+def print_array(arr):
+    print(', '.join(arr))
 def get_name(path):
     # A partir de um path para cpp ou hpp extrai o nome
     # Extrai o nome a partir da última ocorrencia de '/'
     name = path[path.rfind('/')+1:]
     name = name[:name.find('.')]
     return name
+
 def get_module_path(path):    
     # O path extraído será usado para indicar aonde a build deve ir
     # Recebe um hpp ou cpp e extrai o path do modulo
@@ -49,6 +55,7 @@ def get_module_path(path):
         path = path[:path.index("apps/")]            
 
     return path
+
 def search_includes(string):
     # Retorna um array com todos os includes de alguma file
     vet = re.findall(r'#include \"(.*?)\"', string)
@@ -58,6 +65,7 @@ def search_includes(string):
         if "opendavinci" not in  include:
             result.append( get_name(include) )
     return result    
+
 def get_files_path(folder,extension,especify_folder = ""):
     # Pega os paths das strings    
     result = glob.iglob(folder + '/**/*' + extension, recursive=True)
@@ -72,6 +80,7 @@ def get_files_path(folder,extension,especify_folder = ""):
         if(especify_folder in path):
             return_vet.append(path)
     return return_vet         
+
 def recursive_find_includes(this_include):
     array_includes = modules_hash[this_include].includes
     result = []
@@ -108,6 +117,7 @@ def compile_modules():
         outputfile.write('\t' + instance.compile() + "\n")
 
 def compile_mains(list_objects,main_path,list_includes):
+    # Passo da compilação envolvendo a linkagem
     module_name     = get_name(main_path)
     module_path     = get_module_path(main_path)    
     module_flags    = " -lopendavinci -lpthread"
@@ -128,7 +138,9 @@ def compile_mains(list_objects,main_path,list_includes):
     compile_app  = "g++ -o " + app_path + " " + app_path + ".o " + ' '.join(map(str,module_objects)) + module_flags    
     outputfile.write('\t' + compile_main + "\n")
     outputfile.write('\t' + compile_app  + "\n")
+
 def construct_mains(main_paths):
+    # Preparação dos arrays pra linkagem
     for main in main_paths:
         # Para cada main, busque todos seus includes que precisam ser linkados
         file = open(main)
@@ -143,22 +155,73 @@ def construct_mains(main_paths):
             else:    
                 recursive_includes_result += recursion_result
         objects_list = (list(set(recursive_includes_result)))
-        
+
         compile_mains(objects_list,main,this_main_includes)        
 
-hpp_paths  = get_files_path("libbsn",".h","include")
-hpp_paths += get_files_path("simulation",".hpp","include")
-hpp_paths += get_files_path("module",".h","include")
+def main():
+    hpp_paths  = get_files_path("libbsn",".h","include")
+    hpp_paths += get_files_path("simulation",".hpp","include")
+    hpp_paths += get_files_path("module",".h","include")
 
-cpp_paths  = get_files_path("libbsn",".cpp","src")
-cpp_paths += get_files_path("simulation",".cpp","src")
-cpp_paths += get_files_path("module",".cpp","src")
-outputfile.write("compile:\n")
-construct_classes(cpp_paths,hpp_paths)
-compile_modules()
-outputfile.write('\n')
-main_paths  = get_files_path("module",".cpp","apps")
-main_paths += get_files_path("simulation",".cpp","apps")
-main_paths += get_files_path("libbsn",".cpp","apps")
+    cpp_paths  = get_files_path("libbsn",".cpp","src")
+    cpp_paths += get_files_path("simulation",".cpp","src")
+    cpp_paths += get_files_path("module",".cpp","src")
+    outputfile.write("compile:\n")
+    construct_classes(cpp_paths,hpp_paths)
+    compile_modules()
+    outputfile.write('\n')
+    main_paths  = get_files_path("module",".cpp","apps")
+    main_paths += get_files_path("simulation",".cpp","apps")
+    main_paths += get_files_path("libbsn",".cpp","apps")
+    construct_mains(main_paths)
 
+def list_directories():
+    # Lista todas as pastas abaixo desta
+    # Pastas que começam com '.' serao ignoradas(como .git p.e.)
+    result = []
+    for i in next(os.walk('.'))[1]:
+        if i[0] != '.':
+            result.append(i)
+    return result
+
+def line_prepender(filename, line):
+    # Coloca uma linha no começo do arquivo
+    with open(filename, 'r+') as f:
+        content = f.read()
+        f.seek(0, 0)        
+        f.write(line + '\n' + content)
+
+# Compila tudo dentro dos diretorios e organiza a make por eles
+current_directories = list_directories()
+# Vetor make_all_tasks contem todas as tasks para o 'all' do make
+make_all_tasks = []
+# Vetor make_all_tasks contem o path de todas as mains
+main_paths     = []
+backup_hash    = {}
+for directory in current_directories:
+    modules_hash = {}
+    hpp_paths   = get_files_path(directory,".h","include")
+    hpp_paths  += get_files_path(directory,".hpp","include")
+
+    main_paths += get_files_path(directory,".cpp","apps")
+
+    cpp_paths   = get_files_path(directory,".cpp","src")
+    #Compile o módulo apenas se houver algo para compilar(arrays não-vazios)
+    if(cpp_paths and hpp_paths):        
+        make_task_name = "compile-" + directory
+        make_all_tasks.append(make_task_name)
+        outputfile.write(make_task_name + ":\n")
+        construct_classes(cpp_paths,hpp_paths)
+        compile_modules()
+        backup_hash = {**backup_hash,**modules_hash}
+
+# Como são compilados os módulos de forma separada, 
+# Uso um hash de backup pra salvar os dados de todos hashes
+# De tal forma que todos juntos possuam informação para linkar as mains
+modules_hash = backup_hash
+outputfile.write("compile-main" + ":\n")
 construct_mains(main_paths)
+# Realiza o append do all no inicio do arquivo
+make_all_tasks = "all: " + ' '.join(make_all_tasks) + " compile-main"
+outputfile.close()
+line_prepender("output.txt", make_all_tasks)
