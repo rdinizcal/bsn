@@ -1,6 +1,6 @@
 #include <cxxtest/TestSuite.h>
-#include "bsn/entity/BodyHub.h"
-#include "bsn/data/SensorData.h"
+#include "../include/entity/BodyHubEntity.h"
+#include "../include/data/SensorData.h"
 
 
 using namespace std;

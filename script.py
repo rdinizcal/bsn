@@ -1,9 +1,15 @@
 # NOTE
 # Se a estrutura do projeto mudar, os includes feitos pelos arquivos devem alterar
 # Feito isso, o script irá se adaptar à nova estrutura
+# NOTE
+# Vantagens: 
+# compila qlqr coisa de qlqr pasta adicionada(n precisa colocar um cmake la)
+# Assim ja compila simulation automaticamente
+# Facil de mexer
+# Roda e linka os testes automaticamente
+# Legivel
+
 # TODO
-# fazer estrutura dos testes(linkagem + comandos)
-# detectar tds os modulos do projeto automaticamente 
 # add input src include e apps
 import glob
 import os
@@ -12,7 +18,7 @@ import re
 # modules_hash contem os modulos(nome -> var's)
 modules_hash = {}
 # outputfile contem o resultado do script
-outputfile = open("output.txt","w")
+outputfile = open("Makefile","w")
 
 class Module:
     # Variaveis:
@@ -130,7 +136,7 @@ def compile_mains(list_objects,main_path,list_includes):
         inc = inc[:inc.rfind('/')]
         module_includes.append(inc)
     for i in list_objects:
-        # Recebe o path do objeto relativo ao nome recebido(list_objevts)
+        # Recebe o path do objeto relativo ao nome recebido(list_objects)
         module_objects.append(modules_hash[i].path_obj) 
     
     compile_main = "g++ -std=c++11" + " -c " + main_path + " -o " +  app_path + ".o"
@@ -138,6 +144,24 @@ def compile_mains(list_objects,main_path,list_includes):
     compile_app  = "g++ -o " + app_path + " " + app_path + ".o " + ' '.join(map(str,module_objects)) + module_flags    
     outputfile.write('\t' + compile_main + "\n")
     outputfile.write('\t' + compile_app  + "\n")
+
+def compile_tests(list_objects,path_test_h):
+    path_to_test_module = path_test_h
+    path_to_test_module = path_to_test_module[:path_to_test_module.rfind('/')]
+    module_objects  = []
+    module_flags    = " -lopendavinci -lpthread"
+
+    for i in list_objects:
+        # Recebe o path do objeto relativo ao nome recebido(list_objects)
+        module_objects.append(modules_hash[i].path_obj) 
+
+    path_runner = path_to_test_module + "/runner.cpp "
+    path_test_object = path_to_test_module + "/a.o "
+    path_test_main = path_to_test_module + "/main.out "
+    outputfile.write('\t' + "@cxxtestgen --error-printer -o " + path_runner + path_test_h  + '\n')
+    outputfile.write('\t' + "@g++ -std=c++11 -c " + path_runner + "-o " + path_test_object + '\n')
+    outputfile.write('\t' + "@g++ -o " + path_test_main  + path_test_object + ' '.join(module_objects) + module_flags + '\n')
+    outputfile.write('\t' + "./" + path_to_test_module + "/main.out" + '\n')
 
 def construct_mains(main_paths):
     # Preparação dos arrays pra linkagem
@@ -158,22 +182,27 @@ def construct_mains(main_paths):
 
         compile_mains(objects_list,main,this_main_includes)        
 
-def main():
-    hpp_paths  = get_files_path("libbsn",".h","include")
-    hpp_paths += get_files_path("simulation",".hpp","include")
-    hpp_paths += get_files_path("module",".h","include")
+def construct_tests(tests_path):
+    # Esta função foi construída para a biblioteca cxx    
+    for test in tests_path:
+        
+        file = open(test)
+        
+        this_main_includes = search_includes(file.read())        
+        recursive_includes_result = []
+        for include in this_main_includes:  
+            # Para cada include no teste               
+            recursive_includes_result.append(include)
+            recursion_result = recursive_find_includes(include)
+            if type(recursion_result) is str:
+                recursive_includes_result.append(recursion_result)
+            else:    
+                recursive_includes_result += recursion_result
+        objects_list = (list(set(recursive_includes_result)))
+        # Seta a task pro teste
+        outputfile.write(get_name(test) + ":\n")
+        compile_tests(objects_list,test)        
 
-    cpp_paths  = get_files_path("libbsn",".cpp","src")
-    cpp_paths += get_files_path("simulation",".cpp","src")
-    cpp_paths += get_files_path("module",".cpp","src")
-    outputfile.write("compile:\n")
-    construct_classes(cpp_paths,hpp_paths)
-    compile_modules()
-    outputfile.write('\n')
-    main_paths  = get_files_path("module",".cpp","apps")
-    main_paths += get_files_path("simulation",".cpp","apps")
-    main_paths += get_files_path("libbsn",".cpp","apps")
-    construct_mains(main_paths)
 
 def list_directories():
     # Lista todas as pastas abaixo desta
@@ -197,15 +226,20 @@ current_directories = list_directories()
 make_all_tasks = []
 # Vetor make_all_tasks contem o path de todas as mains
 main_paths     = []
+tests_paths    = []
 backup_hash    = {}
 for directory in current_directories:
+    # Zera o hash para uma compilação limpa do módulo
     modules_hash = {}
-    hpp_paths   = get_files_path(directory,".h","include")
-    hpp_paths  += get_files_path(directory,".hpp","include")
 
-    main_paths += get_files_path(directory,".cpp","apps")
+    hpp_paths    = get_files_path(directory,".h","include")
+    hpp_paths   += get_files_path(directory,".hpp","include")
 
-    cpp_paths   = get_files_path(directory,".cpp","src")
+    tests_paths += get_files_path(directory,".h","test")
+
+    main_paths  += get_files_path(directory,".cpp","apps")
+
+    cpp_paths    = get_files_path(directory,".cpp","src")
     #Compile o módulo apenas se houver algo para compilar(arrays não-vazios)
     if(cpp_paths and hpp_paths):        
         make_task_name = "compile-" + directory
@@ -221,7 +255,9 @@ for directory in current_directories:
 modules_hash = backup_hash
 outputfile.write("compile-main" + ":\n")
 construct_mains(main_paths)
-# Realiza o append do all no inicio do arquivo
+construct_tests(tests_paths)
+# Realiza o append do all e run_tests no inicio do arquivo
 make_all_tasks = "all: " + ' '.join(make_all_tasks) + " compile-main"
+make_run_tests = "run_tests: " + ' '.join(map(get_name,tests_paths))
 outputfile.close()
-line_prepender("output.txt", make_all_tasks)
+line_prepender("Makefile", make_all_tasks + '\n' + make_run_tests )
