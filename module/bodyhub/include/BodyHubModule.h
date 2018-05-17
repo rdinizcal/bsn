@@ -11,9 +11,9 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
-#include "bsn/data/SensorData.h"
-#include "bsn/entity/BodyHub.h"
-#include "bsn/persistence/PersistenceModule.h"
+#include "../../../libbsn/include/data/SensorData.h"
+#include "../../../libbsn/include/entity/BodyHubEntity.h"
+#include "../../../libbsn/include/persistence/PersistenceModule.h"
 
 #include <sys/time.h>
 #include <iostream>

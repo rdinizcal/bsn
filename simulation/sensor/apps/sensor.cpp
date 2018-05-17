@@ -1,8 +1,10 @@
-#include "../communications/include/data_sender.hpp"
-#include "../VitalStatistics/include/VitalStatistics.h"
+#include "../../communications/include/data_sender.hpp"
+#include "../../../libbsn/include/statistics/VitalStatistics.h"
 #include <bits/stdc++.h>
 
 using namespace std;
+using namespace bsn;
+using namespace statistics;
 
 int main(){
     ofstream slog;
