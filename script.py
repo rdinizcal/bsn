@@ -1,16 +1,12 @@
+# Este script foi feito para compilar módulos 
+# Com a estrutura: src/(.cpp) e include/(.hpp)
+# E mains em apps/(.cpp apenas)
+# Alem disso, adicionalmente enxerga testes e instala folders desejados
+
 # NOTE
 # Se a estrutura do projeto mudar, os includes feitos pelos arquivos devem alterar
 # Feito isso, o script irá se adaptar à nova estrutura
-# NOTE
-# Vantagens: 
-# compila qlqr coisa de qlqr pasta adicionada(n precisa colocar um cmake la)
-# Assim ja compila simulation automaticamente
-# Facil de mexer
-# Roda e linka os testes automaticamente
-# Legivel
 
-# TODO
-# add input src include e apps
 import glob
 import os
 import re
@@ -183,6 +179,7 @@ def construct_mains(main_paths):
         compile_mains(objects_list,main,this_main_includes)        
 
 def construct_tests(tests_path):
+    # MÓDULO ADICIONAL(seu uso cabe ao usuário)
     # Esta função foi construída para a biblioteca cxx    
     for test in tests_path:
         
@@ -220,6 +217,31 @@ def line_prepender(filename, line):
         f.seek(0, 0)        
         f.write(line + '\n' + content)
 
+def install(project_directory,project_name):
+    # MÓDULO ADICIONAL(seu uso cabe ao usuário)
+    # Instala uma pasta do projeto
+    # Coloca os includes na pasta usr/local/include/<project_name>
+    project_install_path = " /usr/local/include/" + project_name + '/'
+    # Cria a pasta bsn 
+    outputfile.write("\tsudo mkdir -p" + project_install_path + '\n')
+
+    path_installs  = get_files_path(project_directory,".h","include")
+    path_installs += get_files_path(project_directory,".hpp","include")
+    for path in path_installs:
+        final_path = path[path.index("include/") + len("include/"):]   
+        if final_path and ("/" in final_path):
+            # Se houver uma pasta a ser criada, crie-a
+            final_path = final_path[:final_path.index("/")+1]            
+            outputfile.write('\t' + "sudo mkdir -p " + project_install_path + final_path + '\n')
+
+        install_command = "sudo cp " + path + project_install_path + final_path
+        outputfile.write('\t' + install_command + '\n')
+def uninstall(project_install_name):
+    project_install_path = " /usr/local/include/" + project_install_name + '/'
+    # Desinstala o projeto    
+    outputfile.write("uninstall:\n")    
+    outputfile.write("\tsudo rm -rf " + project_install_path)
+
 # Compila tudo dentro dos diretorios e organiza a make por eles
 current_directories = list_directories()
 # Vetor make_all_tasks contem todas as tasks para o 'all' do make
@@ -256,8 +278,15 @@ modules_hash = backup_hash
 outputfile.write("compile-main" + ":\n")
 construct_mains(main_paths)
 construct_tests(tests_paths)
+
+#Instala projeto libbsn
+outputfile.write("install:\n")
+install("libbsn","bsn")
+install("module","bsn")
+uninstall("bsn")
+
 # Realiza o append do all e run_tests no inicio do arquivo
-make_all_tasks = "all: " + ' '.join(make_all_tasks) + " compile-main"
+make_all_tasks = "all: " + "install " + ' '.join(make_all_tasks) + " compile-main" 
 make_run_tests = "run_tests: " + ' '.join(map(get_name,tests_paths))
 outputfile.close()
 line_prepender("Makefile", make_all_tasks + '\n' + make_run_tests )

@@ -1,5 +1,5 @@
 #include <cxxtest/TestSuite.h>
-#include "../include/statistics/VitalStatistics.h"
+#include "bsn/statistics/VitalStatistics.h"
 
 #include <stdint.h>
 #include <iostream>
