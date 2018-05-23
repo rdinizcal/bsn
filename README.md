@@ -12,9 +12,20 @@ No presente galho do repositório encontram-se o protótipo no OpenDaVINCI, e mo
 
 ### Pré-Requisitos
 
-É necessário ter a versão v4.16.0 do OpenDaVINCI instalada para executar o protótipo. O *framework* pode ser encontrado no repositório: https://github.com/se-research/OpenDaVINCI, onde há instruções para instalação para diversos sistemas operacionais.
+É necessário ter a versão v4.16.0 do OpenDaVINCI instalada para executar o 
+protótipo. O *framework* pode ser encontrado no repositório: 
+https://github.com/se-research/OpenDaVINCI, onde há instruções para 
+instalação para diversos sistemas operacionais. Link para o pacote 
+pré-compilado: https://github.com/se-research/OpenDaVINCI/blob/master/docs/installation.pre-compiled.rst
 
 Para execução em tempo real (*realtime*) o sistema operacional de execução do protótipo deve permitir esse tipo de operação. 
+
+É usada também a biblioteca 'cxx test' para testar o programa. Para 
+baixá-la basta digitar o seguinte comando:
+
+```
+sudo apt-get install cxxtest
+```
 
 ### Instalação
 
@@ -23,10 +34,8 @@ Um passo-a-passo com exemplos descrevem como instalar o BSN (testado em Linux Ub
 Clone o galho específico do repositório
 
 ```
-git clone -b tcc https://github.com/rdinizcal/bsn.git
+git clone https://github.com/leooleo/bsn
 ```
-
-Entre na pasta da biblioteca libbsn
 
 ## Compilação
 
@@ -35,6 +44,8 @@ Apenas rode o script com:
 ```
 bash script.sh
 ```
+
+A instalção será feita de forma automática.
 
 ### Execução
 
