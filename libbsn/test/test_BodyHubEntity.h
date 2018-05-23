@@ -1,5 +1,5 @@
 #include <cxxtest/TestSuite.h>
-#include "bsn/entity/BodyHub.h"
+#include "bsn/entity/BodyHubEntity.h"
 #include "bsn/data/SensorData.h"
 
 

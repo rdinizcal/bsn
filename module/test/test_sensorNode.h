@@ -26,7 +26,7 @@ class SensorNodeTestSuite : public CxxTest::TestSuite {
         SensorNodeModule snm(argc, argv);
 
         TS_ASSERT_EQUALS(snm.getIdentifier(), 1);
-        TS_ASSERT_EQUALS(snm.getName(), "bodyhub");
+        TS_ASSERT_EQUALS(snm.getName(), "sensornode");
         TS_ASSERT_EQUALS(snm.getCID(), (uint32_t) 111);
     }
 };

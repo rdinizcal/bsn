@@ -11,10 +11,9 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "bsn/data/SensorData.h"
-#include "bsn/entity/SensorNode.h"
+#include "bsn/entity/SensorNodeEntity.h"
 #include "bsn/persistence/PersistenceModule.h"
 #include "bsn/statistics/VitalStatistics.h"
-
 #include "../../../simulation/communications/include/data_receiver.hpp"
 
 #include <deque>

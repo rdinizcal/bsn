@@ -12,7 +12,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "bsn/data/SensorData.h"
-#include "bsn/entity/BodyHub.h"
+#include "bsn/entity/BodyHubEntity.h"
 #include "bsn/persistence/PersistenceModule.h"
 
 #include <sys/time.h>

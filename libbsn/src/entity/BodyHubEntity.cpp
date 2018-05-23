@@ -1,4 +1,4 @@
-#include "bsn/entity/BodyHub.h"
+#include "bsn/entity/BodyHubEntity.h"
 
 namespace bsn {
     namespace entity {
