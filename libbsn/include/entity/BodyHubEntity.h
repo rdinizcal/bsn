@@ -3,9 +3,9 @@
 
 #include "opendavinci/odcore/data/Container.h"
 
-#include "bsn/data/SensorData.h"
-#include "bsn/statistics/VitalStatistics.h"
-#include "bsn/persistence/PersistenceModule.h"
+#include "bsn/data/SensorData.hpp"
+#include "bsn/statistics/VitalStatistics.hpp"
+#include "bsn/persistence/PersistenceModule.hpp"
 
 #include <map>
 #include <iostream>
