@@ -21,6 +21,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollector::body(){
         RawData rawdata(generated_data);
         Container container(rawdata);
         getConference().send(container);
+        std::cout << "Dado " << generated_data << " gerado e enviado" << std::endl;
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
