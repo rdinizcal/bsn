@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <thread>
 #include <deque>
 #include <vector>
 #include <mutex>
@@ -23,10 +24,11 @@ class TCPReceiveBytes :
     public odcore::io::StringListener,
     public odcore::io::tcp::TCPAcceptorListener {
 
-    private:    
-    std::atomic_bool should_run;
+    private:        
+    std::atomic_bool should_run;    
     std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
     std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
+    int port;
 
     virtual void nextString(const std::string &s);
 
@@ -37,10 +39,12 @@ class TCPReceiveBytes :
     virtual void handleConnectionError();
 
     public:
-
+    TCPReceiveBytes(int p);
     std::string get_package();
+    void start_connection();
     void stop_connection();
     void initialize();
+    int get_port();
     
 };
 

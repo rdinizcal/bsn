@@ -25,6 +25,19 @@ const vector<string> split(const string& s, const char& c) {
 	return v;
 }
 
+TCPReceiveBytes::TCPReceiveBytes(int p){    
+    port = p;
+}
+
+int TCPReceiveBytes::get_port(){
+    return port;
+}
+
+void TCPReceiveBytes::start_connection(){
+    thread listener(&TCPReceiveBytes::initialize,this);
+    listener.detach();
+}
+
 void TCPReceiveBytes::handleConnectionError() {
 
     this_connection->stop();
@@ -61,17 +74,16 @@ void TCPReceiveBytes::stop_connection(){
 }
 
 void TCPReceiveBytes::initialize(){
-    cout << "initializing\n";
-    const uint32_t PORT = 1234;    
+    cout << "Server listening on port " << get_port() << endl;    
     should_run = true;
     try {
         std::shared_ptr<TCPAcceptor>
-            tcpacceptor(TCPFactory::createTCPAcceptor(PORT));
-        TCPReceiveBytes handler;
+            tcpacceptor(TCPFactory::createTCPAcceptor(port));
+        TCPReceiveBytes handler(-1);
         tcpacceptor->setAcceptorListener(&handler);
         tcpacceptor->start();
                 
-        while(should_run);
+        while(should_run);        
         tcpacceptor.reset();
         cout << "Stopped the connection\n";
     }

@@ -1,34 +1,70 @@
 // TODO:
 // Retirar prints
-// Receber parâmetros em construtores das classes
-// Execução em thread sendo chamada pelo receiver
-// Criação da classe Sender 
 
 #include <cxxtest/TestSuite.h>
-#include <thread>
 #include "TCPReceiveBytes.hpp"
 #include "consumer.hpp"
 #include "TCPSendBytes.hpp"
 
 using namespace std;
 
-void create_thread(TCPReceiveBytes * s) {
-    s->initialize();
-}
-
 class test_comunications : public CxxTest::TestSuite
 {
-public:
+public:    
+    void test_initialization_receiver(void) {
+        cout << "\nTesting receiver constructor...\n";
+        TCPReceiveBytes server(8080);
+        TS_ASSERT_EQUALS(8080,server.get_port());        
+        server.stop_connection();
+    }
+
+    void test_initialization_sender(void) {
+        cout << "\nTesting sender constructor...\n";
+        TCPSendBytes sender("localhost",8080);
+        TS_ASSERT_EQUALS(8080,sender.get_port());        
+        sender.disconnect();
+    }
+
+    void test_false_connection(void) {
+        cout << "\nTesting sender connection false condition...\n";
+        TCPSendBytes sender("localhost",8080);
+        // Como ninguem está escutando deve retornar false
+        TS_ASSERT_EQUALS(false,sender.connect());
+        sender.disconnect();
+    }
+
+    // void test_correct_connection(void) {
+    //     cout << "\nTesting sender connection true condition...\n";
+
+    //     TCPReceiveBytes server(8080);
+    //     TCPSendBytes sender("localhost",8080);
+
+    //     server.start_connection();    
+    //     //usleep(1000);
+    //     // Como server está escutando deve retornar true
+    //     TS_ASSERT_EQUALS(true,sender.connect());
+    //     server.stop_connection();
+    //     sender.disconnect();
+    // }
+
     void test_simple_send(void) {        
-        TCPReceiveBytes server;
-        std::thread listener(create_thread,&server);
-        send();
+        cout << "\nTesting Simple message sending...\n";                        
+        TCPSendBytes sender2("localhost",1234);      
+        TCPReceiveBytes server(1234);  
+        
+        server.start_connection();    
+        
+        sender2.connect();
+        
+        sender2.send("Test message");
+        //Wait for package
         sleep(1);
         string pack = get_package();
+        
+        sender2.disconnect();
         server.stop_connection();
-        listener.join();        
         
-        TS_ASSERT_EQUALS(pack,"Hello world 1 Hello world 2 ");
+        TS_ASSERT_EQUALS(pack,"Test message");
         
-    }
+    }    
 };

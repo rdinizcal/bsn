@@ -38,7 +38,5 @@
 build/
 output/
 
-Makefile
-
 # Tests
 runner.cpp

@@ -1,5 +1,6 @@
 #include <thread>
 #include "TCPReceiveBytes.hpp"
+#include "TCPSendBytes.hpp"
 #include "consumer.hpp"
 
 using namespace std;
@@ -7,21 +8,16 @@ using namespace std;
 using namespace odcore;
 using namespace odcore::wrapper;
 
-void create_thread(TCPReceiveBytes * s) {
-    s->initialize();
-}
-
 int main() {
-    TCPReceiveBytes server;
-    
-    std::thread listener(create_thread,&server);
+    TCPSendBytes sender("localhost",8080);
+    sender.connect();
+    sender.send("Teste1\n");
+    sender.disconnect();
     sleep(5);
-    string pack = get_package();    
-    cout << "GOT PACKAGE: " <<  pack << endl;
-    
-    server.stop_connection();
-    
-    listener.join();
+    TCPSendBytes sender2("localhost",8080);
+    sender2.connect();
+    sender2.send("Teste2\n");
+    sender2.disconnect();
     
     return 0;
 }
