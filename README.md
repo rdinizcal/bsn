@@ -1,14 +1,6 @@
 # BSN
 
-**B**ody **S**ensor **N**etwork é o protótipo de rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo desenvolvido para o Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília de Ricardo Diniz Caldas.
-
-## Introdução
-
-Estas instruções descrevem o conteúdo do galho (tcc) do repositório BSN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
-
-## Descrição
-
-No presente galho do repositório encontram-se o protótipo no OpenDaVINCI, e modelo do UPPAAL utilizados na apresentação do Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília do aluno Ricardo Diniz Caldas, na data de 08/12/2017, de título "Prototipação e Verificação Formal de Sistema Autônomo com Propriedades Tempo-Real: Um estudo de caso no Body Sensor Network".
+**B**ody **S**ensor **N**etwork é o protótipo de sistema de software para uma rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo.
 
 ### Pré-Requisitos
 
@@ -49,7 +41,7 @@ A instalção será feita de forma automática.
 
 ### Execução
 
-Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então emakxecutá-los:
+Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então executá-los:
 
 Antes de executar, o arquivo configuration.txt do diretorio *configs* deve ser colocado em */opt/od/bin/*
 
@@ -63,11 +55,11 @@ Exemplo de execução do odsupercomponent(Na pasta configs):
 sudo odsupercomponent --cid=111 --freq=10 --realtime=20 --managed=simulation_rt
 ```
 
-E o módulo bodyhub(Na pasta bodyhub/build):
+E o módulo bodyhub (na pasta bodyhub/build):
 ```
 ./bodyhub --cid=111
 ```
-E o módulo sensornode(Na pasta sensornode/build):
+E o módulo sensornode (na pasta sensornode/build):
 ```
 ./sensornode --cid=111 --id=0
 ```
