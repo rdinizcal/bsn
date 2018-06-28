@@ -2,9 +2,8 @@
 // Retirar prints
 
 #include <cxxtest/TestSuite.h>
-#include "TCPReceiveBytes.hpp"
-#include "consumer.hpp"
-#include "TCPSendBytes.hpp"
+#include "../include/TCPReceiveBytes.hpp"
+#include "../include/TCPSendBytes.hpp"
 
 using namespace std;
 
@@ -33,20 +32,6 @@ public:
         sender.disconnect();
     }
 
-    // void test_correct_connection(void) {
-    //     cout << "\nTesting sender connection true condition...\n";
-
-    //     TCPReceiveBytes server(8080);
-    //     TCPSendBytes sender("localhost",8080);
-
-    //     server.start_connection();    
-    //     //usleep(1000);
-    //     // Como server está escutando deve retornar true
-    //     TS_ASSERT_EQUALS(true,sender.connect());
-    //     server.stop_connection();
-    //     sender.disconnect();
-    // }
-
     void test_simple_send(void) {        
         cout << "\nTesting Simple message sending...\n";                        
         TCPSendBytes sender2("localhost",1234);      
@@ -59,7 +44,7 @@ public:
         sender2.send("Test message");
         //Wait for package
         sleep(1);
-        string pack = get_package();
+        string pack = server.get_package();
         
         sender2.disconnect();
         server.stop_connection();

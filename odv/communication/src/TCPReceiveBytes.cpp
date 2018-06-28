@@ -7,9 +7,7 @@ using namespace odcore::wrapper;
 using namespace odcore::io;
 using namespace odcore::io::tcp;
 
-const string NAME = "Area";
-const uint32_t SIZE = 1000;
-shared_ptr<SharedMemory> sharedMemory(SharedMemoryFactory::createSharedMemory(NAME, SIZE));
+deque<string> buffer;
 
 const vector<string> split(const string& s, const char& c) {    
 	string buff{""};
@@ -44,15 +42,21 @@ void TCPReceiveBytes::handleConnectionError() {
     cout << "Connection terminated\n";
 }
 
-void TCPReceiveBytes::nextString(const std::string &received_string) {
-    //cout << "Received " << received_string.length() 
-    //     << " bytes containing '" << received_string << "'" << endl;    
+string TCPReceiveBytes::get_package() {
+    string f = buffer.front();
+    buffer.pop_front();
 
-    sharedMemory->lock();
-    char *p = static_cast<char*>(sharedMemory->getSharedMemory());
-    // Concatena ao buffer
-    strcat(p,received_string.c_str());
-    sharedMemory->unlock();
+    return f;
+}
+
+void TCPReceiveBytes::nextString(const std::string &received_string) {
+    // Realiza split pelo caracter separador escolhido. No caso '*'
+    vector<string> vet = split(received_string,'*');
+    reverse(vet.begin(), vet.end());
+    for (auto str : vet) {
+        buffer.push_back(str);
+    }        
+
 }
 
 void TCPReceiveBytes::onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection) {
@@ -64,8 +68,7 @@ void TCPReceiveBytes::onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnec
         connection->setConnectionListener(this);
         connection->start();        
         
-        this_connection = connection;
-        
+        this_connection = connection;        
     }
 }
 

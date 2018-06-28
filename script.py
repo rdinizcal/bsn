@@ -282,7 +282,6 @@ construct_tests(tests_paths)
 #Instala projeto libbsn
 outputfile.write("install:\n")
 install("libbsn","bsn")
-install("module","bsn")
 uninstall("bsn")
 
 # Realiza o append do all e run_tests no inicio do arquivo
