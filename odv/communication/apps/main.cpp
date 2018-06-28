@@ -16,7 +16,8 @@ int main() {
     
     sender.connect();
     
-    sender.send("Test message1*Test message2");
+    sender.send("Test message1");
+    sender.send("Test message2");
     //Wait for package        
     cout << "Wait...\n";
     sleep(2);    

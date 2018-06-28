@@ -25,6 +25,7 @@ class TCPReceiveBytes :
     public odcore::io::tcp::TCPAcceptorListener {
 
     private:
+    std::mutex buffer_lock; 
     std::atomic_bool should_run;
     std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
     std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
@@ -38,7 +39,8 @@ class TCPReceiveBytes :
 
     virtual void handleConnectionError();
 
-    public:    
+    public:
+    void print_buffer();
     TCPReceiveBytes(int p);
     std::string get_package();
     void start_connection();

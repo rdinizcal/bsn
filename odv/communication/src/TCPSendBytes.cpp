@@ -37,6 +37,8 @@ void TCPSendBytes::disconnect() {
 void TCPSendBytes::send(string package){    
     if(is_connected){
         try {
+            // Adiciona caracter separador
+            package += '*';
             this_connection->send(package);        
         }
         catch(string &exception) {
