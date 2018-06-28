@@ -1,7 +1,7 @@
 #include <thread>
-#include "TCPReceiveBytes.hpp"
-#include "TCPSendBytes.hpp"
-#include "consumer.hpp"
+#include "../include/TCPReceiveBytes.hpp"
+#include "../include/TCPSendBytes.hpp"
+#include "../include/consumer.hpp"
 
 using namespace std;
 
