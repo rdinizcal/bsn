@@ -1,4 +1,4 @@
-#include "bsn/statistics/VitalStatistics.h"
+#include "../../include/statistics/VitalStatistics.h"
 
 using namespace std;
 
@@ -103,6 +103,14 @@ namespace bsn {
             }
             
             return (hr<=0)?"unknown":(hr<1)?"bom":(hr<5)?"medio":(hr<20)?"ruim":"unknown";
+        }
+
+        double generateDataByNormalDist(double mode, double variance){
+            std::default_random_engine generator;
+            std::random_device rd;
+            generator.seed(rd());
+            std::normal_distribution<double> distribution(mode, variance); // mode é o valor esperado e variance é a variação do valor
+            return distribution(generator);
         }
     }
 }

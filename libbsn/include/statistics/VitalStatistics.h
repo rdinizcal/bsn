@@ -3,6 +3,10 @@
 
 #include <map>
 #include <deque>
+#include <iostream>
+#include <string>
+#include <random>
+#include <unistd.h>
 
 using namespace std;
 
@@ -20,6 +24,9 @@ namespace bsn {
 
         // Cálculo do estado do paciente
         string calculateHealthStatus(map<uint32_t,string> buffer );
+
+        // Gera dados usando a distribuição Normal
+        double generateDataByNormalDist(double, double);
     }
 }
 

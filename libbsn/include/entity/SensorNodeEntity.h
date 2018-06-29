@@ -2,7 +2,6 @@
 #define SENSORNODE_H
 
 #include "opendavinci/odcore/data/Container.h"
-
 #include "../persistence/PersistenceModule.h"
 
 using namespace std;
