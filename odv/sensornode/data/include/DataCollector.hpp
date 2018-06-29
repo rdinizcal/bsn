@@ -8,9 +8,11 @@
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "bsn/data/RawData.h"
+#include "bsn/statistics/VitalStatistics.h"
 
 using namespace odcore::base::module;
 using namespace bsn::data;
+using namespace bsn::statistics;
 
 class DataCollector : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

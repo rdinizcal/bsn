@@ -11,13 +11,9 @@ void DataCollector::setUp() {}
 void DataCollector::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollector::body(){
-    std::default_random_engine generator;
-    std::random_device rd;
-    generator.seed(rd());
-    std::normal_distribution<double> distribution(747.52, 102.4); // 747.52 é o valor esperado e 102.4 é a variação do valor
-
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        generated_data = distribution(generator);
+        generated_data = generateDataByNormalDist(747.52, 102.4);
         RawData rawdata(generated_data);
         Container container(rawdata);
         getConference().send(container);
