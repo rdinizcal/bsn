@@ -79,11 +79,4 @@ class VitalStatisticsTestSuite : public CxxTest::TestSuite{
         TS_ASSERT_EQUALS(statusAnalysis("baixo", "moderado", test_queue), "moderado");
     }
 
-    void test_generateDataByNormalDist(){
-        cout << "\n     Testando metodo de gerar dados pela normal";
-        double test_dist = generateDataByNormalDist(500, 100);
-        TS_ASSERT_LESS_THAN(0, test_dist);
-        TS_ASSERT_LESS_THAN(test_dist, 1000);
-    }
-
 };

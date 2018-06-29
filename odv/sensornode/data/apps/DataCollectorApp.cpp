@@ -1,9 +1,9 @@
 #include <stdint.h>
 
-#include "../include/DataCollector.hpp"
+#include "../include/DataCollectorModule.hpp"
 
 int32_t main(int32_t argc, char **argv) {
-    DataCollector dc(argc, argv);
+    DataCollectorModule dcm(argc, argv);
     
-    return dc.runModule();
+    return dcm.runModule();
 }
