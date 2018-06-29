@@ -1,11 +1,4 @@
-#include <iostream>
-
-#include "opendavinci/odcore/data/TimeStamp.h"
-
-#include "../../communication/include/TCPReceiveBytes.hpp"
-
-#include "bsn/data/SensorData.h"
-#include "tcp_listener.hpp"
+#include "../include/tcp_listener.hpp"
 
 using namespace std;
 
@@ -47,10 +40,4 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::b
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
-}
-
-int32_t main(int32_t argc, char **argv) {
-    TimeTriggeredSender tts(argc, argv);
-
-    return tts.runModule();
 }

@@ -1,5 +1,13 @@
 #include <opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h>
 
+#include <iostream>
+
+#include "opendavinci/odcore/data/TimeStamp.h"
+
+#include "../../../communication/include/TCPReceiveBytes.hpp"
+
+#include "bsn/data/SensorData.h"
+
 class TimeTriggeredSender : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:
         TimeTriggeredSender(const TimeTriggeredSender &/*obj*/);
