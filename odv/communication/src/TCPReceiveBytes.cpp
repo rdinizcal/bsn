@@ -43,11 +43,18 @@ void TCPReceiveBytes::handleConnectionError() {
 }
 
 string TCPReceiveBytes::get_package() {
+    string p;
     buffer_lock.lock();
-        string f = buffer.front();
-        buffer.pop_front();
+        if(buffer.size() > 0) {
+            p = buffer.front();
+            buffer.pop_front();
+        }
+        else {
+            p = "";
+        }
+        
     buffer_lock.unlock();
-    return f;
+    return p;
 }
 
 void TCPReceiveBytes::print_buffer() {
@@ -60,7 +67,7 @@ void TCPReceiveBytes::print_buffer() {
 
 void TCPReceiveBytes::nextString(const std::string &received_string) {
     // Realiza split pelo caracter separador escolhido. No caso '*'
-    vector<string> vet = split(received_string,'*');    
+    vector<string> vet = split(received_string,'*');
     buffer_lock.lock();
         for (auto str : vet) {
             buffer.push_back(str);

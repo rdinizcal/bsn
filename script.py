@@ -166,6 +166,8 @@ def construct_mains(main_paths):
         file = open(main)
         this_main_includes = search_includes(file.read())        
         recursive_includes_result = []
+        if(get_name(main) in this_main_includes):
+            this_main_includes.remove(get_name(main))
         for include in this_main_includes:  
             # Para cada include nessa main               
             recursive_includes_result.append(include)
