@@ -5,7 +5,7 @@
 #include <opendavinci/odcore/io/tcp/TCPConnection.h>
 #include <opendavinci/odcore/io/tcp/TCPFactory.h>
 
-class TCPSendBytes {
+class TCPSend {
     private:
         bool is_connected;
         std::string ip;
@@ -13,8 +13,9 @@ class TCPSendBytes {
         std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
     public:
         void disconnect();
-        // Construtor recebe uma string com o ip e uma int porta
-        TCPSendBytes(std::string this_ip, int this_port);
+        TCPSend();
+        // Construtor recebe uma string com o ip e uma int porta        
+        TCPSend(std::string this_ip, int this_port);
         // Conecta à porta desejada e 
         // retorna true se foi feita com sucesso e false caso nao
         bool connect();        

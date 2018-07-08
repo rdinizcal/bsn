@@ -7,7 +7,7 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 using namespace bsn::data;
 
-TCPReceiveBytes server(8080);
+TCPReceive server(8080);
 
 TimeTriggeredSender::TimeTriggeredSender(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "TimeTriggeredSender")

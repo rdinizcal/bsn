@@ -19,7 +19,7 @@
 #include <opendavinci/odcore/wrapper/SharedMemory.h>
 #include <opendavinci/odcore/wrapper/SharedMemoryFactory.h>
 
-class TCPReceiveBytes : 
+class TCPReceive: 
     public odcore::io::ConnectionListener,
     public odcore::io::StringListener,
     public odcore::io::tcp::TCPAcceptorListener {
@@ -41,7 +41,7 @@ class TCPReceiveBytes :
 
     public:
     void print_buffer();
-    TCPReceiveBytes(int p);
+    TCPReceive(int p);
     std::string get_package();
     void start_connection();
     void stop_connection();

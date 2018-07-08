@@ -4,13 +4,15 @@ using namespace std;
 using namespace odcore;
 using namespace odcore::io::tcp;
 
-TCPSendBytes::TCPSendBytes(std::string this_ip, int this_port) {
+TCPSend::TCPSend() {}
+
+TCPSend::TCPSend(std::string this_ip, int this_port) {
     port = this_port;
     ip = this_ip;
     is_connected = false;
 }
 
-bool TCPSendBytes::connect(){
+bool TCPSend::connect(){
     try{                
         std::shared_ptr<TCPConnection> connection(TCPFactory::createTCPConnectionTo(ip, port));                
         connection->setRaw(true);        
@@ -25,16 +27,16 @@ bool TCPSendBytes::connect(){
         return false;
     }   
 }
-int TCPSendBytes::get_port() {
+int TCPSend::get_port() {
     return port;
 }
 
-void TCPSendBytes::disconnect() {
+void TCPSend::disconnect() {
     // Desaloca o ponteiro pra conexão
     this_connection.reset();
 }
 
-void TCPSendBytes::send(string package){    
+void TCPSend::send(string package){    
     if(is_connected){
         try {
             // Adiciona caracter separador

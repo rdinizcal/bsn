@@ -23,26 +23,26 @@ const vector<string> split(const string& s, const char& c) {
 	return v;
 }
 
-TCPReceiveBytes::TCPReceiveBytes(int p){    
+TCPReceive::TCPReceive(int p){    
     port = p;
 }
 
-int TCPReceiveBytes::get_port(){
+int TCPReceive::get_port(){
     return port;
 }
 
-void TCPReceiveBytes::start_connection(){
-    thread listener(&TCPReceiveBytes::initialize,this);
+void TCPReceive::start_connection(){
+    thread listener(&TCPReceive::initialize,this);
     listener.detach();
 }
 
-void TCPReceiveBytes::handleConnectionError() {
+void TCPReceive::handleConnectionError() {
 
     this_connection->stop();
     cout << "Connection terminated\n";
 }
 
-string TCPReceiveBytes::get_package() {
+string TCPReceive::get_package() {
     string p;
     buffer_lock.lock();
         if(buffer.size() > 0) {
@@ -57,7 +57,7 @@ string TCPReceiveBytes::get_package() {
     return p;
 }
 
-void TCPReceiveBytes::print_buffer() {
+void TCPReceive::print_buffer() {
     buffer_lock.lock();
     cout << "\nBuffer " << buffer.size() << ':';
     for(auto s : buffer)
@@ -65,7 +65,7 @@ void TCPReceiveBytes::print_buffer() {
     buffer_lock.unlock();
 }
 
-void TCPReceiveBytes::nextString(const std::string &received_string) {
+void TCPReceive::nextString(const std::string &received_string) {
     // Realiza split pelo caracter separador escolhido. No caso '*'
     vector<string> vet = split(received_string,'*');
     buffer_lock.lock();
@@ -76,7 +76,7 @@ void TCPReceiveBytes::nextString(const std::string &received_string) {
 
 }
 
-void TCPReceiveBytes::onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection) {
+void TCPReceive::onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection) {
     if (connection.get()) {
         cout << "Handle a new connection." << endl;
 	
@@ -89,17 +89,17 @@ void TCPReceiveBytes::onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnec
     }
 }
 
-void TCPReceiveBytes::stop_connection(){
+void TCPReceive::stop_connection(){
     should_run = false;
 }
 
-void TCPReceiveBytes::initialize(){
+void TCPReceive::initialize(){
     cout << "Server listening on port " << get_port() << endl;    
     should_run = true;
     try {
         std::shared_ptr<TCPAcceptor>
             tcpacceptor(TCPFactory::createTCPAcceptor(port));
-        TCPReceiveBytes handler(-1);
+        TCPReceive handler(-1);
         tcpacceptor->setAcceptorListener(&handler);
         tcpacceptor->start();
                 
