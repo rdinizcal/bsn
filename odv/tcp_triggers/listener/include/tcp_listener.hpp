@@ -4,7 +4,7 @@
 
 #include "opendavinci/odcore/data/TimeStamp.h"
 
-#include "../../../communication/include/TCPReceive.hpp"
+#include "bsn/communication/TCPReceive.hpp"
 
 #include "bsn/data/SensorData.h"
 

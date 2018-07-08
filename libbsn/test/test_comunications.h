@@ -2,8 +2,8 @@
 // Retirar prints
 
 #include <cxxtest/TestSuite.h>
-#include "../include/TCPReceive.hpp"
-#include "../include/TCPSend.hpp"
+#include "bsn/communication/TCPReceive.hpp"
+#include "bsn/communication/TCPSend.hpp"
 
 using namespace std;
 
