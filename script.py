@@ -162,45 +162,54 @@ def compile_tests(list_objects,path_test_h):
 def construct_mains(main_paths):
     # Preparação dos arrays pra linkagem
     for main in main_paths:
-        # Para cada main, busque todos seus includes que precisam ser linkados
-        file = open(main)
-        this_main_includes = search_includes(file.read())        
-        recursive_includes_result = []
-        if(get_name(main) in this_main_includes):
-            this_main_includes.remove(get_name(main))
-        for include in this_main_includes:  
-            # Para cada include nessa main               
-            recursive_includes_result.append(include)
-            recursion_result = recursive_find_includes(include)
-            if type(recursion_result) is str:
-                recursive_includes_result.append(recursion_result)
-            else:    
-                recursive_includes_result += recursion_result
-        objects_list = (list(set(recursive_includes_result)))
+        try:
+            # Para cada main, busque todos seus includes que precisam ser linkados
+            file = open(main)
+            this_main_includes = search_includes(file.read())        
+            recursive_includes_result = []
+            if(get_name(main) in this_main_includes):
+                this_main_includes.remove(get_name(main))
+            for include in this_main_includes:  
+                # Para cada include nessa main                               
+                recursive_includes_result.append(include)
+                recursion_result = recursive_find_includes(include)
+                if type(recursion_result) is str:
+                    recursive_includes_result.append(recursion_result)
+                else:    
+                    recursive_includes_result += recursion_result
+            objects_list = (list(set(recursive_includes_result)))
 
-        compile_mains(objects_list,main,this_main_includes)        
+            compile_mains(objects_list,main,this_main_includes)        
+        except KeyError as exception:            
+            print('On the file \"' + get_name(main) + '\" the include ' + (exception.args)[0] + ' doesn\'t exist')
+            exit()
+            #print('on ' + main + ' the inc ' + include)
 
 def construct_tests(tests_path):
     # MÓDULO ADICIONAL(seu uso cabe ao usuário)
     # Esta função foi construída para a biblioteca cxx    
     for test in tests_path:
         
-        file = open(test)
-        
-        this_main_includes = search_includes(file.read())        
-        recursive_includes_result = []
-        for include in this_main_includes:  
-            # Para cada include no teste               
-            recursive_includes_result.append(include)
-            recursion_result = recursive_find_includes(include)
-            if type(recursion_result) is str:
-                recursive_includes_result.append(recursion_result)
-            else:    
-                recursive_includes_result += recursion_result
-        objects_list = (list(set(recursive_includes_result)))
-        # Seta a task pro teste
-        outputfile.write(get_name(test) + ":\n")
-        compile_tests(objects_list,test)        
+        try:
+            file = open(test)
+            
+            this_main_includes = search_includes(file.read())        
+            recursive_includes_result = []
+            for include in this_main_includes:  
+                # Para cada include no teste               
+                recursive_includes_result.append(include)
+                recursion_result = recursive_find_includes(include)
+                if type(recursion_result) is str:
+                    recursive_includes_result.append(recursion_result)
+                else:    
+                    recursive_includes_result += recursion_result
+            objects_list = (list(set(recursive_includes_result)))
+            # Seta a task pro teste
+            outputfile.write(get_name(test) + ":\n")
+            compile_tests(objects_list,test)        
+        except KeyError as exception:            
+            print('On the file \"' + get_name(test) + '\" the include ' + (exception.args)[0] + ' doesn\'t exist')
+            exit()
 
 
 def list_directories():

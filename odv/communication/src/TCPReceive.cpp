@@ -1,4 +1,4 @@
-#include "../include/TCPReceiveBytes.hpp"
+#include "../include/TCPReceive.hpp"
 
 using namespace std;
 
