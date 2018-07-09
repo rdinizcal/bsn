@@ -13,7 +13,7 @@ void DataSender::setUp() {
     sender.connect();
 }
 
-void DataSender::tearDown(){
+void DataSender::tearDown(){    
     sender.disconnect();
 }
 
@@ -22,7 +22,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
 
         while(!m_buffer.isEmpty()){
             Container container = m_buffer.leave();
-            std::cout << "Dado recebido: " << (container.getData<RawData>().getSensorData()) << std::endl;
+            std::cout << "Dado recebido: " << to_string(container.getData<RawData>().getSensorData()) << std::endl;
             sender.send(to_string(container.getData<RawData>().getSensorData()));
         }
 

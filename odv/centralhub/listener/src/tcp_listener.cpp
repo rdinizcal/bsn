@@ -16,20 +16,17 @@ TimeTriggeredSender::TimeTriggeredSender(const int32_t &argc, char **argv) :
 TimeTriggeredSender::~TimeTriggeredSender() {}
 
 void TimeTriggeredSender::setUp() {
-    server.start_connection();
-    cout << "This method is called before the component's body is executed." << endl;
+    server.start_connection();    
 }
 
 void TimeTriggeredSender::tearDown() {
     server.stop_connection();
-    cout << "This method is called after the program flow returns from the component's body." << endl;
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::body() {
-    sleep(2);
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::body() {    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         string package = server.get_package();
-        if(package != ""){
+        if(package != ""){            
             cout << "Package: " << package << endl;
             timespec ts;
             SensorData data(0,0,package,ts);

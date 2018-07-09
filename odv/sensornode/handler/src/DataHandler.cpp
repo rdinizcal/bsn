@@ -17,7 +17,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataHandler::body(){
 
         while(!m_buffer.isEmpty()){
             Container container = m_buffer.leave();
-            std::cout << "Dado recebido: " << (container.getData<RawData>().getSensorData()) << std::endl;
+            std::cout << "Dado recebido: " << to_string(container.getData<RawData>().getSensorData()) << std::endl;
         }
 
     }

@@ -31,6 +31,8 @@
 *.out
 *.app
 
+Makefile
+
 # VSCode
 *.vscode/
 
