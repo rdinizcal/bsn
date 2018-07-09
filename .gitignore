@@ -31,14 +31,14 @@
 *.out
 *.app
 
+Makefile
+
 # VSCode
 *.vscode/
 
 # Project Specific
 build/
 output/
-
-Makefile
 
 # Tests
 runner.cpp
