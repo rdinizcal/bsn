@@ -10,6 +10,7 @@
 
 #include "bsn/data/RawData.h"
 #include "bsn/entity/DataCollector.h"
+#include "bsn/scales/ScaleConverter.hpp"
 
 using namespace odcore::base::module;
 using namespace bsn::data;

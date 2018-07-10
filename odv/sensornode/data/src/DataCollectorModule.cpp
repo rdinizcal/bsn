@@ -19,6 +19,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         //Gera o dado
         mGeneratedData = dataCollector.generateDataByNormalDist(747.52, 102.4);
 
+        // Converte para Celsius
+        mGeneratedData = to_celsius(mGeneratedData);
+
         //Atribui dados à estrutura de dados especifica
         RawData rawdata(mGeneratedData);
         
