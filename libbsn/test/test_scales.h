@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class DataCollectorTestSuite : public CxxTest::TestSuite{    
+class ScalesTestSuite : public CxxTest::TestSuite{    
   public:
     void test_simple_conversion(){
         cout << "\n     Testando se 0 realmente retorna 0";
