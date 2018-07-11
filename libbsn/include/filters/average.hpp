@@ -6,9 +6,9 @@ class average {
         double last_val;
         double count;
     public:
-    average();
-    double get_value();
-    void insert(double value);
+        average();
+        double get_value();
+        void insert(double value);
 };
 
 #endif 

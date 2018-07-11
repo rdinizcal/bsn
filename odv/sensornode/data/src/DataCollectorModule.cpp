@@ -13,6 +13,7 @@ void DataCollectorModule::tearDown(){}
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
     average filter;
     DataCollector dataCollector;
+    ScaleConverter converter(0,50);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -20,7 +21,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         mGeneratedData = dataCollector.generateDataByNormalDist(747.52, 102.4);
 
         // Converte para Celsius
-        mGeneratedData = to_celsius(mGeneratedData);
+        mGeneratedData = converter.to_celsius(mGeneratedData);
         cout << "Unfiltered " << mGeneratedData << ' ';
 
         // Filtra
