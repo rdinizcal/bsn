@@ -23,4 +23,5 @@ class TCPSend {
         void send(std::string package);
         // Retorna a porta à qual tenta-se conectar        
         int get_port();
+        void set_port(int p);
 };
