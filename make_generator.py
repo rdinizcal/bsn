@@ -296,7 +296,7 @@ install("libbsn","bsn")
 uninstall("bsn")
 
 # Realiza o append do all e run_tests no inicio do arquivo
-make_all_tasks = "all: " + "install " + ' '.join(make_all_tasks) + " compile-main" 
+make_all_tasks = "all: " + " uninstall install " + ' '.join(make_all_tasks) + " compile-main" 
 make_run_tests = "run_tests: " + ' '.join(map(get_name,tests_paths))
 outputfile.close()
 line_prepender("Makefile", make_all_tasks + '\n' + make_run_tests )
