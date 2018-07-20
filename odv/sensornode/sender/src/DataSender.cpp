@@ -9,7 +9,8 @@ DataSender::~DataSender() {}
 TCPSend sender("localhost",8000);
 
 void DataSender::setUp() {
-    addDataStoreFor(873, m_buffer);
+    // Recebe FilteredData
+    addDataStoreFor(876, m_buffer);
     sender.set_port(getIdentifier());
     sender.connect();
 }

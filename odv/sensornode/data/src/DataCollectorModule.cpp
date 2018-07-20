@@ -11,25 +11,23 @@ void DataCollectorModule::setUp() {}
 void DataCollectorModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
-    average filter;
-    DataCollector dataCollector;
-    ScaleConverter converter(0,50);
+    DataCollector dataCollector;    
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         //Gera o dado
         mGeneratedData = dataCollector.generateDataByNormalDist(747.52, 102.4);
 
-        // Converte para Celsius
-        mGeneratedData = converter.to_celsius(mGeneratedData);
-        cout << "Unfiltered " << mGeneratedData << ' ';
+        // // Converte para Celsius
+        // mGeneratedData = converter.to_celsius(mGeneratedData);
+        // cout << "Unfiltered " << mGeneratedData << ' ';
 
-        // Filtra
-        filter.insert(mGeneratedData);
-        double filtered_data = filter.get_value();
+        // // Filtra
+        // filter.insert(mGeneratedData);
+        // double filtered_data = filter.get_value();
 
         //Atribui dados à estrutura de dados especifica
-        RawData rawdata(filtered_data);
+        RawData rawdata(mGeneratedData);
         
         //Encapsula dado
         Container container(rawdata);
@@ -37,7 +35,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         //Envia pacote
         getConference().send(container);
 
-        std::cout << "Dado " << filtered_data << " gerado e enviado." << std::endl;
+        std::cout << "Dado " << mGeneratedData << " gerado e enviado." << std::endl;
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
