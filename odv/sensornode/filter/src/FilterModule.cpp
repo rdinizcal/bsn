@@ -25,21 +25,21 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
         while(!data_buffer.isEmpty()){
-
+            // retira o dado da FIFO
             container = data_buffer.leave();
             data = container.getData<ConvertedData>().getSensorData();
-
+            // Filtra o dado
             filter.insert(data);
             filtered_data = filter.get_value();
 
             std::cout << "Dado recebido: " << data << " filtrado para " << filtered_data << std::endl;
-
+            // Encapsula o dado como Filtered para manda-lo pela FIFO
             FilteredData encapsulated_data(filtered_data);
 
             Container packet(encapsulated_data);
 
             getConference().send(packet);
-            
+
         }
     }
 
