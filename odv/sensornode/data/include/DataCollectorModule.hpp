@@ -9,7 +9,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "bsn/data/RawData.h"
-#include "bsn/filters/average.hpp"
+#include "bsn/filters/Average.hpp"
 #include "bsn/entity/DataCollector.h"
 #include "bsn/scales/ScaleConverter.hpp"
 
