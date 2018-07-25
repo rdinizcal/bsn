@@ -7,7 +7,7 @@ namespace bsn {
         
         RawData::RawData() : m_sensor_data() {}
         
-        RawData::RawData(const double &sensor_data) : 
+        RawData::RawData(const double &sensor_data): 
             m_sensor_data(sensor_data) {}
         
         RawData::~RawData() {}

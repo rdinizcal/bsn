@@ -1,10 +1,3 @@
-/*
- * Mensagem com dados do sensor remetente
- * 
- * @author Ricardo Diniz Caldas
- * @version v1.0
- */
-
 #ifndef RAW_DATA_H_
 #define RAW_DATA_H_
 

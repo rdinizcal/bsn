@@ -17,28 +17,28 @@ using namespace odcore::base::module;
 using namespace bsn::data;
 using namespace bsn::entity;
 
-class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule
-{
-  private:
-    DataCollectorModule(const DataCollectorModule & /*obj*/);
-    DataCollectorModule &operator=(const DataCollectorModule & /*obj*/);
-    virtual void setUp();
-    virtual void tearDown();
+class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+    private:
+      	DataCollectorModule(const DataCollectorModule & /*obj*/);
+    	DataCollectorModule &operator=(const DataCollectorModule & /*obj*/);
+    	virtual void setUp();
+    	virtual void tearDown();
 
   public:
-    /**
-     * Construtor e destrutor da classe.
-     */
-    DataCollectorModule(const int32_t &argc, char **argv);
-    virtual ~DataCollectorModule();
+    	/**
+     	* Construtor e destrutor da classe.
+     	*/
+    	DataCollectorModule(const int32_t &argc, char **argv);
+    	virtual ~DataCollectorModule();
 
-    /**
-      * Método efetivamente executado.
-      */
-    odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
+    	/**
+      	* Método efetivamente executado.
+      	*/
+    	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
-  private:
-    double mGeneratedData;
+  	private:
+	  	u_int32_t mSensor_id;
+    	double mGeneratedData;
 };
 
 #endif 

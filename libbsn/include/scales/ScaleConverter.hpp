@@ -4,12 +4,22 @@
 #include <stdexcept>    
 #include <cassert>
 
-class ScaleConverter {
-    private: 
-        float lower_bound, upper_bound;
-    public: 
-        ScaleConverter(float lb, float ub);
-        double to_celsius(double scale);
-};
+namespace bsn {
+    namespace scales {
+
+        class ScaleConverter {
+            private: 
+                float lower_bound;
+                float upper_bound;
+            public: 
+                ScaleConverter();
+                void setLowerBound(float lb);
+                void setUpperBound(float ub);
+                double to_MeasureUnit(double scale);
+        };
+
+    }    
+    
+}
 
 #endif

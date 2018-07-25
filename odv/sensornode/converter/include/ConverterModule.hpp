@@ -12,10 +12,6 @@
 #include "bsn/data/ConvertedData.h"
 #include "bsn/data/RawData.h"
 
-using namespace odcore::base;
-using namespace odcore::base::module;
-using namespace bsn::data;
-
 class ConverterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
         ConverterModule(const ConverterModule & /*obj*/);
@@ -36,8 +32,8 @@ class ConverterModule : public odcore::base::module::TimeTriggeredConferenceClie
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-       // RawData received_data;
-        FIFOQueue rawdata_buffer;
+        uint32_t mSensor_id;
+        odcore::base::FIFOQueue rawdata_buffer;
 };
 
 #endif 

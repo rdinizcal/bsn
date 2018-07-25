@@ -2,6 +2,7 @@
 
 DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
+    mSensor_id(getIdentifier()),
     mGeneratedData() {}
 
 DataCollectorModule::~DataCollectorModule() {}
@@ -15,27 +16,27 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        //Gera o dado
-        mGeneratedData = dataCollector.generateDataByNormalDist(747.52, 102.4);
+        // Gera o dado de acordo com o id do sensor
+        if (mSensor_id == 0) { // termometro
+            mGeneratedData = dataCollector.generateDataByNormalDist(747.52, 102.4);
+        }
+        else if (mSensor_id == 1) { // ecg
+            mGeneratedData = dataCollector.generateDataByNormalDist(409.6, 102.4);
+        }
+        else { // oximetro
+            mGeneratedData = dataCollector.generateDataByNormalDist(972.8, 52.2);
+        }
 
-        // // Converte para Celsius
-        // mGeneratedData = converter.to_celsius(mGeneratedData);
-        // cout << "Unfiltered " << mGeneratedData << ' ';
-
-        // // Filtra
-        // filter.insert(mGeneratedData);
-        // double filtered_data = filter.get_value();
-
-        //Atribui dados à estrutura de dados especifica
+        // Atribui dados à estrutura de dados especifica
         RawData rawdata(mGeneratedData);
-        
-        //Encapsula dado
+
+        // Encapsula dado
         Container container(rawdata);
 
-        //Envia pacote
+        // Envia pacote
         getConference().send(container);
 
-        std::cout << "Dado " << mGeneratedData << " gerado e enviado." << std::endl;
+        std::cout << "Dado " << mGeneratedData << " gerado e enviado pelo sensor: " << mSensor_id << std::endl;
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
