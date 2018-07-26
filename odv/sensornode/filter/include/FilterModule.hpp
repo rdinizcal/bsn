@@ -10,7 +10,7 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "bsn/data/FilteredData.h"
 #include "bsn/data/ConvertedData.h"
-#include "bsn/filters/Average.hpp"
+#include "bsn/filters/MovingAverage.hpp"
 
 
 class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{

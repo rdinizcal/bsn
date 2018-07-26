@@ -18,7 +18,7 @@ void FilterModule::setUp() {
 void FilterModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
-    Average filter;
+    MovingAverage filter(5);
     Container container;
     double data, filtered_data;
 
@@ -30,7 +30,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
             data = container.getData<ConvertedData>().getSensorData();
             // Filtra o dado
             filter.insert(data);
-            filtered_data = filter.get_value();
+            filtered_data = filter.getValue();
 
             std::cout << "Dado recebido: " << data << " filtrado para " << filtered_data << std::endl;
             // Encapsula o dado como Filtered para manda-lo pela FIFO
