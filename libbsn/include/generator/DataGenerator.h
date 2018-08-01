@@ -8,13 +8,13 @@
 using namespace std;
 
 namespace bsn {
-    namespace entity {
+    namespace generator {
 
-        class DataCollector {
+        class DataGenerator {
 
             public:
-                DataCollector();
-                ~DataCollector();
+                DataGenerator();
+                ~DataGenerator();
 
                 // Aleatoriamente gera um status
                 string generateDataByMarkovChain(string /*actual status*/);

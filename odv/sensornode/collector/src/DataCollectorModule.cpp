@@ -12,19 +12,19 @@ void DataCollectorModule::setUp() {}
 void DataCollectorModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
-    DataCollector dataCollector;    
+    DataGenerator DataGenerator;    
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         // Gera o dado de acordo com o id do sensor
         if (mSensor_id == 0) { // termometro
-            mGeneratedData = dataCollector.generateDataByNormalDist(747.52, 102.4);
+            mGeneratedData = DataGenerator.generateDataByNormalDist(747.52, 102.4);
         }
         else if (mSensor_id == 1) { // ecg
-            mGeneratedData = dataCollector.generateDataByNormalDist(409.6, 102.4);
+            mGeneratedData = DataGenerator.generateDataByNormalDist(409.6, 102.4);
         }
         else { // oximetro
-            mGeneratedData = dataCollector.generateDataByNormalDist(972.8, 52.2);
+            mGeneratedData = DataGenerator.generateDataByNormalDist(972.8, 52.2);
         }
 
         // Atribui dados à estrutura de dados especifica

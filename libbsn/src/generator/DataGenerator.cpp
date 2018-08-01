@@ -1,13 +1,13 @@
-#include "bsn/entity/DataCollector.h"
+#include "bsn/generator/DataGenerator.h"
 
 namespace bsn {
-    namespace entity { 
+    namespace generator { 
 
-        DataCollector::DataCollector() {}
+        DataGenerator::DataGenerator() {}
 
-        DataCollector::~DataCollector() {}
+        DataGenerator::~DataGenerator() {}
 
-        string DataCollector::generateDataByMarkovChain(string actual_status) {
+        string DataGenerator::generateDataByMarkovChain(string actual_status) {
             string category;
             int p = (rand() % 100) + 1;
 
@@ -42,7 +42,7 @@ namespace bsn {
             return category;
         }
 
-        double DataCollector::generateDataByNormalDist(double mode, double variance) {
+        double DataGenerator::generateDataByNormalDist(double mode, double variance) {
             std::default_random_engine generator;
             std::random_device rd;
             double generated_data;

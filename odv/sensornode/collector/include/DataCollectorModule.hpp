@@ -9,11 +9,11 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "bsn/data/RawData.h"
-#include "bsn/entity/DataCollector.h"
+#include "bsn/generator/DataGenerator.h"
 
 using namespace odcore::base::module;
 using namespace bsn::data;
-using namespace bsn::entity;
+using namespace bsn::generator;
 
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
