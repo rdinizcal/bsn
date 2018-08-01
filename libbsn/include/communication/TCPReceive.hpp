@@ -41,6 +41,7 @@ class TCPReceive:
 
     public:
     void print_buffer();
+    void set_port(int p);
     TCPReceive(int p);
     std::string get_package();
     void start_connection();

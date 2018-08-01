@@ -1,57 +1,57 @@
-#include "bsn/data/RawData.h"
+#include "bsn/data/FilteredData.h"
 
 namespace bsn {
     namespace data {
         
         using namespace std;
         
-        RawData::RawData() : m_sensor_data() {}
+        FilteredData::FilteredData() : m_sensor_data() {}
         
-        RawData::RawData(const double &sensor_data): 
+        FilteredData::FilteredData(const double &sensor_data) : 
             m_sensor_data(sensor_data) {}
         
-        RawData::~RawData() {}
+        FilteredData::~FilteredData() {}
         
-        RawData::RawData(const RawData &obj) :
+        FilteredData::FilteredData(const FilteredData &obj) :
             SerializableData(),
             m_sensor_data(obj.getSensorData()) {}
         
-        RawData& RawData::operator=(const RawData &obj) {
+        FilteredData& FilteredData::operator=(const FilteredData &obj) {
             m_sensor_data = obj.getSensorData();          
             return (*this);
         }
         
-        int32_t RawData::ID() {
-            return 874;
+        int32_t FilteredData::ID() {
+            return 876;
         }
-        const string RawData::ShortName() {
-            return "RawData";
+        const string FilteredData::ShortName() {
+            return "FilteredData";
         }
-        const string RawData::LongName() {
-            return "data.RawData";
+        const string FilteredData::LongName() {
+            return "data.FilteredData";
         }
         
-        int32_t RawData::getID() const {
-            return RawData::ID();
+        int32_t FilteredData::getID() const {
+            return FilteredData::ID();
         }
 
-        const string RawData::getShortName() const {
-            return RawData::ShortName();
+        const string FilteredData::getShortName() const {
+            return FilteredData::ShortName();
         }
 
-        const string RawData::getLongName() const {
-            return RawData::LongName();
+        const string FilteredData::getLongName() const {
+            return FilteredData::LongName();
         }
 
-        void RawData::setSensorData(const double &sensor_data) {
+        void FilteredData::setSensorData(const double &sensor_data) {
             m_sensor_data = sensor_data;
         }
         
-        double RawData::getSensorData() const {
+        double FilteredData::getSensorData() const {
             return m_sensor_data;
         }
         
-        ostream& RawData::operator<<(ostream &out) const {
+        ostream& FilteredData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
@@ -60,7 +60,7 @@ namespace bsn {
             return out;
         }
         
-        istream& RawData::operator>>(istream &in) {
+        istream& FilteredData::operator>>(istream &in) {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
@@ -69,10 +69,10 @@ namespace bsn {
             return in;
         }
         
-        const string RawData::toString() const {
+        const string FilteredData::toString() const {
             stringstream sstr;
 
-            sstr << "Raw Data: " << m_sensor_data << "" << endl;
+            sstr << "Filtered Data: " << m_sensor_data << "" << endl;
 
             return sstr.str();
         }

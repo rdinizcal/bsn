@@ -1,5 +1,5 @@
-#ifndef RAW_DATA_H_
-#define RAW_DATA_H_
+#ifndef CONVERTED_DATA_H_
+#define CONVERTED_DATA_H_
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
@@ -12,18 +12,18 @@ namespace bsn {
         using namespace std;
         using namespace odcore::data;
         
-        class RawData : public SerializableData {
+        class ConvertedData : public SerializableData {
         
             public:
                 //construtor parametrizado
-                RawData(const double &/*raw data*/);
+                ConvertedData(const double &/*converted data*/);
 
-                RawData();            // construtor
-                virtual ~RawData();   // destrutor
+                ConvertedData();            // construtor
+                virtual ~ConvertedData();   // destrutor
 
                 //Boas práticas do manual do OpenDaVINCI
-                RawData(const RawData & /*obj*/);
-                RawData& operator=(const RawData &/*obj*/);
+                ConvertedData(const ConvertedData & /*obj*/);
+                ConvertedData& operator=(const ConvertedData &/*obj*/);
             
             // Métodos abstratos
             public:

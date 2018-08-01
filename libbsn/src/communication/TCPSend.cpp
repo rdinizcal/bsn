@@ -27,6 +27,11 @@ bool TCPSend::connect(){
         return false;
     }   
 }
+
+void TCPSend::set_port(int p){
+    port = p;
+}
+
 int TCPSend::get_port() {
     return port;
 }

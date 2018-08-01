@@ -1,11 +1,11 @@
 #include <cxxtest/TestSuite.h>
-#include "bsn/entity/DataCollector.h"
+#include "bsn/generator/DataGenerator.h"
 
 #include <stdint.h>
 #include <iostream>
 
 using namespace std;
-using namespace bsn::entity;
+using namespace bsn::generator;
 
 class DataCollectorTestSuite : public CxxTest::TestSuite{    
   public:
@@ -16,9 +16,9 @@ class DataCollectorTestSuite : public CxxTest::TestSuite{
     void test_generateDataByNormalDist(){
         cout << "\n     Testando metodo de gerar dados pela normal...";
 
-        DataCollector dataCollector;
+        DataGenerator DataGenerator;
 
-        double genValue = dataCollector.generateDataByNormalDist(500, 100);
+        double genValue = DataGenerator.generateDataByNormalDist(500, 100);
 
         TS_ASSERT_LESS_THAN(0, genValue);
         TS_ASSERT_LESS_THAN(genValue, 1000);

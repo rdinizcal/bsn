@@ -27,6 +27,10 @@ TCPReceive::TCPReceive(int p){
     port = p;
 }
 
+void TCPReceive::set_port(int p){
+    port = p;
+}
+
 int TCPReceive::get_port(){
     return port;
 }
