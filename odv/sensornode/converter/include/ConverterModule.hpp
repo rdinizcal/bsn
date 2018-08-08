@@ -32,7 +32,6 @@ class ConverterModule : public odcore::base::module::TimeTriggeredConferenceClie
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        uint32_t mSensor_id;
         odcore::base::FIFOQueue rawdata_buffer;
 };
 

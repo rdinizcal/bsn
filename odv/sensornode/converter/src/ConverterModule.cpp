@@ -7,7 +7,6 @@ using namespace bsn::scales;
 
 ConverterModule::ConverterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ConverterModule"),
-    mSensor_id(getIdentifier()),
     rawdata_buffer() {}
 
 ConverterModule::~ConverterModule() {}
@@ -21,15 +20,24 @@ void ConverterModule::tearDown(){}
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(){    
     ScaleConverter converter;
     double data, converted_data;
+
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("convertermodule.type");
+
     converter.setLowerBound(0);
-    if (mSensor_id == 0) {
+    if (sensorType == "thermometer") {
         converter.setUpperBound(50);
     }
-    else if (mSensor_id == 1) {
+    else if (sensorType == "ecg") {
         converter.setUpperBound(200);
     }
-    else if (mSensor_id == 2) {
+    else if (sensorType == "oximeter") {
         converter.setUpperBound(100);
+    }
+    else if (sensorType == "bpms") {
+        converter.setUpperBound(30);
+    }
+    else if (sensorType == "bpmd") {
+        converter.setUpperBound(25);
     }
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -41,7 +49,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(
 
             // Converte
             converted_data = converter.to_MeasureUnit(data);
-            std::cout << "Dado recebido pelo sensor" << mSensor_id << ": " << data << " convertido para " << converted_data << std::endl;                    
+            std::cout << "Dado recebido pelo " << sensorType << ": " << data << " convertido para " << converted_data << std::endl;                    
 
             // Encapsula
             ConvertedData encapsulated_data(converted_data);            
