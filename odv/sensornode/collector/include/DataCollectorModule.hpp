@@ -8,7 +8,11 @@
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
-#include "bsn/data/RawData.h"
+#include "bsn/data/ThermometerRawData.h"
+#include "bsn/data/ECGRawData.h"
+#include "bsn/data/OximeterRawData.h"
+#include "bsn/data/DiastolicRawData.h"
+#include "bsn/data/SystolicRawData.h"
 #include "bsn/generator/DataGenerator.h"
 
 using namespace odcore::base::module;

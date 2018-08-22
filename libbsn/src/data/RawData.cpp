@@ -22,7 +22,7 @@ namespace bsn {
         }
         
         int32_t RawData::ID() {
-            return 874;
+            return 880;
         }
         const string RawData::ShortName() {
             return "RawData";

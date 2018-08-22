@@ -12,40 +12,58 @@ ConverterModule::ConverterModule(const int32_t &argc, char **argv) :
 ConverterModule::~ConverterModule() {}
 
 void ConverterModule::setUp() {
-    addDataStoreFor(874, rawdata_buffer);
+    sensorType = getKeyValueConfiguration().getValue<std::string>("convertermodule.type");
+    converter.setLowerBound(0);
+    if (sensorType == "thermometer") {
+        converter.setUpperBound(50);
+        addDataStoreFor(881, rawdata_buffer);
+    }
+    else if (sensorType == "ecg") {
+        converter.setUpperBound(200);
+        addDataStoreFor(882, rawdata_buffer);
+    }
+    else if (sensorType == "oximeter") {
+        converter.setUpperBound(100);
+        addDataStoreFor(883, rawdata_buffer);
+    }
+    else if (sensorType == "bpms") {
+        converter.setUpperBound(30);
+        addDataStoreFor(884, rawdata_buffer);
+    }
+    else if (sensorType == "bpmd") {
+        converter.setUpperBound(25);
+        addDataStoreFor(885, rawdata_buffer);
+    }
 }
 
 void ConverterModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(){    
-    ScaleConverter converter;
     double data, converted_data;
-
-    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("convertermodule.type");
-
-    converter.setLowerBound(0);
-    if (sensorType == "thermometer") {
-        converter.setUpperBound(50);
-    }
-    else if (sensorType == "ecg") {
-        converter.setUpperBound(200);
-    }
-    else if (sensorType == "oximeter") {
-        converter.setUpperBound(100);
-    }
-    else if (sensorType == "bpms") {
-        converter.setUpperBound(30);
-    }
-    else if (sensorType == "bpmd") {
-        converter.setUpperBound(25);
-    }
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        while(!rawdata_buffer.isEmpty()){            
+        while(!rawdata_buffer.isEmpty()){
             Container container = rawdata_buffer.leave();
+            
+            if (sensorType == "thermometer") {
+                data = container.getData<ThermometerRawData>().getSensorData();
+            }
+            else if (sensorType == "ecg") {
+                data = container.getData<ECGRawData>().getSensorData();
+            }
+            else if (sensorType == "oximeter") {
+                data = container.getData<OximeterRawData>().getSensorData();
+            }
+            else if (sensorType == "bpms") {
+                data = container.getData<SystolicRawData>().getSensorData();
+            }
+            else if (sensorType == "bpmd") {
+                data = container.getData<DiastolicRawData>().getSensorData();
+            }
+            
             // Desencapsula
-            data = container.getData<RawData>().getSensorData();
+            // data = container.getData<RawData>().getSensorData();
 
             // Converte
             converted_data = converter.to_MeasureUnit(data);
