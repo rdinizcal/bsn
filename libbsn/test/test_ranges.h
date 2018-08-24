@@ -7,7 +7,6 @@ using namespace std;
 
 class RangesTestSuite: public CxxTest::TestSuite{    
   	public:
-	//
   	void test_constructor() {
 		  cout << "Testando intervalos" << endl;
 		  cout << "\tTestando construtor:\n";
