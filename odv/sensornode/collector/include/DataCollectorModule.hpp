@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
+#include "opendavinci/odcore/base/Thread.h"
 
 #include "bsn/data/ThermometerRawData.h"
 #include "bsn/data/ECGRawData.h"

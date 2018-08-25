@@ -7,6 +7,8 @@ namespace bsn {
         
         DiastolicRawData::DiastolicRawData(){}
 
+        DiastolicRawData::~DiastolicRawData() {}
+
         int32_t DiastolicRawData::ID() {
             return 885;
         }
