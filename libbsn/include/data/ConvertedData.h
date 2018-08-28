@@ -8,38 +8,34 @@
 
 namespace bsn {
     namespace data {
-        
-        using namespace std;
-        using namespace odcore::data;
-        
-        class ConvertedData : public SerializableData {
-        
-            public:
-                //construtor parametrizado
-                ConvertedData(const double &/*converted data*/);
 
-                ConvertedData();            // construtor
-                virtual ~ConvertedData();   // destrutor
+        class ConvertedData : public odcore::data::SerializableData{
+          public:
+            //construtor parametrizado
+            ConvertedData(const double & /*converted data*/);
 
-                //Boas práticas do manual do OpenDaVINCI
-                ConvertedData(const ConvertedData & /*obj*/);
-                ConvertedData& operator=(const ConvertedData &/*obj*/);
+            ConvertedData();          // construtor
+            virtual ~ConvertedData(); // destrutor
+
+            //Boas práticas do manual do OpenDaVINCI
+            ConvertedData(const ConvertedData & /*obj*/);
+            ConvertedData &operator=(const ConvertedData & /*obj*/);
             
             // Métodos abstratos
             public:
                 virtual int32_t getID() const;
-                virtual const string getShortName() const;
-                virtual const string getLongName() const;
+                virtual const std::string getShortName() const;
+                virtual const std::string getLongName() const;
 
                 static int32_t ID();
-                static const string ShortName();
-                static const string LongName();
+                static const std::string ShortName();
+                static const std::string LongName();
         
             public:
-                virtual ostream& operator<<(ostream &out) const;
-                virtual istream& operator>>(istream &in);
-        
-                virtual const string toString() const;
+                virtual std::ostream& operator<<(std::ostream &out) const;
+                virtual std::istream &operator>>(std::istream &in);
+
+                virtual const std::string toString() const;
                 
             // setters e getters
             public:

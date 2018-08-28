@@ -25,29 +25,29 @@ class TCPReceive:
     public odcore::io::tcp::TCPAcceptorListener {
 
     private:
-    std::mutex buffer_lock; 
-    std::atomic_bool should_run;
-    std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
-    std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
-    int port;
+        std::mutex buffer_lock; 
+        std::atomic_bool should_run;
+        std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
+        std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
+        int port;
 
-    virtual void nextString(const std::string &s);
+        virtual void nextString(const std::string &s);
 
-    void push(std::string);
+        void push(std::string);
 
-    virtual void onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection);
+        virtual void onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection);
 
-    virtual void handleConnectionError();
+        virtual void handleConnectionError();
 
     public:
-    void print_buffer();
-    void set_port(int p);
-    TCPReceive(int p);
-    std::string get_package();
-    void start_connection();
-    void stop_connection();
-    void initialize();
-    int get_port();
+        void print_buffer();
+        void set_port(int p);
+        TCPReceive(int p);
+        std::string get_package();
+        void start_connection();
+        void stop_connection();
+        void initialize();
+        int get_port();
     
 };
 

@@ -16,14 +16,11 @@
 namespace bsn {
     namespace data {
         
-        using namespace std;
-        using namespace odcore::data;
-        
-        class SensorData : public SerializableData {
+        class SensorData : public odcore::data::SerializableData {
         
             public:
                 //construtor parametrizado
-                SensorData(const uint32_t &/*sensor_id*/, const int32_t &/*sensor_type*/, const string &/*sensor_status*/, const timespec &/*sent_ts*/);
+                SensorData(const uint32_t &/*sensor_id*/, const int32_t &/*sensor_type*/, const std::string &/*sensor_status*/, const timespec &/*sent_ts*/);
  
                 SensorData(); // construtor
                 virtual ~SensorData();// destrutor 
@@ -35,18 +32,18 @@ namespace bsn {
             // Métodos abstratos
             public:
                 virtual int32_t getID() const;
-                virtual const string getShortName() const;
-                virtual const string getLongName() const;
+                virtual const std::string getShortName() const;
+                virtual const std::string getLongName() const;
 
                 static int32_t ID();
-                static const string ShortName();
-                static const string LongName();
+                static const std::string ShortName();
+                static const std::string LongName();
         
             public:
-                virtual ostream& operator<<(ostream &out) const;
-                virtual istream& operator>>(istream &in);
+                virtual std::ostream& operator<<(std::ostream &out) const;
+                virtual std::istream& operator>>(std::istream &in);
         
-                virtual const string toString() const;
+                virtual const std::string toString() const;
                 
             // setters e getters
             public:
@@ -56,8 +53,8 @@ namespace bsn {
                 void setSensorType(const int32_t &/*sensor_type*/);
                 int32_t getSensorType() const;
 
-                void setSensorStatus(const string &/*sensor_status*/);
-                string getSensorStatus() const;
+                void setSensorStatus(const std::string &/*sensor_status*/);
+                std::string getSensorStatus() const;
 
                 void setSentTimespec(const timespec &/*sent_ts*/);
                 timespec getSentTimespec() const;
@@ -65,7 +62,7 @@ namespace bsn {
             private:
                 uint32_t m_sensor_id; // identificador do sensor
                 int32_t m_sensor_type; // tipo do sensor
-                string m_sensor_status; // estado do sensor 
+                std::string m_sensor_status; // estado do sensor 
                 timespec m_sent_ts; // instante de geração do dado
         };
     }

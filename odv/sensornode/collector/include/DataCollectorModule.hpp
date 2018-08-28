@@ -16,10 +16,6 @@
 #include "bsn/data/SystolicRawData.h"
 #include "bsn/generator/DataGenerator.h"
 
-using namespace odcore::base::module;
-using namespace bsn::data;
-using namespace bsn::generator;
-
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
       	DataCollectorModule(const DataCollectorModule & /*obj*/);

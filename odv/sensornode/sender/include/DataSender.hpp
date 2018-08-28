@@ -11,10 +11,6 @@
 #include "bsn/data/FilteredData.h"
 #include "bsn/communication/TCPSend.hpp"
 
-using namespace odcore::base;
-using namespace odcore::base::module;
-using namespace bsn::data;
-
 class DataSender : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
         DataSender(const DataSender & /*obj*/);
@@ -35,8 +31,7 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-       // RawData received_data;
-        FIFOQueue m_buffer;        
+        odcore::base::FIFOQueue m_buffer;        
 };
 
 #endif 

@@ -8,11 +8,11 @@ namespace bsn {
             upper_bound = 0;
         }
 
-        void ScaleConverter::setLowerBound(float lb){
+        void ScaleConverter::setLowerBound(float lb) {
             lower_bound = lb;
         }
 
-        void ScaleConverter::setUpperBound(float ub){
+        void ScaleConverter::setUpperBound(float ub) {
             upper_bound = ub;
         }
 

@@ -1,4 +1,4 @@
-#include "bsn/data/ECGRawData.h"
+#include "../../include/data/ECGRawData.h"
 
 namespace bsn {
     namespace data {

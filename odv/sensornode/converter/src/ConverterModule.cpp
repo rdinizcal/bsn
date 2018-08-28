@@ -4,6 +4,7 @@ using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace bsn::data;
 using namespace bsn::scales;
+using namespace odcore::data;
 
 ConverterModule::ConverterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ConverterModule"),

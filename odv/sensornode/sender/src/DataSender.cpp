@@ -1,5 +1,10 @@
 #include "../include/DataSender.hpp"
 
+using namespace odcore::base;
+using namespace odcore::base::module;
+using namespace odcore::data;
+using namespace bsn::data;
+
 DataSender::DataSender(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "handler"),
     m_buffer() {}

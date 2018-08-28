@@ -8,38 +8,35 @@
 
 namespace bsn {
     namespace data {
-        
-        using namespace std;
-        using namespace odcore::data;
-        
-        class RawData : public SerializableData {
-        
-            public:
-                //construtor parametrizado
-                RawData(const double &/*raw data*/);
 
-                RawData();            // construtor
-                virtual ~RawData();   // destrutor
+        class RawData : public odcore::data::SerializableData {
 
-                //Boas práticas do manual do OpenDaVINCI
-                RawData(const RawData & /*obj*/);
-                RawData& operator=(const RawData &/*obj*/);
+          public:
+            //construtor parametrizado
+            RawData(const double & /*raw data*/);
+
+            RawData();          // construtor
+            virtual ~RawData(); // destrutor
+
+            //Boas práticas do manual do OpenDaVINCI
+            RawData(const RawData & /*obj*/);
+            RawData &operator=(const RawData & /*obj*/);
             
             // Métodos abstratos
             public:
                 virtual int32_t getID() const;
-                virtual const string getShortName() const;
-                virtual const string getLongName() const;
+                virtual const std::string getShortName() const;
+                virtual const std::string getLongName() const;
 
                 static int32_t ID();
-                static const string ShortName();
-                static const string LongName();
+                static const std::string ShortName();
+                static const std::string LongName();
         
             public:
-                virtual ostream& operator<<(ostream &out) const;
-                virtual istream& operator>>(istream &in);
+                virtual std::ostream& operator<<(std::ostream &out) const;
+                virtual std::istream& operator>>(std::istream &in);
         
-                virtual const string toString() const;
+                virtual const std::string toString() const;
                 
             // setters e getters
             public:

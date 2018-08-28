@@ -1,5 +1,10 @@
 #include "../include/DataCollectorModule.hpp"
 
+using namespace odcore::base::module;
+using namespace bsn::data;
+using namespace bsn::generator;
+using namespace odcore::data;
+
 DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
     mGeneratedData() {}
