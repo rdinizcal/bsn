@@ -1,5 +1,5 @@
 #include "DataTriggeredReceiver.hpp"
-
+#define maximum_list_size 6
 
 using namespace std;
 
@@ -9,6 +9,7 @@ using namespace odcore::data;
 using namespace bsn::data;
 
 vector<sensor_configuration> sensors;
+list<string> packets_list;
 
 const vector<string> split(const string& s, const char& c) {    
 	string buff{""};
@@ -79,16 +80,63 @@ void DataTriggeredReceiver::setUp() {
 
 void DataTriggeredReceiver::tearDown() {}
 
+// Algoritmo simples de data fusion
+void data_fuse() {
+	int count_good = 0, count_bad = 0;
+
+	// Se tiver mais que o maximo definido, elimina os elementos
+	while(packets_list.size() >= maximum_list_size){		
+		packets_list.pop_front();
+	}
+
+	for(auto element : packets_list){
+		if(element == "medium"){
+			count_good++;
+		}
+		else if(element == "low" || element == "high"){
+			count_bad++;
+		}
+	}
+
+	// Pega a differença posistiva entre as contagens
+	int difference = abs(count_good - count_bad);
+
+	if(count_bad == maximum_list_size || count_bad == maximum_list_size -1){
+		cout << "==========EMERGÊNCIA==========\n";
+	}
+	else if(count_good > count_bad){
+		if(difference >= maximum_list_size/2){
+			cout << "Sinal muito bom(" << count_good << 'x' << count_bad << ')' << endl;
+		}
+		else{
+			cout << "Sinal moderadamente bom(" << count_good << 'x' << count_bad << ')' << endl;
+		}
+	}
+	else if(count_good < count_bad){
+		if(difference >= maximum_list_size/2){
+			cout << "Sinal muito ruim(" << count_good << 'x' << count_bad << ')' << endl;
+		}
+		else{
+			cout << "Sinal moderadamente ruim(" << count_good << 'x' << count_bad << ')' << endl;
+		}
+	}
+	else{
+		cout << "Sinal moderado(" << count_good << 'x' << count_bad << ')' << endl;
+	}		
+}
+
 void DataTriggeredReceiver::nextContainer(Container &c) {    
 	if (c.getDataType() == 873){ 
 		string packet_raw = c.getData<SensorData>().getSensorStatus();
 		
 		int sensor_id = stoi(packet_raw.substr(0,packet_raw.find('-')));				 
 		double packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
+		string evaluated_packet = sensors[sensor_id].evaluate_number(packet);
+		// cout << "Pacote processado: " << packet << '-' << sensor_id << '(' <<
+		// 	evaluated_packet << ')' << endl;
 
-		cout << "Pacote processado: " << packet << '-' << sensor_id << '(' <<
-			sensors[sensor_id].evaluate_number(packet) << ')' << endl;
-
+		packets_list.push_back(evaluated_packet);
+		data_fuse();
 	}
 	else 
 		usleep(100);
