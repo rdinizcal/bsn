@@ -13,7 +13,7 @@ class TCPSend {
         std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
     public:
         void disconnect();
-        TCPSend();
+        TCPSend(int);
         // Construtor recebe uma string com o ip e uma int porta        
         TCPSend(std::string this_ip, int this_port);
         // Conecta à porta desejada e 
@@ -24,4 +24,5 @@ class TCPSend {
         // Retorna a porta à qual tenta-se conectar        
         int get_port();
         void set_port(int p);
+        void setIP(std::string vIP);
 };

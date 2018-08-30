@@ -31,7 +31,8 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        odcore::base::FIFOQueue m_buffer;        
+        odcore::base::FIFOQueue m_buffer;
+        std::string ip;
 };
 
 #endif 

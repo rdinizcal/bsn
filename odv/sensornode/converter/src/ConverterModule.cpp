@@ -63,6 +63,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(
             getConference().send(packet);
         }       
     }
-
+    
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }
