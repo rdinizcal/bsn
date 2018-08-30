@@ -1,17 +1,20 @@
 #include "../include/DataSender.hpp"
 
 DataSender::DataSender(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "handler"),
+    TimeTriggeredConferenceClientModule(argc, argv, "datasender"),
     m_buffer() {}
 
 DataSender::~DataSender() {}
 
-TCPSend sender("localhost",8000);
+TCPSend sender(8000);
 
 void DataSender::setUp() {
     // Recebe FilteredData
+    std::cout << getName();
+    ip = getKeyValueConfiguration().getValue<std::string>("datasender.ip");
     addDataStoreFor(876, m_buffer);
     sender.set_port(getIdentifier());
+    sender.setIP(ip);
     sender.connect();
 }
 
@@ -20,12 +23,16 @@ void DataSender::tearDown(){
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){    
-    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-
+    // Retira o id a partir da porta que lhe foi dada
+    int id = getIdentifier() - 8080;
+    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {        
         while(!m_buffer.isEmpty()){
             Container container = m_buffer.leave();
-            std::cout << "Dado recebido: " << to_string(container.getData<RawData>().getSensorData()) << std::endl;
-            sender.send(to_string(container.getData<RawData>().getSensorData()));
+            std::cout << "Dado recebido: " << to_string(container.getData<RawData>().getSensorData()) << std::endl;        
+            string package = to_string(id);
+            package += '-';
+            package += to_string(container.getData<RawData>().getSensorData());
+            sender.send(package);
         }
 
     }

@@ -28,12 +28,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::b
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         string package = server.get_package();
         if(package != ""){            
-            cout << "Package: \'" << package;
+            cout << "Pacote: \'" << package;
             timespec ts;
             SensorData data(0,0,package,ts);
             Container c(data);        
             getConference().send(c);
-            cout << "\' processed." << endl;            
+            cout << "\' recebido e encaminhado para o processamento." << endl;            
         }
     }
 

@@ -36,7 +36,8 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
 
     private:
        // RawData received_data;
-        FIFOQueue m_buffer;        
+        FIFOQueue m_buffer;
+        std::string ip;
 };
 
 #endif 

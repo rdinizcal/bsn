@@ -28,7 +28,7 @@ class Module:
         self.includes    = incs
     def __str__(self):
         return (str(self.name) + '-' + str(self.path_src) + '-' + str(self.path_inc))
-    def compile(self):
+    def compile(self):    
         # Se não possuir main, apenas compile o módulo(sem linkagem)
         obj = self.path_obj
         inc = self.path_inc[: self.path_inc.rfind('/')]
@@ -102,9 +102,9 @@ def recursive_find_includes(this_include):
 def construct_classes(cpp_paths, hpp_paths):
     for inc_path in hpp_paths:
         # Pega o nome
-        name = get_name(inc_path)
+        name = get_name(inc_path)                
         # Src relativo ao hpp 
-        src_path = [s for s in cpp_paths if name in s]
+        src_path = [s for s in cpp_paths if (name == get_name(s))]        
         # e o path do modulo
         mod = get_module_path(inc_path)
         # pega as includes desse modulo
@@ -115,7 +115,7 @@ def construct_classes(cpp_paths, hpp_paths):
 
 def compile_modules():
     # Compila todas as instancias do hash
-    for key, instance in modules_hash.items():
+    for key, instance in modules_hash.items():        
         outputfile.write('\t' + instance.compile() + "\n")
 
 def compile_mains(list_objects,main_path,list_includes):
