@@ -4,7 +4,10 @@ using namespace std;
 using namespace odcore;
 using namespace odcore::io::tcp;
 
-TCPSend::TCPSend() {}
+TCPSend::TCPSend(int this_port) {
+    port = this_port;
+    is_connected = false;
+}
 
 TCPSend::TCPSend(std::string this_ip, int this_port) {
     port = this_port;
@@ -26,6 +29,10 @@ bool TCPSend::connect(){
         is_connected = false;
         return false;
     }   
+}
+
+void TCPSend::setIP(string vIP){
+    this->ip = vIP;
 }
 
 void TCPSend::set_port(int p){

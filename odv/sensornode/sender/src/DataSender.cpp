@@ -1,17 +1,20 @@
 #include "../include/DataSender.hpp"
 
 DataSender::DataSender(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "handler"),
+    TimeTriggeredConferenceClientModule(argc, argv, "datasender"),
     m_buffer() {}
 
 DataSender::~DataSender() {}
 
-TCPSend sender("localhost",8000);
+TCPSend sender(8000);
 
 void DataSender::setUp() {
     // Recebe FilteredData
+    std::cout << getName();
+    ip = getKeyValueConfiguration().getValue<std::string>("datasender.ip");
     addDataStoreFor(876, m_buffer);
     sender.set_port(getIdentifier());
+    sender.setIP(ip);
     sender.connect();
 }
 
