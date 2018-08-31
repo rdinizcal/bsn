@@ -11,6 +11,7 @@ class range {
 		range(double l, double u);
 		// Verifica se um elemento esta dentro do intervalo estipulado
 		bool in_range(double element);
+		double convert(double new_lb, double new_ub, double input);
 		std::string to_print();
 };
 #endif 

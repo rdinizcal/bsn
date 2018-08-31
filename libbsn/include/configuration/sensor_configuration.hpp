@@ -2,7 +2,9 @@
 #define SENSORCONFIGURATION_HPP
 
 #include <string>
+#include <math.h>
 #include <iostream>
+
 #include "bsn/range/range.hpp"
 
 class sensor_configuration {
@@ -14,7 +16,7 @@ class sensor_configuration {
 
 		sensor_configuration(int id, range b, range m, range h);
 
-		std::string evaluate_number(double number) ;
+		double evaluate_number(double number) ;
 
 		void print();
 };
