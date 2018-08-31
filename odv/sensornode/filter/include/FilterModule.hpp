@@ -12,8 +12,7 @@
 #include "bsn/data/ConvertedData.h"
 #include "bsn/filters/MovingAverage.hpp"
 
-
-class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:
         FilterModule(const FilterModule & /*obj*/);
         FilterModule &operator=(const FilterModule & /*obj*/);

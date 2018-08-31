@@ -1,0 +1,9 @@
+# BSN electrocardiograph configuration file
+
+datacollectormodule:0.type = ecg
+datacollectormodule:1.type = ecg
+datacollectormodule:2.type = ecg
+
+convertermodule:0.type = ecg
+convertermodule:1.type = ecg
+convertermodule:2.type = ecg

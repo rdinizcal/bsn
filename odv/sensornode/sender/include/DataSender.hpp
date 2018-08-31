@@ -8,12 +8,8 @@
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
-#include "bsn/data/RawData.h"
+#include "bsn/data/FilteredData.h"
 #include "bsn/communication/TCPSend.hpp"
-
-using namespace odcore::base;
-using namespace odcore::base::module;
-using namespace bsn::data;
 
 class DataSender : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -35,8 +31,7 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-       // RawData received_data;
-        FIFOQueue m_buffer;
+        odcore::base::FIFOQueue m_buffer;
         std::string ip;
 };
 

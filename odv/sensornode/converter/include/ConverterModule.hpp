@@ -11,6 +11,11 @@
 #include "bsn/scales/ScaleConverter.hpp"
 #include "bsn/data/ConvertedData.h"
 #include "bsn/data/RawData.h"
+#include "bsn/data/ThermometerRawData.h"
+#include "bsn/data/ECGRawData.h"
+#include "bsn/data/OximeterRawData.h"
+#include "bsn/data/SystolicRawData.h"
+#include "bsn/data/DiastolicRawData.h"
 
 class ConverterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -32,8 +37,9 @@ class ConverterModule : public odcore::base::module::TimeTriggeredConferenceClie
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        uint32_t mSensor_id;
         odcore::base::FIFOQueue rawdata_buffer;
+        std::string sensorType;
+        bsn::scales::ScaleConverter converter;
 };
 
 #endif 
