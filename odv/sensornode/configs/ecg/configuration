@@ -7,3 +7,5 @@ datacollectormodule:2.type = ecg
 convertermodule:0.type = ecg
 convertermodule:1.type = ecg
 convertermodule:2.type = ecg
+
+datasender.ip = localhost

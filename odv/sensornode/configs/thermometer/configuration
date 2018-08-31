@@ -7,3 +7,5 @@ datacollectormodule:2.type = thermometer
 convertermodule:0.type = thermometer
 convertermodule:1.type = thermometer
 convertermodule:2.type = thermometer
+
+datasender.ip = localhost
