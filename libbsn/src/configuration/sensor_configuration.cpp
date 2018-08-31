@@ -11,15 +11,29 @@ sensor_configuration::sensor_configuration(int id, range b, range m, range h){
 	this->high = h;
 }
 
-string sensor_configuration::evaluate_number(double number) {				
-	if(high.in_range(number))
-		return "high";
-	else if(medium.in_range(number))
-		return "medium";
-	else if(low.in_range(number))
-		return "low";
-	else
-		return "unknow";
+double sensor_configuration::evaluate_number(double number) {
+	double conversion, result;
+	if(low.in_range(number)) {		
+		conversion = low.convert(1.0,3.9,number);
+		// Calcula a distância entre a conversão e 5(numero médio) em por cento
+		result = (fabs(5.0 - conversion)) / 5.0;
+	}		
+	else if(medium.in_range(number)) {		
+		conversion = medium.convert(4.0,6.9,number);
+		result = (fabs(5.0 - conversion)) / 5.0;
+	}		
+	else if(high.in_range(number)) {		
+		conversion = high.convert(7.0,9.9,number);
+		result = (fabs(5.0 - conversion)) / 5.0;
+	}		
+	else {
+		// Representação do unknow
+		cout << "Unknown value(" << number << ") came from sensor and will not be processed\n";
+		result = -1;
+	}
+
+	return result;
+		
 }
 
 void sensor_configuration::print(){
