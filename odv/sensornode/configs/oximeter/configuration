@@ -7,3 +7,5 @@ datacollectormodule:2.type = oximeter
 convertermodule:0.type = oximeter
 convertermodule:1.type = oximeter
 convertermodule:2.type = oximeter
+
+datasender.ip = localhost
