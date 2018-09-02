@@ -48,30 +48,5 @@ public:
         
         TS_ASSERT_EQUALS(pack,"Test message");
         
-    }    
-    void test_stress(void) {        
-        cout << "\n\nTesting Stress conditions...\n";                        
-        TCPSend sender("localhost",8080);      
-        TCPReceive server(8080);  
-        
-        server.start_connection();    
-        
-        sender.connect();
-
-        for(int i=0; i < 500; i++)
-            sender.send("Test message" + to_string(i+1));
-                
-        //Wait for package
-        sleep(5);
-
-        //server.print_buffer();
-
-        string pack = server.get_package();        
-        
-        sender.disconnect();
-        server.stop_connection();
-        
-        TS_ASSERT_EQUALS(pack,"Test message1");
-        
-    }    
+    }
 };

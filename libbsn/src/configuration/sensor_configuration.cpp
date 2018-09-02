@@ -12,24 +12,31 @@ sensor_configuration::sensor_configuration(int id, range b, range m, range h){
 }
 
 double sensor_configuration::evaluate_number(double number) {
+	// Primeiro converte para uma segunda escala(0-3, 3-6, 6-9) 
+	// Para tratar intervalos com tamanhos originalmente diferentes
+	// Da mesma forma.
+	// Depois calcula-se a distância do centro(4.5) para saber o grau de risco 
 	double conversion, result;
+	double medium_value = 4.5;
 	if(low.in_range(number)) {		
-		conversion = low.convert(1.0,3.9,number);
-		// Calcula a distância entre a conversão e 5(numero médio) em por cento
-		result = (fabs(5.0 - conversion)) / 5.0;
+		conversion = low.convert(0.0,3.0,number);
+		cout << "Conversion: " << conversion << endl;
+		// Calcula a distância entre a conversão e o num medio em por cento
+		result = (fabs(medium_value - conversion)) / medium_value;
 	}		
 	else if(medium.in_range(number)) {		
-		conversion = medium.convert(4.0,6.9,number);
-		result = (fabs(5.0 - conversion)) / 5.0;
+		conversion = medium.convert(3.0,6.0,number);
+		result = (fabs(medium_value - conversion)) / medium_value;
 	}		
-	else if(high.in_range(number)) {		
-		conversion = high.convert(7.0,9.9,number);
-		result = (fabs(5.0 - conversion)) / 5.0;
+	else if(high.in_range(number)) {				
+		conversion = high.convert(6.0,9.0,number);
+		cout << "Conversion: " << conversion << endl;
+		result = (fabs(medium_value - conversion)) / medium_value;
 	}		
 	else {
 		// Representação do unknow
 		cout << "Unknown value(" << number << ") came from sensor and will not be processed\n";
-		result = -1;
+		result = -1.0;
 	}
 
 	return result;
