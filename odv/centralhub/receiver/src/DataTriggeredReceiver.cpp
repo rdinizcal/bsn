@@ -83,6 +83,11 @@ void DataTriggeredReceiver::tearDown() {}
 void data_fuse() {	
 	// Inicialmente considerando uma media simples dos elementos
 	// TODO: implementar média com pesos futuramente
+	// TODO: tirar a média dos três sinais ao invés de todos os recebidos
+	// Para tanto criar 3 listas, um para cada sinal(ou um vector de listas)
+	// E tirar a média dos primeiros sinais de cada uma(retirando o define max...)
+	// TODO: Colocar arquivo de configuração do OpendaVinci
+	// TODO: RENAMING sensors -> configurations, DataTri... -> Processor
 	double average, risk_status;	
 	average = 0;
 
@@ -114,9 +119,6 @@ void DataTriggeredReceiver::nextContainer(Container &c) {
 
 		// Se o pacote for válido...
 		if(evaluated_packet != -1){
-			// cout << "Pacote processado: " << packet << '-' << sensor_id << '(' <<
-			// 	100 * evaluated_packet << "%)" << endl;
-
 			packets_list.push_back(evaluated_packet);
 
 			data_fuse();
