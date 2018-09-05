@@ -1,14 +1,14 @@
-#include "DataTriggeredReceiver.hpp"
+#include "../include/DataProcessor.hpp"
 #define maximum_list_size 6
 
-using namespace std;
-
-using namespace odcore::base::module;
-using namespace odcore::data;
 using namespace bsn::data;
+using namespace odcore::base;
+using namespace odcore::base::module;
 
-vector<sensor_configuration> sensors;
-list<double> packets_list;
+//FIXME: remover essa lista
+std::list<double> packets_list;
+std::vector<sensor_configuration> sensor_configs;
+
 
 const vector<string> split(const string& s, const char& c) {    
 	string buff{""};
@@ -67,27 +67,29 @@ vector<sensor_configuration> load_file(string path){
 	return result;
 }
 
-DataTriggeredReceiver::DataTriggeredReceiver(const int32_t &argc, char **argv) :
-    DataTriggeredConferenceClientModule(argc, argv, "DataTriggeredReceiver")
-{}
+DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
+    data_buffer() {}
 
-DataTriggeredReceiver::~DataTriggeredReceiver() {}
+DataProcessor::~DataProcessor() {}
 
-void DataTriggeredReceiver::setUp() {
-    sensors = load_file("../../configs/sensor_configurations.txt");
+void DataProcessor::setUp() {
+    sensor_configs = load_file("../../configs/sensor_configurations.txt");
+    addDataStoreFor(873, data_buffer);
 }
 
-void DataTriggeredReceiver::tearDown() {}
+void DataProcessor::tearDown(){}
 
 
 void data_fuse() {	
 	// Inicialmente considerando uma media simples dos elementos
+    // TODO: RENAMING sensors -> configurations
+    // TODO: Criar o vector de lista
 	// TODO: implementar média com pesos futuramente
 	// TODO: tirar a média dos três sinais ao invés de todos os recebidos
 	// Para tanto criar 3 listas, um para cada sinal(ou um vector de listas)
 	// E tirar a média dos primeiros sinais de cada uma(retirando o define max...)
-	// TODO: Colocar arquivo de configuração do OpendaVinci
-	// TODO: RENAMING sensors -> configurations, DataTri... -> Processor
+	// TODO: Colocar arquivo de configuração do OpendaVinci	    
 	double average, risk_status;	
 	average = 0;
 
@@ -109,22 +111,29 @@ void data_fuse() {
 		cout << "General risk status: " << risk_status << '%' << endl;
 	}
 }
-void DataTriggeredReceiver::nextContainer(Container &c) {    	
-	if (c.getDataType() == 873){ 
-		string packet_raw = c.getData<SensorData>().getSensorStatus();
-		
-		int sensor_id = stoi(packet_raw.substr(0,packet_raw.find('-')));				 
-		double packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
-		double evaluated_packet = sensors[sensor_id].evaluate_number(packet);
 
-		// Se o pacote for válido...
-		if(evaluated_packet != -1){
-			packets_list.push_back(evaluated_packet);
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
+    Container container;    
+    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
-			data_fuse();
-		}
-	}
-	else 
-		usleep(100);
-	
+        while(!data_buffer.isEmpty()){
+            // retira o dado da FIFO
+            container = data_buffer.leave();
+            string packet_raw = container.getData<SensorData>().getSensorStatus();
+            
+            int sensor_id = stoi(packet_raw.substr(0,packet_raw.find('-')));				 
+            double packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
+            double evaluated_packet = sensor_configs[sensor_id].evaluate_number(packet);
+
+            // Se o pacote for válido...
+            if(evaluated_packet != -1){
+                packets_list.push_back(evaluated_packet);
+
+                data_fuse();
+            }
+
+        }
+    }
+
+    return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }
