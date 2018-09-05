@@ -5,8 +5,6 @@
 #include <random>
 #include <unistd.h>
 
-using namespace std;
-
 namespace bsn {
     namespace generator {
 
@@ -17,7 +15,7 @@ namespace bsn {
                 ~DataGenerator();
 
                 // Aleatoriamente gera um status
-                string generateDataByMarkovChain(string /*actual status*/);
+                std::string generateDataByMarkovChain(std::string /*actual status*/);
 
                 // Gera dados usando a distribuição Normal
                 double generateDataByNormalDist(double /*variance*/, double /*mode*/);

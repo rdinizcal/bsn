@@ -7,15 +7,15 @@ namespace bsn {
     namespace filters {
 
         class MovingAverage { 
-        private:
-            int range;
-            double computedAverage;
-            double lastInserted;
-            std::list<double> buffer;
-        public:
-            MovingAverage(int);
-            double getValue();
-            void insert(double value);;
+            private:
+                int range;
+                double computedAverage;
+                double lastInserted;
+                std::list<double> buffer;
+            public:
+                MovingAverage(int);
+                double getValue();
+                void insert(double value);;
         };        
 
     }

@@ -4,44 +4,56 @@ using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace bsn::data;
 using namespace bsn::scales;
+using namespace odcore::data;
 
 ConverterModule::ConverterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ConverterModule"),
-    mSensor_id(getIdentifier()),
     rawdata_buffer() {}
 
 ConverterModule::~ConverterModule() {}
 
 void ConverterModule::setUp() {
-    addDataStoreFor(874, rawdata_buffer);
+    sensorType = getKeyValueConfiguration().getValue<std::string>("convertermodule.type");
+    converter.setLowerBound(0);
+    if (sensorType == "thermometer") {
+        converter.setUpperBound(50);
+        addDataStoreFor(881, rawdata_buffer);
+    }
+    else if (sensorType == "ecg") {
+        converter.setUpperBound(200);
+        addDataStoreFor(882, rawdata_buffer);
+    }
+    else if (sensorType == "oximeter") {
+        converter.setUpperBound(100);
+        addDataStoreFor(883, rawdata_buffer);
+    }
+    else if (sensorType == "bpms") {
+        converter.setUpperBound(30);
+        addDataStoreFor(884, rawdata_buffer);
+    }
+    else if (sensorType == "bpmd") {
+        converter.setUpperBound(25);
+        addDataStoreFor(885, rawdata_buffer);
+    }
+    std::cout << "Meu id é:" << sensorType << std::endl;
 }
 
 void ConverterModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(){    
-    ScaleConverter converter;
     double data, converted_data;
-    converter.setLowerBound(0);
-    if (mSensor_id == 0) {
-        converter.setUpperBound(50);
-    }
-    else if (mSensor_id == 1) {
-        converter.setUpperBound(200);
-    }
-    else if (mSensor_id == 2) {
-        converter.setUpperBound(100);
-    }
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        while(!rawdata_buffer.isEmpty()){            
+        while(!rawdata_buffer.isEmpty()){
             Container container = rawdata_buffer.leave();
+          
             // Desencapsula
             data = container.getData<RawData>().getSensorData();
 
             // Converte
             converted_data = converter.to_MeasureUnit(data);
-            std::cout << "Dado recebido pelo sensor" << mSensor_id << ": " << data << " convertido para " << converted_data << std::endl;                    
+            std::cout << "Dado recebido pelo " << sensorType << ": " << data << " convertido para " << converted_data << std::endl;                    
 
             // Encapsula
             ConvertedData encapsulated_data(converted_data);            

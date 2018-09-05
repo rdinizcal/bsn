@@ -1,0 +1,11 @@
+# BSN Thermometer configuration file
+
+datacollectormodule:0.type = thermometer
+datacollectormodule:1.type = thermometer
+datacollectormodule:2.type = thermometer
+
+convertermodule:0.type = thermometer
+convertermodule:1.type = thermometer
+convertermodule:2.type = thermometer
+
+datasender.ip = localhost

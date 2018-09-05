@@ -1,5 +1,7 @@
 #include "bsn/generator/DataGenerator.h"
 
+using namespace std;
+
 namespace bsn {
     namespace generator { 
 
@@ -47,7 +49,7 @@ namespace bsn {
             std::random_device rd;
             double generated_data;
 
-            do{
+            do {
                 generator.seed(rd());
                 std::normal_distribution<double> distribution(mode, variance); // mode é o valor esperado e variance é a variação do valor
                 generated_data = distribution(generator);

@@ -1,0 +1,9 @@
+# BSN Blood Pressure Monitor configuration file
+
+datacollectormodule:0.type = bpms
+datacollectormodule:1.type = bpmd
+
+convertermodule:0.type = bpms
+convertermodule:1.type = bpmd
+
+datasender.ip = localhost
