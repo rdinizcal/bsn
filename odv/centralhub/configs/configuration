@@ -1,13 +1,13 @@
 # BSN CentralHub Configuration File
 
-datatriggeredreceiver:0.lowRange = 30.0,36.4
-datatriggeredreceiver:0.midRange = 36.5,37.5
-datatriggeredreceiver:0.highRange = 37.6,42.0
+dataprocessor.thermometerLowRange = 30.0,36.4
+dataprocessor.thermometerMidRange = 36.5,37.5
+dataprocessor.thermometerHighRange = 37.6,42.0
 
-datatriggeredreceiver:1.lowRange = 1.5,12.5
-datatriggeredreceiver:1.midRange = 22.5,32.5
-datatriggeredreceiver:1.highRange = 42.5,52.5
+dataprocessor.ecgLowRange = 40.0,55.0
+dataprocessor.ecgMidRange = 60.0,100.0
+dataprocessor.ecgHighRange = 120.0,150.0
 
-datatriggeredreceiver:2.lowRange = 1.5,13.5 
-datatriggeredreceiver:2.midRange = 23.5,32.5
-datatriggeredreceiver:2.highRange = 43.5,52.5
+dataprocessor.oximeterLowRange = 50.0,89.0 
+dataprocessor.oximeterMidRange = 90.0,100.0
+dataprocessor.oximeterHighRange = 100.1, 110.1

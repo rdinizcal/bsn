@@ -74,7 +74,23 @@ DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
 DataProcessor::~DataProcessor() {}
 
 void DataProcessor::setUp() {
-    sensor_configs = load_file("../../configs/sensor_configurations.txt");
+	vector<string> sensorTypes = {"thermometer", "ecg", "oximeter"};
+	vector<string> low, mid, high;
+	vector<range> ranges;
+	
+	for (string str : sensorTypes) {
+		low = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "LowRange"), ',');
+		mid = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "MidRange"), ',');
+		high = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "HighRange"), ',');
+
+		range lowRange(stod(low[0]), stod(low[1]));
+		range midRange(stod(mid[0]), stod(mid[1]));
+		range highRange(stod(high[0]), stod(high[1]));
+
+		sensor_configuration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
+		sensor_configs.push_back(aux_config);
+	}
+
     addDataStoreFor(873, data_buffer);
 }
 

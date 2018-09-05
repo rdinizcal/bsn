@@ -1,4 +1,4 @@
-# BSN Global configuration file
+# Data Processor configuration file
 
 ### Global configs
 #global.sensortypes = 3
