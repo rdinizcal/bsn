@@ -4,6 +4,7 @@
 using namespace bsn::data;
 using namespace odcore::base;
 using namespace odcore::base::module;
+using namespace odcore::data;
 
 //FIXME: remover essa lista
 std::list<double> packets_list;
