@@ -2,8 +2,6 @@
 
 // ecg termomther and oximeter
 #define number_sensors 3
-#define maximum_list_size 6
-
 
 using namespace bsn::data;
 using namespace odcore::base;
@@ -54,29 +52,42 @@ void DataProcessor::setUp() {
 
 void DataProcessor::tearDown(){}
 
-void DataProcessor::data_fuse() {
-	// TODO: explicar o funcionamento desse
-	// TODO: Futuramente pensar em não calcular a média caso não se tenham pacotes suficientes
-	// Inicialmente considerando uma media simples dos elementoso o define max...)
+// Retorna true se as tres listas são não vazias
+bool DataProcessor::available_to_process(){
+	bool available = true;
+
+	for(auto packet_list : packets_received){
+		if(packet_list.empty()){
+			available = false;
+			break;
+		}
+	}
+
+	return available;
+}
+
+void DataProcessor::data_fuse() {	
 	double average, risk_status;
 	int count = 0;
 	average = 0;
 
-	cout << "Sum: ";
+	// Se não existiver disponível não processa
+	if(!available_to_process())
+		return;
+	
 	for(auto &packet_list : packets_received){
 		if(!packet_list.empty()) {
-			cout << packet_list.front() << " + ";
 			// Soma à média e retira da fila
 			average += packet_list.front();
-			// Descarta os pacotes excessivos da lista
-			while(packet_list.size() > maximum_list_size) {
+			
+			// Descarta o pacote processado se existem
+			// Mais outros para serem processados
+			if(packet_list.size() > 1) {
 				packet_list.pop_front();
 			}			
 			count++;
 		}
-	}
-	cout << " = " << average / count << endl;
-	
+	}	
 	// Calcula a media partir da soma dividida pelo número de pacotes lidos
 	risk_status = 100.0 * (average / count);
 	// Status de risco do paciente dado em porcentagem

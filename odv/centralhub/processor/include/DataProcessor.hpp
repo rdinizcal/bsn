@@ -23,6 +23,8 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
         virtual void tearDown();
         void data_fuse();
         void print_packs();
+        // Retorna true se existe pelo menos um pacote para cada sensor
+        bool available_to_process();
 
     public:
         /**
