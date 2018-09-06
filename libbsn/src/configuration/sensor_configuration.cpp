@@ -18,7 +18,7 @@ double sensor_configuration::evaluate_number(double number) {
 	// Depois calcula-se a distância do centro(4.5) para saber o grau de risco 
 	double conversion, result;
 	double medium_value = 4.5;
-	if(low.in_range(number)) {		
+	if(low.in_range(number)) {
 		conversion = low.convert(0.0,3.0,number);
 		// Calcula a distância entre a conversão e o num medio em por cento
 		result = (fabs(medium_value - conversion)) / medium_value;

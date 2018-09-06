@@ -1,15 +1,14 @@
 #include "../include/DataProcessor.hpp"
+
+// ecg termomther and oximeter
+#define number_sensors 3
 #define maximum_list_size 6
+
 
 using namespace bsn::data;
 using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace odcore::data;
-
-//FIXME: remover essa lista
-std::list<double> packets_list;
-std::vector<sensor_configuration> sensor_configs;
-
 
 const vector<string> split(const string& s, const char& c) {    
 	string buff{""};
@@ -25,50 +24,8 @@ const vector<string> split(const string& s, const char& c) {
 	return v;
 }
 
-// Recebe uma linha com os intervalos e retorna uma sensor_configuration
-sensor_configuration adapt_line(string line){
-	// Contem as tres intervalos 
-	vector<range> ranges_vet;
-	// Pega id
-	int this_id = stoi(line.substr(0,line.find('=')));
-	// Pega tudo a partir do id		
-	line = line.substr(line.find('=') + 1);
-	auto substr = split(line,';');
-	
-	//loop de 3 pq são tres intervalos: bom medio e ruim
-	for (int i=0 ; i < 3 ; i++){
-		// String vet contem os dois intervalos(menor em 0 e maior em 1)		
-		auto string_vet = split(substr[i],',');
-		double lb = stod(string_vet[0]);
-		double ub = stod(string_vet[1]);
-		range this_range(lb,ub);
-		ranges_vet.push_back(this_range);
-	}
-	// Retorna a classe feita com os intervalos
-	sensor_configuration result(this_id, ranges_vet[0], ranges_vet[1], ranges_vet[2]);
-
-	return result;
-}
-
-vector<sensor_configuration> load_file(string path){
-	string line;
-	vector<sensor_configuration> result;
-	ifstream myfile (path);	
-	
-	if (myfile.is_open()) {		
-		while ( getline (myfile,line) ) {			
-			auto c = adapt_line(line);
-			result.push_back(c);
-		}
-		myfile.close();		
-	}
-	else 
-		cout << "Unable to find configurations file"; 
-	
-	return result;
-}
-
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
+	packets_received(3),
     TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
     data_buffer() {}
 
@@ -79,7 +36,7 @@ void DataProcessor::setUp() {
 	vector<string> low, mid, high;
 	vector<range> ranges;
 	
-	for (string str : sensorTypes) {
+	for (string str : sensorTypes) {		
 		low = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "LowRange"), ',');
 		mid = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "MidRange"), ',');
 		high = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "HighRange"), ',');
@@ -89,7 +46,7 @@ void DataProcessor::setUp() {
 		range highRange(stod(high[0]), stod(high[1]));
 
 		sensor_configuration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
-		sensor_configs.push_back(aux_config);
+		configurations.push_back(aux_config);
 	}
 
     addDataStoreFor(873, data_buffer);
@@ -97,35 +54,50 @@ void DataProcessor::setUp() {
 
 void DataProcessor::tearDown(){}
 
-
-void data_fuse() {	
-	// Inicialmente considerando uma media simples dos elementos
-    // TODO: RENAMING sensors -> configurations
-    // TODO: Criar o vector de lista
-	// TODO: implementar média com pesos futuramente
-	// TODO: tirar a média dos três sinais ao invés de todos os recebidos
-	// Para tanto criar 3 listas, um para cada sinal(ou um vector de listas)
-	// E tirar a média dos primeiros sinais de cada uma(retirando o define max...)
-	// TODO: Colocar arquivo de configuração do OpendaVinci	    
-	double average, risk_status;	
+void DataProcessor::data_fuse() {
+	// TODO: explicar o funcionamento desse
+	// TODO: Futuramente pensar em não calcular a média caso não se tenham pacotes suficientes
+	// Inicialmente considerando uma media simples dos elementoso o define max...)
+	double average, risk_status;
+	int count = 0;
 	average = 0;
 
-	// Se tiver mais que o maximo definido, elimina os elementos
-	while(packets_list.size() >= maximum_list_size){		
-		packets_list.pop_front();
+	cout << "Sum: ";
+	for(auto &packet_list : packets_received){
+		if(!packet_list.empty()) {
+			cout << packet_list.front() << " + ";
+			// Soma à média e retira da fila
+			average += packet_list.front();
+			// Descarta os pacotes excessivos da lista
+			while(packet_list.size() > maximum_list_size) {
+				packet_list.pop_front();
+			}			
+			count++;
+		}
 	}
+	cout << " = " << average / count << endl;
+	
+	// Calcula a media partir da soma dividida pelo número de pacotes lidos
+	risk_status = 100.0 * (average / count);
+	// Status de risco do paciente dado em porcentagem
 
-	for(auto element : packets_list){		
-		average += element;
-	}	
-	// Status de risco do paciente em porcentagem
-	risk_status = 100.0 * (average / packets_list.size());
 	// 85.0 é um número totalmente ARBITRARIO
 	if(risk_status > 85.0){
 		cout << "============EMERGÊNCIA============(" << risk_status << ")" << endl;
 	}
 	else{
 		cout << "General risk status: " << risk_status << '%' << endl;
+	}
+}
+void DataProcessor::print_packs(){
+	int i = 0;
+	for(auto l : packets_received){
+		cout << i << ": ";
+		i++;
+		for(auto el : l){
+			cout << el << ' ';
+		}
+		cout << endl;
 	}
 }
 
@@ -140,11 +112,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
             
             int sensor_id = stoi(packet_raw.substr(0,packet_raw.find('-')));				 
             double packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
-            double evaluated_packet = sensor_configs[sensor_id].evaluate_number(packet);
+            double evaluated_packet = configurations[sensor_id].evaluate_number(packet);
 
             // Se o pacote for válido...
-            if(evaluated_packet != -1){
-                packets_list.push_back(evaluated_packet);
+            if(evaluated_packet != -1){                
+				packets_received[sensor_id].push_back(evaluated_packet);
+				print_packs();
 
                 data_fuse();
             }

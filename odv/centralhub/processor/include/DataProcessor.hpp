@@ -21,6 +21,8 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
         DataProcessor &operator=(const DataProcessor & /*obj*/);
         virtual void setUp();
         virtual void tearDown();
+        void data_fuse();
+        void print_packs();
 
     public:
         /**
@@ -34,7 +36,9 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
         */
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
-    private:        
+    private:
+        std::vector<std::list<double>> packets_received;
+        std::vector<sensor_configuration> configurations;
         odcore::base::FIFOQueue data_buffer;
 };
 

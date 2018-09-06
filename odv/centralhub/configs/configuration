@@ -10,4 +10,4 @@ dataprocessor.ecgHighRange = 120.0,150.0
 
 dataprocessor.oximeterLowRange = 50.0,89.0 
 dataprocessor.oximeterMidRange = 90.0,100.0
-dataprocessor.oximeterHighRange = 100.1, 110.1
+dataprocessor.oximeterHighRange = 100.1,110.1
