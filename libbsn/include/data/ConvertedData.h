@@ -12,7 +12,7 @@ namespace bsn {
         class ConvertedData : public odcore::data::SerializableData{
           public:
             //construtor parametrizado
-            ConvertedData(const double & /*converted data*/);
+            ConvertedData(const double & /*converted data*/, const std::string &);
 
             ConvertedData();          // construtor
             virtual ~ConvertedData(); // destrutor
@@ -41,9 +41,12 @@ namespace bsn {
             public:
                 void setSensorData(const double &/*sensor_data*/);
                 double getSensorData() const;
+                void setSensorType(const std::string &);
+                std::string getSensorType() const;
             
             private:
-                double m_sensor_data; // estado do sensor 
+                double m_sensor_data; // estado do sensor
+                std::string sensorType; 
         };
     }
 }

@@ -114,16 +114,28 @@ void DataProcessor::print_packs(){
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     Container container;    
+    int sensor_id;
+	string type, packet_raw;
+	double packet;
+	double evaluated_packet;
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
         while(!data_buffer.isEmpty()){
             // retira o dado da FIFO
             container = data_buffer.leave();
-            string packet_raw = container.getData<SensorData>().getSensorStatus();
+            packet_raw = container.getData<SensorData>().getSensorStatus();
             
-            int sensor_id = stoi(packet_raw.substr(0,packet_raw.find('-')));				 
-            double packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
-            double evaluated_packet = configurations[sensor_id].evaluate_number(packet);
+			type = packet_raw.substr(0,packet_raw.find('-'));				 
+            packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
+            evaluated_packet = configurations[sensor_id].evaluate_number(packet);
+
+			if (type == "thermometer")
+				sensor_id = 0;
+			else if (type == "ecg")
+				sensor_id = 1;
+			else if (type == "oximeter")
+				sensor_id = 2;
 
             // Se o pacote for válido...
             if(evaluated_packet != -1){                

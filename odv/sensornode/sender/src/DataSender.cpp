@@ -29,13 +29,22 @@ void DataSender::tearDown(){
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){    
     // Retira o id a partir da porta que lhe foi dada
     int id = getIdentifier() - 8080;
-    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {        
-        while(!m_buffer.isEmpty()){
+    string type;
+    double data;
+
+    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) { 
+
+        while (!m_buffer.isEmpty()) {
+
             Container container = m_buffer.leave();
-            std::cout << "Dado recebido: " << to_string(container.getData<FilteredData>().getSensorData()) << std::endl;        
-            string package = to_string(id);
+            data = container.getData<FilteredData>().getSensorData();
+            type = container.getData<FilteredData>().getSensorType();
+
+            std::cout << "Dado recebido de um " << type << ": " << data << std::endl;
+
+            string package = type;
             package += '-';
-            package += to_string(container.getData<FilteredData>().getSensorData());
+            package += to_string(data);
             sender.send(package);
         }
 

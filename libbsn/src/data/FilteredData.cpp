@@ -5,19 +5,22 @@ namespace bsn {
         
         using namespace std;
         
-        FilteredData::FilteredData() : m_sensor_data() {}
+        FilteredData::FilteredData() : m_sensor_data(), sensorType() {}
         
-        FilteredData::FilteredData(const double &sensor_data) : 
-            m_sensor_data(sensor_data) {}
+        FilteredData::FilteredData(const double &sensor_data, const std::string &type) : 
+            m_sensor_data(sensor_data),
+            sensorType(type) {}
         
         FilteredData::~FilteredData() {}
         
         FilteredData::FilteredData(const FilteredData &obj) :
             SerializableData(),
-            m_sensor_data(obj.getSensorData()) {}
+            m_sensor_data(obj.getSensorData()),
+            sensorType(obj.getSensorType()) {}
         
         FilteredData& FilteredData::operator=(const FilteredData &obj) {
-            m_sensor_data = obj.getSensorData();          
+            m_sensor_data = obj.getSensorData();
+            sensorType = obj.getSensorType();          
             return (*this);
         }
         
@@ -56,6 +59,7 @@ namespace bsn {
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
             s->write(1, m_sensor_data);
+            s->write(2, sensorType);
 
             return out;
         }
@@ -65,6 +69,7 @@ namespace bsn {
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
             d->read(1, m_sensor_data);
+            d->read(2, sensorType);
             
             return in;
         }
@@ -76,5 +81,14 @@ namespace bsn {
 
             return sstr.str();
         }
+
+        void FilteredData::setSensorType(const string &type) {
+            sensorType = type;
+        }
+
+        string FilteredData::getSensorType() const {
+            return sensorType;
+        }
+
     }
 }

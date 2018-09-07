@@ -35,7 +35,6 @@ void ConverterModule::setUp() {
         converter.setUpperBound(25);
         addDataStoreFor(885, rawdata_buffer);
     }
-    std::cout << "Meu id é:" << sensorType << std::endl;
 }
 
 void ConverterModule::tearDown(){}
@@ -56,7 +55,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(
             std::cout << "Dado recebido pelo " << sensorType << ": " << data << " convertido para " << converted_data << std::endl;                    
 
             // Encapsula
-            ConvertedData encapsulated_data(converted_data);            
+            ConvertedData encapsulated_data(converted_data, sensorType);
+            
             Container packet(encapsulated_data);
 
             //Envia pacote
