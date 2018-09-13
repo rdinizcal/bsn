@@ -13,26 +13,7 @@ DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
 
 DataCollectorModule::~DataCollectorModule() {}
 
-std::vector<int> teste(std::vector<int> s){
-    s.push_back(2);
-    return s;
-}
-void DataCollectorModule::setUp() {
-    clock_gettime(CLOCK_REALTIME, &timeRef);
-    std::vector<int> v, q;
-    v.push_back(1);
-    q = teste(v);
-    for(int y : v) std::cout << y << std::endl;
-    std::cout << std::endl;
-    for(int x : q) std::cout << x << std::endl;
-}
-
-
-// template <typename T>
-// void sendData(T){
-//     Container container(T);
-//     getConference().send(container);
-// }
+void DataCollectorModule::setUp() {}
 
 void DataCollectorModule::tearDown(){}
 
