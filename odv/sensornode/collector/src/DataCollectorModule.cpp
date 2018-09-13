@@ -21,7 +21,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
     DataGenerator dataGenerator;
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
     timespec ts;
-    TimeData tData;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -30,31 +29,31 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         // Gera o dado de acordo com o id do sensor
         if (sensorType == "thermometer") { // termometro
             mGeneratedData = dataGenerator.generateDataByNormalDist(747.52, 102.4);
-            ThermometerRawData rawdata(mGeneratedData, tData.elapsedTime(ts, timeRef));
+            ThermometerRawData rawdata(mGeneratedData, ts);
             Container container(rawdata);
             getConference().send(container);
         }
         else if (sensorType == "ecg") { // ecg
             mGeneratedData = dataGenerator.generateDataByNormalDist(409.6, 102.4);
-            ECGRawData rawdata(mGeneratedData, tData.elapsedTime(ts, timeRef));
+            ECGRawData rawdata(mGeneratedData, ts);
             Container container(rawdata);
             getConference().send(container);
         }
         else if (sensorType == "oximeter") { // oximetro
             mGeneratedData = dataGenerator.generateDataByNormalDist(972.8, 52.2);
-            OximeterRawData rawdata(mGeneratedData, tData.elapsedTime(ts, timeRef));
+            OximeterRawData rawdata(mGeneratedData, ts);
             Container container(rawdata);
             getConference().send(container);
         }
         else if (sensorType == "bpms") { // monitor de pressao sistolica
             mGeneratedData = dataGenerator.generateDataByNormalDist(409.6, 34.13);
-            SystolicRawData rawdata(mGeneratedData, tData.elapsedTime(ts, timeRef));
+            SystolicRawData rawdata(mGeneratedData, ts);
             Container container(rawdata);
             getConference().send(container);
         }
         else if (sensorType == "bpmd") { // monitor de pressao diastolica
             mGeneratedData = dataGenerator.generateDataByNormalDist(327.68, 34.13);
-            DiastolicRawData rawdata(mGeneratedData, tData.elapsedTime(ts, timeRef));
+            DiastolicRawData rawdata(mGeneratedData, ts);
             Container container(rawdata);
             getConference().send(container);
         }
