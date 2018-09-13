@@ -3,7 +3,7 @@
 namespace bsn {
     namespace data {
 
-        OximeterRawData::OximeterRawData(const double &sensor_data) : RawData(sensor_data) {}
+        OximeterRawData::OximeterRawData(const double &sensor_data, const timespec &ts) : RawData(sensor_data, ts) {}
         
         OximeterRawData::OximeterRawData() {}
 

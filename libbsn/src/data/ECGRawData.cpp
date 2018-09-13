@@ -3,7 +3,7 @@
 namespace bsn {
     namespace data {
         
-        ECGRawData::ECGRawData(const double &sensor_data) : RawData(sensor_data) {}
+        ECGRawData::ECGRawData(const double &sensor_data, const timespec &ts) : RawData(sensor_data, ts) {}
         
         ECGRawData::ECGRawData() {}
 

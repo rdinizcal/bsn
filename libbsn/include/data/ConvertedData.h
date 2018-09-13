@@ -5,6 +5,8 @@
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
+#include <vector>
+#include <sys/time.h>
 
 namespace bsn {
     namespace data {
@@ -12,7 +14,7 @@ namespace bsn {
         class ConvertedData : public odcore::data::SerializableData{
           public:
             //construtor parametrizado
-            ConvertedData(const double & /*converted data*/, const std::string &);
+            ConvertedData(const double & /*converted data*/, const std::string &, const std::array<timespec, 2> &);
 
             ConvertedData();          // construtor
             virtual ~ConvertedData(); // destrutor
@@ -41,12 +43,17 @@ namespace bsn {
             public:
                 void setSensorData(const double &/*sensor_data*/);
                 double getSensorData() const;
+
                 void setSensorType(const std::string &);
                 std::string getSensorType() const;
+                
+                void setTimespec(const std::array<timespec, 2> &);
+                std::array<timespec, 2> getTimespec() const;
             
             private:
                 double m_sensor_data; // estado do sensor
-                std::string sensorType; 
+                std::string sensorType;
+                std::array<timespec, 2> time_v;
         };
     }
 }

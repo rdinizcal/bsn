@@ -5,6 +5,7 @@
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
+#include <sys/time.h>
 
 namespace bsn {
     namespace data {
@@ -13,7 +14,7 @@ namespace bsn {
 
           public:
             //construtor parametrizado
-            RawData(const double & /*raw data*/);
+            RawData(const double & /*raw data*/, const timespec &);
 
             RawData();          // construtor
             virtual ~RawData(); // destrutor
@@ -42,9 +43,13 @@ namespace bsn {
             public:
                 void setSensorData(const double &/*sensor_data*/);
                 double getSensorData() const;
-            
+
+                void setTimespec(const timespec & /*sent_ts*/);
+                timespec getTimespec() const;
+
             private:
-                double m_sensor_data; // estado do sensor 
+                double m_sensor_data; // estado do sensor
+                timespec m_time; 
         };
     }
 }

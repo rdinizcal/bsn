@@ -5,19 +5,22 @@ namespace bsn {
         
         using namespace std;
         
-        RawData::RawData() : m_sensor_data() {}
+        RawData::RawData() : m_sensor_data(), m_time() {}
         
-        RawData::RawData(const double &sensor_data): 
-            m_sensor_data(sensor_data) {}
+        RawData::RawData(const double &sensor_data, const timespec &ts): 
+            m_sensor_data(sensor_data),
+            m_time(ts) {}
         
         RawData::~RawData() {}
         
         RawData::RawData(const RawData &obj) :
             SerializableData(),
-            m_sensor_data(obj.getSensorData()) {}
+            m_sensor_data(obj.getSensorData()),
+            m_time(obj.getTimespec()) {}
         
         RawData& RawData::operator=(const RawData &obj) {
-            m_sensor_data = obj.getSensorData();          
+            m_sensor_data = obj.getSensorData();
+            m_time = obj.getTimespec();          
             return (*this);
         }
         
@@ -50,12 +53,22 @@ namespace bsn {
         double RawData::getSensorData() const {
             return m_sensor_data;
         }
+
+        void RawData::setTimespec(const timespec &ts) {
+            m_time = ts;
+        }
+
+        timespec RawData::getTimespec() const {
+            return m_time;
+        }
         
         ostream& RawData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
             s->write(1, m_sensor_data);
+            s->write(2, m_time.tv_sec);
+            s->write(3, m_time.tv_nsec);
 
             return out;
         }
@@ -65,7 +78,9 @@ namespace bsn {
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
             d->read(1, m_sensor_data);
-            
+            d->read(2, m_time.tv_sec);
+            d->read(3, m_time.tv_nsec);
+
             return in;
         }
         

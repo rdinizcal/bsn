@@ -8,7 +8,7 @@ namespace bsn {
 
         class ECGRawData : public RawData {
             public:
-                ECGRawData(const double &sensor_data);
+                ECGRawData(const double &sensor_data, const timespec &ts);
                 ECGRawData();
                 ~ECGRawData();
 

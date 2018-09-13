@@ -8,7 +8,7 @@ namespace bsn {
 
         class DiastolicRawData : public RawData {
             public:
-                DiastolicRawData(const double &sensor_data);
+                DiastolicRawData(const double &sensor_data, const timespec &ts);
                 DiastolicRawData();
                 virtual ~DiastolicRawData();
 

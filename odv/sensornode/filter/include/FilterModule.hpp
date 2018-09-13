@@ -11,6 +11,7 @@
 #include "bsn/data/FilteredData.h"
 #include "bsn/data/ConvertedData.h"
 #include "bsn/filters/MovingAverage.hpp"
+#include "bsn/time/TimeData.hpp"
 
 class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:

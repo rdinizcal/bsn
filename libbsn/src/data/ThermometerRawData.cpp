@@ -3,7 +3,7 @@
 namespace bsn {
     namespace data {
 
-        ThermometerRawData::ThermometerRawData(const double &sensor_data) : RawData(sensor_data) {}
+        ThermometerRawData::ThermometerRawData(const double &sensor_data, const timespec &ts) : RawData(sensor_data, ts) {}
         
         ThermometerRawData::ThermometerRawData() {}
 

@@ -5,6 +5,7 @@ using namespace odcore::base::module;
 using namespace bsn::data;
 using namespace bsn::scales;
 using namespace odcore::data;
+using namespace bsn::time;
 
 ConverterModule::ConverterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ConverterModule"),
@@ -41,21 +42,30 @@ void ConverterModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ConverterModule::body(){    
     double data, converted_data;
+    array<timespec, 2> ts_v;
+    timespec now_time, back_time;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         while(!rawdata_buffer.isEmpty()){
+            // ts_v.clear();
+            clock_gettime(CLOCK_REALTIME, &now_time);
+            
             Container container = rawdata_buffer.leave();
           
             // Desencapsula
             data = container.getData<RawData>().getSensorData();
+            back_time = container.getData<RawData>().getTimespec();
 
             // Converte
             converted_data = converter.to_MeasureUnit(data);
-            std::cout << "Dado recebido pelo " << sensorType << ": " << data << " convertido para " << converted_data << std::endl;                    
+            std::cout << "Dado recebido pelo " << sensorType << ": " << data << " convertido para " << converted_data << std::endl;
+
+            ts_v[0] = back_time;
+            ts_v[1] = now_time;
 
             // Encapsula
-            ConvertedData encapsulated_data(converted_data, sensorType);
+            ConvertedData encapsulated_data(converted_data, sensorType, ts_v);
             
             Container packet(encapsulated_data);
 
