@@ -35,7 +35,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
     double data;
     array<timespec, 3> back_time;
     array<timespec, 4> ts_v;
-    timespec now_time; 
+    timespec now_time;
+    bool isOK = false;
+    string package;
+    // array<string, 2> pressureData; 
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) { 
 
@@ -54,10 +57,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
             ts_v[2] = back_time[2];
             ts_v[3] = now_time;
 
-            string package = type;
-            package += '-';
-            package += to_string(data);
-            sender.send(package);
+            if (type == "bpms") {
+                isOK = true;
+                package = type;
+                package += '-';
+                package += to_string(data);
+                package += '-';
+            } 
+            else if (type == "bpmd" and isOK) {
+                isOK = false;
+                package += type;
+                package += '-';
+                package += to_string(data);
+                sender.send(package);
+                cout << package << endl;
+            } 
+            else {
+                isOK = false;
+                package = type;
+                package += '-';
+                package += to_string(data);
+                sender.send(package);
+            }
         }
 
     }
