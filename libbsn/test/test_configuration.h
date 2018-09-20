@@ -11,7 +11,6 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
   	void test_constructor() {
         cout << "Testando configurações do sensor" << endl;
         cout << "\tTestando construtor:\n";
-        int id = 0;
         range r1(1.0,2.0);
         range r2(3.0,4.0);
         range r3(5.0,6.0);
@@ -22,7 +21,6 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
 
     void test_unknow(){
         cout << "\tTestando avaliação sinal unknow\n";
-        int id = 0;
         range r1(0.0,2.9);
         range r2(3.0,4.9);
         range r3(5.0,6.9);
@@ -32,8 +30,7 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
     }
 
     void test_low(){        
-        cout << "\tTestando avaliação sinal baixo\n";
-        int id = 0;
+        cout << "\tTestando avaliação sinal baixo\n"; 
         range r1(0.0,4.0);
         range r2(4.0,5.0);
         range r3(5.0,7.0);
@@ -45,7 +42,6 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
 
     void test_medium(){
         cout << "\tTestando avaliação sinal medium\n";
-        int id = 0;
         range r1(1.0,2.0);
         range r2(3.0,4.0);
         range r3(5.0,6.0);
@@ -55,8 +51,7 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
     }
 
     void test_high(){
-        cout << "\tTestando avaliação sinal high\n";
-        int id = 0;
+        cout << "\tTestando avaliação sinal high\n"; 
         range r1(1.0,2.0);
         range r2(3.0,4.0);
         range r3(5.0,6.0);

@@ -41,8 +41,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
             back_time = container.getData<ConvertedData>().getTimespec();
 
             // Filtra o dado
-            filter.insert(data);
-            filtered_data = filter.getValue();
+            filter.insert(data, type);
+            filtered_data = filter.getValue(type);
 
             cout << "Dado recebido de um " << type << ": " << data << " filtrado para " << filtered_data << endl;
             // Encapsula o dado como Filtered para manda-lo pela FIFO
