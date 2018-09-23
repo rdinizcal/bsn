@@ -112,6 +112,25 @@ void DataProcessor::print_packs(){
 	}
 }
 
+// Retorna o id baseado no tipo
+int DataProcessor::get_sensor_id(std::string type) {
+	if (type == "thermometer")
+		return 0;
+	else if (type == "ecg")
+		return 1;
+	else if (type == "oximeter")
+		return 2;
+	else if (type == "bpms")
+		return 3;
+	else if (type == "bpmd")		
+		return 4;
+	else {
+		cout << "UNKNOWN TYPE";
+		return -1;
+	}
+
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     Container container;    
     int sensor_id;
@@ -122,26 +141,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
         while(!data_buffer.isEmpty()){
-            // retira o dado da FIFO
+            // Retira o dado da FIFO
             container = data_buffer.leave();
             packet_raw = container.getData<SensorData>().getSensorStatus();
             
+			// Pega o tipo do pacote
 			type = packet_raw.substr(0,packet_raw.find('-'));
 
-			if (type == "thermometer")
-				sensor_id = 0;
-			else if (type == "ecg")
-				sensor_id = 1;
-			else if (type == "oximeter")
-				sensor_id = 2;
-			else if (type == "bpms")
-				sensor_id = 3;
-			else if (type == "bpmd")		
-				sensor_id = 4;
-			else {
-				sensor_id = -1;
-				cout << "UNKNOWN TYPE";
-			}
+			sensor_id = get_sensor_id(type);			
 
 			if(type == "bpms" or type == "bpmd") {
 				string diastolyc_packet, systolic_packet;
@@ -151,17 +158,18 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 				systolic_packet  = packet_raw.substr(0,packet_raw.find('/'));
     			diastolyc_packet = packet_raw.substr(packet_raw.find('/')+1,packet_raw.length());
 
+				// Retira os valores a partir do pacote recebido
 				systolic_value  = stod(systolic_packet.substr(systolic_packet.find('-')+1,systolic_packet.length()));
 				diastolic_value = stod(diastolyc_packet.substr(diastolyc_packet.find('-')+1,diastolyc_packet.length()));
-
-				cout << "PACOTES: " << systolic_value << ' ' << diastolic_value << endl;
+				
 				eval_sys = configurations[sensor_id].evaluate_number(systolic_value);				
 				eval_dia = configurations[sensor_id+1].evaluate_number(diastolic_value);
-				cout << "EVAL: " << eval_sys << ' ' << eval_dia << endl;
 				
+				// O mais discrepante é o que conta(Guideline brasileiro)
 				evaluated_packet = max(eval_dia,eval_sys);
 			}
-			else {				
+			else {
+				// Para os sensores que não são de pressão
 				packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
 				evaluated_packet = configurations[sensor_id].evaluate_number(packet);
 			}

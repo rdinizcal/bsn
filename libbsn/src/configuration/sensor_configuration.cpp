@@ -19,18 +19,15 @@ double sensor_configuration::evaluate_number(double number) {
 	double conversion, result;
 	double medium_value = 4.5;
 	if(low.in_range(number)) {
-		cout << "low\n";
 		conversion = low.convert(0.0,3.0,number);
 		// Calcula a distância entre a conversão e o num medio em por cento
 		result = (fabs(medium_value - conversion)) / medium_value;
 	}		
 	else if(medium.in_range(number)) {		
-		cout << "med\n";
 		conversion = medium.convert(3.0,6.0,number);
 		result = (fabs(medium_value - conversion)) / medium_value;
 	}		
 	else if(high.in_range(number)) {	
-		cout << "hig\n";			
 		conversion = high.convert(6.0,9.0,number);
 		result = (fabs(medium_value - conversion)) / medium_value;
 	}		
