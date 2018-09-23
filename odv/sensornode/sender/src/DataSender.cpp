@@ -38,7 +38,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
     timespec now_time;
     bool isOK = false;
     string package;
-    // array<string, 2> pressureData; 
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) { 
 
@@ -62,17 +61,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
                 package = type;
                 package += '-';
                 package += to_string(data);
-                package += '-';
-            } 
-            else if (type == "bpmd" and isOK) {
+                package += '/';
+            }
+
+            else if (type == "bpmd" and isOK) {                
                 isOK = false;
                 package += type;
                 package += '-';
                 package += to_string(data);
                 sender.send(package);
                 cout << package << endl;
-            } 
-            else {
+            }
+            // Para os outros tipos apenas concatenar com '-'
+            else if (type != "bmps" and type != "bpmd") {
                 isOK = false;
                 package = type;
                 package += '-';

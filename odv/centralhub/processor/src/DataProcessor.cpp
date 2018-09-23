@@ -1,7 +1,7 @@
 #include "../include/DataProcessor.hpp"
 
 // ecg termomther and oximeter
-#define number_sensors 3
+#define number_sensors 4
 
 using namespace bsn::data;
 using namespace odcore::base;
@@ -23,14 +23,14 @@ const vector<string> split(const string& s, const char& c) {
 }
 
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
-	packets_received(3),
+	packets_received(number_sensors),
     TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
     data_buffer() {}
 
 DataProcessor::~DataProcessor() {}
 
 void DataProcessor::setUp() {
-	vector<string> sensorTypes = {"thermometer", "ecg", "oximeter"};
+	vector<string> sensorTypes = {"thermometer", "ecg", "oximeter", "bpms", "bpmd"};
 	vector<string> low, mid, high;
 	vector<range> ranges;
 	
@@ -41,7 +41,7 @@ void DataProcessor::setUp() {
 
 		range lowRange(stod(low[0]), stod(low[1]));
 		range midRange(stod(mid[0]), stod(mid[1]));
-		range highRange(stod(high[0]), stod(high[1]));
+		range highRange(stod(high[0]), stod(high[1]));				
 
 		sensor_configuration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
 		configurations.push_back(aux_config);
@@ -126,9 +126,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
             container = data_buffer.leave();
             packet_raw = container.getData<SensorData>().getSensorStatus();
             
-			type = packet_raw.substr(0,packet_raw.find('-'));				 
-            packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
-            evaluated_packet = configurations[sensor_id].evaluate_number(packet);
+			type = packet_raw.substr(0,packet_raw.find('-'));
 
 			if (type == "thermometer")
 				sensor_id = 0;
@@ -136,6 +134,37 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 				sensor_id = 1;
 			else if (type == "oximeter")
 				sensor_id = 2;
+			else if (type == "bpms")
+				sensor_id = 3;
+			else if (type == "bpmd")		
+				sensor_id = 4;
+			else {
+				sensor_id = -1;
+				cout << "UNKNOWN TYPE";
+			}
+
+			if(type == "bpms" or type == "bpmd") {
+				string diastolyc_packet, systolic_packet;
+				double systolic_value, diastolic_value;	
+				double eval_sys, eval_dia;			
+
+				systolic_packet  = packet_raw.substr(0,packet_raw.find('/'));
+    			diastolyc_packet = packet_raw.substr(packet_raw.find('/')+1,packet_raw.length());
+
+				systolic_value  = stod(systolic_packet.substr(systolic_packet.find('-')+1,systolic_packet.length()));
+				diastolic_value = stod(diastolyc_packet.substr(diastolyc_packet.find('-')+1,diastolyc_packet.length()));
+
+				cout << "PACOTES: " << systolic_value << ' ' << diastolic_value << endl;
+				eval_sys = configurations[sensor_id].evaluate_number(systolic_value);				
+				eval_dia = configurations[sensor_id+1].evaluate_number(diastolic_value);
+				cout << "EVAL: " << eval_sys << ' ' << eval_dia << endl;
+				
+				evaluated_packet = max(eval_dia,eval_sys);
+			}
+			else {				
+				packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
+				evaluated_packet = configurations[sensor_id].evaluate_number(packet);
+			}
 
             // Se o pacote for válido...
             if(evaluated_packet != -1){                
