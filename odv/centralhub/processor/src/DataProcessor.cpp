@@ -131,6 +131,11 @@ int DataProcessor::get_sensor_id(std::string type) {
 
 }
 
+double get_value(string packet){
+	double ret = stod(packet.substr(packet.find('-')+1,packet.length()));
+	return ret;
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     Container container;    
     int sensor_id;
@@ -159,8 +164,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     			diastolyc_packet = packet_raw.substr(packet_raw.find('/')+1,packet_raw.length());
 
 				// Retira os valores a partir do pacote recebido
-				systolic_value  = stod(systolic_packet.substr(systolic_packet.find('-')+1,systolic_packet.length()));
-				diastolic_value = stod(diastolyc_packet.substr(diastolyc_packet.find('-')+1,diastolyc_packet.length()));
+				systolic_value  = get_value(systolic_packet);
+				diastolic_value = get_value(diastolyc_packet);
 				
 				eval_sys = configurations[sensor_id].evaluate_number(systolic_value);				
 				eval_dia = configurations[sensor_id+1].evaluate_number(diastolic_value);
@@ -170,7 +175,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 			}
 			else {
 				// Para os sensores que não são de pressão
-				packet = stod(packet_raw.substr(packet_raw.find('-') + 1));
+				packet = get_value(packet_raw);
 				evaluated_packet = configurations[sensor_id].evaluate_number(packet);
 			}
 
