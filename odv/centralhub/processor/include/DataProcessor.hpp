@@ -26,7 +26,8 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
         // Retorna true se existe pelo menos um pacote para cada sensor
         bool available_to_process();
         // Retorna o id do sensor correspondente
-        int get_sensor_id(std::string type);
+        int get_sensor_id(std::string);
+        double get_value(std::string);
 
     public:
         /**

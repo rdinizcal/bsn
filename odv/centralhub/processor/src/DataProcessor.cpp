@@ -131,7 +131,7 @@ int DataProcessor::get_sensor_id(std::string type) {
 
 }
 
-double get_value(string packet){
+double DataProcessor::get_value(string packet){
 	double ret = stod(packet.substr(packet.find('-')+1,packet.length()));
 	return ret;
 }
