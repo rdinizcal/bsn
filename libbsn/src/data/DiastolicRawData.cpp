@@ -3,7 +3,7 @@
 namespace bsn {
     namespace data {
 
-        DiastolicRawData::DiastolicRawData(const double &sensor_data) : RawData(sensor_data){}
+        DiastolicRawData::DiastolicRawData(const double &sensor_data, const timespec &ts) : RawData(sensor_data, ts){}
         
         DiastolicRawData::DiastolicRawData(){}
 

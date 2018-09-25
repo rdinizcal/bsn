@@ -6,17 +6,17 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <sys/time.h>
+#include <vector>
+
 namespace bsn {
     namespace data {
         
-        using namespace std;
-        using namespace odcore::data;
-        
-        class FilteredData : public SerializableData {
+        class FilteredData : public odcore::data::SerializableData {
         
             public:
                 //construtor parametrizado
-                FilteredData(const double &/*filtered data*/);
+                FilteredData(const double &/*filtered data*/, const std::string &, const std::array<timespec, 3> &);
 
                 FilteredData();            // construtor
                 virtual ~FilteredData();   // destrutor
@@ -28,26 +28,34 @@ namespace bsn {
             // Métodos abstratos
             public:
                 virtual int32_t getID() const;
-                virtual const string getShortName() const;
-                virtual const string getLongName() const;
+                virtual const std::string getShortName() const;
+                virtual const std::string getLongName() const;
 
                 static int32_t ID();
-                static const string ShortName();
-                static const string LongName();
+                static const std::string ShortName();
+                static const std::string LongName();
         
             public:
-                virtual ostream& operator<<(ostream &out) const;
-                virtual istream& operator>>(istream &in);
+                virtual std::ostream& operator<<(std::ostream &out) const;
+                virtual std::istream& operator>>(std::istream &in);
         
-                virtual const string toString() const;
+                virtual const std::string toString() const;
                 
             // setters e getters
             public:
                 void setSensorData(const double &/*sensor_data*/);
                 double getSensorData() const;
+
+                void setSensorType(const std::string &);
+                std::string getSensorType() const;
+
+                void setTimespec(const std::array<timespec, 3> &);
+                std::array<timespec, 3> getTimespec() const;
             
             private:
-                double m_sensor_data; // estado do sensor 
+                double m_sensor_data; // estado do sensor
+                std::string sensorType;
+                std::array<timespec, 3> time_v;
         };
     }
 }

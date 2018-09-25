@@ -5,6 +5,7 @@
 #include <string>
 #include <random>
 #include <unistd.h>
+#include <sys/time.h>
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/Thread.h"
@@ -15,6 +16,7 @@
 #include "bsn/data/DiastolicRawData.h"
 #include "bsn/data/SystolicRawData.h"
 #include "bsn/generator/DataGenerator.h"
+#include "bsn/time/TimeData.hpp"
 
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -38,6 +40,7 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
   	private:
 	  	u_int32_t mSensor_id;
     	double mGeneratedData;
+		timespec timeRef;
 };
 
 #endif 

@@ -2,20 +2,23 @@
 #define MOVINGAVERAGE_HPP
 
 #include <list>
+#include <string>
+#include <array>
 
 namespace bsn {
     namespace filters {
 
         class MovingAverage { 
             private:
-                int range;
+                unsigned int range;
                 double computedAverage;
                 double lastInserted;
-                std::list<double> buffer;
+                std::array<std::list<double>, 5> buffer;
+                
             public:
                 MovingAverage(int);
-                double getValue();
-                void insert(double value);;
+                double getValue(std::string);
+                void insert(double, std::string);;
         };        
 
     }

@@ -10,6 +10,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "bsn/data/FilteredData.h"
 #include "bsn/communication/TCPSend.hpp"
+#include "bsn/time/TimeData.hpp"
 
 class DataSender : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

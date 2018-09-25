@@ -5,19 +5,25 @@ namespace bsn {
         
         using namespace std;
         
-        ConvertedData::ConvertedData() : m_sensor_data() {}
+        ConvertedData::ConvertedData() : m_sensor_data(), sensorType() {}
         
-        ConvertedData::ConvertedData(const double &sensor_data) : 
-            m_sensor_data(sensor_data) {}
+        ConvertedData::ConvertedData(const double &sensor_data, const string &type, const std::array<timespec, 2> &lts) : 
+            m_sensor_data(sensor_data),
+            sensorType(type),
+            time_v(lts) {}
         
         ConvertedData::~ConvertedData() {}
         
         ConvertedData::ConvertedData(const ConvertedData &obj) :
             SerializableData(),
-            m_sensor_data(obj.getSensorData()) {}
+            m_sensor_data(obj.getSensorData()),
+            sensorType(obj.getSensorType()),
+            time_v(obj.getTimespec()) {}
         
         ConvertedData& ConvertedData::operator=(const ConvertedData &obj) {
-            m_sensor_data = obj.getSensorData();          
+            m_sensor_data = obj.getSensorData();
+            sensorType = obj.getSensorType();
+            time_v = obj.getTimespec();          
             return (*this);
         }
         
@@ -51,11 +57,36 @@ namespace bsn {
             return m_sensor_data;
         }
         
+        const string ConvertedData::toString() const {
+            stringstream sstr;
+
+            sstr << "Converted Data: " << m_sensor_data << "" << endl;
+
+            return sstr.str();
+        }
+
+        void ConvertedData::setSensorType(const string &type) {
+            sensorType = type;
+        }
+
+        void ConvertedData::setTimespec(const std::array<timespec, 2> &ts) {
+            time_v = ts;
+        }
+
+        std::array<timespec, 2> ConvertedData::getTimespec() const {
+            return time_v;
+        }
+
         ostream& ConvertedData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
             s->write(1, m_sensor_data);
+            s->write(2, sensorType);
+            s->write(3, time_v[0].tv_sec);
+            s->write(4, time_v[0].tv_nsec);
+            s->write(5, time_v[1].tv_sec);
+            s->write(6, time_v[1].tv_nsec);
 
             return out;
         }
@@ -65,16 +96,18 @@ namespace bsn {
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
             d->read(1, m_sensor_data);
-            
+            d->read(2, sensorType);
+            d->read(3, time_v[0].tv_sec);
+            d->read(4, time_v[0].tv_nsec);
+            d->read(5, time_v[1].tv_sec);
+            d->read(6, time_v[1].tv_nsec);
+
             return in;
         }
         
-        const string ConvertedData::toString() const {
-            stringstream sstr;
 
-            sstr << "Converted Data: " << m_sensor_data << "" << endl;
-
-            return sstr.str();
+        string ConvertedData::getSensorType() const {
+            return sensorType;
         }
-    }
+        }
 }

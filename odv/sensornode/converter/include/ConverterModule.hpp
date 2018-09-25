@@ -16,6 +16,7 @@
 #include "bsn/data/OximeterRawData.h"
 #include "bsn/data/SystolicRawData.h"
 #include "bsn/data/DiastolicRawData.h"
+#include "bsn/time/TimeData.hpp"
 
 class ConverterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

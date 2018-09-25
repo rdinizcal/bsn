@@ -8,12 +8,12 @@ namespace bsn {
 
         class OximeterRawData : public RawData {
             public:
-                OximeterRawData(const double &sensor_data);
-                OximeterRawData();
-                virtual ~OximeterRawData();
+              OximeterRawData(const double &sensor_data, const timespec &ts);
+              OximeterRawData();
+              virtual ~OximeterRawData();
 
-                int32_t getID() const;
-                static int32_t ID();
+              int32_t getID() const;
+              static int32_t ID();
         };
       
     }

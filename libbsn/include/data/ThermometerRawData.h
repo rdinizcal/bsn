@@ -8,7 +8,7 @@ namespace bsn {
 
         class ThermometerRawData : public RawData {
             public:
-                ThermometerRawData(const double &sensor_data);
+                ThermometerRawData(const double &sensor_data, const timespec &ts);
                 ThermometerRawData();
                 ~ThermometerRawData();
 

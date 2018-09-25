@@ -33,7 +33,7 @@ class Module:
         obj = self.path_obj
         inc = self.path_inc[: self.path_inc.rfind('/')]
         src = self.path_src
-        return "g++ -std=c++11 -I " + inc + " -c " + src + " -o " + obj
+        return "g++ -Wall -std=c++11 -I " + inc + " -c " + src + " -o " + obj
         
 def print_array(arr):
     print(', '.join(arr))
@@ -135,9 +135,9 @@ def compile_mains(list_objects,main_path,list_includes):
         # Recebe o path do objeto relativo ao nome recebido(list_objects)
         module_objects.append(modules_hash[i].path_obj) 
     
-    compile_main = "g++ -std=c++11" + " -c " + main_path + " -o " +  app_path + ".o"
+    compile_main = "g++ -Wall -std=c++11" + " -c " + main_path + " -o " +  app_path + ".o"
     # Compila o app linkando os .o's
-    compile_app  = "g++ -o " + app_path + " " + app_path + ".o " + ' '.join(map(str,module_objects)) + module_flags    
+    compile_app  = "g++ -Wall -o " + app_path + " " + app_path + ".o " + ' '.join(map(str,module_objects)) + module_flags    
     outputfile.write('\t' + compile_main + "\n")
     outputfile.write('\t' + compile_app  + "\n")
 
@@ -155,8 +155,8 @@ def compile_tests(list_objects,path_test_h):
     path_test_object = path_to_test_module + "/a.o "
     path_test_main = path_to_test_module + "/main.out "
     outputfile.write('\t' + "@cxxtestgen --error-printer -o " + path_runner + path_test_h  + '\n')
-    outputfile.write('\t' + "@g++ -std=c++11 -c " + path_runner + "-o " + path_test_object + '\n')
-    outputfile.write('\t' + "@g++ -o " + path_test_main  + path_test_object + ' '.join(module_objects) + module_flags + '\n')
+    outputfile.write('\t' + "@g++ -Wall -std=c++11 -c " + path_runner + "-o " + path_test_object + '\n')
+    outputfile.write('\t' + "@g++ -Wall -o " + path_test_main  + path_test_object + ' '.join(module_objects) + module_flags + '\n')
     outputfile.write('\t' + "./" + path_to_test_module + "/main.out" + '\n')
 
 def construct_mains(main_paths):
