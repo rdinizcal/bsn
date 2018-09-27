@@ -9,7 +9,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "bsn/data/FilteredData.h"
-#include "bsn/data/ConvertedData.h"
+#include "bsn/data/RawData.h"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/time/TimeData.hpp"
 
