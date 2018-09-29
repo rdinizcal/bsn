@@ -15,7 +15,7 @@ range::range(double l, double u) {
 }
 
 // Verifica se um elemento esta dentro do intervalo estipulado
-bool range::in_range(double element){
+bool range::in_range(double element) {
 	if(element >= lower_bound && element <= upper_bound)
 		return true;
 	else
