@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <random>
+#include <tuple>
 #include <unistd.h>
 #include <sys/time.h>
 
@@ -28,6 +29,8 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
     	DataCollectorModule(const int32_t &argc, char **argv);
     	virtual ~DataCollectorModule();
 
+		// Retorna os parametros necessários à distribuição normal
+		std::tuple<double,double> get_normal_params(std::string);
     	/**
       	* Método efetivamente executado.
       	*/
