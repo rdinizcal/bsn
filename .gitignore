@@ -41,3 +41,4 @@ output/
 
 # Tests
 runner.cpp
+test.cpp
