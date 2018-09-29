@@ -7,20 +7,8 @@ using namespace bsn::data;
 using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace odcore::data;
-
-const vector<string> split(const string& s, const char& c) {    
-	string buff{""};
-	vector<string> v;
-	
-	for(auto n:s)
-	{
-		if(n != c) buff+=n; else
-		if(n == c && buff != "") { v.push_back(buff); buff = ""; }
-	}
-	if(buff != "") v.push_back(buff);
-	
-	return v;
-}
+using namespace bsn::operation;
+using namespace bsn::range;
 
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
 	packets_received(number_sensors),
@@ -32,16 +20,17 @@ DataProcessor::~DataProcessor() {}
 void DataProcessor::setUp() {
 	vector<string> sensorTypes = {"thermometer", "ecg", "oximeter", "bpms", "bpmd"};
 	vector<string> low, mid, high;
-	vector<range> ranges;
+	vector<Range> ranges;
+	Operation operation;
 	
-	for (string str : sensorTypes) {		
-		low = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "LowRange"), ',');
-		mid = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "MidRange"), ',');
-		high = split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "HighRange"), ',');
+	for (string str : sensorTypes) {
+		low = operation.split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "LowRange"), ',');
+		mid = operation.split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "MidRange"), ',');
+		high = operation.split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "HighRange"), ',');
 
-		range lowRange(stod(low[0]), stod(low[1]));
-		range midRange(stod(mid[0]), stod(mid[1]));
-		range highRange(stod(high[0]), stod(high[1]));				
+		Range lowRange(stod(low[0]), stod(low[1]));
+		Range midRange(stod(mid[0]), stod(mid[1]));
+		Range highRange(stod(high[0]), stod(high[1]));				
 
 		sensor_configuration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
 		configurations.push_back(aux_config);

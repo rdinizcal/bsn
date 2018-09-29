@@ -12,10 +12,10 @@ dataprocessor.oximeterLowRange = 50.0,89.0
 dataprocessor.oximeterMidRange = 90.0,100.0
 dataprocessor.oximeterHighRange = 100.1,110.1
 
-dataprocessor.bpmsLowRange = 40.0,60.0 
-dataprocessor.bpmsMidRange = 61.0,80.0
-dataprocessor.bpmsHighRange = 81.0,100.0
+dataprocessor.bpmdLowRange = 40.0,60.0 
+dataprocessor.bpmdMidRange = 61.0,80.0
+dataprocessor.bpmdHighRange = 81.0,100.0
 
-dataprocessor.bpmdLowRange = 70.0,90.0 
-dataprocessor.bpmdMidRange = 91.0,120.0
-dataprocessor.bpmdHighRange = 121,190.0
+dataprocessor.bpmsLowRange = 70.0,90.0 
+dataprocessor.bpmsMidRange = 91.0,120.0
+dataprocessor.bpmsHighRange = 121,190.0

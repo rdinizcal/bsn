@@ -3,7 +3,7 @@
 #include <random>
 #include <vector>
 
-#include "bsn/range/range.hpp"
+#include "bsn/range/Range.hpp"
 
 /*  OBS.: Para simplificação
     O vetor de transições contém as probabilidades de tal forma:
@@ -20,9 +20,9 @@ class Markov {
     // Contém a probabilidade de todas as transições
     std::array<float,9> transitions;
     // Contém os intervalos de cada estado
-    std::array<range,3> ranges;
+    std::array<bsn::range::Range, 3> ranges;
 
-    Markov(std::array<float,9> transitions, std::array<range,3> ranges, int initial_state);        
+    Markov(std::array<float, 9> transitions, std::array<bsn::range::Range, 3> ranges, int initial_state);
     // Calcula o próximo estado da cadeia de markov
     void next_state();
     // Calcula um valor baseado no intervalo do estado atual

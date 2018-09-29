@@ -5,16 +5,16 @@
 #include <math.h>
 #include <iostream>
 
-#include "bsn/range/range.hpp"
+#include "bsn/range/Range.hpp"
 
 class sensor_configuration {
 	public:
 		int id;
-		range low,medium,high;
+		bsn::range::Range low, medium, high;
 
 		sensor_configuration();
 
-		sensor_configuration(int id, range b, range m, range h);
+		sensor_configuration(int id, bsn::range::Range b, bsn::range::Range m, bsn::range::Range h);
 
 		double evaluate_number(double number) ;
 

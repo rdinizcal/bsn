@@ -1,6 +1,7 @@
 #include "bsn/generator/Markov.hpp"
 
 using namespace std;
+using namespace bsn::range;
 
 // Gerador de seeds
 random_device rd;
@@ -10,7 +11,7 @@ mt19937 seed(rd());
 uniform_int_distribution<int> probability_generator(1,101);
 
 // Construtor
-Markov::Markov(array<float,9> transitions,array<range,3> ranges,int initial_state){
+Markov::Markov(array<float,9> transitions, array<Range, 3> ranges, int initial_state){
         this->transitions = transitions;
         this->current_state = initial_state;
         this->ranges = ranges;
@@ -38,7 +39,7 @@ void Markov::next_state() {
 
 // Calcula um valor baseado no intervalo do estado atual
 double Markov::calculate_state() {
-    range this_range = ranges[current_state];
+    Range this_range = ranges[current_state];
     // Cria um número aleatório baseado no range
     std::uniform_real_distribution<double> value_generator(this_range.lower_bound, this_range.upper_bound);
     double val = value_generator(seed);

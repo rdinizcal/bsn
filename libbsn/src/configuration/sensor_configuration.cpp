@@ -1,10 +1,11 @@
 #include "bsn/configuration/sensor_configuration.hpp"
 
-using namespace std; 
+using namespace std;
+using namespace bsn::range;
 
 sensor_configuration::sensor_configuration(){}
 
-sensor_configuration::sensor_configuration(int id, range b, range m, range h){
+sensor_configuration::sensor_configuration(int id, Range b, Range m, Range h){
 	this->id = id;
 	this->low = b;
 	this->medium = m;

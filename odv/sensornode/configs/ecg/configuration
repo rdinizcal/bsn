@@ -4,8 +4,18 @@ datacollectormodule:0.type = ecg
 datacollectormodule:1.type = ecg
 datacollectormodule:2.type = ecg
 
-convertermodule:0.type = ecg
-convertermodule:1.type = ecg
-convertermodule:2.type = ecg
+datacollectormodule.ecgLowRange = 40.0,55.0
+datacollectormodule.ecgMidRange = 60.0,100.0
+datacollectormodule.ecgHighRange = 120.0,150.0
+
+datacollectormodule.0to0 = 0
+datacollectormodule.0to1 = 1
+datacollectormodule.0to2 = 2
+datacollectormodule.1to0 = 3
+datacollectormodule.1to1 = 4
+datacollectormodule.1to2 = 5
+datacollectormodule.2to0 = 6
+datacollectormodule.2to1 = 7
+datacollectormodule.2to2 = 8
 
 datasender.ip = localhost

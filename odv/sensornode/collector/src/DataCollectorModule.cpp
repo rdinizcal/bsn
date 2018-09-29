@@ -5,6 +5,8 @@ using namespace bsn::data;
 using namespace bsn::generator;
 using namespace odcore::data;
 using namespace bsn::time;
+using namespace bsn::operation;
+using namespace bsn::range;
 
 DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
@@ -13,7 +15,35 @@ DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
 
 DataCollectorModule::~DataCollectorModule() {}
 
-void DataCollectorModule::setUp() {}
+void DataCollectorModule::setUp() {
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
+    int probability;
+    int k = 0;
+    vector<string> low, mid, high;
+    vector<Range> ranges;
+    Operation operation;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            probability = getKeyValueConfiguration().getValue<int>("datacollectormodule." + to_string(i) + "to" + to_string(j));
+            markov_transitions[k] = probability;
+            std::cout << probability << std::endl;
+            k++;
+        }
+    }
+
+    low = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "lowRange"), ',');
+    mid = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "midRange"), ',');
+    high = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "highRange"), ',');
+
+    Range lowRange(stod(low[0]), stod(low[1]));
+    Range midRange(stod(mid[0]), stod(mid[1]));
+    Range highRange(stod(high[0]), stod(high[1]));
+
+    ranges_vector.push_back(lowRange);
+    ranges_vector.push_back(midRange);
+    ranges_vector.push_back(highRange);
+}
 
 void DataCollectorModule::tearDown(){}
 

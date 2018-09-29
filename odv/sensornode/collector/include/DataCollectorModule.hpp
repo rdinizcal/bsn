@@ -14,6 +14,8 @@
 #include "bsn/data/RawData.h"
 #include "bsn/generator/DataGenerator.h"
 #include "bsn/time/TimeData.hpp"
+#include "bsn/operation/Operation.hpp"
+#include "bsn/range/Range.hpp"
 
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -40,6 +42,8 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
 	  	u_int32_t mSensor_id;
     	double mGeneratedData;
 		timespec timeRef;
+		std::array<int, 9> markov_transitions;
+		std::vector<bsn::range::Range> ranges_vector;
 };
 
 #endif 

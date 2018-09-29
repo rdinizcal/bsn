@@ -1,7 +1,7 @@
 #include <cxxtest/TestSuite.h>
 #include <iostream>
 
-#include "bsn/range/range.hpp"
+#include "bsn/range/Range.hpp"
 
 using namespace std;
 

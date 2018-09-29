@@ -14,6 +14,8 @@
 
 #include "bsn/configuration/sensor_configuration.hpp"
 #include "bsn/data/SensorData.h"
+#include "bsn/operation/Operation.hpp"
+#include "bsn/range/Range.hpp"
 
 class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
