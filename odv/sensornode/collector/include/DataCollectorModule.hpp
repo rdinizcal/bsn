@@ -8,14 +8,15 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/Thread.h"
+#include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 
 #include "bsn/data/RawData.h"
-#include "bsn/generator/DataGenerator.h"
-#include "bsn/time/TimeData.hpp"
-#include "bsn/operation/Operation.hpp"
 #include "bsn/range/Range.hpp"
+#include "bsn/time/TimeData.hpp"
+#include "bsn/generator/Markov.hpp"
+#include "bsn/operation/Operation.hpp"
+#include "bsn/generator/DataGenerator.h"
 
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -42,8 +43,8 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
 	  	u_int32_t mSensor_id;
     	double mGeneratedData;
 		timespec timeRef;
-		std::array<int, 9> markov_transitions;
-		std::vector<bsn::range::Range> ranges_vector;
+		std::array<float, 9> markov_transitions;
+		std::array<bsn::range::Range,3> ranges_array;
 };
 
 #endif 

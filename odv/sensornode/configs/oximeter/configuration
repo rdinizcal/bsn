@@ -8,14 +8,14 @@ datacollectormodule.oximeterLowRange = 50.0,89.0
 datacollectormodule.oximeterMidRange = 90.0,100.0
 datacollectormodule.oximeterHighRange = 100.1,110.1
 
-datacollectormodule.0to0 = 0
-datacollectormodule.0to1 = 1
-datacollectormodule.0to2 = 2
-datacollectormodule.1to0 = 3
-datacollectormodule.1to1 = 4
-datacollectormodule.1to2 = 5
-datacollectormodule.2to0 = 6
-datacollectormodule.2to1 = 7
-datacollectormodule.2to2 = 8
+datacollectormodule.0to0 = 20
+datacollectormodule.0to1 = 80
+datacollectormodule.0to2 = 0
+datacollectormodule.1to0 = 10
+datacollectormodule.1to1 = 80
+datacollectormodule.1to2 = 10
+datacollectormodule.2to0 = 0
+datacollectormodule.2to1 = 80
+datacollectormodule.2to2 = 20
 
 datasender.ip = localhost

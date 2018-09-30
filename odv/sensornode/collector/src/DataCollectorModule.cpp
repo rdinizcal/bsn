@@ -25,9 +25,8 @@ void DataCollectorModule::setUp() {
 
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            probability = getKeyValueConfiguration().getValue<int>("datacollectormodule." + to_string(i) + "to" + to_string(j));
+            probability = getKeyValueConfiguration().getValue<float>("datacollectormodule." + to_string(i) + "to" + to_string(j));
             markov_transitions[k] = probability;
-            std::cout << probability << std::endl;
             k++;
         }
     }
@@ -40,9 +39,9 @@ void DataCollectorModule::setUp() {
     Range midRange(stod(mid[0]), stod(mid[1]));
     Range highRange(stod(high[0]), stod(high[1]));
 
-    ranges_vector.push_back(lowRange);
-    ranges_vector.push_back(midRange);
-    ranges_vector.push_back(highRange);
+    ranges_array[0] = lowRange;
+    ranges_array[1] = midRange;
+    ranges_array[2] = highRange;
 }
 
 void DataCollectorModule::tearDown(){}
@@ -72,16 +71,16 @@ std::tuple<double,double> DataCollectorModule::get_normal_params(string sensorTy
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
     DataGenerator dataGenerator;
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
-    timespec ts;
-    double mode,variance;
+    timespec ts;    
 
-    // Retorna os argumentos necessários
-    std::tie(mode,variance) = get_normal_params(sensorType);    
+    Markov markov_generator(markov_transitions, ranges_array, 1);
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         clock_gettime(CLOCK_REALTIME, &ts);
-
-        mGeneratedData = dataGenerator.generateDataByNormalDist(mode, variance);
+        cout << "Estado atual: " << markov_generator.current_state << endl;
+        mGeneratedData = markov_generator.calculate_state();      
+        markov_generator.next_state();
 
         RawData rawdata(mGeneratedData, sensorType, ts);
         Container container(rawdata);
