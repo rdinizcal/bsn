@@ -4,8 +4,18 @@ datacollectormodule:0.type = thermometer
 datacollectormodule:1.type = thermometer
 datacollectormodule:2.type = thermometer
 
-convertermodule:0.type = thermometer
-convertermodule:1.type = thermometer
-convertermodule:2.type = thermometer
+datacollectormodule.thermometerLowRange = 30.0,36.4
+datacollectormodule.thermometerMidRange = 36.5,37.5
+datacollectormodule.thermometerHighRange = 37.6,42.0
+
+datacollectormodule.0to0 = 20
+datacollectormodule.0to1 = 80
+datacollectormodule.0to2 = 0
+datacollectormodule.1to0 = 10
+datacollectormodule.1to1 = 80
+datacollectormodule.1to2 = 10
+datacollectormodule.2to0 = 0
+datacollectormodule.2to1 = 80
+datacollectormodule.2to2 = 20
 
 datasender.ip = localhost

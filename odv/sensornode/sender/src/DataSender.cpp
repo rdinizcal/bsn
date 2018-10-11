@@ -53,8 +53,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
 
             ts_v[0] = back_time[0];
             ts_v[1] = back_time[1];
-            ts_v[2] = back_time[2];
-            ts_v[3] = now_time;
+            ts_v[2] = now_time;
 
             if (type == "bpms") {
                 isOK = true;

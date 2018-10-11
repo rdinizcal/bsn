@@ -3,7 +3,22 @@
 datacollectormodule:0.type = bpms
 datacollectormodule:1.type = bpmd
 
-convertermodule:0.type = bpms
-convertermodule:1.type = bpmd
+datacollectormodule.bpmdLowRange = 40.0,60.0 
+datacollectormodule.bpmdMidRange = 61.0,80.0
+datacollectormodule.bpmdHighRange = 81.0,100.0
+
+datacollectormodule.bpmsLowRange = 70.0,90.0 
+datacollectormodule.bpmsMidRange = 91.0,120.0
+datacollectormodule.bpmsHighRange = 121,190.0
+
+datacollectormodule.0to0 = 20
+datacollectormodule.0to1 = 80
+datacollectormodule.0to2 = 0
+datacollectormodule.1to0 = 10
+datacollectormodule.1to1 = 80
+datacollectormodule.1to2 = 10
+datacollectormodule.2to0 = 0
+datacollectormodule.2to1 = 80
+datacollectormodule.2to2 = 20
 
 datasender.ip = localhost

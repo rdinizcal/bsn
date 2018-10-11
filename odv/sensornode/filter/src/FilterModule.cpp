@@ -15,7 +15,7 @@ FilterModule::FilterModule(const int32_t &argc, char **argv) :
 FilterModule::~FilterModule() {}
 
 void FilterModule::setUp() {
-    addDataStoreFor(875, data_buffer);
+    addDataStoreFor(880, data_buffer);
 }
 
 void FilterModule::tearDown(){}
@@ -26,7 +26,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
     double data, filtered_data;
     string type;
     timespec now_time;
-    array<timespec, 2> back_time;
+    timespec back_time;
     array<timespec, 3> ts_v;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -36,9 +36,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
 
             // retira o dado da FIFO
             container = data_buffer.leave();
-            data = container.getData<ConvertedData>().getSensorData();
-            type = container.getData<ConvertedData>().getSensorType();
-            back_time = container.getData<ConvertedData>().getTimespec();
+            data = container.getData<RawData>().getSensorData();
+            type = container.getData<RawData>().getSensorType();
+            back_time = container.getData<RawData>().getTimespec();
 
             // Filtra o dado
             filter.insert(data, type);
@@ -47,9 +47,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
             cout << "Dado recebido de um " << type << ": " << data << " filtrado para " << filtered_data << endl;
             // Encapsula o dado como Filtered para manda-lo pela FIFO
 
-            ts_v[0] = back_time[0];
-            ts_v[1] = back_time[1];
-            ts_v[2] = now_time;
+            ts_v[0] = back_time;
+            ts_v[1] = now_time;
 
             FilteredData encapsulated_data(filtered_data, type, ts_v);
 

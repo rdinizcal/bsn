@@ -22,7 +22,7 @@ namespace bsn {
                 return 3;
             if(type == "bpmd")
                 return 4;
-
+            return 0;
         }
 
         double MovingAverage::getValue(std::string type) {

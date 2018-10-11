@@ -7,8 +7,9 @@ namespace bsn {
         
         RawData::RawData() : m_sensor_data(), m_time() {}
         
-        RawData::RawData(const double &sensor_data, const timespec &ts): 
+        RawData::RawData(const double &sensor_data,const std::string &sensor_type ,const timespec &ts): 
             m_sensor_data(sensor_data),
+            m_sensor_type(sensor_type),
             m_time(ts) {}
         
         RawData::~RawData() {}
@@ -16,10 +17,12 @@ namespace bsn {
         RawData::RawData(const RawData &obj) :
             SerializableData(),
             m_sensor_data(obj.getSensorData()),
+            m_sensor_type(obj.getSensorType()),
             m_time(obj.getTimespec()) {}
         
         RawData& RawData::operator=(const RawData &obj) {
             m_sensor_data = obj.getSensorData();
+            m_sensor_type = obj.getSensorType();
             m_time = obj.getTimespec();          
             return (*this);
         }
@@ -61,14 +64,23 @@ namespace bsn {
         timespec RawData::getTimespec() const {
             return m_time;
         }
+
+        void RawData::setSensorType(const string &type) {
+            m_sensor_type = type;
+        }
+
+        string RawData::getSensorType() const {
+            return m_sensor_type;
+        }
         
         ostream& RawData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
             s->write(1, m_sensor_data);
-            s->write(2, m_time.tv_sec);
-            s->write(3, m_time.tv_nsec);
+            s->write(2, m_sensor_type);
+            s->write(3, m_time.tv_sec);
+            s->write(4, m_time.tv_nsec);
 
             return out;
         }
@@ -78,8 +90,9 @@ namespace bsn {
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
             d->read(1, m_sensor_data);
-            d->read(2, m_time.tv_sec);
-            d->read(3, m_time.tv_nsec);
+            d->read(2, m_sensor_type);
+            d->read(3, m_time.tv_sec);
+            d->read(4, m_time.tv_nsec);
 
             return in;
         }
