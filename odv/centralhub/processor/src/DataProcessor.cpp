@@ -4,11 +4,13 @@
 #define number_sensors 4
 
 using namespace bsn::data;
+using namespace bsn::range;
+using namespace bsn::operation;
+using namespace bsn::processor;
+using namespace odcore::data;
 using namespace odcore::base;
 using namespace odcore::base::module;
-using namespace odcore::data;
-using namespace bsn::operation;
-using namespace bsn::range;
+
 
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
 	packets_received(number_sensors),
@@ -41,54 +43,6 @@ void DataProcessor::setUp() {
 
 void DataProcessor::tearDown(){}
 
-// Retorna true se as tres listas são não vazias
-bool DataProcessor::available_to_process(){
-	bool available = true;
-
-	for(auto packet_list : packets_received){
-		if(packet_list.empty()){
-			available = false;
-			break;
-		}
-	}
-
-	return available;
-}
-
-void DataProcessor::data_fuse() {	
-	double average, risk_status;
-	int count = 0;
-	average = 0;
-
-	// Se não existiver disponível não processa
-	if(!available_to_process())
-		return;
-	
-	for(auto &packet_list : packets_received){
-		if(!packet_list.empty()) {
-			// Soma à média e retira da fila
-			average += packet_list.front();
-			
-			// Descarta o pacote processado se existem
-			// Mais outros para serem processados
-			if(packet_list.size() > 1) {
-				packet_list.pop_front();
-			}			
-			count++;
-		}
-	}	
-	// Calcula a media partir da soma dividida pelo número de pacotes lidos
-	risk_status = 100.0 * (average / count);
-	// Status de risco do paciente dado em porcentagem
-
-	// 85.0 é um número totalmente ARBITRARIO
-	if(risk_status > 85.0){
-		cout << "============EMERGÊNCIA============(" << risk_status << ")" << endl;
-	}
-	else{
-		cout << "General risk status: " << risk_status << '%' << endl;
-	}
-}
 void DataProcessor::print_packs(){
 	int i = 0;
 	for(auto l : packets_received){
@@ -99,30 +53,6 @@ void DataProcessor::print_packs(){
 		}
 		cout << endl;
 	}
-}
-
-// Retorna o id baseado no tipo
-int DataProcessor::get_sensor_id(std::string type) {
-	if (type == "thermometer")
-		return 0;
-	else if (type == "ecg")
-		return 1;
-	else if (type == "oximeter")
-		return 2;
-	else if (type == "bpms")
-		return 3;
-	else if (type == "bpmd")		
-		return 4;
-	else {
-		cout << "UNKNOWN TYPE";
-		return -1;
-	}
-
-}
-
-double DataProcessor::get_value(string packet){
-	double ret = stod(packet.substr(packet.find('-')+1,packet.length()));
-	return ret;
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
@@ -173,7 +103,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 				packets_received[sensor_id].push_back(evaluated_packet);
 				print_packs();
 
-                data_fuse();
+                data_fuse(packets_received);
             }
 
         }
