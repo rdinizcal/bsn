@@ -28,6 +28,8 @@ namespace bsn {
 		double Range::convert(double new_lb, double new_ub, double input) {
 			double result = ((input - lower_bound) / (upper_bound - lower_bound)) *
 				(new_ub - new_lb) + new_lb;
+				
+			return result;				
 		}
 
 		string Range::to_print() {

@@ -13,10 +13,11 @@ using namespace odcore::base::module;
 
 
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
+TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
 	packets_received(number_sensors),
-    TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
-    data_buffer() {}
-
+	configurations(0),
+	data_buffer() {}
+	
 DataProcessor::~DataProcessor() {}
 
 void DataProcessor::setUp() {

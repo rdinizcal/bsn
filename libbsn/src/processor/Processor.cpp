@@ -17,7 +17,7 @@ namespace bsn {
             else if (type == "bpmd")		
                 return 4;
             else {
-                cout << "UNKNOWN TYPE";
+                cout << "UNKNOWN TYPE " + type + '\n';
                 return -1;
             }
 
@@ -42,14 +42,14 @@ namespace bsn {
             return available;
         }
 
-        void data_fuse(vector<list<double>> &packets_received) {	
+        double data_fuse(vector<list<double>> &packets_received) {	
             double average, risk_status;
             int count = 0;
             average = 0;
 
             // Se não existiver disponível não processa
             if(!available_to_process(packets_received))
-                return;
+                return -1;
             
             for(auto &packet_list : packets_received){
                 if(!packet_list.empty()) {
@@ -75,6 +75,8 @@ namespace bsn {
             else{
                 cout << "General risk status: " << risk_status << '%' << endl;
             }
+
+            return risk_status;
         }
     }
 }
