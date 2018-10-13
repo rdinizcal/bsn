@@ -1,10 +1,11 @@
 #include "bsn/resource/Resource.hpp"
 
-#include <string>
 #include <stdexcept>
 
 namespace bsn {
     namespace resource {
+
+        using namespace std;
 
         Resource::Resource() :
             identifier("null"),
@@ -45,5 +46,20 @@ namespace bsn {
             if(currentLevel >= capacity) currentLevel = capacity;
         }
 
+        string const Resource::getID() {
+            return identifier;
+        }
+
+        double const Resource::getCapacity(){
+            return capacity;
+        }
+
+        double const Resource::getCurrentLevel(){
+            return currentLevel;
+        }
+
+        double const Resource::getUnit() {
+            return unit; 
+        }
     }
 }
