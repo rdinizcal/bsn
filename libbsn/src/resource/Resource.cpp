@@ -8,12 +8,12 @@ namespace bsn {
         using namespace std;
 
         Resource::Resource() :
-            identifier("null"),
+            name(),
             capacity(100),
             currentLevel(100),
             unit(1) {};
 
-        Resource::Resource(std::string mIdentifier, double mCapacity, double mCurrentLevel, double mUnit) {
+        Resource::Resource(std::string mName, double mCapacity, double mCurrentLevel, double mUnit) {
             if(mCapacity <= 0){
                 throw std::invalid_argument ("Capacity should not be negative or null");
             }
@@ -26,7 +26,7 @@ namespace bsn {
                 throw std::invalid_argument ("The resolution should not be negative or null nor bigger than the capacity");
             }
 
-            identifier = mIdentifier;
+            name = mName;
             capacity = mCapacity;
             currentLevel = mCurrentLevel;
             unit = mUnit;
@@ -46,16 +46,32 @@ namespace bsn {
             if(currentLevel >= capacity) currentLevel = capacity;
         }
 
-        string Resource::getId() const {
-            return identifier;
+        void Resource::setName (const string _name) {
+            name = _name;
+        }
+
+        string Resource::getName() const {
+            return name;
+        }
+
+        void Resource::setCapacity (const double _cap) {
+            capacity = _cap;
         }
 
         double Resource::getCapacity() const{
             return capacity;
         }
 
+        void Resource::setCurrentLevel(const double _cLevel) {
+            currentLevel = _cLevel;
+        }
+
         double Resource::getCurrentLevel() const{
             return currentLevel;
+        }
+
+        void Resource::setUnit(const double _unit){
+            unit = _unit;
         }
 
         double Resource::getUnit() const{

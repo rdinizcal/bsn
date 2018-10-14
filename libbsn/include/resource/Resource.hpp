@@ -21,19 +21,23 @@ namespace bsn {
                 void consume(const int /*mult*/);
                 void generate(const int /*mult*/);
 
-                std::string getId() const;
+                void setName(const std::string /*name*/);
+                std::string getName() const;
+
+                void setCapacity(const double /*capacity*/);
                 double getCapacity() const; 
+
+                void setCurrentLevel (const double /*currentLevel*/);
                 double getCurrentLevel() const;
+
+                void setUnit(const double /*unit*/);
                 double getUnit() const;
 
             protected:
-                std::string identifier;
+                std::string name;
                 double capacity;
                 double currentLevel;
                 double unit;
-
-
-
         };
     }  
 }

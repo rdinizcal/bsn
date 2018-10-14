@@ -4,7 +4,9 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "bsn/configuration/sensor_configuration.hpp"
+#include "bsn/data/ResourceUpdate.h"
+#include "bsn/data/ResourceInfo.h"
+#include "bsn/resource/Resource.hpp"
 
 class ResourceMonitor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -27,7 +29,8 @@ class ResourceMonitor : public odcore::base::module::TimeTriggeredConferenceClie
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-
+        bsn::resource::Resource mResource;
+        odcore::base::FIFOQueue data_buffer;
 };
 
 #endif 

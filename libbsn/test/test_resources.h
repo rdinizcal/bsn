@@ -14,43 +14,42 @@ class ResourcesTestSuite : public CxxTest::TestSuite {
     void test_basic_construct(){
         Resource resource;
 
-        TS_ASSERT_EQUALS(true, resource.getID() == "null");
         TS_ASSERT_EQUALS(true, resource.getCapacity() == 100);
         TS_ASSERT_EQUALS(true, resource.getCurrentLevel() == 100);
         TS_ASSERT_EQUALS(true, resource.getUnit() == 1);
     }
 
     void test_construct(){
-        std::string id = "Battery";
+        std::string name = "Battery";
         double cap = 10;
         double currLevel = 10;
         double unit = 0.1;
 
-        Resource resource(id, cap, currLevel, unit);
+        Resource resource(name, cap, currLevel, unit);
 
-        TS_ASSERT_EQUALS(true, resource.getID() == "Battery");
+        TS_ASSERT_EQUALS(true, resource.getName() == "Battery");
         TS_ASSERT_EQUALS(true, resource.getCapacity() == 10);
         TS_ASSERT_EQUALS(true, resource.getCurrentLevel() == 10);
         TS_ASSERT_EQUALS(true, resource.getUnit() == 0.1);
     }
 
     void test_invalid_arg_construct(){
-        std::string id = "Battery";
+        std::string name = "Battery";
         double cap = 10;
         double currLevel = 15;
         double unit = 0.1;
 
-        TS_ASSERT_THROWS_EQUALS(Resource resource(id, cap, currLevel, unit),
+        TS_ASSERT_THROWS_EQUALS(Resource resource(name, cap, currLevel, unit),
                                                     std::invalid_argument i,true,true);
     }  
 
     void test_resource_cons(){
-        std::string id = "Battery";
+        std::string name = "Battery";
         double cap = 10;
         double currLevel = 10;
         double unit = 0.1;
 
-        Resource resource(id, cap, currLevel, unit);
+        Resource resource(name, cap, currLevel, unit);
 
         resource.consume(5);
 
@@ -58,12 +57,12 @@ class ResourcesTestSuite : public CxxTest::TestSuite {
     } 
 
     void test_resource_gen(){
-        std::string id = "Battery";
+        std::string name = "Battery";
         double cap = 10;
         double currLevel = 10;
         double unit = 0.1;
 
-        Resource resource(id, cap, currLevel, unit);
+        Resource resource(name, cap, currLevel, unit);
 
         resource.consume(5);
         resource.generate(2);

@@ -41,6 +41,14 @@ namespace bsn {
             return ResourceUpdate::LongName();
         }
         
+        void ResourceUpdate::setUnits(const int &_units) {
+            units = _units;
+        }
+
+        int ResourceUpdate::getUnits() const {
+            return units;
+        }
+
         ostream& ResourceUpdate::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
