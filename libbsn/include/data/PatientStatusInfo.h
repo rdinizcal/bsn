@@ -1,5 +1,5 @@
-#ifndef RESOURCE_INFO_H
-#define RESOURCE_INFO_H
+#ifndef PATIENT_STATUS_INFO_H
+#define PATIENT_STATUS_INFO_H
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
