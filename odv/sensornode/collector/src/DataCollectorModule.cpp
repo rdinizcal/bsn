@@ -86,6 +86,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         Container container(rawdata);
         getConference().send(container);
 
+        /*
+         * Para cada execução do loop, contabilizar e enviar uma unidade de bateria consumida
+         * */
+        ResourceUpdate rUpdate(1);
+        Container rUpdContainer(rUpdate);
+        getConference().send(rUpdContainer);
+
         std::cout << "Dado " << mGeneratedData << " gerado e enviado pelo sensor: " << sensorType << std::endl;
     }
 

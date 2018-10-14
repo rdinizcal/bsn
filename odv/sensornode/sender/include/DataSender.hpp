@@ -11,6 +11,7 @@
 #include "bsn/data/FilteredData.h"
 #include "bsn/communication/TCPSend.hpp"
 #include "bsn/time/TimeData.hpp"
+#include "bsn/data/ResourceUpdate.h"
 
 class DataSender : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

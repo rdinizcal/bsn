@@ -33,6 +33,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::b
             SensorData data(0,0,package,ts);
             Container c(data);        
             getConference().send(c);
+            
+            /*
+             * Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
+             * */
+            ResourceUpdate rUpdate(2);
+            Container rUpdContainer(rUpdate);
+            getConference().send(rUpdContainer);
+            
             cout << "\' recebido e encaminhado para o processamento." << endl;            
         }
     }

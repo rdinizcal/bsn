@@ -51,11 +51,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
             ts_v[1] = now_time;
 
             FilteredData encapsulated_data(filtered_data, type, ts_v);
-
             Container packet(encapsulated_data);
-
             getConference().send(packet);
 
+            /*
+             * Para cada execução do loop, contabilizar e enviar uma unidade de bateria consumida
+             * */
+            ResourceUpdate rUpdate(1);
+            Container rUpdContainer(rUpdate);
+            getConference().send(rUpdContainer);
         }
     }
 

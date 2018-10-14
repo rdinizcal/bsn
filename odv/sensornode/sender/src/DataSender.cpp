@@ -79,6 +79,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
                 package += to_string(data);
                 sender.send(package);
             }
+
+            /*
+             * Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
+             * */
+            ResourceUpdate rUpdate(2);
+            Container rUpdContainer(rUpdate);
+            getConference().send(rUpdContainer);
         }
 
     }

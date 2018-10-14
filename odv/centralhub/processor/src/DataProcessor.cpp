@@ -176,6 +176,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
                 data_fuse();
             }
 
+			/*
+             * Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
+             * */
+            ResourceUpdate rUpdate(1);
+            Container rUpdContainer(rUpdate);
+            getConference().send(rUpdContainer);
+
         }
     }
 
