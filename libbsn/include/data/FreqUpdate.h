@@ -1,5 +1,5 @@
-#ifndef RESOURCE_UPDATE_H
-#define RESOURCE_UPDATE_H
+#ifndef FREQ_UPDATE_H
+#define FREQ_UPDATE_H
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"

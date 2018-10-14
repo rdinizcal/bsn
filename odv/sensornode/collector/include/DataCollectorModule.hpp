@@ -10,6 +10,7 @@
 
 #include "opendavinci/odcore/base/Thread.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
+#include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/data/RawData.h"
 #include "bsn/range/Range.hpp"
@@ -18,6 +19,7 @@
 #include "bsn/operation/Operation.hpp"
 #include "bsn/generator/DataGenerator.h"
 #include "bsn/data/ResourceUpdate.h"
+#include "bsn/data/FreqUpdate.h"
 
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -41,6 +43,7 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
   	private:
+	  	odcore::base::FIFOQueue data_buffer;
 	  	u_int32_t mSensor_id;
     	double mGeneratedData;
 		timespec timeRef;

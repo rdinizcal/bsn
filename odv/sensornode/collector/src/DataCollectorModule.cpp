@@ -10,13 +10,16 @@ using namespace bsn::range;
 
 DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
+    data_buffer(),
     mGeneratedData(), 
     timeRef() {}
 
 DataCollectorModule::~DataCollectorModule() {}
 
 void DataCollectorModule::setUp() {
-    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
+    addDataStoreFor(877, data_buffer);
+
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type");
     int probability;
     int k = 0;
     vector<string> low, mid, high;
@@ -31,9 +34,9 @@ void DataCollectorModule::setUp() {
         }
     }
 
-    low = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "lowRange"), ',');
-    mid = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "midRange"), ',');
-    high = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "highRange"), ',');
+    low = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "lowRange"), ',');
+    mid = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "midRange"), ',');
+    high = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "highRange"), ',');
 
     Range lowRange(stod(low[0]), stod(low[1]));
     Range midRange(stod(mid[0]), stod(mid[1]));
@@ -75,25 +78,38 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
 
     Markov markov_generator(markov_transitions, ranges_array, 1);
 
+    Container container;
+    int freq = 1;
+    int nCycles = 0;
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        clock_gettime(CLOCK_REALTIME, &ts);
-        cout << "Estado atual: " << markov_generator.current_state << endl;
-        mGeneratedData = markov_generator.calculate_state();      
-        markov_generator.next_state();
+        //Receber nova freq para gerar dados
+        while(!data_buffer.isEmpty()) {
+            container = data_buffer.leave();
+            freq = container.getData<FreqUpdate>().getFreq();
+        }
 
-        RawData rawdata(mGeneratedData, sensorType, ts);
-        Container container(rawdata);
-        getConference().send(container);
+        if(freq == ++nCycles){
+            clock_gettime(CLOCK_REALTIME, &ts);
+            cout << "Estado atual: " << markov_generator.current_state << endl;
+            mGeneratedData = markov_generator.calculate_state();      
+            markov_generator.next_state();
 
-        /*
-         * Para cada execução do loop, contabilizar e enviar uma unidade de bateria consumida
-         * */
-        ResourceUpdate rUpdate(-1);
-        Container rUpdContainer(rUpdate);
-        getConference().send(rUpdContainer);
+            RawData rawdata(mGeneratedData, sensorType, ts);
+            Container container(rawdata);
+            getConference().send(container);
 
-        std::cout << "Dado " << mGeneratedData << " gerado e enviado pelo sensor: " << sensorType << std::endl;
+            /*
+             * Para cada execução do loop, contabilizar e enviar uma unidade de bateria consumida
+             * */
+            ResourceUpdate rUpdate(-1);
+            Container rUpdContainer(rUpdate);
+            getConference().send(rUpdContainer);
+
+            nCycles = 0;
+            std::cout << "Dado " << mGeneratedData << " gerado e enviado pelo sensor: " << sensorType << std::endl;
+        }
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

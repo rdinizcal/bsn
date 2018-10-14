@@ -8,8 +8,8 @@ namespace bsn {
         SensorStatusInfo::SensorStatusInfo() : 
             value(){}
         
-        SensorStatusInfo::SensorStatusInfo(const std::string &_value) : 
-            value(_value),{}
+        SensorStatusInfo::SensorStatusInfo(const double &_value) : 
+            value(_value) {}
         
         SensorStatusInfo::~SensorStatusInfo() {}
         
@@ -42,11 +42,11 @@ namespace bsn {
             return SensorStatusInfo::LongName();
         }
 
-        void SensorStatusInfo::setValue(const std::string &_value) {
+        void SensorStatusInfo::setValue(const double &_value) {
             value = _value;
         }
 
-        std::string SensorStatusInfo::getValue() const{
+        double SensorStatusInfo::getValue() const{
             return value;
         }
         
