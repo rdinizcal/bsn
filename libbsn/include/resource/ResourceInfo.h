@@ -11,18 +11,17 @@
 namespace bsn {
     namespace data {
         
-        class ResourceData : public odcore::data::SerializableData, bsn::resource::Resource {
+        class ResourceInfo : public odcore::data::SerializableData {
         
             public:
-                //construtor parametrizado
-                ResourceData(const bsn::resource::Resource &/*resource*/);
+                ResourceInfo(const bsn::resource::Resource &/*resource*/);
  
-                ResourceData(); // construtor
-                virtual ~ResourceData();// destrutor 
+                ResourceInfo(); // construtor
+                virtual ~ResourceInfo();// destrutor 
                 
                 //Boas praticas do manual do OpenDaVINCI
-                ResourceData(const ResourceData &/*obj*/);
-                ResourceData& operator=(const ResourceData &/*obj*/);
+                ResourceInfo(const ResourceInfo &/*obj*/);
+                ResourceInfo& operator=(const ResourceInfo &/*obj*/);
             
             // Métodos abstratos
             public:

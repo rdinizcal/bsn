@@ -46,19 +46,19 @@ namespace bsn {
             if(currentLevel >= capacity) currentLevel = capacity;
         }
 
-        string const Resource::getID() {
+        string Resource::getId() const {
             return identifier;
         }
 
-        double const Resource::getCapacity(){
+        double Resource::getCapacity() const{
             return capacity;
         }
 
-        double const Resource::getCurrentLevel(){
+        double Resource::getCurrentLevel() const{
             return currentLevel;
         }
 
-        double const Resource::getUnit() {
+        double Resource::getUnit() const{
             return unit; 
         }
     }

@@ -15,16 +15,16 @@ namespace bsn {
 
             public:
                 Resource();
-                Resource(std::string id, double capacity, double currentLevel, double unit);
+                Resource(std::string /*id*/, double /*capacity*/, double /*currentLevel*/, double /*unit*/);
                 ~Resource();
                 
                 void consume(const int /*mult*/);
                 void generate(const int /*mult*/);
 
-                std::string const getID();
-                double const getCapacity();
-                double const getCurrentLevel();
-                double const getUnit();
+                std::string getId() const;
+                double getCapacity() const; 
+                double getCurrentLevel() const;
+                double getUnit() const;
 
             protected:
                 std::string identifier;
