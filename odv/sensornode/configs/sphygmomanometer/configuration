@@ -22,3 +22,9 @@ datacollectormodule.2to1 = 80
 datacollectormodule.2to2 = 20
 
 datasender.ip = localhost
+
+# Resource monitor configuration
+resourcemonitor.name = Battery
+resourcemonitor.capacity = 100.0
+resourcemonitor.initialLevel = 100.0
+resourcemonitor.unit = 0.01

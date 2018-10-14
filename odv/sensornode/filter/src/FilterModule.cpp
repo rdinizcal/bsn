@@ -57,7 +57,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
             /*
              * Para cada execução do loop, contabilizar e enviar uma unidade de bateria consumida
              * */
-            ResourceUpdate rUpdate(1);
+            ResourceUpdate rUpdate(-1);
             Container rUpdContainer(rUpdate);
             getConference().send(rUpdContainer);
         }

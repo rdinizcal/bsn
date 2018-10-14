@@ -4,6 +4,8 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
+#include <iostream>
+
 #include "bsn/data/ResourceUpdate.h"
 #include "bsn/data/ResourceInfo.h"
 #include "bsn/resource/Resource.hpp"
@@ -17,20 +19,14 @@ class ResourceMonitor : public odcore::base::module::TimeTriggeredConferenceClie
         virtual void tearDown();
 
     public:
-        /**
-         * Construtor e destrutor da classe.
-         */
         ResourceMonitor(const int32_t &argc, char **argv);
         virtual ~ResourceMonitor();
 
-        /**
-         * Método efetivamente executado.
-         */
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        bsn::resource::Resource mResource;
         odcore::base::FIFOQueue data_buffer;
+        bsn::resource::Resource mResource;
 };
 
 #endif 

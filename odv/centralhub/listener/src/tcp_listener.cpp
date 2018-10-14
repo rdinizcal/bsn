@@ -37,7 +37,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::b
             /*
              * Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
              * */
-            ResourceUpdate rUpdate(2);
+            ResourceUpdate rUpdate(-2);
             Container rUpdContainer(rUpdate);
             getConference().send(rUpdContainer);
             

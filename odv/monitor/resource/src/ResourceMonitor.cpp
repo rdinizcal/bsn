@@ -11,22 +11,20 @@ ResourceMonitor::ResourceMonitor(const int32_t &argc, char **argv) :
 ResourceMonitor::~ResourceMonitor() {}
 
 void ResourceMonitor::setUp() {
+    addDataStoreFor(874,data_buffer);
 
-    const std::string rName = "Battery";
-    const double rCapacity = 100;
-    const double rInitialLevel = 100;
-    const double rUnit = 0.1;
+    const std::string rName  = getKeyValueConfiguration().getValue<std::string>("resourcemonitor.name");
+    const double rCapacity = getKeyValueConfiguration().getValue<double>("resourcemonitor.capacity");
+    const double rInitialLevel = getKeyValueConfiguration().getValue<double>("resourcemonitor.initialLevel");
+    const double rUnit = getKeyValueConfiguration().getValue<double>("resourcemonitor.unit");
 
     mResource.setName(rName);
     mResource.setCapacity(rCapacity);
     mResource.setCurrentLevel(rInitialLevel);
     mResource.setUnit(rUnit);
-
-    addDataStoreFor(874,data_buffer);
 }
 
 void ResourceMonitor::tearDown(){}
-
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ResourceMonitor::body(){
 
@@ -34,7 +32,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ResourceMonitor::body(
     int units = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
+        
         while (!data_buffer.isEmpty()) {
+            
             container = data_buffer.leave();
             units = container.getData<ResourceUpdate>().getUnits();
             
@@ -43,6 +43,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ResourceMonitor::body(
             } else {
                 mResource.consume((-1)*units);
             }
+
+            std::cout << "Current " << mResource.getName() << " level: " << mResource.getCurrentLevel() << endl;
 
             ResourceInfo rInfo(mResource);
             Container rInfoContainer(rInfo);
