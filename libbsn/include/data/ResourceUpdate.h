@@ -1,27 +1,25 @@
-#ifndef RESOURCE_DATA_H
-#define RESOURCE_DATA_H
+#ifndef RESOURCE_UPDATE_H
+#define RESOURCE_UPDATE_H
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
-#include "bsn/resource/Resource.hpp"
-
 namespace bsn {
     namespace data {
         
-        class ResourceInfo : public odcore::data::SerializableData {
+        class ResourceUpdate : public odcore::data::SerializableData {
         
             public:
-                ResourceInfo(const bsn::resource::Resource &/*resource*/);
+                ResourceUpdate(const int &/*units*/);
  
-                ResourceInfo(); // construtor
-                virtual ~ResourceInfo();// destrutor 
+                ResourceUpdate(); // construtor
+                virtual ~ResourceUpdate();// destrutor 
                 
                 //Boas praticas do manual do OpenDaVINCI
-                ResourceInfo(const ResourceInfo &/*obj*/);
-                ResourceInfo& operator=(const ResourceInfo &/*obj*/);
+                ResourceUpdate(const ResourceUpdate &/*obj*/);
+                ResourceUpdate& operator=(const ResourceUpdate &/*obj*/);
             
             // Métodos abstratos
             public:
@@ -41,11 +39,11 @@ namespace bsn {
                 
             // setters e getters
             public:
-                void setResource(const bsn::resource::Resource &/*resource*/);
-                bsn::resource::Resource getResource() const;
+                void setUnits(const int &/*units*/);
+                int getUnits() const;
             
             private:
-                bsn::resource::Resource mResource;
+                int units;
         };
     }
 }

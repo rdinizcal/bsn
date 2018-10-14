@@ -1,4 +1,4 @@
-#include "bsn/resource/ResourceInfo.h"
+#include "bsn/data/ResourceInfo.h"
 
 namespace bsn {
     namespace data {
