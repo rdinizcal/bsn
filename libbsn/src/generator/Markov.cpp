@@ -41,7 +41,7 @@ void Markov::next_state() {
 double Markov::calculate_state() {
     Range this_range = ranges[current_state];
     // Cria um número aleatório baseado no range
-    std::uniform_real_distribution<double> value_generator(this_range.lower_bound, this_range.upper_bound);
+    std::uniform_real_distribution<double> value_generator(this_range.getLowerBound(), this_range.getUpperBound());
     double val = value_generator(seed);
     return val;
 }
