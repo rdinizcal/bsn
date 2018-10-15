@@ -1,12 +1,12 @@
 # BSN Thermometer configuration file
 
-datacollectormodule:0.type = thermometer
-datacollectormodule:1.type = thermometer
-datacollectormodule:2.type = thermometer
+global:0.type = thermometer
+global:1.type = thermometer
+global:2.type = thermometer
 
-datacollectormodule.thermometerLowRange = 30.0,36.4
-datacollectormodule.thermometerMidRange = 36.5,37.5
-datacollectormodule.thermometerHighRange = 37.6,42.0
+global.thermometerLowRange = 30.0,36.4
+global.thermometerMidRange = 36.5,37.5
+global.thermometerHighRange = 37.6,42.0
 
 datacollectormodule.0to0 = 20
 datacollectormodule.0to1 = 80

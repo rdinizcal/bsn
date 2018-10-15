@@ -1,12 +1,12 @@
 # BSN electrocardiograph configuration file
 
-datacollectormodule:0.type = ecg
-datacollectormodule:1.type = ecg
-datacollectormodule:2.type = ecg
+global:0.type = ecg
+global:1.type = ecg
+global:2.type = ecg
 
-datacollectormodule.ecgLowRange = 40.0,55.0
-datacollectormodule.ecgMidRange = 60.0,100.0
-datacollectormodule.ecgHighRange = 120.0,150.0
+global.ecgLowRange = 40.0,55.0
+global.ecgMidRange = 60.0,100.0
+global.ecgHighRange = 120.0,150.0
 
 datacollectormodule.0to0 = 20
 datacollectormodule.0to1 = 80

@@ -1,12 +1,12 @@
 # BSN Oximeter configuration file
 
-datacollectormodule:0.type = oximeter
-datacollectormodule:1.type = oximeter
-datacollectormodule:2.type = oximeter
+global:0.type = oximeter
+global:1.type = oximeter
+global:2.type = oximeter
 
-datacollectormodule.oximeterLowRange = 50.0,89.0 
-datacollectormodule.oximeterMidRange = 90.0,100.0
-datacollectormodule.oximeterHighRange = 100.1,110.1
+global.oximeterLowRange = 50.0,89.0 
+global.oximeterMidRange = 90.0,100.0
+global.oximeterHighRange = 100.1,110.1
 
 datacollectormodule.0to0 = 20
 datacollectormodule.0to1 = 80
