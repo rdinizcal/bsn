@@ -1,8 +1,8 @@
 # BSN Oximeter configuration file
 
-global:0.type = oximeter
-global:1.type = oximeter
-global:2.type = oximeter
+global.type0 = oximeter
+global.type1 = oximeter
+global.type2 = oximeter
 
 global.oximeterLowRange = 50.0,89.0 
 global.oximeterMidRange = 90.0,100.0

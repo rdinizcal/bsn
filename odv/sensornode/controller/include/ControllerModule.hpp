@@ -9,6 +9,8 @@
 #include "bsn/data/SensorStatusInfo.h"
 #include "bsn/data/FreqUpdate.h"
 
+#include <iostream>
+
 class ControllerModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
       	ControllerModule(const ControllerModule & /*obj*/);

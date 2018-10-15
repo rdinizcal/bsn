@@ -1,8 +1,8 @@
 # BSN electrocardiograph configuration file
 
-global:0.type = ecg
-global:1.type = ecg
-global:2.type = ecg
+global.type0 = ecg
+global.type1 = ecg
+global.type2 = ecg
 
 global.ecgLowRange = 40.0,55.0
 global.ecgMidRange = 60.0,100.0

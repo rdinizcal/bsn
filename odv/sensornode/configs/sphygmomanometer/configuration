@@ -1,7 +1,7 @@
 # BSN Blood Pressure Monitor configuration file
 
-global:0.type = bpms
-global:1.type = bpmd
+global.type0 = bpms
+global.type1 = bpmd
 
 global.bpmdLowRange = 40.0,60.0 
 global.bpmdMidRange = 61.0,80.0

@@ -19,7 +19,7 @@ void ControllerModule::setUp() {
     vector<Range> ranges;
     Operation operation;
 
-    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type");
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));
 
 
     low = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "lowRange"), ',');
@@ -43,6 +43,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
     double rawVal;
     int sensorStatus = 0;
     int freq = 1;
+    int lowRiskFreq = 10;
+    int medRiskFreq = 5;
+    int highRiskFreq = 1;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -68,20 +71,24 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
             //se necessario, enviar uma mensagem ao DataCollector com a freq
             if(sensorStatus != newStatus) {
 
+                sensorStatus = newStatus;
+
                 switch(sensorStatus){
                     case 0:
-                        freq = 1;
+                        freq = lowRiskFreq;
                         break;
                     case 1:
-                        freq = 5;
+                        freq = medRiskFreq;
                         break;
                     case 2: 
-                        freq = 10;
+                        freq = highRiskFreq;
                         break;
                 }
                 FreqUpdate fUpdate(freq);
                 Container fUpdContainer(fUpdate);
                 getConference().send(fUpdContainer);
+
+                std::cout << "O novo estado do sensor " << sensorStatus << " foi enviado ao collector"<< endl ;
             }
 
         }

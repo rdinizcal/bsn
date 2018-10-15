@@ -1,8 +1,8 @@
 # BSN Thermometer configuration file
 
-global:0.type = thermometer
-global:1.type = thermometer
-global:2.type = thermometer
+global.type0 = thermometer
+global.type1 = thermometer
+global.type2 = thermometer
 
 global.thermometerLowRange = 30.0,36.4
 global.thermometerMidRange = 36.5,37.5

@@ -19,12 +19,13 @@ DataCollectorModule::~DataCollectorModule() {}
 void DataCollectorModule::setUp() {
     addDataStoreFor(877, data_buffer);
 
-    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type");
     int probability;
     int k = 0;
     vector<string> low, mid, high;
     vector<Range> ranges;
     Operation operation;
+
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));
 
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -73,13 +74,13 @@ std::tuple<double,double> DataCollectorModule::get_normal_params(string sensorTy
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
     DataGenerator dataGenerator;
-    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));
     timespec ts;    
 
     Markov markov_generator(markov_transitions, ranges_array, 1);
 
     Container container;
-    int freq = 1;
+    int freq = 10;
     int nCycles = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -88,9 +89,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         while(!data_buffer.isEmpty()) {
             container = data_buffer.leave();
             freq = container.getData<FreqUpdate>().getFreq();
+            std::cout<< "Recebi a nova frequencia: " << freq << endl; 
         }
 
-        if(freq == ++nCycles){
+        if(++nCycles >= freq){
             clock_gettime(CLOCK_REALTIME, &ts);
             cout << "Estado atual: " << markov_generator.current_state << endl;
             mGeneratedData = markov_generator.calculate_state();      
