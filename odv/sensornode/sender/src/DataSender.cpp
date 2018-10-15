@@ -28,9 +28,7 @@ void DataSender::tearDown(){
     sender.disconnect();
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){    
-    // Retira o id a partir da porta que lhe foi dada
-    int id = getIdentifier() - 8080;
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
     string type;
     double data;
     array<timespec, 3> back_time;

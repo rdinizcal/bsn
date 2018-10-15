@@ -29,4 +29,10 @@ class RangesTestSuite: public CxxTest::TestSuite{
 		Range r(2.5,5.0);
 		TS_ASSERT_EQUALS(false, r.in_range(8.0));
 	}
+	void test_convert() {
+		cout << "\tTestando conversão de escalas:\n";
+		Range r(0.0,10.0);
+		double result = r.convert(2,3,10.0);
+		TS_ASSERT_EQUALS(3.0, result);
+	}
 };
