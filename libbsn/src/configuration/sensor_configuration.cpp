@@ -5,47 +5,75 @@ using namespace bsn::range;
 
 sensor_configuration::sensor_configuration(){}
 
-sensor_configuration::sensor_configuration(int id, Range b, Range m, Range h){
-	this->id = id;
-	this->low = b;
-	this->medium = m;
-	this->high = h;
+sensor_configuration::sensor_configuration(int i, Range l, 
+	array<Range, 2> m, array<Range, 2> h, array<Range, 3> p ){
+		
+	this->id 		 	  = i;		
+	this->low_risk 	 	  = l;
+	this->medium_risk	  = m;
+	this->high_risk  	  = h;
+	this->low_percentage  = p[0];
+	this->mid_percentage  = p[1];
+	this->high_percentage = p[2];
+}
+
+// Retorna o quão deslocado do meio um valor está
+double sensor_configuration::get_displacement(Range range, double number) {
+	double result, conversion;
+
+	conversion = range.convert(0, 100, number);
+	result = (fabs(50.0 - conversion)) / 50.0;
+	return result;
+}
+
+double sensor_configuration::convert_real_percentage(Range new_range, double number) {
+	Range old_range(0.0, 1.0);
+	double lb = new_range.getLowerBound();
+	double ub = new_range.getUpperBound();
+	
+	return old_range.convert(lb,ub,number);
 }
 
 double sensor_configuration::evaluate_number(double number) {
-	// Primeiro converte para uma segunda escala(0-3, 3-6, 6-9) 
-	// Para tratar intervalos com tamanhos originalmente diferentes
-	// Da mesma forma.
-	// Depois calcula-se a distância do centro(4.5) para saber o grau de risco 
-	double conversion, result;
-	double medium_value = 4.5;
-	if(low.in_range(number)) {
-		conversion = low.convert(0.0,3.0,number);
-		// Calcula a distância entre a conversão e o num medio em por cento
-		result = (fabs(medium_value - conversion)) / medium_value;
-	}		
-	else if(medium.in_range(number)) {		
-		conversion = medium.convert(3.0,6.0,number);
-		result = (fabs(medium_value - conversion)) / medium_value;
-	}		
-	else if(high.in_range(number)) {	
-		conversion = high.convert(6.0,9.0,number);
-		result = (fabs(medium_value - conversion)) / medium_value;
-	}		
-	else {
-		// Representação do unknow
-		cout << "Unknown value(" << number << ") came from sensor and will not be processed\n";
-		result = -1.0;
+	double displacement;
+	Range per_cent(0,100);
+
+	if(low_risk.in_range(number)) {
+		displacement = get_displacement(low_risk, number);
+		return convert_real_percentage(low_percentage, displacement);
 	}
 
-	return result;
-		
+	else if(medium_risk[0].in_range(number)) {
+		displacement = get_displacement(medium_risk[0], number);	
+		return convert_real_percentage(mid_percentage, displacement);	
+	}
+
+	else if(medium_risk[1].in_range(number)) {
+		displacement = get_displacement(medium_risk[1], number);
+		return convert_real_percentage(mid_percentage, displacement);	
+	}
+
+	else if(high_risk[0].in_range(number)) {
+		cout << "high0" << number << endl;
+		displacement = get_displacement(high_risk[0], number);
+		return convert_real_percentage(high_percentage, displacement);			
+	}
+
+	else if(high_risk[1].in_range(number)) {
+		cout << "high1" << number << endl;
+		displacement = get_displacement(high_risk[1], number);		
+		return convert_real_percentage(high_percentage, displacement);	
+	}
+	else {
+		return -1;
+	}	
 }
 
 void sensor_configuration::print(){
 	cout << "Sensor id(" << id << ") with ranges: " << endl;
-	cout << "Low: "  << low.to_print() << endl;
-	cout << "med: "  << medium.to_print() << endl;
-	cout << "high:"  << high.to_print() << endl;
+	cout << "Low: "    << low_risk.to_print() << endl;
+	cout << "Medium: " << medium_risk[0].to_print() << medium_risk[1].to_print() << endl;
+	cout << "High: "   << high_risk[0].to_print() << high_risk[1].to_print() << endl;
+	
 	cout << endl;
 }
