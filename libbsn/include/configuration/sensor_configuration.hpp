@@ -30,7 +30,7 @@ class sensor_configuration {
 		// Retorna o estado de risco a partir dos intervalos
 		double evaluate_number(double number);
 		// Retorna o quão deslocado do meio um valor está
-		double get_displacement(bsn::range::Range, double number);
+		double get_displacement(bsn::range::Range, double, bool );
 		// Converte para o percentual final( {var}_percentage )
 		double convert_real_percentage(bsn::range::Range range, double number);
 

@@ -18,11 +18,22 @@ sensor_configuration::sensor_configuration(int i, Range l,
 }
 
 // Retorna o quão deslocado do meio um valor está
-double sensor_configuration::get_displacement(Range range, double number) {
-	double result, conversion;
+double sensor_configuration::get_displacement(Range range, double number, bool inverse = true) {
+	// inverse indica se o range deve ser avaliado de forma contrária
+	// (Para os intervalos abaixo do low risk(medium0 high0))
+	double lb = range.getLowerBound();
+	double ub = range.getUpperBound();
+	double result;
 
-	conversion = range.convert(0, 100, number);
-	result = (fabs(50.0 - conversion)) / 50.0;
+	if(!inverse) {
+		result = fabs(number - ub);
+		result /= (ub - lb);
+	}
+	else {
+		result = number - lb;
+		result /= (ub - lb);
+	}
+
 	return result;
 }
 
@@ -44,7 +55,7 @@ double sensor_configuration::evaluate_number(double number) {
 	}
 
 	else if(medium_risk[0].in_range(number)) {
-		displacement = get_displacement(medium_risk[0], number);	
+		displacement = get_displacement(medium_risk[0], number, false);	
 		return convert_real_percentage(mid_percentage, displacement);	
 	}
 
@@ -54,13 +65,11 @@ double sensor_configuration::evaluate_number(double number) {
 	}
 
 	else if(high_risk[0].in_range(number)) {
-		cout << "high0" << number << endl;
-		displacement = get_displacement(high_risk[0], number);
+		displacement = get_displacement(high_risk[0], number, false);
 		return convert_real_percentage(high_percentage, displacement);			
 	}
 
 	else if(high_risk[1].in_range(number)) {
-		cout << "high1" << number << endl;
 		displacement = get_displacement(high_risk[1], number);		
 		return convert_real_percentage(high_percentage, displacement);	
 	}
