@@ -17,6 +17,10 @@ sensor_configuration::sensor_configuration(int i, Range l,
 	this->high_percentage = p[2];
 }
 
+int sensor_configuration::get_id() {
+	return this->id;
+}
+
 // Retorna o quão deslocado do meio um valor está
 double sensor_configuration::get_displacement(Range range, double number, bool inverse = true) {
 	// inverse indica se o range deve ser avaliado de forma contrária

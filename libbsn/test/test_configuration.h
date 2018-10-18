@@ -48,7 +48,7 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
 
         sensor_configuration s(1,l,a1,a2,percentages);
                 
-        TS_ASSERT_EQUALS(s.id, 1);
+        TS_ASSERT_EQUALS(1, s.get_id());
     }
 
     void test_unknow_value() {
