@@ -4,19 +4,23 @@ global.type0 = oximeter
 global.type1 = oximeter
 global.type2 = oximeter
 
-global.oximeterLowRange = 50.0,89.0 
-global.oximeterMidRange = 90.0,100.0
-global.oximeterHighRange = 100.1,110.1
+global.oximeterHighRisk0 = 70.6,84.9
+global.oximeterMidRisk0 = 85.0,90.0
+global.oximeterLowRisk = 90.1,100.0
+global.oximeterMidRisk1 = 0.0,0.0
+global.oximeterHighRisk1 = 0.0,0.0
 
 datacollectormodule.0to0 = 20
-datacollectormodule.0to1 = 80
-datacollectormodule.0to2 = 0
+datacollectormodule.0to1 = 70
+datacollectormodule.0to2 = 10
+
 datacollectormodule.1to0 = 10
-datacollectormodule.1to1 = 80
-datacollectormodule.1to2 = 10
+datacollectormodule.1to1 = 10
+datacollectormodule.1to2 = 80
+
 datacollectormodule.2to0 = 0
-datacollectormodule.2to1 = 80
-datacollectormodule.2to2 = 20
+datacollectormodule.2to1 = 25
+datacollectormodule.2to2 = 75
 
 datasender.ip = localhost
 

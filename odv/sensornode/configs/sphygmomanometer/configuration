@@ -3,23 +3,29 @@
 global.type0 = bpms
 global.type1 = bpmd
 
-global.bpmdLowRange = 40.0,60.0 
-global.bpmdMidRange = 61.0,80.0
-global.bpmdHighRange = 81.0,100.0
+global.bpmdHighRisk0 = 40.0,60.0
+global.bpmdMidRisk0 = 60.1,70.0
+global.bpmdLowRisk = 70.1,85.0
+global.bpmdMidRisk1 = 85.1,100.0
+global.bpmdHighRisk1 = 100.1,150.0
 
-global.bpmsLowRange = 70.0,90.0 
-global.bpmsMidRange = 91.0,120.0
-global.bpmsHighRange = 121,190.0
+global.bpmsHighRisk0 = 70.0,100.0
+global.bpmsMidRisk0 = 100.1,110.0
+global.bpmsLowRisk = 110.1,130.0
+global.bpmsMidRisk1 = 130.1,140.0
+global.bpmsHighRisk1 = 140.1,200.0
 
 datacollectormodule.0to0 = 20
-datacollectormodule.0to1 = 80
-datacollectormodule.0to2 = 0
+datacollectormodule.0to1 = 70
+datacollectormodule.0to2 = 10
+
 datacollectormodule.1to0 = 10
-datacollectormodule.1to1 = 80
-datacollectormodule.1to2 = 10
+datacollectormodule.1to1 = 10
+datacollectormodule.1to2 = 80
+
 datacollectormodule.2to0 = 0
-datacollectormodule.2to1 = 80
-datacollectormodule.2to2 = 20
+datacollectormodule.2to1 = 25
+datacollectormodule.2to2 = 75
 
 datasender.ip = localhost
 
