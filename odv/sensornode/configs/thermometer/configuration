@@ -8,14 +8,34 @@ datacollectormodule.thermometerLowRange = 30.0,36.4
 datacollectormodule.thermometerMidRange = 36.5,37.5
 datacollectormodule.thermometerHighRange = 37.6,42.0
 
-datacollectormodule.0to0 = 20
-datacollectormodule.0to1 = 80
+datacollectormodule.0to0 = 10
+datacollectormodule.0to1 = 90
 datacollectormodule.0to2 = 0
+datacollectormodule.0to3 = 0
+datacollectormodule.0to4 = 0
+
 datacollectormodule.1to0 = 10
-datacollectormodule.1to1 = 80
-datacollectormodule.1to2 = 10
-datacollectormodule.2to0 = 0
-datacollectormodule.2to1 = 80
-datacollectormodule.2to2 = 20
+datacollectormodule.1to1 = 10
+datacollectormodule.1to2 = 80
+datacollectormodule.1to3 = 0
+datacollectormodule.1to4 = 0
+
+datacollectormodule.2to0 = 5
+datacollectormodule.2to1 = 10
+datacollectormodule.2to2 = 70
+datacollectormodule.2to3 = 10
+datacollectormodule.2to4 = 5
+
+datacollectormodule.3to0 = 0
+datacollectormodule.3to1 = 0
+datacollectormodule.3to2 = 80
+datacollectormodule.3to3 = 10
+datacollectormodule.3to4 = 10
+
+datacollectormodule.4to0 = 0
+datacollectormodule.4to1 = 0
+datacollectormodule.4to2 = 0
+datacollectormodule.4to3 = 90
+datacollectormodule.4to4 = 10
 
 datasender.ip = localhost

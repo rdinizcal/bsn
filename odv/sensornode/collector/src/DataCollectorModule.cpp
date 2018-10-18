@@ -19,29 +19,38 @@ void DataCollectorModule::setUp() {
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
     int probability;
     int k = 0;
-    vector<string> low, mid, high;
+    vector<string> lrs, mrs0, hrs0, mrs1, hrs1;
     vector<Range> ranges;
     Operation operation;
 
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
             probability = getKeyValueConfiguration().getValue<float>("datacollectormodule." + to_string(i) + "to" + to_string(j));
             markov_transitions[k] = probability;
             k++;
         }
+    }    
+
+    lrs = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "LowRisk"), ',');
+    mrs0 = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "MidRisk0"), ',');
+    hrs0 = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "HighRisk0"), ',');
+    mrs1 = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "MidRisk1"), ',');
+    hrs1 = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "HighRisk1"), ',');
+
+    Range r(stod(hrs0[0]), stod(hrs0[1]));
+    ranges.push_back(r);
+    Range r1(stod(mrs0[0]), stod(mrs0[1]));
+    ranges.push_back(r1);
+    Range r2(stod(lrs[0]),  stod(lrs[1]));
+    ranges.push_back(r2);
+    Range r3(stod(mrs1[0]), stod(mrs1[1]));
+    ranges.push_back(r3);
+    Range r4(stod(hrs1[0]), stod(hrs1[1]));
+    ranges.push_back(r4);
+
+    for(int i = 0; i < 5; i++) {
+        ranges_array[i] = ranges[i];
     }
-
-    low = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "lowRange"), ',');
-    mid = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "midRange"), ',');
-    high = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "highRange"), ',');
-
-    Range lowRange(stod(low[0]), stod(low[1]));
-    Range midRange(stod(mid[0]), stod(mid[1]));
-    Range highRange(stod(high[0]), stod(high[1]));
-
-    ranges_array[0] = lowRange;
-    ranges_array[1] = midRange;
-    ranges_array[2] = highRange;
 }
 
 void DataCollectorModule::tearDown(){}
@@ -73,7 +82,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("datacollectormodule.type");
     timespec ts;    
 
-    Markov markov_generator(markov_transitions, ranges_array, 1);
+    Markov markov_generator(markov_transitions, ranges_array, 2);
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
