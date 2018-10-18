@@ -4,9 +4,11 @@ datacollectormodule:0.type = ecg
 datacollectormodule:1.type = ecg
 datacollectormodule:2.type = ecg
 
-datacollectormodule.ecgLowRange = 40.0,55.0
-datacollectormodule.ecgMidRange = 60.0,100.0
-datacollectormodule.ecgHighRange = 120.0,150.0
+datacollectormodule.ecgHighRisk0 = 40.0,50.0
+datacollectormodule.ecgMidRisk0 = 50.1,60.0
+datacollectormodule.ecgLowRisk = 60.1,80.0
+datacollectormodule.ecgMidRisk1 = 80.1,100.0
+datacollectormodule.ecgHighRisk1 = 100.1,140.0
 
 datacollectormodule.0to0 = 10
 datacollectormodule.0to1 = 90

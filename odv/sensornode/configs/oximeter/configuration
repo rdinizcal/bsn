@@ -4,11 +4,11 @@ datacollectormodule:0.type = oximeter
 datacollectormodule:1.type = oximeter
 datacollectormodule:2.type = oximeter
 
-datacollectormodule.oximeterHighRisk0 = 69.6,89.9
-datacollectormodule.oximeterMidRisk0 = 50.0,69.5
-datacollectormodule.oximeterLowRisk = 90.0,100.0
-datacollectormodule.oximeterMidRisk1 = 100.0,105.0
-datacollectormodule.oximeterHighRisk1 = 105.0,110.0
+datacollectormodule.oximeterHighRisk0 = 70.6,84.9
+datacollectormodule.oximeterMidRisk0 = 85.0,90.0
+datacollectormodule.oximeterLowRisk = 90.1,100.0
+datacollectormodule.oximeterMidRisk1 = 0.0,0.0
+datacollectormodule.oximeterHighRisk1 = 0.0,0.0
 
 datacollectormodule.0to0 = 10
 datacollectormodule.0to1 = 90
@@ -25,19 +25,19 @@ datacollectormodule.1to4 = 0
 datacollectormodule.2to0 = 5
 datacollectormodule.2to1 = 10
 datacollectormodule.2to2 = 70
-datacollectormodule.2to3 = 10
-datacollectormodule.2to4 = 5
+datacollectormodule.2to3 = 0
+datacollectormodule.2to4 = 0
 
 datacollectormodule.3to0 = 0
 datacollectormodule.3to1 = 0
 datacollectormodule.3to2 = 80
-datacollectormodule.3to3 = 10
-datacollectormodule.3to4 = 10
+datacollectormodule.3to3 = 0
+datacollectormodule.3to4 = 0
 
 datacollectormodule.4to0 = 0
 datacollectormodule.4to1 = 0
 datacollectormodule.4to2 = 0
-datacollectormodule.4to3 = 90
-datacollectormodule.4to4 = 10
+datacollectormodule.4to3 = 0
+datacollectormodule.4to4 = 0
 
 datasender.ip = localhost
