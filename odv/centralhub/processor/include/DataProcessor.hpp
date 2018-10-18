@@ -12,7 +12,7 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "bsn/configuration/sensor_configuration.hpp"
+#include "bsn/configuration/SensorConfiguration.hpp"
 #include "bsn/operation/Operation.hpp"
 #include "bsn/processor/Processor.hpp"
 #include "bsn/data/SensorData.h"
@@ -40,7 +40,7 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
 
     private:
         std::vector<std::list<double>> packets_received;
-        std::vector<sensor_configuration> configurations;
+        std::vector<SensorConfiguration> configurations;
         odcore::base::FIFOQueue data_buffer;
 };
 

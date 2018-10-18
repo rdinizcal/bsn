@@ -11,7 +11,8 @@ using namespace bsn::range;
 DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
     mGeneratedData(), 
-    timeRef() {}
+    timeRef{},
+    markov_transitions() {}
 
 DataCollectorModule::~DataCollectorModule() {}
 
@@ -22,14 +23,39 @@ void DataCollectorModule::setUp() {
     vector<string> lrs, mrs0, hrs0, mrs1, hrs1;
     vector<Range> ranges;
     Operation operation;
-
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
+    
+    // Inicialização apenas necessária para transições espelhadas
+    for(unsigned int i=0; i < markov_transitions.size(); i++) {
+        markov_transitions[i] = 0;
+    }
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
             probability = getKeyValueConfiguration().getValue<float>("datacollectormodule." + to_string(i) + "to" + to_string(j));
-            markov_transitions[k] = probability;
+            if(i == 2){
+                markov_transitions[k] += probability / 2;
+                // função de espelho
+                markov_transitions[24 - k] += probability / 2;
+            }
+            else {
+                markov_transitions[k] = probability;
+                // função de espelho
+                markov_transitions[24 - k] = probability;
+            }
+            
             k++;
         }
-    }    
+        // Contador +=2 apenas necessário para transições espelhadas
+        k += 2;
+    }
+    k=0;
+    for(auto i : markov_transitions) {         
+        cout << k << ": " << i << endl;
+        k++;
+        if(k % 5 == 0) {
+            cout << endl;
+        }
+    }
 
     lrs = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "LowRisk"), ',');
     mrs0 = operation.split(getKeyValueConfiguration().getValue<string>("datacollectormodule." + sensorType + "MidRisk0"), ',');

@@ -35,7 +35,7 @@ void DataProcessor::setUp() {
 	// 	Range midRange(stod(mid[0]), stod(mid[1]));
 	// 	Range highRange(stod(high[0]), stod(high[1]));				
 
-	// 	sensor_configuration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
+	// 	SensorConfiguration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
 	// 	configurations.push_back(aux_config);
 	// }
 
@@ -87,8 +87,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 		// 		systolic_value  = get_value(systolic_packet);
 		// 		diastolic_value = get_value(diastolyc_packet);
 				
-		// 		eval_sys = configurations[sensor_id].evaluate_number(systolic_value);				
-		// 		eval_dia = configurations[sensor_id+1].evaluate_number(diastolic_value);
+		// 		eval_sys = configurations[sensor_id].evaluateNumber(systolic_value);				
+		// 		eval_dia = configurations[sensor_id+1].evaluateNumber(diastolic_value);
 				
 		// 		// O mais discrepante é o que conta(Guideline brasileiro)
 		// 		evaluated_packet = max(eval_dia,eval_sys);
@@ -96,7 +96,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 		// 	else {
 		// 		// Para os sensores que não são de pressão
 		// 		packet = get_value(packet_raw);
-		// 		evaluated_packet = configurations[sensor_id].evaluate_number(packet);
+		// 		evaluated_packet = configurations[sensor_id].evaluateNumber(packet);
 		// 	}
 
         //     // Se o pacote for válido...

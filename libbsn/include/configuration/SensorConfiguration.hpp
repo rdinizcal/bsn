@@ -8,7 +8,7 @@
 
 #include "bsn/range/Range.hpp"
 
-class sensor_configuration {
+class SensorConfiguration {
 		// id é o id do sensor
 		// {var}_percentage represanta o quanto cada intervalo deve valer
 		// {var}_risk são os intervalos de cada risco(baixo medio ou alto)
@@ -21,20 +21,20 @@ class sensor_configuration {
 		std::array<bsn::range::Range, 2> high_risk;
 
 		public:
-		sensor_configuration();
+		SensorConfiguration();
 
-		sensor_configuration(int i, bsn::range::Range low_risk, 
+		SensorConfiguration(int i, bsn::range::Range low_risk, 
 		std::array<bsn::range::Range, 2> medium_risk,
 		std::array<bsn::range::Range, 2> high_risk,
 		std::array<bsn::range::Range, 3> percentages);
 
 		// Retorna o estado de risco a partir dos intervalos
-		double evaluate_number(double number);
+		double evaluateNumber(double number);
 		// Retorna o quão deslocado do meio um valor está
-		double get_displacement(bsn::range::Range, double, bool );
+		double getDisplacement(bsn::range::Range, double, bool );
 		// Converte para o percentual final( {var}_percentage )
-		double convert_real_percentage(bsn::range::Range range, double number);
-		int get_id();
+		double convertRealPercentage(bsn::range::Range range, double number);
+		int getId();
 		void print();
 };
 
