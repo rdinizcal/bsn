@@ -1,14 +1,14 @@
 # BSN Oximeter configuration file
 
-datacollectormodule:0.type = oximeter
-datacollectormodule:1.type = oximeter
-datacollectormodule:2.type = oximeter
+global.type0 = oximeter
+global.type1 = oximeter
+global.type2 = oximeter
 
-datacollectormodule.oximeterHighRisk0 = 70.6,84.9
-datacollectormodule.oximeterMidRisk0 = 85.0,90.0
-datacollectormodule.oximeterLowRisk = 90.1,100.0
-datacollectormodule.oximeterMidRisk1 = 0.0,0.0
-datacollectormodule.oximeterHighRisk1 = 0.0,0.0
+global.oximeterHighRisk0 = 70.6,84.9
+global.oximeterMidRisk0 = 85.0,90.0
+global.oximeterLowRisk = 90.1,100.0
+global.oximeterMidRisk1 = 0.0,0.0
+global.oximeterHighRisk1 = 0.0,0.0
 
 datacollectormodule.0to0 = 20
 datacollectormodule.0to1 = 70
@@ -23,3 +23,9 @@ datacollectormodule.2to1 = 25
 datacollectormodule.2to2 = 75
 
 datasender.ip = localhost
+
+# Resource monitor configuration
+resourcemonitor.name = Battery
+resourcemonitor.capacity = 100.0
+resourcemonitor.initialLevel = 100.0
+resourcemonitor.unit = 0.01

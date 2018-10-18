@@ -19,3 +19,9 @@ dataprocessor.bpmdHighRange = 81.0,100.0
 dataprocessor.bpmsLowRange = 70.0,90.0 
 dataprocessor.bpmsMidRange = 91.0,120.0
 dataprocessor.bpmsHighRange = 121,190.0
+
+# Resource monitor configuration
+resourcemonitor.name = Battery
+resourcemonitor.capacity = 100.0
+resourcemonitor.initialLevel = 100.0
+resourcemonitor.unit = 0.01

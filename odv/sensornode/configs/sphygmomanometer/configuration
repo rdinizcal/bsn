@@ -1,19 +1,19 @@
 # BSN Blood Pressure Monitor configuration file
 
-datacollectormodule:0.type = bpms
-datacollectormodule:1.type = bpmd
+global.type0 = bpms
+global.type1 = bpmd
 
-datacollectormodule.bpmdHighRisk0 = 40.0,60.0
-datacollectormodule.bpmdMidRisk0 = 60.1,70.0
-datacollectormodule.bpmdLowRisk = 70.1,85.0
-datacollectormodule.bpmdMidRisk1 = 85.1,100.0
-datacollectormodule.bpmdHighRisk1 = 100.1,150.0
+global.bpmdHighRisk0 = 40.0,60.0
+global.bpmdMidRisk0 = 60.1,70.0
+global.bpmdLowRisk = 70.1,85.0
+global.bpmdMidRisk1 = 85.1,100.0
+global.bpmdHighRisk1 = 100.1,150.0
 
-datacollectormodule.bpmsHighRisk0 = 70.0,100.0
-datacollectormodule.bpmsMidRisk0 = 100.1,110.0
-datacollectormodule.bpmsLowRisk = 110.1,130.0
-datacollectormodule.bpmsMidRisk1 = 130.1,140.0
-datacollectormodule.bpmsHighRisk1 = 140.1,200.0
+global.bpmsHighRisk0 = 70.0,100.0
+global.bpmsMidRisk0 = 100.1,110.0
+global.bpmsLowRisk = 110.1,130.0
+global.bpmsMidRisk1 = 130.1,140.0
+global.bpmsHighRisk1 = 140.1,200.0
 
 datacollectormodule.0to0 = 20
 datacollectormodule.0to1 = 70
@@ -28,3 +28,9 @@ datacollectormodule.2to1 = 25
 datacollectormodule.2to2 = 75
 
 datasender.ip = localhost
+
+# Resource monitor configuration
+resourcemonitor.name = Battery
+resourcemonitor.capacity = 100.0
+resourcemonitor.initialLevel = 100.0
+resourcemonitor.unit = 0.01

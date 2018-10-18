@@ -17,6 +17,7 @@
 #include "bsn/processor/Processor.hpp"
 #include "bsn/data/SensorData.h"
 #include "bsn/range/Range.hpp"
+#include "bsn/data/ResourceUpdate.h"
 
 class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

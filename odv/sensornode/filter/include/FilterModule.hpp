@@ -12,6 +12,7 @@
 #include "bsn/data/RawData.h"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/time/TimeData.hpp"
+#include "bsn/data/ResourceUpdate.h"
 
 class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:

@@ -59,9 +59,9 @@ void DataProcessor::print_packs(){
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     // Container container;    
     // int sensor_id;
-	// string type, packet_raw;
-	// double packet;
-	// double evaluated_packet;
+	  // string type, packet_raw;
+	  // double packet;
+	  // double evaluated_packet;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
@@ -70,44 +70,53 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
         //     container = data_buffer.leave();
         //     packet_raw = container.getData<SensorData>().getSensorStatus();
             
-		// 	// Pega o tipo do pacote
-		// 	type = packet_raw.substr(0,packet_raw.find('-'));
+        // 	// Pega o tipo do pacote
+        // 	type = packet_raw.substr(0,packet_raw.find('-'));
 
-		// 	sensor_id = get_sensor_id(type);			
+        // 	sensor_id = get_sensor_id(type);			
 
-		// 	if(type == "bpms" or type == "bpmd") {
-		// 		string diastolyc_packet, systolic_packet;
-		// 		double systolic_value, diastolic_value;	
-		// 		double eval_sys, eval_dia;			
+        // 	if(type == "bpms" or type == "bpmd") {
+        // 		string diastolyc_packet, systolic_packet;
+        // 		double systolic_value, diastolic_value;	
+        // 		double eval_sys, eval_dia;			
 
-		// 		systolic_packet  = packet_raw.substr(0,packet_raw.find('/'));
-    	// 		diastolyc_packet = packet_raw.substr(packet_raw.find('/')+1,packet_raw.length());
+        // 		systolic_packet  = packet_raw.substr(0,packet_raw.find('/'));
+          // 		diastolyc_packet = packet_raw.substr(packet_raw.find('/')+1,packet_raw.length());
 
-		// 		// Retira os valores a partir do pacote recebido
-		// 		systolic_value  = get_value(systolic_packet);
-		// 		diastolic_value = get_value(diastolyc_packet);
-				
-		// 		eval_sys = configurations[sensor_id].evaluateNumber(systolic_value);				
-		// 		eval_dia = configurations[sensor_id+1].evaluateNumber(diastolic_value);
-				
-		// 		// O mais discrepante é o que conta(Guideline brasileiro)
-		// 		evaluated_packet = max(eval_dia,eval_sys);
-		// 	}
-		// 	else {
-		// 		// Para os sensores que não são de pressão
-		// 		packet = get_value(packet_raw);
-		// 		evaluated_packet = configurations[sensor_id].evaluateNumber(packet);
-		// 	}
+        // 		// Retira os valores a partir do pacote recebido
+        // 		systolic_value  = get_value(systolic_packet);
+        // 		diastolic_value = get_value(diastolyc_packet);
+
+        // 		eval_sys = configurations[sensor_id].evaluateNumber(systolic_value);				
+        // 		eval_dia = configurations[sensor_id+1].evaluateNumber(diastolic_value);
+
+        // 		// O mais discrepante é o que conta(Guideline brasileiro)
+        // 		evaluated_packet = max(eval_dia,eval_sys);
+        // 	}
+        // 	else {
+        // 		// Para os sensores que não são de pressão
+        // 		packet = get_value(packet_raw);
+        // 		evaluated_packet = configurations[sensor_id].evaluateNumber(packet);
+        // 	}
 
         //     // Se o pacote for válido...
         //     if(evaluated_packet != -1){                
-		// 		packets_received[sensor_id].push_back(evaluated_packet);
-		// 		print_packs();
+		    // 		packets_received[sensor_id].push_back(evaluated_packet);
+		    // 		print_packs();
 
         //         data_fuse(packets_received);
         //     }
 
         // }
+
+			      /*
+             * Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
+             * 
+            ResourceUpdate rUpdate(-1);
+            Container rUpdContainer(rUpdate);
+            getConference().send(rUpdContainer);
+
+        }*/
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

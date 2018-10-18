@@ -8,6 +8,8 @@
 
 #include "bsn/data/SensorData.h"
 
+#include "bsn/data/ResourceUpdate.h"
+
 class TimeTriggeredSender : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:
         TimeTriggeredSender(const TimeTriggeredSender &/*obj*/);
