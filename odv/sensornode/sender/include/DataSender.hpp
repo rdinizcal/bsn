@@ -5,6 +5,8 @@
 #include <string>
 #include <random>
 #include <unistd.h>
+#include <algorithm>
+#include <vector>
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
@@ -13,6 +15,8 @@
 #include "bsn/time/TimeData.hpp"
 #include "bsn/data/ResourceUpdate.h"
 #include "bsn/data/SensorStatusInfo.h"
+#include "bsn/configuration/SensorConfiguration.hpp"
+#include "bsn/operation/Operation.hpp"
 
 class DataSender : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -36,6 +40,7 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
     private:
         odcore::base::FIFOQueue m_buffer;
         std::string ip;
+        std::map<std::string, std::map<std::string, bsn::range::Range>> configs_map;
 };
 
 #endif 

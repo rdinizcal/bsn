@@ -47,7 +47,7 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
 	  	u_int32_t mSensor_id;
     	double mGeneratedData;
 		timespec timeRef;
-		std::array<float, 25> markov_transitions = {1};
+		std::array<float, 25> markov_transitions;
 		std::array<bsn::range::Range,5> ranges_array;
 };
 

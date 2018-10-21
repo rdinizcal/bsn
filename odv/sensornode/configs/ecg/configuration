@@ -22,7 +22,6 @@ datacollectormodule.2to0 = 0
 datacollectormodule.2to1 = 25
 datacollectormodule.2to2 = 75
 
-
 datasender.ip = localhost
 
 # Resource monitor configuration
