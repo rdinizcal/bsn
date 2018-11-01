@@ -34,7 +34,7 @@ namespace bsn {
 				// Retorna o estado de risco a partir dos intervalos
 				double evaluateNumber(double number);
 				// Retorna o quão deslocado do meio um valor está
-				double getDisplacement(bsn::range::Range, double, bool );
+				double getDisplacement(bsn::range::Range, double, std::string );
 				// Converte para o percentual final( {var}_percentage )
 				double convertRealPercentage(bsn::range::Range range, double number);
 				int getId();

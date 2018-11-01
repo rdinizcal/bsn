@@ -25,20 +25,31 @@ namespace bsn {
 		}
 
 		// Retorna o quão deslocado do meio um valor está
-		double SensorConfiguration::getDisplacement(Range range, double number, bool inverse = true) {
-			// inverse indica se o range deve ser avaliado de forma contrária
-			// (Para os intervalos abaixo do low risk(medium0 high0))
+		double SensorConfiguration::getDisplacement(Range range, double number, string logic = "crescent") {
+			// Crescent indica o quão deslocado um elemento está do começo
+			// inverse indica o quão deslocado um elemento está do fim
+			// medium indica o quão deslocado um elemento está do meio
 			double lb = range.getLowerBound();
 			double ub = range.getUpperBound();
 			double result;
 
-			if(!inverse) {
+			if(logic == "decrescent") {
 				result = fabs(number - ub);
 				result /= (ub - lb);
 			}
-			else {
+			else if(logic == "crescent") {
 				result = number - lb;
 				result /= (ub - lb);
+			}
+			else if(logic == "medium") {				
+				double medium_value = (ub + lb)/2.0;				
+				result = fabs(number - medium_value);
+				result /= (ub - medium_value);
+						
+			}
+			else { 
+				throw std::invalid_argument("Invalid operation given to getDisplacement");
+				result = -1;
 			}
 
 			return result;
@@ -56,13 +67,13 @@ namespace bsn {
 			double displacement;
 			Range per_cent(0,100);
 
-			if(low_risk.in_range(number)) {
-				displacement = getDisplacement(low_risk, number);
+			if(low_risk.in_range(number)) {				
+				displacement = getDisplacement(low_risk, number, "medium");
 				return convertRealPercentage(low_percentage, displacement);
-			}
+			}	
 
 			else if(medium_risk[0].in_range(number)) {
-				displacement = getDisplacement(medium_risk[0], number, false);	
+				displacement = getDisplacement(medium_risk[0], number, "decrescent");	
 				return convertRealPercentage(mid_percentage, displacement);	
 			}
 
@@ -72,7 +83,7 @@ namespace bsn {
 			}
 
 			else if(high_risk[0].in_range(number)) {
-				displacement = getDisplacement(high_risk[0], number, false);
+				displacement = getDisplacement(high_risk[0], number, "decrescent");
 				return convertRealPercentage(high_percentage, displacement);			
 			}
 

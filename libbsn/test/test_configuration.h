@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace bsn::range;
+using namespace bsn::configuration;
 
 class SensoConfigurationTestSuite: public CxxTest::TestSuite{    
     Range l;
@@ -62,37 +63,61 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
         
         SensorConfiguration s(1,l,a1,a2,percentages);
         
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 5, true), 0.5 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 10, true), 1 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 0, true), 0 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 7.5, true), 0.75 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 2.5, true), 0.25 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 5, "crescent"), 0.5 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 10, "crescent"), 1 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 0, "crescent"), 0 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 7.5, "crescent"), 0.75 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 2.5, "crescent"), 0.25 );
     }
 
     void test_getDisplacement_inverse() {
-        cout << "\tTestando metodo getDisplacement com logica inversa\n";
+        cout << "\tTestando metodo getDisplacement com logica decrescente\n";
         
         SensorConfiguration s(1,l,a1,a2,percentages);
         
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 5, false), 0.5 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 10, false), 0 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 0, false), 1 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 7.5, false), 0.25 );
-        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 2.5, false), 0.75 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 5, "decrescent"), 0.5 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 10, "decrescent"), 0 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 0, "decrescent"), 1 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 7.5, "decrescent"), 0.25 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 2.5, "decrescent"), 0.75 );
     }
 
-    void test_low() {
-        cout << "\tTestando avaliação sinal low\n";
+    void test_getDisplacement_medium() {
+        cout << "\tTestando metodo getDisplacement com logica mediana\n";
         
         SensorConfiguration s(1,l,a1,a2,percentages);
         
-        TS_ASSERT_EQUALS(s.evaluateNumber(37),0.1);
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 5, "medium"), 0.0 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 10, "medium"), 1 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 0, "medium"), 1 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 7.5, "medium"), 0.50 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(0,10), 2.5, "medium"), 0.50 );
 
-        TS_ASSERT_EQUALS(s.evaluateNumber(37.5), 0.2);
-        TS_ASSERT_EQUALS(s.evaluateNumber(36.5), 0);
-
-        TS_ASSERT_EQUALS(s.evaluateNumber(36.75), 0.05);
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(36.5,37.5), 37.0, "medium"), 0 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(36.5,37.5), 36.5, "medium"), 1 );
+        TS_ASSERT_EQUALS(s.getDisplacement( Range(36.5,37.5), 37.5, "medium"), 1 );
     }
+
+    void test_getDisplacement_invalid_argument() {
+        cout << "\tTestando metodo getDisplacement com argumentos inválidos\n";
+        
+        SensorConfiguration s(1,l,a1,a2,percentages);
+        
+        TS_ASSERT_THROWS(s.getDisplacement( Range(0,10), 5, "kjflakj"), std::invalid_argument);        
+    }
+
+    // void test_low() {
+    //     cout << "\tTestando avaliação sinal low\n";
+        
+    //     SensorConfiguration s(1,l,a1,a2,percentages);
+        
+    //     TS_ASSERT_EQUALS(s.evaluateNumber(37),0);
+
+    //     TS_ASSERT_EQUALS(s.evaluateNumber(37.5), 0.2);
+    //     TS_ASSERT_EQUALS(s.evaluateNumber(36.5), 0.2);
+
+    //     TS_ASSERT_EQUALS(s.evaluateNumber(36.75), 0.1);
+    // }
 
     void test_medium0() {
         cout << "\tTestando avaliação sinal medium0\n";
