@@ -41,6 +41,7 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         odcore::base::FIFOQueue m_buffer;
         std::string ip;
         std::map<std::string, std::map<std::string, bsn::range::Range>> configs_map;
+        std::vector<bsn::configuration::SensorConfiguration> configs_vet;
 };
 
 #endif 

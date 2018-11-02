@@ -106,25 +106,25 @@ class SensoConfigurationTestSuite: public CxxTest::TestSuite{
         TS_ASSERT_THROWS(s.getDisplacement( Range(0,10), 5, "kjflakj"), std::invalid_argument);        
     }
 
-    // void test_low() {
-    //     cout << "\tTestando avaliação sinal low\n";
+    void test_low() {
+        cout << "\tTestando avaliação sinal low\n";
         
-    //     SensorConfiguration s(1,l,a1,a2,percentages);
+        SensorConfiguration s(1,l,a1,a2,percentages);
         
-    //     TS_ASSERT_EQUALS(s.evaluateNumber(37),0);
+        TS_ASSERT_EQUALS(s.evaluateNumber(37),0);        
 
-    //     TS_ASSERT_EQUALS(s.evaluateNumber(37.5), 0.2);
-    //     TS_ASSERT_EQUALS(s.evaluateNumber(36.5), 0.2);
+        TS_ASSERT_EQUALS(s.evaluateNumber(37.5), 0.2);
+        TS_ASSERT_EQUALS(s.evaluateNumber(36.5), 0.2);
 
-    //     TS_ASSERT_EQUALS(s.evaluateNumber(36.75), 0.1);
-    // }
+        TS_ASSERT_EQUALS(s.evaluateNumber(36.75), 0.1);
+    }
 
     void test_medium0() {
         cout << "\tTestando avaliação sinal medium0\n";
         
         SensorConfiguration s(1,l,a1,a2,percentages);                
 
-        TS_ASSERT_EQUALS(s.evaluateNumber(33), 0.65);
+        TS_ASSERT_EQUALS(s.evaluateNumber(33), 0.65);        
         TS_ASSERT_EQUALS(s.evaluateNumber(35), 0.21);
     }
 
