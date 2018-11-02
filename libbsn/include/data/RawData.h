@@ -14,7 +14,7 @@ namespace bsn {
 
           public:
             //construtor parametrizado
-            RawData(const double & /*raw data*/, const std::string &, const timespec &);
+            RawData(const double & /*raw data*/, const std::string &, const std::string &);
 
             RawData();          // construtor
             virtual ~RawData(); // destrutor
@@ -44,8 +44,8 @@ namespace bsn {
                 void setSensorData(const double &/*sensor_data*/);
                 double getSensorData() const;
 
-                void setTimespec(const timespec & /*sent_ts*/);
-                timespec getTimespec() const;
+                void setTime(const std::string & /*sent_ts*/);
+                std::string getTime() const;
 
                 void setSensorType(const std::string &);
                 std::string getSensorType() const;
@@ -53,7 +53,7 @@ namespace bsn {
             private:
                 double m_sensor_data; // estado do sensor
                 std::string m_sensor_type;
-                timespec m_time;
+                std::string m_time;
         };
     }
 }

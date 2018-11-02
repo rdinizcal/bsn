@@ -52,14 +52,14 @@ void DataCollectorModule::setUp() {
         // Contador +=2 apenas necessário para transições espelhadas
         k += 2;
     }
-    k=0;
-    for(auto i : markov_transitions) {         
-        cout << k << ": " << i << endl;
-        k++;
-        if(k % 5 == 0) {
-            cout << endl;
-        }
-    }
+    // k=0;
+    // for(auto i : markov_transitions) {         
+    //     cout << k << ": " << i << endl;
+    //     k++;
+    //     if(k % 5 == 0) {
+    //         cout << endl;
+    //     }
+    // }
   
     lrs = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "LowRisk"), ',');
     mrs0 = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "MidRisk0"), ',');
@@ -109,8 +109,8 @@ std::tuple<double,double> DataCollectorModule::get_normal_params(string sensorTy
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
     DataGenerator dataGenerator;
-    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));
-    timespec ts;    
+    TimeData time_data;
+    std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));    
 
     Markov markov_generator(markov_transitions, ranges_array, 2);
 
@@ -128,12 +128,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         }
 
         if(++nCycles >= freq){
-            clock_gettime(CLOCK_REALTIME, &ts);
+            string now_time = time_data.get_time();
             cout << "Estado atual: " << markov_generator.current_state << endl;
             mGeneratedData = markov_generator.calculate_state();      
             markov_generator.next_state();
 
-            RawData rawdata(mGeneratedData, sensorType, ts);
+            RawData rawdata(mGeneratedData, sensorType, now_time);
             Container container(rawdata);
             getConference().send(container);
 

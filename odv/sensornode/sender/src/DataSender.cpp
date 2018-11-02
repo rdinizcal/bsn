@@ -72,29 +72,22 @@ void DataSender::tearDown(){
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
     string type;
-    double data;
-    array<timespec, 3> back_time;
-    array<timespec, 4> ts_v;
-    timespec now_time;
+    double data;    
     bool isOK = false;
+    TimeData time_data;
     string package;
-    double eval_sys, eval_dia, eval_data;
+    string last_time, now_time;   
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) { 
 
-        while (!m_buffer.isEmpty()) {
-            clock_gettime(CLOCK_REALTIME, &now_time);
-
+        while (!m_buffer.isEmpty()) {            
             Container container = m_buffer.leave();
             data = container.getData<FilteredData>().getSensorData();
             type = container.getData<FilteredData>().getSensorType();
-            back_time = container.getData<FilteredData>().getTimespec();
+            last_time = container.getData<FilteredData>().getTime();
+            now_time = last_time + ',' + time_data.get_time();
 
-            std::cout << "Dado recebido de um " << type << ": " << data << std::endl;
-
-            ts_v[0] = back_time[0];
-            ts_v[1] = back_time[1];
-            ts_v[2] = now_time;
+            std::cout << "Dado recebido de um " << type << ": " << data << std::endl;                        
 
             if (type == "bpms") {
                 isOK = true;
@@ -110,6 +103,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
                 package += type;
                 package += '-';
                 package += to_string(data);
+                
+                // Adiciona os timestamps                
+                package += '$';
+                package += now_time + ',' + time_data.get_time();
+                
                 sender.send(package);
                 cout << package << endl;
             }
@@ -119,7 +117,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
                 package = type;
                 package += '-';
                 package += to_string(data);
+                
+                // Adiciona os timestamps                
+                package += '$';
+                package += now_time + ',' + time_data.get_time();
+                
                 sender.send(package);
+                cout << package << endl;
             }
  
             SensorStatusInfo sStatusInfo(data);
