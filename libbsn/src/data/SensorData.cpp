@@ -6,34 +6,32 @@
  */
 
 #include "bsn/data/SensorData.h"
+#include <iostream>
 
 namespace bsn {
     namespace data {
         
         using namespace std;
+
+        SensorData::SensorData() : sensorType(), sensorData(), times() {}
         
-        SensorData::SensorData() : m_sensor_id(), m_sensor_type(), m_sensor_status(), m_sent_ts() {}
-        
-        SensorData::SensorData(const uint32_t &sensor_id, const int32_t &sensor_type, const string &sensor_status, const timespec &sent_ts) : 
-            m_sensor_id(sensor_id),
-            m_sensor_type(sensor_type),
-            m_sensor_status(sensor_status),
-            m_sent_ts(sent_ts) {}
+        SensorData::SensorData(const array<string, 2> &type, const array<double, 4> &data, const array<string, 8> &t) : 
+            sensorType(type),
+            sensorData(data),
+            times(t) {}
         
         SensorData::~SensorData() {}
         
         SensorData::SensorData(const SensorData &obj) :
             SerializableData(),
-            m_sensor_id(obj.getSensorID()),
-            m_sensor_type(obj.getSensorType()),
-            m_sensor_status(obj.getSensorStatus()),
-            m_sent_ts(obj.getSentTimespec()) {}
+            sensorType(obj.getSensorType()),
+            sensorData(obj.getSensorData()),
+            times(obj.getTimes()) {}
         
         SensorData& SensorData::operator=(const SensorData &obj) {
-            m_sensor_id = obj.getSensorID();
-            m_sensor_type = obj.getSensorType();
-            m_sensor_status = obj.getSensorStatus();
-            m_sent_ts = obj.getSentTimespec();            
+            sensorType = obj.getSensorType();
+            sensorData = obj.getSensorData();
+            times = obj.getTimes();           
             return (*this);
         }
         
@@ -56,48 +54,51 @@ namespace bsn {
         const string SensorData::getLongName() const {
             return SensorData::LongName();
         }
-        
-        void SensorData::setSensorID(const uint32_t &sensor_id) {
-            m_sensor_id = sensor_id;
-        }
-        
-        uint32_t SensorData::getSensorID() const {
-            return m_sensor_id;
+
+        void SensorData::setSensorType(const array<string, 2> type ) {
+            sensorType = type;
         }
 
-        void SensorData::setSensorType(const int32_t &sensor_type) {
-            m_sensor_type = sensor_type;
-        }
-        
-        int32_t SensorData::getSensorType() const {
-            return m_sensor_type;
+        array<string, 2> SensorData::getSensorType() const {
+            return sensorType;
         }
 
-        void SensorData::setSensorStatus(const string &sensor_status) {
-            m_sensor_status = sensor_status;
-        }
-        
-        string SensorData::getSensorStatus() const {
-            return m_sensor_status;
-        }
-        
-        void SensorData::setSentTimespec(const timespec &sent_ts){
-            m_sent_ts = sent_ts;
+        void SensorData::setSensorData(const array<double, 4> d /*sensor_status*/) {
+            sensorData = d;
         }
 
-        timespec SensorData::getSentTimespec() const {
-            return m_sent_ts;
+        array<double, 4> SensorData::getSensorData() const {
+            return sensorData;
+        }
+
+        void SensorData::setTimes(const array<string, 8> t) {
+            times = t;
+        }
+
+        array<string, 8> SensorData::getTimes() const {
+            return times;
         }
 
         ostream& SensorData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
-            s->write(1, m_sensor_id);
-            s->write(2, m_sensor_type);
-            s->write(3, m_sensor_status);
-            s->write(4, m_sent_ts.tv_sec);
-            s->write(5, m_sent_ts.tv_nsec);
+            s->write(1, sensorType[0]);
+            s->write(2, sensorType[1]);
+
+            s->write(3, sensorData[0]);
+            s->write(4, sensorData[1]);
+            s->write(5, sensorData[2]);
+            s->write(6, sensorData[3]);
+
+            s->write(7, times[0]);
+            s->write(8, times[1]);
+            s->write(9, times[2]);
+            s->write(10, times[3]);
+            s->write(11, times[4]);
+            s->write(12, times[5]);
+            s->write(13, times[6]);
+            s->write(14, times[7]);
 
             return out;
         }
@@ -106,20 +107,30 @@ namespace bsn {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
-            d->read(1, m_sensor_id);
-            d->read(2, m_sensor_type);
-            d->read(3, m_sensor_status);
-            d->read(4, m_sent_ts.tv_sec);
-            d->read(5, m_sent_ts.tv_nsec);
-        
+            d->read(1, sensorType[0]);
+            d->read(2, sensorType[1]);
+
+            d->read(3, sensorData[0]);
+            d->read(4, sensorData[1]);
+            d->read(5, sensorData[2]);
+            d->read(6, sensorData[3]);
+
+            d->read(7, times[0]);
+            d->read(8, times[1]);
+            d->read(9, times[2]);
+            d->read(10, times[3]);
+            d->read(11, times[4]);
+            d->read(12, times[5]);
+            d->read(13, times[6]);
+            d->read(14, times[7]);
+
             return in;
         }
         
         const string SensorData::toString() const {
             stringstream sstr;
 
-            sstr << "Sensor#" << m_sensor_id << " - ";
-            sstr << " SensorType#" << m_sensor_type << " Status: " << m_sensor_status << "" << endl;
+            sstr << endl;
 
             return sstr.str();
         }

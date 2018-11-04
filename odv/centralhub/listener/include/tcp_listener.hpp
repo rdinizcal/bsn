@@ -1,14 +1,13 @@
-#include <opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h>
-
 #include <iostream>
+#include <algorithm>
+#include <array>
 
+#include <opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h>
 #include "opendavinci/odcore/data/TimeStamp.h"
-
 #include "bsn/communication/TCPReceive.hpp"
-
 #include "bsn/data/SensorData.h"
-
 #include "bsn/data/ResourceUpdate.h"
+#include "bsn/operation/Operation.hpp"
 
 class TimeTriggeredSender : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:

@@ -1,7 +1,7 @@
 #include "../include/DataProcessor.hpp"
 
-// ecg termomther and oximeter
-#define number_sensors 4
+// ecg termomther oximeter and blood pressure
+#define number_sensors 5
 
 using namespace bsn::data;
 using namespace bsn::range;
@@ -21,25 +21,7 @@ TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
 DataProcessor::~DataProcessor() {}
 
 void DataProcessor::setUp() {
-	// vector<string> sensorTypes = {"thermometer", "ecg", "oximeter", "bpms", "bpmd"};
-	// vector<string> low, mid, high;
-	// vector<Range> ranges;
-	// Operation operation;
-	
-	// for (string str : sensorTypes) {
-	// 	low = operation.split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "LowRange"), ',');
-	// 	mid = operation.split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "MidRange"), ',');
-	// 	high = operation.split(getKeyValueConfiguration().getValue<string>("dataprocessor." + str + "HighRange"), ',');
-
-	// 	Range lowRange(stod(low[0]), stod(low[1]));
-	// 	Range midRange(stod(mid[0]), stod(mid[1]));
-	// 	Range highRange(stod(high[0]), stod(high[1]));				
-
-	// 	SensorConfiguration aux_config(0 /* aqui tem que ser passado o tipo*/, lowRange, midRange, highRange);
-	// 	configurations.push_back(aux_config);
-	// }
-
-    // addDataStoreFor(873, data_buffer);
+    addDataStoreFor(873, data_buffer);
 }
 
 void DataProcessor::tearDown(){}
@@ -57,66 +39,52 @@ void DataProcessor::print_packs(){
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
-    // Container container;    
-    // int sensor_id;
-	  // string type, packet_raw;
-	  // double packet;
-	  // double evaluated_packet;
+    Container container;    
+    array<string, 2> types;
+    array<double, 4> data;
+    array<string, 8> times;
+    int sensor_id;
+    double evaluated_packet;
 
-    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
+    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
 
-        // while(!data_buffer.isEmpty()){
-        //     // Retira o dado da FIFO
-        //     container = data_buffer.leave();
-        //     packet_raw = container.getData<SensorData>().getSensorStatus();
-            
-        // 	// Pega o tipo do pacote
-        // 	type = packet_raw.substr(0,packet_raw.find('-'));
+        while(!data_buffer.isEmpty()){
+            // Retira o dado da FIFO
+            container = data_buffer.leave();
+            types = container.getData<SensorData>().getSensorType();
+            data = container.getData<SensorData>().getSensorData();
+            times = container.getData<SensorData>().getTimes();
 
-        // 	sensor_id = get_sensor_id(type);			
+            sensor_id = get_sensor_id(types[0]);
 
-        // 	if(type == "bpms" or type == "bpmd") {
-        // 		string diastolyc_packet, systolic_packet;
-        // 		double systolic_value, diastolic_value;	
-        // 		double eval_sys, eval_dia;			
+            if (types[0] == "bpms" or types[0] == "bpmd") {
+         	// O mais discrepante é o que conta(Guideline brasileiro)
+         		evaluated_packet = max(data[1],data[3]);
+                if (evaluated_packet == data[3])
+                    sensor_id = get_sensor_id(types[1]); 
+            }
+            else {
+         	// Para os sensores que não são de pressão
+        		evaluated_packet = data[1];
+            }
 
-        // 		systolic_packet  = packet_raw.substr(0,packet_raw.find('/'));
-          // 		diastolyc_packet = packet_raw.substr(packet_raw.find('/')+1,packet_raw.length());
+            // Se o pacote for válido...
+            if (evaluated_packet != -1) {                
+		        packets_received[sensor_id].push_back(evaluated_packet);
+		        print_packs();
 
-        // 		// Retira os valores a partir do pacote recebido
-        // 		systolic_value  = get_value(systolic_packet);
-        // 		diastolic_value = get_value(diastolyc_packet);
+                data_fuse(packets_received);
+            }
 
-        // 		eval_sys = configurations[sensor_id].evaluateNumber(systolic_value);				
-        // 		eval_dia = configurations[sensor_id+1].evaluateNumber(diastolic_value);
-
-        // 		// O mais discrepante é o que conta(Guideline brasileiro)
-        // 		evaluated_packet = max(eval_dia,eval_sys);
-        // 	}
-        // 	else {
-        // 		// Para os sensores que não são de pressão
-        // 		packet = get_value(packet_raw);
-        // 		evaluated_packet = configurations[sensor_id].evaluateNumber(packet);
-        // 	}
-
-        //     // Se o pacote for válido...
-        //     if(evaluated_packet != -1){                
-		    // 		packets_received[sensor_id].push_back(evaluated_packet);
-		    // 		print_packs();
-
-        //         data_fuse(packets_received);
-        //     }
-
-        // }
-
-			      /*
+			/*
              * Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
-             * 
+             */
             ResourceUpdate rUpdate(-1);
             Container rUpdContainer(rUpdate);
             getConference().send(rUpdContainer);
 
-        }*/
+        }
+
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
