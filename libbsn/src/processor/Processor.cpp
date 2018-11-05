@@ -65,7 +65,7 @@ namespace bsn {
                 }
             }	
             // Calcula a media partir da soma dividida pelo número de pacotes lidos
-            risk_status = 100.0 * (average / count);
+            risk_status = (average / count);
             // Status de risco do paciente dado em porcentagem
 
             // 85.0 é um número totalmente ARBITRARIO
