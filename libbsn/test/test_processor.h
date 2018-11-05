@@ -46,7 +46,7 @@ class RangesTestSuite : public CxxTest::TestSuite {
         vet[2].push_back(0.30);
         //data_fuse
         TS_ASSERT_EQUALS(-1,data_fuse(empty));
-        TS_ASSERT_EQUALS(52.0,data_fuse(vet));        
+        TS_ASSERT_EQUALS(0.52,data_fuse(vet));        
         TS_ASSERT_EQUALS(0.1, vet[0].front());
         TS_ASSERT_EQUALS(0.2, vet[1].front());
         TS_ASSERT_EQUALS(0.3, vet[2].front());
