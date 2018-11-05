@@ -26,17 +26,27 @@ namespace bsn {
         }
 
         string TimeData::get_time(){
-            timeval curTime;
-            gettimeofday(&curTime, NULL);
-            int milli = curTime.tv_usec / 1000;
+            char buffer[26];
+            int millisec;
+            struct tm* tm_info;
+            struct timeval tv;
 
-            char buffer [80];
-            strftime(buffer, 80, "%M:%S", localtime(&curTime.tv_sec));    
+            gettimeofday(&tv, NULL);
 
-            char currentTime[84] = "";
-            sprintf(currentTime, "%s:%d", buffer, milli);
-            string out = currentTime;
-            return out;
+            millisec = lrint(tv.tv_usec/1000.0); // Round to nearest millisec
+            if (millisec>=1000) { // Allow for rounding up to nearest second
+            millisec -=1000;
+            tv.tv_sec++;
+            }
+
+            tm_info = localtime(&tv.tv_sec);
+
+            strftime(buffer, 26, "%Y:%m:%d %H:%M:%S", tm_info);
+
+            string data = buffer;
+            data += ':' + to_string(millisec);
+
+            return data;
         }
 
     }
