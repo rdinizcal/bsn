@@ -12,24 +12,20 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "bsn/configuration/sensor_configuration.hpp"
-#include "bsn/data/SensorData.h"
+#include "bsn/configuration/SensorConfiguration.hpp"
 #include "bsn/operation/Operation.hpp"
+#include "bsn/processor/Processor.hpp"
+#include "bsn/data/SensorData.h"
 #include "bsn/range/Range.hpp"
+#include "bsn/data/ResourceUpdate.h"
 
 class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
         DataProcessor(const DataProcessor & /*obj*/);
         DataProcessor &operator=(const DataProcessor & /*obj*/);
         virtual void setUp();
-        virtual void tearDown();
-        void data_fuse();
+        virtual void tearDown();        
         void print_packs();
-        // Retorna true se existe pelo menos um pacote para cada sensor
-        bool available_to_process();
-        // Retorna o id do sensor correspondente
-        int get_sensor_id(std::string);
-        double get_value(std::string);
 
     public:
         /**
@@ -45,7 +41,7 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
 
     private:
         std::vector<std::list<double>> packets_received;
-        std::vector<sensor_configuration> configurations;
+        std::vector<bsn::configuration::SensorConfiguration> configurations;
         odcore::base::FIFOQueue data_buffer;
 };
 

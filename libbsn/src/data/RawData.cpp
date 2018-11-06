@@ -7,7 +7,7 @@ namespace bsn {
         
         RawData::RawData() : m_sensor_data(), m_time() {}
         
-        RawData::RawData(const double &sensor_data,const std::string &sensor_type ,const timespec &ts): 
+        RawData::RawData(const double &sensor_data,const std::string &sensor_type ,const std::string &ts): 
             m_sensor_data(sensor_data),
             m_sensor_type(sensor_type),
             m_time(ts) {}
@@ -18,12 +18,12 @@ namespace bsn {
             SerializableData(),
             m_sensor_data(obj.getSensorData()),
             m_sensor_type(obj.getSensorType()),
-            m_time(obj.getTimespec()) {}
+            m_time(obj.getTime()) {}
         
         RawData& RawData::operator=(const RawData &obj) {
             m_sensor_data = obj.getSensorData();
             m_sensor_type = obj.getSensorType();
-            m_time = obj.getTimespec();          
+            m_time = obj.getTime();          
             return (*this);
         }
         
@@ -57,11 +57,11 @@ namespace bsn {
             return m_sensor_data;
         }
 
-        void RawData::setTimespec(const timespec &ts) {
+        void RawData::setTime(const std::string &ts) {
             m_time = ts;
         }
 
-        timespec RawData::getTimespec() const {
+        std::string RawData::getTime() const {
             return m_time;
         }
 
@@ -79,8 +79,7 @@ namespace bsn {
             
             s->write(1, m_sensor_data);
             s->write(2, m_sensor_type);
-            s->write(3, m_time.tv_sec);
-            s->write(4, m_time.tv_nsec);
+            s->write(3, m_time);
 
             return out;
         }
@@ -91,8 +90,7 @@ namespace bsn {
             
             d->read(1, m_sensor_data);
             d->read(2, m_sensor_type);
-            d->read(3, m_time.tv_sec);
-            d->read(4, m_time.tv_nsec);
+            d->read(3, m_time);
 
             return in;
         }

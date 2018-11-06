@@ -16,7 +16,7 @@ namespace bsn {
         
             public:
                 //construtor parametrizado
-                FilteredData(const double &/*filtered data*/, const std::string &, const std::array<timespec, 3> &);
+                FilteredData(const double &/*filtered data*/, const std::string &, const std::string &);
 
                 FilteredData();            // construtor
                 virtual ~FilteredData();   // destrutor
@@ -49,13 +49,13 @@ namespace bsn {
                 void setSensorType(const std::string &);
                 std::string getSensorType() const;
 
-                void setTimespec(const std::array<timespec, 3> &);
-                std::array<timespec, 3> getTimespec() const;
+                void setTime(const std::string &);
+                std::string getTime() const;
             
             private:
                 double m_sensor_data; // estado do sensor
                 std::string sensorType;
-                std::array<timespec, 3> time_v;
+                std::string my_time;
         };
     }
 }

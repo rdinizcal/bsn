@@ -3,19 +3,33 @@
 
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 namespace bsn {
 	namespace range {
 
-		class Range {			
+		class Range {	
+					
 			public:
-				double lower_bound, upper_bound;
 				Range();
-				Range(double l, double u);
+				Range(const double &/*lower bound*/, const double &/*upper bound*/);
+				~Range();
+ 
 				// Verifica se um elemento esta dentro do intervalo estipulado
 				bool in_range(double element);
 				double convert(double new_lb, double new_ub, double input);
 				std::string to_print();
+
+				void setLowerBound (const double &/*_lower_bound*/);
+				double getLowerBound () const;
+
+				void setUpperBound (const double &/*_upper_bound*/);
+				double getUpperBound () const;
+
+			private:
+				double lower_bound;
+				double upper_bound;
+
 		};
 
 	}

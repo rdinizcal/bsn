@@ -8,6 +8,10 @@
 #ifndef DATA_SENSOR_H_
 #define DATA_SENSOR_H_
 
+#include <algorithm>
+#include <vector>
+#include <string>
+
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
@@ -20,7 +24,7 @@ namespace bsn {
         
             public:
                 //construtor parametrizado
-                SensorData(const uint32_t &/*sensor_id*/, const int32_t &/*sensor_type*/, const std::string &/*sensor_status*/, const timespec &/*sent_ts*/);
+                SensorData(const std::array<std::string, 2> &, const std::array<double, 4> &, const std::array<std::string, 8> &);
  
                 SensorData(); // construtor
                 virtual ~SensorData();// destrutor 
@@ -47,23 +51,19 @@ namespace bsn {
                 
             // setters e getters
             public:
-                void setSensorID(const uint32_t &/*sensor_id*/);
-                uint32_t getSensorID() const;
+                void setSensorType(const std::array<std::string, 2>);
+                std::array<std::string, 2> getSensorType() const;
 
-                void setSensorType(const int32_t &/*sensor_type*/);
-                int32_t getSensorType() const;
+                void setSensorData(const std::array<double, 4>);
+                std::array<double, 4> getSensorData() const;
 
-                void setSensorStatus(const std::string &/*sensor_status*/);
-                std::string getSensorStatus() const;
-
-                void setSentTimespec(const timespec &/*sent_ts*/);
-                timespec getSentTimespec() const;
+                void setTimes(const std::array<std::string, 8>);
+                std::array<std::string, 8> getTimes() const;
             
             private:
-                uint32_t m_sensor_id; // identificador do sensor
-                int32_t m_sensor_type; // tipo do sensor
-                std::string m_sensor_status; // estado do sensor 
-                timespec m_sent_ts; // instante de geração do dado
+                std::array<std::string, 2> sensorType; // tipo do sensor
+                std::array<double, 4> sensorData; // estado do sensor
+                std::array<std::string, 8> times;  // instante de geração do dado
         };
     }
 }

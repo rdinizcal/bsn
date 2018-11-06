@@ -7,10 +7,10 @@ namespace bsn {
         
         FilteredData::FilteredData() : m_sensor_data(), sensorType() {}
         
-        FilteredData::FilteredData(const double &sensor_data, const std::string &type, const std::array<timespec, 3> &ts) : 
+        FilteredData::FilteredData(const double &sensor_data, const std::string &type, const std::string &ts) : 
             m_sensor_data(sensor_data),
             sensorType(type),
-            time_v(ts) {}
+            my_time(ts) {}
 
         FilteredData::~FilteredData() {}
         
@@ -18,12 +18,12 @@ namespace bsn {
             SerializableData(),
             m_sensor_data(obj.getSensorData()),
             sensorType(obj.getSensorType()), 
-            time_v(obj.getTimespec()){}
+            my_time(obj.getTime()){}
         
         FilteredData& FilteredData::operator=(const FilteredData &obj) {
             m_sensor_data = obj.getSensorData();
             sensorType = obj.getSensorType();
-            time_v = obj.getTimespec();          
+            my_time = obj.getTime();          
             return (*this);
         }
         
@@ -65,12 +65,12 @@ namespace bsn {
             return sensorType;
         }
 
-        void FilteredData::setTimespec(const std::array<timespec, 3> &ts) {
-            time_v = ts;
+        void FilteredData::setTime(const std::string &ts) {
+            my_time = ts;
         }
 
-        std::array<timespec, 3> FilteredData::getTimespec() const {
-            return time_v;
+        std::string FilteredData::getTime() const {
+            return my_time;
         }
         
         ostream& FilteredData::operator<<(ostream &out) const {
@@ -79,12 +79,7 @@ namespace bsn {
             
             s->write(1, m_sensor_data);
             s->write(2, sensorType);
-            s->write(3, time_v[0].tv_sec);
-            s->write(4, time_v[0].tv_nsec);
-            s->write(5, time_v[1].tv_sec);
-            s->write(6, time_v[1].tv_nsec);
-            s->write(7, time_v[2].tv_sec);
-            s->write(8, time_v[2].tv_nsec);
+            s->write(3, my_time);
 
             return out;
         }
@@ -95,13 +90,7 @@ namespace bsn {
             
             d->read(1, m_sensor_data);
             d->read(2, sensorType);
-            d->read(3, time_v[0].tv_sec);
-            d->read(4, time_v[0].tv_nsec);
-            d->read(5, time_v[1].tv_sec);
-            d->read(6, time_v[1].tv_nsec);
-            d->read(7, time_v[2].tv_sec);
-            d->read(8, time_v[2].tv_nsec);
-
+            d->read(3, my_time);
             return in;
         }
         

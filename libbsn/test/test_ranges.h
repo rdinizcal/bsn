@@ -12,8 +12,8 @@ class RangesTestSuite: public CxxTest::TestSuite{
 		  cout << "Testando intervalos" << endl;
 		  cout << "\tTestando construtor:\n";
 		  Range r(2.5,5.0);
-		  TS_ASSERT_EQUALS(r.lower_bound,2.5);
-		  TS_ASSERT_EQUALS(r.upper_bound,5.0);
+		  TS_ASSERT_EQUALS(r.getLowerBound(),2.5);
+		  TS_ASSERT_EQUALS(r.getUpperBound(),5.0);
     }
 	void test_illegal_construction(){
 		cout << "\tTestando construtor com argumentos ilegais:\n";
@@ -28,5 +28,11 @@ class RangesTestSuite: public CxxTest::TestSuite{
 		cout << "\tTestando fora do intervalo:\n";
 		Range r(2.5,5.0);
 		TS_ASSERT_EQUALS(false, r.in_range(8.0));
+	}
+	void test_convert() {
+		cout << "\tTestando conversão de escalas:\n";
+		Range r(0.0,10.0);
+		double result = r.convert(2,3,10.0);
+		TS_ASSERT_EQUALS(3.0, result);
 	}
 };

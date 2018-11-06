@@ -21,13 +21,13 @@ public:
         sender.disconnect();
     }
 
-    void test_false_connection(void) {
-        cout << "\n\nTesting sender connection false condition...\n";
-        TCPSend sender("localhost",8080);
-        // Como ninguem está escutando deve retornar false
-        TS_ASSERT_EQUALS(false,sender.connect());
-        sender.disconnect();
-    }
+    // void test_false_connection(void) {
+    //     cout << "\n\nTesting sender connection false condition...\n";
+    //     TCPSend sender("localhost",8080);
+    //     // Como ninguem está escutando deve retornar false
+    //     TS_ASSERT_EQUALS(false,sender.connect());
+    //     sender.disconnect();
+    // }
 
     void test_simple_send(void) {        
         cout << "\n\nTesting Simple message sending...\n";                        
