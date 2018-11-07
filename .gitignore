@@ -45,3 +45,6 @@ test.cpp
 
 *.txt
 levi.sh
+
+# Experiments data
+*.csv
