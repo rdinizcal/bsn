@@ -5,10 +5,12 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/data/ResourceInfo.h"
+#include "bsn/data/PatientStatusInfo.h"
 
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 class TxtPersister : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
