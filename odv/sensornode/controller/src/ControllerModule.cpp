@@ -64,7 +64,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
             } else if(ranges_array[2].in_range(rawVal)) {
                 newStatus = 2;
             } else {
-                throw std::out_of_range("O valor não pertence a um dos estados!");
+                std::cout << "Unknown state value (" << rawVal << ")" << endl;
             }
             
 
