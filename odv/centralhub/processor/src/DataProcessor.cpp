@@ -15,13 +15,18 @@ using namespace bsn::configuration;
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
 	packets_received(number_sensors),
-	configurations(0),
 	data_buffer() {}
 	
 DataProcessor::~DataProcessor() {}
 
 void DataProcessor::setUp() {
     addDataStoreFor(873, data_buffer);
+
+    //initialize packets_received
+    for(std::vector<std::list<double>>::iterator it = packets_received.begin();
+            it != packets_received.end(); ++it) {
+                (*it).push_back(0.0);
+    }
 }
 
 void DataProcessor::tearDown(){}
@@ -45,6 +50,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     array<string, 8> times;
     int sensor_id;
     double evaluated_packet;
+    double patient_status;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
 
@@ -73,7 +79,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
 		        packets_received[sensor_id].push_back(evaluated_packet);
 		        print_packs();
 
-                data_fuse(packets_received);
+                patient_status = data_fuse(packets_received);
             }
 
 			/*
@@ -82,6 +88,49 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
             ResourceUpdate rUpdate(-1);
             Container rUpdContainer(rUpdate);
             getConference().send(rUpdContainer);
+
+            /*
+			 * Envia dados para persistencia
+			 * */
+            std::string sensor_risk_str;
+            std::string bpr_risk;
+			std::string oxi_risk;
+			std::string ecg_risk;
+			std::string trm_risk;
+
+            for(int i = 0; i < 4; i++){
+                double sensor_risk = packets_received[i].back();
+
+                if(sensor_risk > 0 && sensor_risk <= 20) {
+                    sensor_risk_str = "low risk";
+                } else if (sensor_risk > 20 && sensor_risk <= 65) {
+                    sensor_risk_str = "moderate risk";
+                } else if (sensor_risk > 65 && sensor_risk <= 100) {
+                    sensor_risk_str = "high risk";
+                } else {
+                    sensor_risk_str = "unknown";
+                }
+
+                if(i==0) {
+                    trm_risk = sensor_risk_str;
+                } else if (i == 1){
+                    ecg_risk = sensor_risk_str;
+                } else if (i == 2) {
+                    oxi_risk = sensor_risk_str;
+                } else {
+                    bpr_risk = sensor_risk_str;
+                }
+
+            }           
+
+			PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=85)?"CRITICAL STATE":"NORMAL STATE");
+			Container psInfoContainer(psInfo);
+			getConference().send(psInfoContainer);
+
+			std::cout << "Message sent:" << endl;
+			std::cout << "*****************************************" << endl;
+			std::cout << psInfo.toString();
+			std::cout << "*****************************************" << endl;
 
         }
 

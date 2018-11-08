@@ -37,7 +37,13 @@ namespace bsn {
 				double getDisplacement(bsn::range::Range, double, std::string );
 				// Converte para o percentual final( {var}_percentage )
 				double convertRealPercentage(bsn::range::Range range, double number);
+				
 				int getId();
+
+				bool isLowRisk(double /*val*/);
+				bool isMediumRisk(double /*val*/);
+				bool isHighRisk(double /*val*/);
+
 				void print();
 		};
 

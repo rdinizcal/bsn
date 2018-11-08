@@ -96,6 +96,18 @@ namespace bsn {
 			}	
 		}
 
+		bool SensorConfiguration::isLowRisk(double val) {
+			return low_risk.in_range(val);
+		}
+
+		bool SensorConfiguration::isMediumRisk(double val) {
+			return (medium_risk[0].in_range(val) || medium_risk[1].in_range(val));
+		}
+
+		bool SensorConfiguration::isHighRisk(double val) {
+			return (high_risk[0].in_range(val) || high_risk[1].in_range(val));
+		}
+
 		void SensorConfiguration::print(){
 			cout << "Sensor id(" << id << ") with ranges: " << endl;
 			cout << "Low: "    << low_risk.to_print() << endl;

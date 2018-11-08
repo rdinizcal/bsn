@@ -42,7 +42,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TxtPersister::body(){
                 std::cout << "*****************************************" << endl;
                 std::cout << rInfo.toString();
                 std::cout << "*****************************************" << endl;
-            } else if (container.getDataType() == 880){
+            } else if (container.getDataType() == 879){
                 psInfo = container.getData<PatientStatusInfo>();
                 std::cout << "Message received:" << endl;
                 std::cout << "*****************************************" << endl;

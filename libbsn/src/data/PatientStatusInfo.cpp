@@ -128,7 +128,11 @@ namespace bsn {
             stringstream sstr;
 
             sstr << "PatientStatusInfo#" << endl;
-            sstr << "THERM_RISK:" << thermometerRisk << "ECG_RISK:" << ecgRisk << "OXIM_RISK:" << oximeterRisk << "BPRESS_RISK:" << bloodpressureRisk << "PATIENT_STATUS:" << patientStatus << endl;
+            sstr << "| THERM_RISK: " << thermometerRisk << endl; 
+            sstr << "| ECG_RISK: " << ecgRisk << endl;
+            sstr << "| OXIM_RISK: " << oximeterRisk << endl;
+            sstr << "| BPRESS_RISK: " << bloodpressureRisk << endl; 
+            sstr << "| PATIENT_STATUS: " << patientStatus << endl;
 
             return sstr.str();
         }
