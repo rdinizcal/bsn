@@ -1,11 +1,6 @@
 #ifndef RESOURCE_HPP
 #define RESOURCE_HPP
 
-#include "opendavinci/odcore/serialization/Serializable.h"
-#include "opendavinci/odcore/serialization/Serializer.h"
-#include "opendavinci/odcore/serialization/Deserializer.h"
-#include "opendavinci/odcore/serialization/SerializationFactory.h"
-
 #include <string>
 
 namespace bsn {
@@ -14,26 +9,30 @@ namespace bsn {
         class Resource {
 
             public:
+                Resource(const std::string /*id*/, const double /*capacity*/, const double /*currentLevel*/, const double /*unit*/);
+                
                 Resource();
-                Resource(std::string /*id*/, double /*capacity*/, double /*currentLevel*/, double /*unit*/);
-                ~Resource();
+                virtual ~Resource();
+
+                Resource(const Resource &/*obj*/);
+                Resource& operator=(const Resource &/*obj*/);
                 
                 void consume(const int /*mult*/);
                 void generate(const int /*mult*/);
 
-                void setName(const std::string /*name*/);
+                void setName(const std::string &/*name*/);
                 std::string getName() const;
 
-                void setCapacity(const double /*capacity*/);
+                void setCapacity(const double &/*capacity*/);
                 double getCapacity() const; 
 
-                void setCurrentLevel (const double /*currentLevel*/);
+                void setCurrentLevel (const double &/*currentLevel*/);
                 double getCurrentLevel() const;
 
-                void setUnit(const double /*unit*/);
+                void setUnit(const double &/*unit*/);
                 double getUnit() const;
 
-            protected:
+            private:
                 std::string name;
                 double capacity;
                 double currentLevel;

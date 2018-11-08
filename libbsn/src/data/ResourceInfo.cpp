@@ -1,16 +1,17 @@
 #include "bsn/data/ResourceInfo.h"
 
+#include<iostream>
+
 namespace bsn {
     namespace data {
         
         using namespace std;
         using namespace bsn::resource;
 
+        ResourceInfo::ResourceInfo(const Resource &_resource) : 
+            mResource(_resource) {}
+        
         ResourceInfo::ResourceInfo() : mResource() {}
-        
-        ResourceInfo::ResourceInfo(const Resource &rsrc) : 
-            mResource(rsrc) {}
-        
         ResourceInfo::~ResourceInfo() {}
         
         ResourceInfo::ResourceInfo(const ResourceInfo &obj) :
@@ -53,12 +54,12 @@ namespace bsn {
         ostream& ResourceInfo::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
-            
+        
             s->write(1, mResource.getName());
             s->write(2, mResource.getCapacity());
             s->write(3, mResource.getCurrentLevel());
             s->write(4, mResource.getUnit());
-
+            
             return out;
         }
         
@@ -66,15 +67,20 @@ namespace bsn {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
-            string id = mResource.getName();
-            double cap = mResource.getCapacity();
-            double cLv = mResource.getCurrentLevel();
-            double unit = mResource.getUnit();
-
+            string id;
+            double cap;
+            double cLv;
+            double unit;
+            
             d->read(1, id);
             d->read(2, cap);
             d->read(3, cLv);
             d->read(4, unit);
+
+            mResource.setName(id);
+            mResource.setCapacity(cap);
+            mResource.setCurrentLevel(cLv);
+            mResource.setUnit(unit);
 
             return in;
         }
@@ -82,8 +88,10 @@ namespace bsn {
         const string ResourceInfo::toString() const {
             stringstream sstr;
 
-            sstr << "ResourceName#" << mResource.getName() << endl;
-            sstr << "Capacity:" << mResource.getCapacity() << " CurrentLevel: " << mResource.getCurrentLevel() << endl;
+            sstr << "ResourceInfo# " << endl;
+            sstr << "| Name: " << mResource.getName() << endl;
+            sstr << "| Capacity:" << mResource.getCapacity() << endl ;
+            sstr << "| CurrentLevel: " << mResource.getCurrentLevel() << endl;
 
             return sstr.str();
         }

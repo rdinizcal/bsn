@@ -38,16 +38,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TxtPersister::body(){
 
             if(container.getDataType() == 875){
                 rInfo = container.getData<ResourceInfo>();
-                std::cout << "Message received:" << endl;
-                std::cout << "*****************************************" << endl;
-                std::cout << rInfo.toString();
-                std::cout << "*****************************************" << endl;
             } else if (container.getDataType() == 879){
                 psInfo = container.getData<PatientStatusInfo>();
-                std::cout << "Message received:" << endl;
-                std::cout << "*****************************************" << endl;
-                std::cout << psInfo.toString();
-                std::cout << "*****************************************" << endl;
             } else {
                 std::cout << "ERROR: unrecognized consumed data." << endl;
             }

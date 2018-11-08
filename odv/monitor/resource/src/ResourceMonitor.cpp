@@ -49,6 +49,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ResourceMonitor::body(
             ResourceInfo rInfo(mResource);
             Container rInfoContainer(rInfo);
             getConference().send(rInfoContainer);
+
+            /* For message debugging
+            std::cout << "\nMessage sent:" << endl;
+            std::cout << "------------------------------------------" << endl;
+            std::cout << rInfoContainer.getData<ResourceInfo>().toString();
+            std::cout << "------------------------------------------" << endl;
+            */
         }
     }
 
