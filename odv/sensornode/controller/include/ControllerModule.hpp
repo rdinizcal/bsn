@@ -26,7 +26,7 @@ class ControllerModule : public odcore::base::module::TimeTriggeredConferenceCli
 
   	private:
 		odcore::base::FIFOQueue data_buffer;
-		std::array<bsn::range::Range,3> ranges_array;
+		std::array<bsn::range::Range,5> ranges_array;
 
 };
 
