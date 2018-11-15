@@ -101,7 +101,6 @@ std::tuple<double,double> DataCollectorModule::get_normal_params(string sensorTy
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::body(){
-    DataGenerator dataGenerator;
     TimeData time_data;
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));    
 

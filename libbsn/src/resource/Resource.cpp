@@ -34,6 +34,20 @@ namespace bsn {
 
         Resource::~Resource(){};
         
+        Resource::Resource(const Resource &obj) :
+            name(obj.getName()),
+            capacity(obj.getCapacity()),
+            currentLevel(obj.getCurrentLevel()),
+            unit(obj.getUnit()) {}
+        
+        Resource& Resource::operator=(const Resource &obj) {
+            name = obj.getName();
+            capacity = obj.getCapacity();
+            currentLevel = obj.getCurrentLevel();
+            unit = obj.getUnit();    
+            return (*this);
+        }
+
         void Resource::consume(const int32_t mult) {
             currentLevel-= unit*mult;
 
@@ -77,5 +91,14 @@ namespace bsn {
         double Resource::getUnit() const{
             return unit; 
         }
+
+        const string Resource::toString() const {
+            stringstream sstr;
+
+            sstr << "Resources: " << name  << " " << capacity << " " << currentLevel << " " << unit << endl;
+
+            return sstr.str();
+        }
+
     }
 }

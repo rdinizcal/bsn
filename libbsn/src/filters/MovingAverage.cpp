@@ -1,6 +1,8 @@
 #include "bsn/filters/MovingAverage.hpp"
 #include <iostream>
 
+using namespace std;
+
 namespace bsn {
     namespace filters{
 
@@ -8,7 +10,14 @@ namespace bsn {
             computedAverage = 0;
             lastInserted = 0;
             range = max;
-            // std::fill(buffer.begin(), buffer.end(), std::list<double>(0.0));
+        }
+
+        MovingAverage::MovingAverage(const MovingAverage &obj) :
+            range(obj.getRange()) {}
+        
+        MovingAverage& MovingAverage::operator=(const MovingAverage &obj) {
+            range = obj.getRange();          
+            return (*this);
         }
 
         int32_t defineType(std::string type) {
@@ -54,6 +63,22 @@ namespace bsn {
                 buffer[index].pop_front();
             }
 
+        }
+
+        uint32_t MovingAverage::getRange() const {
+            return range;
+        }
+
+        void MovingAverage::setRange(const uint32_t r) {
+            range = r;
+        }
+
+        const string MovingAverage::toString() const {
+            stringstream sstr;
+
+            sstr << "Computed average:" << computedAverage << "" << endl;
+
+            return sstr.str();
         }
 
     }

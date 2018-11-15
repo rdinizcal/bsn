@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <stdint.h>
+#include <sstream>
 
 #include "bsn/range/Range.hpp"
 
@@ -15,6 +16,11 @@ namespace bsn {
 
         class Markov {
             public:
+                Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int32_t initialState);
+
+                Markov(const Markov & /*obj*/);
+                Markov &operator=(const Markov & /*obj*/);
+
                 // 0 para low 1 para medium e 2 para high
                 int32_t currentState;
                 // Contém a probabilidade de todas as transições
@@ -22,11 +28,12 @@ namespace bsn {
                 // Contém os intervalos de cada estado
                 std::array<bsn::range::Range, 5> ranges;
 
-                Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int32_t initialState);
                 // Calcula o próximo estado da cadeia de markov
                 void next_state();
                 // Calcula um valor baseado no intervalo do estado atual
                 double calculate_state();
+
+                const std::string toString() const;
         };
 
     }

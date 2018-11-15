@@ -19,6 +19,18 @@ namespace bsn {
                 this->ranges = ranges;
         }
 
+        Markov::Markov(const Markov &obj) :
+            currentState(obj.currentState),
+            transitions(obj.transitions),
+            ranges(obj.ranges) {}
+        
+        Markov& Markov::operator=(const Markov &obj) {
+            currentState = obj.currentState;
+            transitions = obj.transitions;
+            ranges = obj.ranges;
+            return (*this);
+        }
+
         // Calcula o próximo estado da cadeia de markov
         void Markov::next_state() {
             int32_t randomNumber = probabilityGenerator(seed);
@@ -59,6 +71,14 @@ namespace bsn {
             std::uniform_real_distribution<double> value_generator(this_range.getLowerBound(), this_range.getUpperBound());
             double val = value_generator(seed);
             return val;
+        }
+        
+        const string Markov::toString() const {
+            stringstream sstr;
+
+            sstr << "Markov" << "" << endl;
+
+            return sstr.str();
         }
 
     }

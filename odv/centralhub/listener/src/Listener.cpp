@@ -6,6 +6,7 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 using namespace bsn::data;
 using namespace bsn::operation;
+using namespace bsn::communication;
 
 TCPReceive server(8000);
 

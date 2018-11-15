@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <stdint.h>
+#include <sstream>
 
 namespace bsn {
 	namespace range {
@@ -15,7 +16,10 @@ namespace bsn {
 				Range();
 				Range(const double &/*lower bound*/, const double &/*upper bound*/);
 				~Range();
- 
+
+				Range(const Range & /*obj*/);
+				Range &operator=(const Range & /*obj*/);
+
 				// Verifica se um elemento esta dentro do intervalo estipulado
 				bool in_range(double element);
 				double convert(double new_lb, double new_ub, double input);
@@ -26,6 +30,8 @@ namespace bsn {
 
 				void setUpperBound (const double &/*_upperBound*/);
 				double getUpperBound () const;
+
+				const std::string toString() const;
 
 			private:
 				double lowerBound;

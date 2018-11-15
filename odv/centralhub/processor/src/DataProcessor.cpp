@@ -12,6 +12,7 @@ using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace bsn::configuration;
 
+
 DataProcessor::DataProcessor(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "DataProcessor"),
 	packets_received(number_sensors),

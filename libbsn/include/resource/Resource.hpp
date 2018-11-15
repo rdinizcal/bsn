@@ -18,7 +18,10 @@ namespace bsn {
                 Resource();
                 Resource(std::string /*id*/, double /*capacity*/, double /*currentLevel*/, double /*unit*/);
                 ~Resource();
-                
+
+                Resource(const Resource & /*obj*/);
+                Resource &operator=(const Resource & /*obj*/);
+
                 void consume(const int32_t /*mult*/);
                 void generate(const int32_t /*mult*/);
 
@@ -33,6 +36,8 @@ namespace bsn {
 
                 void setUnit(const double /*unit*/);
                 double getUnit() const;
+
+                const std::string toString() const;
 
             protected:
                 std::string name;

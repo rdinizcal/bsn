@@ -16,7 +16,10 @@ namespace bsn {
             public:
                 TimeData();
                 ~TimeData();
-            
+
+                TimeData(const TimeData & /*obj*/);
+                TimeData &operator=(const TimeData & /*obj*/);
+
                 timespec elapsedTime(timespec &, timespec &);
                 std::string get_time();
 

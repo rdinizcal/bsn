@@ -20,7 +20,27 @@ namespace bsn {
 			this->highPercentage = p[2];
 		}
 
-		int32_t SensorConfiguration::getId() {
+		SensorConfiguration::SensorConfiguration(const SensorConfiguration &obj) : 
+			id(obj.getId()),
+			lowRisk(obj.getLowRisk()),
+			mediumRisk(obj.getMediumRisk()),
+			highRisk(obj.getHighRisk()),
+			lowPercentage(obj.getLowPercentage()),
+			midPercentage(obj.getMidPercentage()),
+			highPercentage(obj.getHighPercentage()) {}
+
+		SensorConfiguration& SensorConfiguration::operator=(const SensorConfiguration &obj) {
+            id = obj.getId();
+            lowRisk = obj.getLowRisk();
+            mediumRisk = obj.getMediumRisk();
+			highRisk = obj.getHighRisk();
+			lowPercentage = obj.getLowPercentage();
+			midPercentage = obj.getMidPercentage();
+			highPercentage = obj.getHighPercentage();        
+            return (*this);
+        }
+
+		int32_t SensorConfiguration::getId() const {
 			return this->id;
 		}
 
@@ -96,14 +116,67 @@ namespace bsn {
 			}	
 		}
 
-		void SensorConfiguration::print(){
-			cout << "Sensor id(" << id << ") with ranges: " << endl;
-			cout << "Low: "    << lowRisk.to_print() << endl;
-			cout << "Medium: " << mediumRisk[0].to_print() << mediumRisk[1].to_print() << endl;
-			cout << "High: "   << highRisk[0].to_print() << highRisk[1].to_print() << endl;
-			
-			cout << endl;
+		const string SensorConfiguration::toString() {
+			stringstream sstr;
+
+			sstr << "Sensor id(" << id << ") with ranges: " << endl;
+			sstr << "Low: " << lowRisk.to_print() << endl;
+			sstr << "Medium: " << mediumRisk[0].to_print() << mediumRisk[1].to_print() << endl;
+			sstr << "High: " << highRisk[0].to_print() << highRisk[1].to_print() << endl;
+
+			sstr << endl;
+
+			return sstr.str();
+
 		}
-		
+
+		Range SensorConfiguration::getLowRisk() const {
+			return lowRisk;
+		}
+
+		void SensorConfiguration::setLowRisk(const Range l) {
+			lowRisk = l;
+		}
+
+		array<Range, 2> SensorConfiguration::getMediumRisk() const {
+			return mediumRisk;
+		}
+
+		void SensorConfiguration::setMediumRisk(const array<Range, 2> m) {
+			mediumRisk = m;
+		}
+
+		array<Range, 2> SensorConfiguration::getHighRisk() const {
+			return highRisk;
+		}
+
+		void SensorConfiguration::setHighRisk(const array<Range, 2> h) {
+			highRisk = h;
+		}
+
+		Range SensorConfiguration::getLowPercentage() const {
+			return lowPercentage;
+		}
+
+		void SensorConfiguration::setLowPercentage(const Range lp) {
+			lowPercentage = lp;
+		}
+
+		Range SensorConfiguration::getMidPercentage() const {
+			return midPercentage;
+		}
+
+		void SensorConfiguration::setMidPercentage(const Range mp) {
+			midPercentage = mp;
+		}
+
+		Range SensorConfiguration::getHighPercentage() const {
+			return highPercentage;
+		}
+
+		void SensorConfiguration::setHighPercentage(const Range hp) {
+			highPercentage = hp;
+		}
+
 	}
 }

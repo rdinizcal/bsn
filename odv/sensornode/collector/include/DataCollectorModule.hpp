@@ -17,7 +17,6 @@
 #include "bsn/time/TimeData.hpp"
 #include "bsn/generator/Markov.hpp"
 #include "bsn/operation/Operation.hpp"
-#include "bsn/generator/DataGenerator.h"
 #include "bsn/data/ResourceUpdate.h"
 #include "bsn/data/FreqUpdate.h"
 

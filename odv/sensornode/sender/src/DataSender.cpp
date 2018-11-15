@@ -6,6 +6,7 @@ using namespace odcore::data;
 using namespace bsn::data;
 using namespace bsn::time;
 using namespace bsn::configuration;
+using namespace bsn::communication;
 using namespace bsn::operation;
 using namespace bsn::range;
 using namespace std;
@@ -74,7 +75,7 @@ void DataSender::setUp() {
     }
 
 
-    configsVet[0].print();
+    cout << configsVet[0].toString() << endl;
 
     // Recebe FilteredData
     addDataStoreFor(876, mBuffer);

@@ -18,6 +18,16 @@ namespace bsn {
 
 		Range::~Range() {}
 
+		Range::Range(const Range &obj) :
+            lowerBound(obj.getLowerBound()),
+            upperBound(obj.getUpperBound()) {}
+        
+        Range& Range::operator=(const Range &obj) {
+			lowerBound = obj.getLowerBound();
+			upperBound = obj.getUpperBound();        
+            return (*this);
+        }
+
 		// Verifica se um elemento esta dentro do intervalo estipulado
 		bool Range::in_range(double element) {
 			return (element >= lowerBound && element <= upperBound)? true:false;      
@@ -49,6 +59,14 @@ namespace bsn {
 		double Range::getUpperBound () const {
 			return upperBound;
 		}
+
+		const string Range::toString() const {
+            stringstream sstr;
+
+			sstr << "Range: " << lowerBound << "" << upperBound << endl;
+
+			return sstr.str();
+        }
 
 	}
 }

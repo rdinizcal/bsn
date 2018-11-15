@@ -22,35 +22,51 @@
 
 #include "bsn/operation/Operation.hpp"
 
-class TCPReceive: 
-    public odcore::io::ConnectionListener,
-    public odcore::io::StringListener,
-    public odcore::io::tcp::TCPAcceptorListener {
+namespace bsn {
+    namespace communication {
 
-    private:
-        std::mutex buffer_lock; 
-        std::atomic_bool should_run;
-        std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
-        std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
-        int32_t port;
+        class TCPReceive: 
+            public odcore::io::ConnectionListener,
+            public odcore::io::StringListener,
+            public odcore::io::tcp::TCPAcceptorListener {
+            
+            public:
+                TCPReceive(int32_t p);
+                TCPReceive(const TCPReceive &);
+                TCPReceive &operator=(const TCPReceive & /*obj*/);
 
-        virtual void nextString(const std::string &s);
+            private:
+                std::mutex bufferLock; 
+                std::atomic_bool shouldRun;
+                std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
+                std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
+                int32_t port;
 
-        void push(std::string);
+                virtual void nextString(const std::string &s);
 
-        virtual void onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection);
+                void push(std::string);
 
-        virtual void handleConnectionError();
+                virtual void onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection);
 
-    public:
-        void print_buffer();
-        void set_port(int32_t p);
-        TCPReceive(int32_t p);
-        std::string get_package();
-        void start_connection();
-        void stop_connection();
-        void initialize();
-        int32_t get_port();
-    
-};
+                virtual void handleConnectionError();
+
+            public:
+                void initialize();
+
+                void set_port(const int32_t p);
+                int32_t get_port() const;
+
+                std::string get_package();
+
+                void start_connection();
+                void stop_connection();
+
+                void print_buffer();
+
+                const std::string toString() const;
+            
+        };
+
+    }
+}
 

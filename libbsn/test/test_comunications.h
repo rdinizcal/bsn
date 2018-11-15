@@ -3,9 +3,9 @@
 #include "bsn/communication/TCPSend.hpp"
 
 using namespace std;
+using namespace bsn::communication;
 
-class test_comunications : public CxxTest::TestSuite
-{
+class test_comunications : public CxxTest::TestSuite {
 public:    
     void test_initialization_receiver(void) {
         cout << "\n\nTesting receiver constructor...\n";
