@@ -17,7 +17,7 @@ namespace bsn {
 				// {var}_risk são os intervalos de cada risco(baixo medio ou alto)
 				private:
 				
-				int id;
+				int32_t id;
 				bsn::range::Range low_percentage, mid_percentage, high_percentage;
 				bsn::range::Range low_risk;	
 				std::array<bsn::range::Range, 2> medium_risk;
@@ -26,7 +26,7 @@ namespace bsn {
 				public:
 				SensorConfiguration();
 
-				SensorConfiguration(int i, bsn::range::Range low_risk, 
+				SensorConfiguration(int32_t i, bsn::range::Range low_risk, 
 				std::array<bsn::range::Range, 2> medium_risk,
 				std::array<bsn::range::Range, 2> high_risk,
 				std::array<bsn::range::Range, 3> percentages);
@@ -37,7 +37,7 @@ namespace bsn {
 				double getDisplacement(bsn::range::Range, double, std::string );
 				// Converte para o percentual final( {var}_percentage )
 				double convertRealPercentage(bsn::range::Range range, double number);
-				int getId();
+				int32_t getId();
 				void print();
 		};
 

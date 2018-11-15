@@ -4,14 +4,14 @@
 namespace bsn {
     namespace filters{
 
-        MovingAverage::MovingAverage(int max) {
+        MovingAverage::MovingAverage(int32_t max) {
             computedAverage = 0;
             lastInserted = 0;
             range = max;
             // std::fill(buffer.begin(), buffer.end(), std::list<double>(0.0));
         }
 
-        int defineType(std::string type) {
+        int32_t defineType(std::string type) {
             if(type == "thermometer")
                 return 0;
             if(type == "ecg")
@@ -26,7 +26,7 @@ namespace bsn {
         }
 
         double MovingAverage::getValue(std::string type) {
-            int index = defineType(type);
+            int32_t index = defineType(type);
             computedAverage = 0;
 
             if(buffer[index].size() < range){
@@ -46,7 +46,7 @@ namespace bsn {
         }
 
         void MovingAverage::insert(double value, std::string type) {
-            int index = defineType(type);
+            int32_t index = defineType(type);
             lastInserted = value;   
             buffer[index].push_back(lastInserted);
 

@@ -26,7 +26,8 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
 	SensorConfiguration s;
     array<float,25> transitions;
-    array<Range, 5> ranges{Range(30.0, 33.0), Range(33.1, 36.4), Range(36.5, 37.5), Range(37.6, 39.0), Range(39.1, 42.0)};
+    array<Range, 5> ranges;
+    
     void setUp(){
         transitions =
         {
@@ -37,7 +38,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
             100,0,0,0,0
         };
 
-        array<Range, 5> ranges{Range(30.0, 33.0), Range(33.1, 36.4), Range(36.5, 37.5), Range(37.6, 39.0), Range(39.1, 42.0)};        
+        ranges = {Range(30.0, 33.0), Range(33.1, 36.4), Range(36.5, 37.5), Range(37.6, 39.0), Range(39.1, 42.0)};        
 
         h1.setLowerBound(30.0);
 		h1.setUpperBound(33.0);

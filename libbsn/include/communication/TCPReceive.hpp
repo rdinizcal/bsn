@@ -29,7 +29,7 @@ class TCPReceive:
         std::atomic_bool should_run;
         std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
         std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
-        int port;
+        int32_t port;
 
         virtual void nextString(const std::string &s);
 
@@ -41,13 +41,13 @@ class TCPReceive:
 
     public:
         void print_buffer();
-        void set_port(int p);
-        TCPReceive(int p);
+        void set_port(int32_t p);
+        TCPReceive(int32_t p);
         std::string get_package();
         void start_connection();
         void stop_connection();
         void initialize();
-        int get_port();
+        int32_t get_port();
     
 };
 

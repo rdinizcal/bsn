@@ -11,7 +11,7 @@ using namespace bsn::range;
 
 class RangesTestSuite : public CxxTest::TestSuite {
     array<float,25> transitions;
-    array<Range, 5> ranges{Range(1, 3), Range(4, 6), Range(7, 9), Range(10, 11), Range(12, 13)};
+    array<Range, 5> ranges;
 
     public:
 
@@ -25,7 +25,7 @@ class RangesTestSuite : public CxxTest::TestSuite {
             100,0,0,0,0
         };
 
-        array<Range, 5> ranges{Range(1, 3), Range(4, 6), Range(7, 9), Range(10, 11), Range(12, 13)};
+        ranges = {Range(1, 3), Range(4, 6), Range(7, 9), Range(10, 11), Range(12, 13)};
     }
 	void test_next_states(){
         cout << "\nTestando Markov\n";

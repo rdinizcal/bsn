@@ -10,12 +10,12 @@ using namespace bsn::time;
 
 FilterModule::FilterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "FilterModule"),
-    data_buffer() {}
+    dataBuffer() {}
 
 FilterModule::~FilterModule() {}
 
 void FilterModule::setUp() {
-    addDataStoreFor(880, data_buffer);
+    addDataStoreFor(880, dataBuffer);
 }
 
 void FilterModule::tearDown(){}
@@ -24,30 +24,30 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode FilterModule::body(){
     MovingAverage filter(5);
     Container container;
     TimeData time_data;
-    double data, filtered_data;
+    double data, filteredData;
     string type;
     // Variaveis de tempo
-    string last_time, now_time;
+    string lastTime, nowTime;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
-        while (!data_buffer.isEmpty()) {
+        while (!dataBuffer.isEmpty()) {
             // retira o dado da FIFO
-            container = data_buffer.leave();            
+            container = dataBuffer.leave();            
             data = container.getData<RawData>().getSensorData();
             type = container.getData<RawData>().getSensorType();
-            last_time = container.getData<RawData>().getTime();
-            now_time = last_time + ',' + time_data.get_time();
+            lastTime = container.getData<RawData>().getTime();
+            nowTime = lastTime + ',' + time_data.get_time();
 
             // Filtra o dado
             filter.insert(data, type);
-            filtered_data = filter.getValue(type);
+            filteredData = filter.getValue(type);
             
-            cout << "Dado recebido de um " << type << ": " << data << " filtrado para " << filtered_data << endl;
+            cout << "Dado recebido de um " << type << ": " << data << " filtrado para " << filteredData << endl;
             
-            cout << "tempo " << now_time << endl;
-            FilteredData encapsulated_data(filtered_data, type, now_time);
-            Container packet(encapsulated_data);
+            cout << "tempo " << nowTime << endl;
+            FilteredData encapsulatedData(filteredData, type, nowTime);
+            Container packet(encapsulatedData);
             getConference().send(packet);
 
             /*

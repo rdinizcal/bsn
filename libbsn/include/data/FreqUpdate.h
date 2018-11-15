@@ -6,13 +6,15 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <stdint.h>
+
 namespace bsn {
     namespace data {
         
         class FreqUpdate : public odcore::data::SerializableData {
         
             public:
-                FreqUpdate(const int &/*units*/);
+                FreqUpdate(const int32_t &/*units*/);
  
                 FreqUpdate(); // construtor
                 virtual ~FreqUpdate();// destrutor 
@@ -39,11 +41,11 @@ namespace bsn {
                 
             // setters e getters
             public:
-                void setFreq(const int &/*freq*/);
-                int getFreq() const;
+                void setFreq(const int32_t &/*freq*/);
+                int32_t getFreq() const;
             
             private:
-                int freq;
+                int32_t freq;
         };
     }
 }

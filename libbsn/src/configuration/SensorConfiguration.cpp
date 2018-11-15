@@ -8,7 +8,7 @@ namespace bsn {
 
 		SensorConfiguration::SensorConfiguration(){}
 
-		SensorConfiguration::SensorConfiguration(int i, Range l, 
+		SensorConfiguration::SensorConfiguration(int32_t i, Range l, 
 			array<Range, 2> m, array<Range, 2> h, array<Range, 3> p ){
 				
 			this->id 		 	  = i;		
@@ -20,7 +20,7 @@ namespace bsn {
 			this->high_percentage = p[2];
 		}
 
-		int SensorConfiguration::getId() {
+		int32_t SensorConfiguration::getId() {
 			return this->id;
 		}
 

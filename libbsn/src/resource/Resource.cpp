@@ -34,13 +34,13 @@ namespace bsn {
 
         Resource::~Resource(){};
         
-        void Resource::consume(const int mult) {
+        void Resource::consume(const int32_t mult) {
             currentLevel-= unit*mult;
 
             if(currentLevel < 0) currentLevel = 0;
         }
 
-        void Resource::generate(const int mult) {
+        void Resource::generate(const int32_t mult) {
             currentLevel += unit*mult;
             
             if(currentLevel >= capacity) currentLevel = capacity;

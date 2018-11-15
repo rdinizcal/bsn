@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
+#include <stdint.h>
 
 namespace bsn {
 	namespace range {

@@ -23,15 +23,15 @@ const vector<string> split(const string& s, const char& c) {
 	return v;
 }
 
-TCPReceive::TCPReceive(int p){    
+TCPReceive::TCPReceive(int32_t p){    
     port = p;
 }
 
-void TCPReceive::set_port(int p){
+void TCPReceive::set_port(int32_t p){
     port = p;
 }
 
-int TCPReceive::get_port(){
+int32_t TCPReceive::get_port(){
     return port;
 }
 

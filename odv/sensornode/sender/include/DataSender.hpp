@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <algorithm>
 #include <vector>
+#include <stdint.h>
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
@@ -38,10 +39,10 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        odcore::base::FIFOQueue m_buffer;
+        odcore::base::FIFOQueue mBuffer;
         std::string ip;
-        std::map<std::string, std::map<std::string, bsn::range::Range>> configs_map;
-        std::vector<bsn::configuration::SensorConfiguration> configs_vet;
+        std::map<std::string, std::map<std::string, bsn::range::Range>> configsMap;
+        std::vector<bsn::configuration::SensorConfiguration> configsVet;
 };
 
 #endif 

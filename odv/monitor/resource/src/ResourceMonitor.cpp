@@ -29,7 +29,7 @@ void ResourceMonitor::tearDown(){}
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ResourceMonitor::body(){
 
     Container container;
-    int units = 0;
+    int32_t units = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         

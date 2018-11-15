@@ -1,4 +1,4 @@
-#include "../include/tcp_listener.hpp"
+#include "../include/Listener.hpp"
 
 using namespace std;
 
@@ -10,7 +10,7 @@ using namespace bsn::operation;
 TCPReceive server(8000);
 
 TimeTriggeredSender::TimeTriggeredSender(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "TimeTriggeredSender")
+    TimeTriggeredConferenceClientModule(argc, argv, "Listener")
     {}
 
 TimeTriggeredSender::~TimeTriggeredSender() {}
@@ -38,23 +38,27 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::b
             cout << "Pacote: \'" << package << endl;
             splitted_package = op.split(package, '/');
 
-            int i = 0;
-            int j = 0;
-            int k = 0;
+            int32_t i = 0;
+            int32_t j = 0;
+            int32_t k = 0;
             for (auto str : splitted_package) {
                 aux = op.split(str, '-');
                 types[i] = aux[0];
                 i++;
                 aux = op.split(aux[1], '$');
                 d = op.split(aux[0], '&');
-                for (int x = 0; x < d.size(); x++) {
+
+                for (uint32_t x = 0; x < d.size(); x++) {
                     data[x + j] = stod(d[x]);
                 }
+                
                 j = d.size();
                 t = op.split(aux[1], ',');
-                for (int x = 0; x < t.size(); x++) {
+
+                for (uint32_t x = 0; x < t.size(); x++) {
                     times[x + k] = t[x]; 
                 }
+
                 k = t.size();
             }
 

@@ -27,7 +27,7 @@ namespace bsn {
 
         string TimeData::get_time(){
             char buffer[26];
-            int millisec;
+            int32_t millisec;
             struct tm* tm_info;
             struct timeval tv;
 

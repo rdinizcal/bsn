@@ -11,7 +11,7 @@ mt19937 seed(rd());
 uniform_int_distribution<int> probability_generator(1,100);
 
 // Construtor
-Markov::Markov(array<float,25> transitions, array<Range, 5> ranges, int initial_state){
+Markov::Markov(array<float,25> transitions, array<Range, 5> ranges, int32_t initial_state){
         this->transitions = transitions;
         this->current_state = initial_state;
         this->ranges = ranges;
@@ -19,16 +19,16 @@ Markov::Markov(array<float,25> transitions, array<Range, 5> ranges, int initial_
 
 // Calcula o próximo estado da cadeia de markov
 void Markov::next_state() {
-    int random_number = probability_generator(seed);
+    int32_t random_number = probability_generator(seed);
     // Calcula o offset do vetor baseado no estado
-    int offset = current_state * 5;
+    int32_t offset = current_state * 5;
 
     // possibilities corresponde à chance da cadeia cair em um determinado estado
     array<float, 5> possibilities {0,0,0,0,0};
     
     // Inicializando possibilities
-    for(int i = 0; i < 5; i++) {
-        for(int j = 0; j <= i; j++) {
+    for(int32_t i = 0; i < 5; i++) {
+        for(int32_t j = 0; j <= i; j++) {
             possibilities[i] += transitions[offset + j];     
         }
     }

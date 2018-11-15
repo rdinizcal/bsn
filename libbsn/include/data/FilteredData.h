@@ -6,6 +6,7 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <stdint.h>
 #include <sys/time.h>
 #include <vector>
 

@@ -6,6 +6,8 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <stdint.h>
+
 namespace bsn {
     namespace data {
         

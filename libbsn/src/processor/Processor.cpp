@@ -5,7 +5,7 @@ using namespace std;
 namespace bsn {
     namespace processor {
         // Retorna o id baseado no tipo
-        int get_sensor_id(string type) {
+        int32_t get_sensor_id(string type) {
             if (type == "thermometer")
                 return 0;
             else if (type == "ecg")
@@ -44,7 +44,7 @@ namespace bsn {
 
         double data_fuse(vector<list<double>> &packets_received) {	
             double average, risk_status;
-            int count = 0;
+            int32_t count = 0;
             average = 0;
 
             // Se não existiver disponível não processa

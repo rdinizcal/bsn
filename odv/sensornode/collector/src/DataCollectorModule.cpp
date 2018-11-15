@@ -10,18 +10,18 @@ using namespace bsn::range;
 
 DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
-    data_buffer(),
+    dataBuffer(),
     mGeneratedData(), 
     timeRef{},
-    markov_transitions() {}
+    markovTransitions() {}
 
 DataCollectorModule::~DataCollectorModule() {}
 
 void DataCollectorModule::setUp() {
-    addDataStoreFor(877, data_buffer);
+    addDataStoreFor(877, dataBuffer);
 
-    int probability;
-    int k = 0;
+    int32_t probability;
+    int32_t k = 0;
     vector<string> lrs, mrs0, hrs0, mrs1, hrs1;
     vector<Range> ranges;
     Operation operation;
@@ -29,22 +29,22 @@ void DataCollectorModule::setUp() {
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));
 
     // Inicialização apenas necessária para transições espelhadas
-    for(unsigned int i=0; i < markov_transitions.size(); i++) {
-        markov_transitions[i] = 0;
+    for(uint32_t i=0; i < markovTransitions.size(); i++) {
+        markovTransitions[i] = 0;
     }
 
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
+    for (int32_t i = 0; i < 3; i++) {
+        for (int32_t j = 0; j < 3; j++) {
             probability = getKeyValueConfiguration().getValue<float>("datacollectormodule." + to_string(i) + "to" + to_string(j));
             if(i == 2){
-                markov_transitions[k] += probability / 2;
+                markovTransitions[k] += probability / 2;
                 // função de espelho
-                markov_transitions[24 - k] += probability / 2;
+                markovTransitions[24 - k] += probability / 2;
             }
             else {
-                markov_transitions[k] = probability;
+                markovTransitions[k] = probability;
                 // função de espelho
-                markov_transitions[24 - k] = probability;
+                markovTransitions[24 - k] = probability;
             }
             
             k++;
@@ -52,14 +52,7 @@ void DataCollectorModule::setUp() {
         // Contador +=2 apenas necessário para transições espelhadas
         k += 2;
     }
-    // k=0;
-    // for(auto i : markov_transitions) {         
-    //     cout << k << ": " << i << endl;
-    //     k++;
-    //     if(k % 5 == 0) {
-    //         cout << endl;
-    //     }
-    // }
+
   
     lrs = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "LowRisk"), ',');
     mrs0 = operation.split(getKeyValueConfiguration().getValue<string>("global." + sensorType + "MidRisk0"), ',');
@@ -78,8 +71,8 @@ void DataCollectorModule::setUp() {
     Range r4(stod(hrs1[0]), stod(hrs1[1]));
     ranges.push_back(r4);
 
-    for(int i = 0; i < 5; i++) {
-        ranges_array[i] = ranges[i];
+    for(int32_t i = 0; i < 5; i++) {
+        rangesArray[i] = ranges[i];
     }
 }
 
@@ -112,26 +105,26 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
     TimeData time_data;
     std::string sensorType = getKeyValueConfiguration().getValue<std::string>("global.type"+to_string(getIdentifier()));    
 
-    Markov markov_generator(markov_transitions, ranges_array, 2);
+    Markov markovGenerator(markovTransitions, rangesArray, 2);
 
     Container container;
-    int freq = 10;
-    int nCycles = 0;
+    int32_t freq = 10;
+    int32_t nCycles = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         //Receber nova freq para gerar dados
-        while(!data_buffer.isEmpty()) {
-            container = data_buffer.leave();
+        while(!dataBuffer.isEmpty()) {
+            container = dataBuffer.leave();
             freq = container.getData<FreqUpdate>().getFreq();
             std::cout<< "Recebi a nova frequencia: " << freq << endl; 
         }
 
         if(++nCycles >= freq){
             string now_time = time_data.get_time();
-            cout << "Estado atual: " << markov_generator.current_state << endl;
-            mGeneratedData = markov_generator.calculate_state();      
-            markov_generator.next_state();
+            cout << "Estado atual: " << markovGenerator.current_state << endl;
+            mGeneratedData = markovGenerator.calculate_state();      
+            markovGenerator.next_state();
 
             RawData rawdata(mGeneratedData, sensorType, now_time);
             Container container(rawdata);

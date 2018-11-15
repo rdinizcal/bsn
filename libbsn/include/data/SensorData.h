@@ -1,10 +1,3 @@
-/*
- * Mensagem com dados do sensor remetente
- * 
- * @author Ricardo Diniz Caldas
- * @version v1.0
- */
-
 #ifndef DATA_SENSOR_H_
 #define DATA_SENSOR_H_
 
@@ -16,6 +9,8 @@
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
+
+#include <stdint.h>
 
 namespace bsn {
     namespace data {

@@ -7,6 +7,7 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 
 #include <string>
+#include <stdint.h>
 
 namespace bsn {
     namespace resource {
@@ -18,8 +19,8 @@ namespace bsn {
                 Resource(std::string /*id*/, double /*capacity*/, double /*currentLevel*/, double /*unit*/);
                 ~Resource();
                 
-                void consume(const int /*mult*/);
-                void generate(const int /*mult*/);
+                void consume(const int32_t /*mult*/);
+                void generate(const int32_t /*mult*/);
 
                 void setName(const std::string /*name*/);
                 std::string getName() const;

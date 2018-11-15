@@ -27,7 +27,7 @@ void DataProcessor::setUp() {
 void DataProcessor::tearDown(){}
 
 void DataProcessor::print_packs(){
-	int i = 0;
+	int32_t i = 0;
 	for(auto l : packets_received){
 		cout << i << ": ";
 		i++;
@@ -43,7 +43,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataProcessor::body(){
     array<string, 2> types;
     array<double, 4> data;
     array<string, 8> times;
-    int sensor_id;
+    int32_t sensor_id;
     double evaluated_packet;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
