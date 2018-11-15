@@ -18,18 +18,18 @@ namespace bsn {
 				private:
 				
 				int32_t id;
-				bsn::range::Range low_percentage, mid_percentage, high_percentage;
-				bsn::range::Range low_risk;	
-				std::array<bsn::range::Range, 2> medium_risk;
-				std::array<bsn::range::Range, 2> high_risk;
+				bsn::range::Range lowPercentage, midPercentage, highPercentage;
+				bsn::range::Range lowRisk;	
+				std::array<bsn::range::Range, 2> mediumRisk;
+				std::array<bsn::range::Range, 2> highRisk;
 
 				public:
 				SensorConfiguration();
 
-				SensorConfiguration(int32_t i, bsn::range::Range low_risk, 
-				std::array<bsn::range::Range, 2> medium_risk,
-				std::array<bsn::range::Range, 2> high_risk,
-				std::array<bsn::range::Range, 3> percentages);
+				SensorConfiguration(int32_t i, bsn::range::Range lowRisk,
+									std::array<bsn::range::Range, 2> mediumRisk,
+									std::array<bsn::range::Range, 2> highRisk,
+									std::array<bsn::range::Range, 3> percentages);
 
 				// Retorna o estado de risco a partir dos intervalos
 				double evaluateNumber(double number);

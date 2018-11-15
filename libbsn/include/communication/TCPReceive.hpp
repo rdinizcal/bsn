@@ -8,6 +8,7 @@
 #include <mutex>
 #include <atomic>
 #include <algorithm>
+
 #include <opendavinci/odcore/base/Thread.h>
 #include <opendavinci/odcore/io/tcp/TCPAcceptor.h>
 #include <opendavinci/odcore/io/tcp/TCPFactory.h>
@@ -19,6 +20,8 @@
 #include <opendavinci/odcore/wrapper/SharedMemory.h>
 #include <opendavinci/odcore/wrapper/SharedMemoryFactory.h>
 
+#include "bsn/operation/Operation.hpp"
+
 class TCPReceive: 
     public odcore::io::ConnectionListener,
     public odcore::io::StringListener,
@@ -27,7 +30,7 @@ class TCPReceive:
     private:
         std::mutex buffer_lock; 
         std::atomic_bool should_run;
-        std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
+        std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
         std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
         int32_t port;
 

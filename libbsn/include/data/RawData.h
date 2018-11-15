@@ -52,9 +52,9 @@ namespace bsn {
                 std::string getSensorType() const;
 
             private:
-                double m_sensor_data; // estado do sensor
-                std::string m_sensor_type;
-                std::string m_time;
+                double mSensorData; // estado do sensor
+                std::string mSensorType;
+                std::string mTime;
         };
     }
 }

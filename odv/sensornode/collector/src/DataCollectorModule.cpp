@@ -122,7 +122,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
 
         if(++nCycles >= freq){
             string now_time = time_data.get_time();
-            cout << "Estado atual: " << markovGenerator.current_state << endl;
+            cout << "Estado atual: " << markovGenerator.currentState << endl;
             mGeneratedData = markovGenerator.calculate_state();      
             markovGenerator.next_state();
 

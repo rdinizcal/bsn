@@ -6,6 +6,7 @@ using namespace odcore;
 using namespace odcore::wrapper;
 using namespace odcore::io;
 using namespace odcore::io::tcp;
+using namespace bsn::operation;
 
 deque<string> buffer;
 
@@ -42,7 +43,7 @@ void TCPReceive::start_connection(){
 
 void TCPReceive::handleConnectionError() {
 
-    this_connection->stop();
+    thisConnection->stop();
     cout << "Connection terminated\n";
 }
 
@@ -69,9 +70,10 @@ void TCPReceive::print_buffer() {
     buffer_lock.unlock();
 }
 
-void TCPReceive::nextString(const std::string &received_string) {
+void TCPReceive::nextString(const std::string &receivedString) {
     // Realiza split pelo caracter separador escolhido. No caso '*'
-    vector<string> vet = split(received_string,'*');
+    Operation op;
+    vector<string> vet = op.split(receivedString,'*');
     buffer_lock.lock();
         for (auto str : vet) {
             buffer.push_back(str);
@@ -89,7 +91,7 @@ void TCPReceive::onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection>
         connection->setConnectionListener(this);
         connection->start();        
         
-        this_connection = connection;        
+        thisConnection = connection;        
     }
 }
 

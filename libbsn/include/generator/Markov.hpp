@@ -10,20 +10,25 @@
     O vetor de transições contém as probabilidades de tal forma:
         
 */
+namespace bsn {
+    namespace generator {
 
-class Markov {
-    public:
+        class Markov {
+            public:
+                // 0 para low 1 para medium e 2 para high
+                int32_t currentState;
+                // Contém a probabilidade de todas as transições
+                std::array<float,25> transitions;
+                // Contém os intervalos de cada estado
+                std::array<bsn::range::Range, 5> ranges;
 
-    // 0 para low 1 para medium e 2 para high
-    int32_t current_state;
-    // Contém a probabilidade de todas as transições
-    std::array<float,25> transitions;
-    // Contém os intervalos de cada estado
-    std::array<bsn::range::Range, 5> ranges;
+                Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int32_t initialState);
+                // Calcula o próximo estado da cadeia de markov
+                void next_state();
+                // Calcula um valor baseado no intervalo do estado atual
+                double calculate_state();
+        };
 
-    Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int32_t initial_state);
-    // Calcula o próximo estado da cadeia de markov
-    void next_state();
-    // Calcula um valor baseado no intervalo do estado atual
-    double calculate_state();
-};
+    }
+
+}

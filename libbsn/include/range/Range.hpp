@@ -21,15 +21,15 @@ namespace bsn {
 				double convert(double new_lb, double new_ub, double input);
 				std::string to_print();
 
-				void setLowerBound (const double &/*_lower_bound*/);
+				void setLowerBound (const double &/*_lowerBound*/);
 				double getLowerBound () const;
 
-				void setUpperBound (const double &/*_upper_bound*/);
+				void setUpperBound (const double &/*_upperBound*/);
 				double getUpperBound () const;
 
 			private:
-				double lower_bound;
-				double upper_bound;
+				double lowerBound;
+				double upperBound;
 
 		};
 

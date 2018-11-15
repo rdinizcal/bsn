@@ -10,7 +10,7 @@ class TCPSend {
         bool is_connected;
         std::string ip;
         int32_t port;
-        std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
+        std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
     public:
         void disconnect();
         TCPSend(int);

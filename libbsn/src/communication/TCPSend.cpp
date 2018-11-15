@@ -19,7 +19,7 @@ bool TCPSend::connect(){
     try{                
         std::shared_ptr<TCPConnection> connection(TCPFactory::createTCPConnectionTo(ip, port));                
         connection->setRaw(true);        
-        this_connection = connection;                                
+        thisConnection = connection;                                
         cout << "Sender connected on " << get_port() << endl;
         is_connected = true;
         return true;
@@ -45,7 +45,7 @@ int32_t TCPSend::get_port() {
 
 void TCPSend::disconnect() {
     // Desaloca o ponteiro pra conexão
-    this_connection.reset();
+    thisConnection.reset();
 }
 
 void TCPSend::send(string package){    
@@ -53,7 +53,7 @@ void TCPSend::send(string package){
         try {
             // Adiciona caracter separador
             package += '*';
-            this_connection->send(package);        
+            thisConnection->send(package);        
         }
         catch(string &exception) {
             cerr << "Data could not be sent: " << exception << endl;

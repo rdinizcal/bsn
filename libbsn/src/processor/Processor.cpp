@@ -29,10 +29,10 @@ namespace bsn {
         }
 
         // Retorna true se as tres listas são não vazias
-        bool available_to_process(vector<list<double>> packets_received){
+        bool available_to_process(vector<list<double>> packetsReceived){
             bool available = true;
 
-            for(auto packet_list : packets_received){
+            for(auto packet_list : packetsReceived){
                 if(packet_list.empty()){
                     available = false;
                     break;
@@ -42,16 +42,16 @@ namespace bsn {
             return available;
         }
 
-        double data_fuse(vector<list<double>> &packets_received) {	
+        double data_fuse(vector<list<double>> &packetsReceived) {	
             double average, risk_status;
             int32_t count = 0;
             average = 0;
 
             // Se não existiver disponível não processa
-            if(!available_to_process(packets_received))
+            if(!available_to_process(packetsReceived))
                 return -1;
             
-            for(auto &packet_list : packets_received){
+            for(auto &packet_list : packetsReceived){
                 if(!packet_list.empty()) {
                     // Soma à média e retira da fila
                     average += packet_list.front();

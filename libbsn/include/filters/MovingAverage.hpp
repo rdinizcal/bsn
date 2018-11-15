@@ -20,7 +20,6 @@ namespace bsn {
                 MovingAverage(int32_t);
                 double getValue(std::string);
                 void insert(double, std::string);
-                ;
         };        
 
     }
