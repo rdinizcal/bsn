@@ -11,6 +11,7 @@ using namespace std;
 using namespace bsn::range;
 using namespace bsn::filters;
 using namespace bsn::configuration;
+using namespace bsn::generator;
 
 class IntegrationTestSuite : public CxxTest::TestSuite{    
   public:
@@ -67,7 +68,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
         MovingAverage avg(2);
         Markov m(transitions, ranges, 2);   
-        TS_ASSERT_EQUALS(m.current_state,2);
+        TS_ASSERT_EQUALS(m.currentState,2);
 
         avg.insert(m.calculate_state(), "thermometer");
         avg.insert(m.calculate_state(), "thermometer");
@@ -87,7 +88,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
         MovingAverage avg(4);
         Markov m(transitions, ranges, 4);   
-        TS_ASSERT_EQUALS(m.current_state,4);
+        TS_ASSERT_EQUALS(m.currentState,4);
         avg.insert(m.calculate_state(), "thermometer");
         avg.insert(m.calculate_state(), "thermometer");
         double data = avg.getValue("thermometer ");
@@ -105,7 +106,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
         MovingAverage avg(1);
         Markov m(transitions, ranges, 1);   
-        TS_ASSERT_EQUALS(m.current_state,1);
+        TS_ASSERT_EQUALS(m.currentState,1);
         avg.insert(m.calculate_state(), "thermometer");
         avg.insert(m.calculate_state(), "thermometer");
         double data = avg.getValue("thermometer ");
