@@ -13,9 +13,6 @@ namespace bsn {
 	namespace configuration {
 
 		class SensorConfiguration {
-				// id é o id do sensor
-				// {var}_percentage represanta o quanto cada intervalo deve valer
-				// {var}_risk são os intervalos de cada risco(baixo medio ou alto)
 			public:
 				SensorConfiguration();
 
@@ -45,6 +42,15 @@ namespace bsn {
 
 				// Converte para o percentual final( {var}_percentage )
 				double convertRealPercentage(bsn::range::Range range, double number);
+
+				// Verifica se valor passado é de baixo risco
+				bool isLowRisk(double/*val*/);
+
+				// Verifica se valor passado é de médio risco
+				bool isMediumRisk(double/*val*/);
+
+				// Verifica se valor passado é de alto risco
+				bool isHighRisk(double/*val*/);
 
 				int32_t getId() const;
 				void setId(const int32_t);

@@ -18,6 +18,7 @@
 #include "bsn/data/SensorData.h"
 #include "bsn/range/Range.hpp"
 #include "bsn/data/ResourceUpdate.h"
+#include "bsn/data/PatientStatusInfo.h"
 
 class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -41,7 +42,6 @@ class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClient
 
     private:
         std::vector<std::list<double>> packets_received;
-        std::vector<bsn::configuration::SensorConfiguration> configurations;
         odcore::base::FIFOQueue data_buffer;
 };
 

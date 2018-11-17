@@ -150,6 +150,18 @@ namespace bsn {
 			return highRisk;
 		}
 
+		bool SensorConfiguration::isLowRisk(double val) {
+			return lowRisk.in_range(val);
+		}
+
+		bool SensorConfiguration::isMediumRisk(double val) {
+			return (mediumRisk[0].in_range(val) || mediumRisk[1].in_range(val));
+		}
+
+		bool SensorConfiguration::isHighRisk(double val) {
+			return (highRisk[0].in_range(val) || highRisk[1].in_range(val));
+		}
+
 		void SensorConfiguration::setHighRisk(const array<Range, 2> h) {
 			highRisk = h;
 		}

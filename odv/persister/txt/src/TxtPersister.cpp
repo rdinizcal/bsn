@@ -11,10 +11,11 @@ TxtPersister::~TxtPersister() {}
 
 void TxtPersister::setUp() {
     addDataStoreFor(875,data_buffer);
+    addDataStoreFor(879,data_buffer);
 
-    std::string path = "output/";    
-    fp.open(path+"centralhub"+"_output.csv");
-    fp << "Battery" << endl; // colunas separadas por virgula
+    //std::string path = "./output/";    
+    fp.open(/*path+*/"centralhub_output.csv");
+    fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,BATTERY,PATIENT_STATE" << endl; // colunas separadas por virgula
 }
 
 void TxtPersister::tearDown(){
@@ -24,20 +25,39 @@ void TxtPersister::tearDown(){
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TxtPersister::body(){
 
     Container container;
-    vector<ResourceInfo> rInfoVec;
+    ResourceInfo rInfo;
+    PatientStatusInfo psInfo;
+    int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+        bool flag = false;
         while (!data_buffer.isEmpty()) {
             
             container = data_buffer.leave();
-            rInfoVec.push_back(container.getData<ResourceInfo>());
+
+            if(container.getDataType() == 875){
+                rInfo = container.getData<ResourceInfo>();
+            } else if (container.getDataType() == 879){
+                psInfo = container.getData<PatientStatusInfo>();
+            } else {
+                std::cout << "ERROR: unrecognized consumed data." << endl;
+            }
+
+            flag = true;
         }
 
-        //persist lines
-        for(vector<ResourceInfo>::iterator it = rInfoVec.begin(); it != rInfoVec.end(); it++) {
-            fp << (*it).getResource().getCurrentLevel() << endl;
+        if(flag){
+            //persist lines
+            fp << id++ << ",";
+            fp << psInfo.getOximeterRisk() << ",";
+            fp << psInfo.getECGRisk() << ",";
+            fp << psInfo.getThermometerRisk() << ",";
+            fp << psInfo.getBloodPressureRisk() << ",";
+            fp << rInfo.getResource().getCurrentLevel() << ",";
+            fp << psInfo.getPatientStatus() << "\n";
         }
+        
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
