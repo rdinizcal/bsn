@@ -5,7 +5,7 @@ namespace bsn {
         
         using namespace std;
         
-        RawData::RawData() : mSensorData(), mTime() {}
+        RawData::RawData() : mSensorData(), mSensorType(), mTime() {}
         
         RawData::RawData(const double &sensorData,const std::string &sensorType ,const std::string &ts): 
             mSensorData(sensorData),

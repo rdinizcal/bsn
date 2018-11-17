@@ -19,11 +19,11 @@ namespace bsn {
                 TCPSend &operator=(const TCPSend & /*obj*/);
 
               private:
-                bool is_connected;
-
-                std::string ip;
 
                 int32_t port;
+                std::string ip;
+                bool is_connected;
+
 
                 std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
             

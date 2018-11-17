@@ -5,7 +5,7 @@ namespace bsn {
         
         using namespace std;
         
-        FilteredData::FilteredData() : mSensorData(), sensorType() {}
+        FilteredData::FilteredData() : mSensorData(), sensorType(), myTime() {}
         
         FilteredData::FilteredData(const double &sensorData, const std::string &type, const std::string &ts) : 
             mSensorData(sensorData),

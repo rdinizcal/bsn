@@ -30,9 +30,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::b
     vector<string> splitted_package;
     Operation op;
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-        array<string, 2> types = {"none", "none"};
-        array<double, 4> data = {-1.0, -1.0, -1.0, -1.0};
-        array<string, 8> times = {"none", "none", "none", "none", "none", "none", "none", "none"};
+        array<string, 2> types = {{"none", "none"}};
+        array<double, 4> data = {{-1.0, -1.0, -1.0, -1.0}};
+        array<string, 8> times = {{"none", "none", "none", "none", "none", "none", "none", "none"}};
         vector<string> aux, d, t;
         string package = server.get_package();
         if(package != ""){            

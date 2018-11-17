@@ -13,7 +13,8 @@ DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     dataBuffer(),
     mGeneratedData(), 
     timeRef{},
-    markovTransitions() {}
+    markovTransitions(),
+    rangesArray() {}
 
 DataCollectorModule::~DataCollectorModule() {}
 
@@ -126,8 +127,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
             markovGenerator.next_state();
 
             RawData rawdata(mGeneratedData, sensorType, now_time);
-            Container container(rawdata);
-            getConference().send(container);
+            Container rawDataContainer(rawdata);
+            getConference().send(rawDataContainer);
 
             /*
              * Para cada execução do loop, contabilizar e enviar uma unidade de bateria consumida

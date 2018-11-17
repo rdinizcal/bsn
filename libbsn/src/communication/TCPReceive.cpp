@@ -12,10 +12,8 @@ namespace bsn {
     namespace communication {
 
         deque<string> buffer;
-
-        TCPReceive::TCPReceive(int32_t p){    
-            port = p;
-        }
+        
+        TCPReceive::TCPReceive(int32_t p) : port(p) {}
 
         TCPReceive::TCPReceive(const TCPReceive &obj) : port(obj.get_port()) {}
 

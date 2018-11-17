@@ -21,10 +21,10 @@ namespace bsn {
                 Markov(const Markov & /*obj*/);
                 Markov &operator=(const Markov & /*obj*/);
 
-                // 0 para low 1 para medium e 2 para high
-                int32_t currentState;
                 // Contém a probabilidade de todas as transições
                 std::array<float,25> transitions;
+                // 0 para low 1 para medium e 2 para high
+                int32_t currentState;
                 // Contém os intervalos de cada estado
                 std::array<bsn::range::Range, 5> ranges;
 

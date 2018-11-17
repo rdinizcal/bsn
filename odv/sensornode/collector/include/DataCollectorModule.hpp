@@ -43,7 +43,6 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
 
   	private:
 	  	odcore::base::FIFOQueue dataBuffer;
-	  	uint32_t mSensor_id;
     	double mGeneratedData;
 		timespec timeRef;
 		std::array<float, 25> markovTransitions;

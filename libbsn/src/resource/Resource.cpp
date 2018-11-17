@@ -7,23 +7,22 @@ namespace bsn {
 
         using namespace std;
         
-        Resource::Resource(const std::string _name, const double _capacity, const double _currentLevel, const double _unit) {
-            if(_capacity <= 0){
+        Resource::Resource(const std::string _name, const double _capacity, const double _currentLevel, const double _unit) :
+            name(_name),
+            capacity(_capacity),
+            currentLevel(_currentLevel),
+            unit(_unit) {
+            if (_capacity <= 0) {
                 throw std::invalid_argument ("Capacity should not be negative or null");
             }
 
-            if(_currentLevel < 0 || _currentLevel > _capacity ) {
+            if (_currentLevel < 0 || _currentLevel > _capacity ) {
                 throw std::invalid_argument ("Current level should not be negative or null nor bigger than the capacity");
             }
 
-            if(_unit < 0  || _unit > _capacity) {
+            if (_unit < 0  || _unit > _capacity) {
                 throw std::invalid_argument ("The resolution should not be negative or null nor bigger than the capacity");
             }
-
-            name = _name;
-            capacity = _capacity;
-            currentLevel = _currentLevel;
-            unit = _unit;
         }
 
         Resource::Resource() :

@@ -13,20 +13,19 @@ namespace bsn {
         uniform_int_distribution<int> probabilityGenerator(1,100);
 
         // Construtor
-        Markov::Markov(array<float,25> transitions, array<Range, 5> ranges, int32_t initialState){
-                this->transitions = transitions;
-                this->currentState = initialState;
-                this->ranges = ranges;
-        }
+        Markov::Markov(array<float,25> t, array<Range, 5> r, int32_t initialState) :
+            transitions(t),
+            currentState(initialState),
+            ranges(r) {}
 
         Markov::Markov(const Markov &obj) :
-            currentState(obj.currentState),
             transitions(obj.transitions),
+            currentState(obj.currentState),
             ranges(obj.ranges) {}
         
         Markov& Markov::operator=(const Markov &obj) {
-            currentState = obj.currentState;
             transitions = obj.transitions;
+            currentState = obj.currentState;
             ranges = obj.ranges;
             return (*this);
         }
@@ -38,7 +37,7 @@ namespace bsn {
             int32_t offset = currentState * 5;
 
             // possibilities corresponde à chance da cadeia cair em um determinado estado
-            array<float, 5> possibilities {0,0,0,0,0};
+            array<float, 5> possibilities { { 0.0,0.0,0.0,0.0,0.0 }};
             
             // Inicializando possibilities
             for(int32_t i = 0; i < 5; i++) {

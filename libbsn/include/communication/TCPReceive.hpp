@@ -31,15 +31,16 @@ namespace bsn {
             public odcore::io::tcp::TCPAcceptorListener {
             
             public:
-                TCPReceive(int32_t p);
-                TCPReceive(const TCPReceive &);
-                TCPReceive &operator=(const TCPReceive & /*obj*/);
+              TCPReceive();
+              TCPReceive(int32_t p);
+              TCPReceive(const TCPReceive &);
+              TCPReceive &operator=(const TCPReceive & /*obj*/);
 
             private:
                 std::mutex bufferLock; 
                 std::atomic_bool shouldRun;
                 std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
-                std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
+                // std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
                 int32_t port;
 
                 virtual void nextString(const std::string &s);

@@ -7,13 +7,10 @@ namespace bsn {
 
 		Range::Range() : lowerBound(), upperBound() {}
 
-		Range::Range(const double &l, const double &u) {
+		Range::Range(const double &l, const double &u) : lowerBound(l), upperBound(u) {
 			if(l > u) {
 				throw std::invalid_argument("Invalid Range(lower bound is higher than uppper bound)");
 			}
-
-			this->lowerBound = l;
-			this->upperBound = u;			
 		}
 
 		Range::~Range() {}

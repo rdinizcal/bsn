@@ -5,15 +5,16 @@ using namespace std;
 
 namespace bsn {
     namespace filters{
+        
+        MovingAverage::MovingAverage() : computedAverage(), lastInserted(), range(), buffer() {}
 
-        MovingAverage::MovingAverage(int32_t max) {
-            computedAverage = 0;
-            lastInserted = 0;
-            range = max;
-        }
+        MovingAverage::MovingAverage(int32_t max) : computedAverage(0.0), lastInserted(0.0), range(max), buffer({}) {}
 
         MovingAverage::MovingAverage(const MovingAverage &obj) :
-            range(obj.getRange()) {}
+            computedAverage(0),
+            lastInserted(0),
+            range(obj.getRange()),
+            buffer({}) {}
         
         MovingAverage& MovingAverage::operator=(const MovingAverage &obj) {
             range = obj.getRange();          

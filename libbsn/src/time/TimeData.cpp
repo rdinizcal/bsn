@@ -9,12 +9,6 @@ namespace bsn {
 
         TimeData::~TimeData() {}
 
-        TimeData::TimeData(const TimeData &obj) {}
-        
-        TimeData& TimeData::operator=(const TimeData &obj) {         
-            return (*this);
-        }
-
         timespec TimeData::elapsedTime(timespec &now, timespec &ref) {
 
             timespec diff;

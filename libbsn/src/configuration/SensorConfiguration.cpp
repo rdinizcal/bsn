@@ -6,19 +6,15 @@ using namespace bsn::range;
 namespace bsn {
 	namespace configuration {
 
-		SensorConfiguration::SensorConfiguration(){}
-
 		SensorConfiguration::SensorConfiguration(int32_t i, Range l, 
-			array<Range, 2> m, array<Range, 2> h, array<Range, 3> p ){
-				
-			this->id 		 	  = i;		
-			this->lowRisk 	 	  = l;
-			this->mediumRisk	  = m;
-			this->highRisk  	  = h;
-			this->lowPercentage  = p[0];
-			this->midPercentage  = p[1];
-			this->highPercentage = p[2];
-		}
+			array<Range, 2> m, array<Range, 2> h, array<Range, 3> p) : 
+			id(i),
+			lowRisk(l),
+			mediumRisk(m),
+			highRisk(h),
+			lowPercentage(p[0]),
+			midPercentage(p[1]),
+			highPercentage(p[2]) {}
 
 		SensorConfiguration::SensorConfiguration(const SensorConfiguration &obj) : 
 			id(obj.getId()),

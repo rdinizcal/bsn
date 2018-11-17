@@ -12,6 +12,8 @@ namespace bsn {
 
         class MovingAverage { 
             public:
+
+                MovingAverage();
                 MovingAverage(int32_t);
 
                 MovingAverage(const MovingAverage & /*obj*/);
@@ -26,9 +28,9 @@ namespace bsn {
                 void setRange(const uint32_t);
             
             private:
-                uint32_t range;
                 double computedAverage;
                 double lastInserted;
+                uint32_t range;
                 std::array<std::list<double>, 5> buffer;
                 
         };        
