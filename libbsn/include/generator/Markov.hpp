@@ -2,6 +2,8 @@
 #include <array> 
 #include <random>
 #include <vector>
+#include <stdint.h>
+#include <sstream>
 
 #include "bsn/range/Range.hpp"
 
@@ -9,20 +11,31 @@
     O vetor de transições contém as probabilidades de tal forma:
         
 */
+namespace bsn {
+    namespace generator {
 
-class Markov {
-    public:
+        class Markov {
+            public:
+                Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int32_t initialState);
 
-    // 0 para low 1 para medium e 2 para high
-    int current_state;
-    // Contém a probabilidade de todas as transições
-    std::array<float,25> transitions;
-    // Contém os intervalos de cada estado
-    std::array<bsn::range::Range, 5> ranges;
+                Markov(const Markov & /*obj*/);
+                Markov &operator=(const Markov & /*obj*/);
 
-    Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int initial_state);
-    // Calcula o próximo estado da cadeia de markov
-    void next_state();
-    // Calcula um valor baseado no intervalo do estado atual
-    double calculate_state();
-};
+                // Contém a probabilidade de todas as transições
+                std::array<float,25> transitions;
+                // 0 para low 1 para medium e 2 para high
+                int32_t currentState;
+                // Contém os intervalos de cada estado
+                std::array<bsn::range::Range, 5> ranges;
+
+                // Calcula o próximo estado da cadeia de markov
+                void next_state();
+                // Calcula um valor baseado no intervalo do estado atual
+                double calculate_state();
+
+                const std::string toString() const;
+        };
+
+    }
+
+}

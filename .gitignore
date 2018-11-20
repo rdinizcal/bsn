@@ -45,3 +45,9 @@ test.cpp
 
 *.txt
 levi.sh
+
+# Doxygen documentation
+docs/doxygen
+
+# Experiments data
+*.csv

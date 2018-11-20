@@ -17,7 +17,6 @@
 #include "bsn/time/TimeData.hpp"
 #include "bsn/generator/Markov.hpp"
 #include "bsn/operation/Operation.hpp"
-#include "bsn/generator/DataGenerator.h"
 #include "bsn/data/ResourceUpdate.h"
 #include "bsn/data/FreqUpdate.h"
 
@@ -43,12 +42,11 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
   	private:
-	  	odcore::base::FIFOQueue data_buffer;
-	  	u_int32_t mSensor_id;
+	  	odcore::base::FIFOQueue dataBuffer;
     	double mGeneratedData;
 		timespec timeRef;
-		std::array<float, 25> markov_transitions;
-		std::array<bsn::range::Range,5> ranges_array;
+		std::array<float, 25> markovTransitions;
+		std::array<bsn::range::Range,5> rangesArray;
 };
 
 #endif 

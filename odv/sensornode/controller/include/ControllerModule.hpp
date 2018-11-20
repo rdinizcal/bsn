@@ -25,8 +25,8 @@ class ControllerModule : public odcore::base::module::TimeTriggeredConferenceCli
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
   	private:
-		odcore::base::FIFOQueue data_buffer;
-		std::array<bsn::range::Range,3> ranges_array;
+		odcore::base::FIFOQueue dataBuffer;
+		std::array<bsn::range::Range,5> rangesArray;
 
 };
 

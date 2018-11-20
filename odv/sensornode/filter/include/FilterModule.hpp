@@ -34,7 +34,7 @@ class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientM
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        odcore::base::FIFOQueue data_buffer;
+        odcore::base::FIFOQueue dataBuffer;
 };
 
 #endif 

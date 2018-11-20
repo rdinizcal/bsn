@@ -4,60 +4,85 @@ using namespace std;
 using namespace odcore;
 using namespace odcore::io::tcp;
 
-TCPSend::TCPSend(int this_port) {
-    port = this_port;
-    is_connected = false;
-}
+namespace bsn {
+    namespace communication {
 
-TCPSend::TCPSend(std::string this_ip, int this_port) {
-    port = this_port;
-    ip = this_ip;
-    is_connected = false;
-}
+        TCPSend::TCPSend(int32_t thisPort) : port(thisPort), ip("localhost"), is_connected(false), thisConnection(nullptr) {}
 
-bool TCPSend::connect(){
-    try{                
-        std::shared_ptr<TCPConnection> connection(TCPFactory::createTCPConnectionTo(ip, port));                
-        connection->setRaw(true);        
-        this_connection = connection;                                
-        cout << "Sender connected on " << get_port() << endl;
-        is_connected = true;
-        return true;
-    }
-    catch(string &exception) {
-        cout << "Sender couldn't connect on " << get_port() << '(' << exception << ')' << endl;
-        is_connected = false;
-        return false;
-    }   
-}
+        TCPSend::TCPSend(std::string thisIp, int32_t thisPort) : port(thisPort), ip(thisIp), is_connected(false), thisConnection(nullptr) {}
 
-void TCPSend::setIP(string vIP){
-    this->ip = vIP;
-}
+        TCPSend::TCPSend(const TCPSend &obj) : 
+            port(obj.get_port()), 
+            ip(obj.getIP()),
+            is_connected(false),
+            thisConnection(nullptr) {}
 
-void TCPSend::set_port(int p){
-    port = p;
-}
-
-int TCPSend::get_port() {
-    return port;
-}
-
-void TCPSend::disconnect() {
-    // Desaloca o ponteiro pra conexão
-    this_connection.reset();
-}
-
-void TCPSend::send(string package){    
-    if(is_connected){
-        try {
-            // Adiciona caracter separador
-            package += '*';
-            this_connection->send(package);        
+        TCPSend& TCPSend::operator=(const TCPSend &obj) {
+            port = obj.get_port();
+            ip = obj.getIP();
+            is_connected = false;
+            thisConnection = nullptr;
+            return (*this);
         }
-        catch(string &exception) {
-            cerr << "Data could not be sent: " << exception << endl;
+
+        bool TCPSend::connect(){
+            try{                
+                std::shared_ptr<TCPConnection> connection(TCPFactory::createTCPConnectionTo(ip, port));                
+                connection->setRaw(true);        
+                thisConnection = connection;                                
+                cout << "Sender connected on " << get_port() << endl;
+                is_connected = true;
+                return true;
+            }
+            catch(string &exception) {
+                cout << "Sender couldn't connect on " << get_port() << '(' << exception << ')' << endl;
+                is_connected = false;
+                return false;
+            }   
         }
+
+        void TCPSend::setIP(const string vIP) {
+            this->ip = vIP;
+        }   
+
+        string TCPSend::getIP() const {
+            return ip;
+        }
+
+        void TCPSend::set_port(const int32_t p) {
+            port = p;
+        }
+
+        int32_t TCPSend::get_port() const {
+            return port;
+        }
+
+        void TCPSend::disconnect() {
+            // Desaloca o ponteiro pra conexão
+            thisConnection.reset();
+        }
+
+        void TCPSend::send(string package) {    
+            if(is_connected){
+                try {
+                    // Adiciona caracter separador
+                    package += '*';
+                    thisConnection->send(package);        
+                }
+                catch(string &exception) {
+                    cerr << "Data could not be sent: " << exception << endl;
+                }
+            }
+        }
+
+        const std::string TCPSend::toString() const {
+            stringstream sstr;
+
+            sstr << "TCPSend " << ip << " " << port << endl;
+
+            return sstr.str();
+        }
+
     }
 }
 

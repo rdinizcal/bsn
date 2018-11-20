@@ -11,6 +11,7 @@ using namespace std;
 using namespace bsn::range;
 using namespace bsn::filters;
 using namespace bsn::configuration;
+using namespace bsn::generator;
 
 class IntegrationTestSuite : public CxxTest::TestSuite{    
   public:
@@ -26,7 +27,8 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
 	SensorConfiguration s;
     array<float,25> transitions;
-    array<Range, 5> ranges{Range(30.0, 33.0), Range(33.1, 36.4), Range(36.5, 37.5), Range(37.6, 39.0), Range(39.1, 42.0)};
+    array<Range, 5> ranges;
+    
     void setUp(){
         transitions =
         {
@@ -37,7 +39,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
             100,0,0,0,0
         };
 
-        array<Range, 5> ranges{Range(30.0, 33.0), Range(33.1, 36.4), Range(36.5, 37.5), Range(37.6, 39.0), Range(39.1, 42.0)};        
+        ranges = {Range(30.0, 33.0), Range(33.1, 36.4), Range(36.5, 37.5), Range(37.6, 39.0), Range(39.1, 42.0)};        
 
         h1.setLowerBound(30.0);
 		h1.setUpperBound(33.0);
@@ -66,7 +68,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
         MovingAverage avg(2);
         Markov m(transitions, ranges, 2);   
-        TS_ASSERT_EQUALS(m.current_state,2);
+        TS_ASSERT_EQUALS(m.currentState,2);
 
         avg.insert(m.calculate_state(), "thermometer");
         avg.insert(m.calculate_state(), "thermometer");
@@ -86,7 +88,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
         MovingAverage avg(4);
         Markov m(transitions, ranges, 4);   
-        TS_ASSERT_EQUALS(m.current_state,4);
+        TS_ASSERT_EQUALS(m.currentState,4);
         avg.insert(m.calculate_state(), "thermometer");
         avg.insert(m.calculate_state(), "thermometer");
         double data = avg.getValue("thermometer ");
@@ -104,7 +106,7 @@ class IntegrationTestSuite : public CxxTest::TestSuite{
 
         MovingAverage avg(1);
         Markov m(transitions, ranges, 1);   
-        TS_ASSERT_EQUALS(m.current_state,1);
+        TS_ASSERT_EQUALS(m.currentState,1);
         avg.insert(m.calculate_state(), "thermometer");
         avg.insert(m.calculate_state(), "thermometer");
         double data = avg.getValue("thermometer ");

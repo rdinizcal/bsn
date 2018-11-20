@@ -6,6 +6,7 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <stdint.h>
 #include <sys/time.h>
 #include <vector>
 
@@ -53,9 +54,9 @@ namespace bsn {
                 std::string getTime() const;
             
             private:
-                double m_sensor_data; // estado do sensor
+                double mSensorData; // estado do sensor
                 std::string sensorType;
-                std::string my_time;
+                std::string myTime;
         };
     }
 }

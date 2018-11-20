@@ -48,29 +48,41 @@ Antes de executar, o arquivo configuration.txt do diretorio *configs* deve ser c
 ```
 sudo cp /configs/configuration /opt/od/bin/
 ```
-
-Exemplo de execução do odsupercomponent(Na pasta configs):
+O comando 
 
 ```
 sudo odsupercomponent --cid=111 --freq=10 --realtime=20 --managed=simulation_rt
 ```
-
-E o módulo bodyhub (na pasta bodyhub/build):
-```
-./bodyhub --cid=111
-```
-E o módulo sensornode (na pasta sensornode/build):
-```
-./sensornode --cid=111 --id=0
-```
-
-E o módulo sensor(Na pasta sensor/build):
+é utilizado para iniciar a execução de uma conferência. Cada conferência é definida pelo parâmetro --cid. Para iniciar a execução do CentralHub, é necessário estar dentro da pasta configs:
 
 ```
-./sensor
+cd odv/centralhub/configs
 ```
+e então, iniciar o odsupercomponent, com um cid à sua escolha. Após isso, em um outro terminal, utilize
+```
+cd odv/centralhub/listener && ./tcp_listenerApp --cid=
+```
+e 
+```
+cd odv/centralhub/processor && ./ProcessorApp --cid= 
+```
+com o mesmo cid do odsupercomponent iniciado nas configurações do CentralHub. 
 
-Nesta configuração o protótipo será executado com uma plataforma central, três sensores (termômetro, eletrocardiógrafo e oxímetro). O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
+Para execução do SensorNode, é necessário iniciar um odsupercomponent para cada tipo de sensor. Atualmente, temos 4 tipos de sensores: termômetro, oxímetro, eletrocardíografo e pressão arterial. Cada sensor possui seu arquivo de configuração próprio, encontrado em odv/sensornode/configs e é possível utilizar mais de um sensor na mesma conferência, sendo necessário apenas mudanças nas configurações.
+
+Para executar o SensorNode por completo, é necessário utilizar os seguintes comandos, após iniciar um odsupercomponent com cid própria:
+```
+cd odv/sensornode/collector/build && ./DataCollectorApp --cid=
+```
+```
+cd odv/sensornode/filter/build && ./FilterModulleApp --cid=
+```
+```
+cd odv/sensornode/sender/build && ./SenderApp --cid=
+```
+Cada comando deve ser utilizado em terminais distintos, estando na pasta bsn. A cid deve ser a mesma utilizada pelo odsupercomponent correspondente à conferência que deseja executar.
+
+O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
 
 ## Configurações de teste
 

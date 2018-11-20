@@ -5,24 +5,47 @@
 #include <opendavinci/odcore/io/tcp/TCPConnection.h>
 #include <opendavinci/odcore/io/tcp/TCPFactory.h>
 
-class TCPSend {
-    private:
-        bool is_connected;
-        std::string ip;
-        int port;
-        std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
-    public:
-        void disconnect();
-        TCPSend(int);
-        // Construtor recebe uma string com o ip e uma int porta        
-        TCPSend(std::string this_ip, int this_port);
-        // Conecta à porta desejada e 
-        // retorna true se foi feita com sucesso e false caso nao
-        bool connect();        
-        // Envia um pacote por rede
-        void send(std::string package);
-        // Retorna a porta à qual tenta-se conectar        
-        int get_port();
-        void set_port(int p);
-        void setIP(std::string vIP);
-};
+namespace bsn {
+    namespace communication {
+
+        class TCPSend {
+            public:
+                TCPSend(int);
+
+                // Construtor recebe uma string com o ip e uma int32_t porta        
+                TCPSend(std::string, int32_t);
+
+                TCPSend(const TCPSend & /*obj*/);
+                TCPSend &operator=(const TCPSend & /*obj*/);
+
+              private:
+
+                int32_t port;
+                std::string ip;
+                bool is_connected;
+
+
+                std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
+            
+            public:
+                void disconnect();
+
+                // Conecta à porta desejada e 
+                // retorna true se foi feita com sucesso e false caso nao
+                bool connect(); 
+
+                // Envia um pacote por rede
+                void send(std::string package);
+
+                // Retorna a porta à qual tenta-se conectar        
+                int32_t get_port() const;
+                void set_port(const int32_t p);
+
+                std::string getIP() const;
+                void setIP(const std::string vIP);
+
+                const std::string toString() const;
+        };
+
+    }
+}

@@ -6,13 +6,15 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <stdint.h>
+
 namespace bsn {
     namespace data {
         
         class ResourceUpdate : public odcore::data::SerializableData {
         
             public:
-                ResourceUpdate(const int &/*units*/);
+                ResourceUpdate(const int32_t &/*units*/);
  
                 ResourceUpdate(); // construtor
                 virtual ~ResourceUpdate();// destrutor 
@@ -39,11 +41,11 @@ namespace bsn {
                 
             // setters e getters
             public:
-                void setUnits(const int &/*units*/);
-                int getUnits() const;
+                void setUnits(const int32_t &/*units*/);
+                int32_t getUnits() const;
             
             private:
-                int units;
+                int32_t units;
         };
     }
 }

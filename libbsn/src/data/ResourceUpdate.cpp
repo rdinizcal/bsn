@@ -7,7 +7,7 @@ namespace bsn {
 
         ResourceUpdate::ResourceUpdate() : units() {}
         
-        ResourceUpdate::ResourceUpdate(const int &_units) : 
+        ResourceUpdate::ResourceUpdate(const int32_t &_units) : 
             units(_units) {}
         
         ResourceUpdate::~ResourceUpdate() {}
@@ -41,11 +41,11 @@ namespace bsn {
             return ResourceUpdate::LongName();
         }
         
-        void ResourceUpdate::setUnits(const int &_units) {
+        void ResourceUpdate::setUnits(const int32_t &_units) {
             units = _units;
         }
 
-        int ResourceUpdate::getUnits() const {
+        int32_t ResourceUpdate::getUnits() const {
             return units;
         }
 

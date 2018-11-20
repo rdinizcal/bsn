@@ -1,12 +1,9 @@
 #ifndef RESOURCE_HPP
 #define RESOURCE_HPP
 
-#include "opendavinci/odcore/serialization/Serializable.h"
-#include "opendavinci/odcore/serialization/Serializer.h"
-#include "opendavinci/odcore/serialization/Deserializer.h"
-#include "opendavinci/odcore/serialization/SerializationFactory.h"
-
+#include <sstream>
 #include <string>
+#include <stdint.h>
 
 namespace bsn {
     namespace resource {
@@ -14,26 +11,32 @@ namespace bsn {
         class Resource {
 
             public:
-                Resource();
-                Resource(std::string /*id*/, double /*capacity*/, double /*currentLevel*/, double /*unit*/);
-                ~Resource();
+                Resource(const std::string /*id*/, const double /*capacity*/, const double /*currentLevel*/, const double /*unit*/);
                 
-                void consume(const int /*mult*/);
-                void generate(const int /*mult*/);
+                Resource();
+                ~Resource();
 
-                void setName(const std::string /*name*/);
+                Resource(const Resource & /*obj*/);
+                Resource &operator=(const Resource & /*obj*/);
+
+                void consume(const int32_t /*mult*/);
+                void generate(const int32_t /*mult*/);
+
+                void setName(const std::string &/*name*/);
                 std::string getName() const;
 
-                void setCapacity(const double /*capacity*/);
+                void setCapacity(const double &/*capacity*/);
                 double getCapacity() const; 
 
-                void setCurrentLevel (const double /*currentLevel*/);
+                void setCurrentLevel (const double &/*currentLevel*/);
                 double getCurrentLevel() const;
 
-                void setUnit(const double /*unit*/);
+                void setUnit(const double &/*unit*/);
                 double getUnit() const;
 
-            protected:
+                const std::string toString() const;
+
+            private:
                 std::string name;
                 double capacity;
                 double currentLevel;

@@ -6,6 +6,8 @@
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
 #include "opendavinci/odcore/serialization/Serializer.h"
 
+#include <stdint.h>
+
 #include "bsn/resource/Resource.hpp"
 
 namespace bsn {

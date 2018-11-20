@@ -6,30 +6,34 @@ using namespace odcore::data;
 using namespace bsn::data;
 using namespace bsn::time;
 using namespace bsn::configuration;
+using namespace bsn::communication;
 using namespace bsn::operation;
 using namespace bsn::range;
 using namespace std;
 
 DataSender::DataSender(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "datasender"),
-    m_buffer() {}
+    mBuffer(),
+    ip("localhost"),
+    configsMap(),
+    configsVet() {}
 
 DataSender::~DataSender() {}
 
 TCPSend sender(8000);
 
 void DataSender::setUp() {
-    vector<string> sensors_types;
+    vector<string> sensorsTypes;
     map<string, vector<string>> all_configs;
     vector<string> lowR, midR0, midR1, highR0, highR1;
-    vector<string> p_l, p_m, p_h;
+    vector<string> lowPercentage, midPercentage, highPercentage;
     Operation op;
     bool ok = true;
-    int aux = 0;
+    int32_t aux = 0;
 
     // Configurações para SensorConfiguration
     Range low_range;
-    array<Range,2> mid_ranges, high_ranges;
+    array<Range,2> midRanges, highRanges;
     array<Range,3> percentages;
     
     ip = getKeyValueConfiguration().getValue<std::string>("datasender.ip");
@@ -37,7 +41,7 @@ void DataSender::setUp() {
     
     try {
         while (ok) {
-            sensors_types.push_back(getKeyValueConfiguration().getValue<string>("global.type" + to_string(aux)));
+            sensorsTypes.push_back(getKeyValueConfiguration().getValue<string>("global.type" + to_string(aux)));
             aux++;
         }
     }
@@ -45,39 +49,39 @@ void DataSender::setUp() {
         ok = false;
     }
 
-    sensors_types.erase(unique(sensors_types.begin(), sensors_types.end()), sensors_types.end());    
+    sensorsTypes.erase(unique(sensorsTypes.begin(), sensorsTypes.end()), sensorsTypes.end());    
 
-    for (string str : sensors_types) {
+    for (string str : sensorsTypes) {
 
         highR0 = (op.split(getKeyValueConfiguration().getValue<string>("global." + str + "HighRisk0"), ','));
         midR0  = (op.split(getKeyValueConfiguration().getValue<string>("global." + str + "MidRisk0"), ','));
         lowR   = (op.split(getKeyValueConfiguration().getValue<string>("global." +  str + "LowRisk"), ','));
         midR1  = (op.split(getKeyValueConfiguration().getValue<string>("global." +  str + "MidRisk1"), ','));
         highR1 = (op.split(getKeyValueConfiguration().getValue<string>("global." +  str + "HighRisk1"), ','));
-        p_l    = (op.split(getKeyValueConfiguration().getValue<string>("datasender.lowPercentage"), ','));
-        p_m    = (op.split(getKeyValueConfiguration().getValue<string>("datasender.midPercentage"), ','));
-        p_h    = (op.split(getKeyValueConfiguration().getValue<string>("datasender.highPercentage"), ','));
+        lowPercentage  = (op.split(getKeyValueConfiguration().getValue<string>("datasender.lowPercentage"), ','));
+        midPercentage  = (op.split(getKeyValueConfiguration().getValue<string>("datasender.midPercentage"), ','));
+        highPercentage = (op.split(getKeyValueConfiguration().getValue<string>("datasender.highPercentage"), ','));
 
         low_range      = Range(stod(lowR[0]), stod(lowR[1]));
 
-        high_ranges[0] = Range(stod(highR0[0]), stod(highR0[1])); 
-        high_ranges[1] = Range(stod(highR1[0]), stod(highR1[1]));
+        highRanges[0] = Range(stod(highR0[0]), stod(highR0[1])); 
+        highRanges[1] = Range(stod(highR1[0]), stod(highR1[1]));
 
-        mid_ranges[0]  = Range(stod(midR0[0]), stod(midR0[1])); 
-        mid_ranges[1]  = Range(stod(midR1[0]), stod(midR1[1]));
+        midRanges[0]  = Range(stod(midR0[0]), stod(midR0[1])); 
+        midRanges[1]  = Range(stod(midR1[0]), stod(midR1[1]));
 
-        percentages[0] = Range(stod(p_l[0]), stod(p_l[1]));
-        percentages[1] = Range(stod(p_m[0]), stod(p_m[1]));
-        percentages[2] = Range(stod(p_h[0]), stod(p_h[1]));        
+        percentages[0] = Range(stod(lowPercentage[0]), stod(lowPercentage[1]));
+        percentages[1] = Range(stod(midPercentage[0]), stod(midPercentage[1]));
+        percentages[2] = Range(stod(highPercentage[0]), stod(highPercentage[1]));        
 
-        configs_vet.push_back(SensorConfiguration(0,low_range,mid_ranges,high_ranges,percentages));
+        configsVet.push_back(SensorConfiguration(0,low_range,midRanges,highRanges,percentages));
     }
 
 
-    configs_vet[0].print();
+    cout << configsVet[0].toString() << endl;
 
     // Recebe FilteredData
-    addDataStoreFor(876, m_buffer);
+    addDataStoreFor(876, mBuffer);
     // Conecta o sender em uma porta
     sender.set_port(getIdentifier());
     sender.setIP(ip);
@@ -98,8 +102,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) { 
 
-        while (!m_buffer.isEmpty()) {            
-            Container container = m_buffer.leave();
+        while (!mBuffer.isEmpty()) {            
+            Container container = mBuffer.leave();
             data = container.getData<FilteredData>().getSensorData();
             type = container.getData<FilteredData>().getSensorType();
             last_time = container.getData<FilteredData>().getTime();
@@ -108,7 +112,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
             std::cout << "Dado recebido de um " << type << ": " << data << std::endl;                        
 
             if (type == "bpms") {
-                double evaluated = configs_vet[0].evaluateNumber(data);                
+                double evaluated = configsVet[0].evaluateNumber(data);                
                 isOK = true;
                 // eval_sys = configurations[sensor_id].evaluateNumber(systolic_value);
                 package = type;
@@ -125,7 +129,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
             }
 
             else if (type == "bpmd" and isOK) {
-                double evaluated = configs_vet[1].evaluateNumber(data);                
+                double evaluated = configsVet[1].evaluateNumber(data);                
                 isOK = false;
                 package += type;
                 package += '-';
@@ -141,7 +145,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataSender::body(){
             }
             // Para os outros tipos apenas concatenar com '-'
             else if (type != "bmps" and type != "bpmd") {
-                double evaluated = configs_vet[0].evaluateNumber(data);                
+                double evaluated = configsVet[0].evaluateNumber(data);                
                 isOK = false;
                 package = type;
                 package += '-';

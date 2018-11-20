@@ -1,17 +1,27 @@
 #include "bsn/filters/MovingAverage.hpp"
 #include <iostream>
 
+using namespace std;
+
 namespace bsn {
     namespace filters{
+        
+        MovingAverage::MovingAverage() : computedAverage(), lastInserted(), range(), buffer() {}
 
-        MovingAverage::MovingAverage(int max) {
-            computedAverage = 0;
-            lastInserted = 0;
-            range = max;
-            // std::fill(buffer.begin(), buffer.end(), std::list<double>(0.0));
+        MovingAverage::MovingAverage(int32_t max) : computedAverage(0.0), lastInserted(0.0), range(max), buffer({}) {}
+
+        MovingAverage::MovingAverage(const MovingAverage &obj) :
+            computedAverage(0),
+            lastInserted(0),
+            range(obj.getRange()),
+            buffer({}) {}
+        
+        MovingAverage& MovingAverage::operator=(const MovingAverage &obj) {
+            range = obj.getRange();          
+            return (*this);
         }
 
-        int defineType(std::string type) {
+        int32_t defineType(std::string type) {
             if(type == "thermometer")
                 return 0;
             if(type == "ecg")
@@ -26,7 +36,7 @@ namespace bsn {
         }
 
         double MovingAverage::getValue(std::string type) {
-            int index = defineType(type);
+            int32_t index = defineType(type);
             computedAverage = 0;
 
             if(buffer[index].size() < range){
@@ -46,7 +56,7 @@ namespace bsn {
         }
 
         void MovingAverage::insert(double value, std::string type) {
-            int index = defineType(type);
+            int32_t index = defineType(type);
             lastInserted = value;   
             buffer[index].push_back(lastInserted);
 
@@ -54,6 +64,22 @@ namespace bsn {
                 buffer[index].pop_front();
             }
 
+        }
+
+        uint32_t MovingAverage::getRange() const {
+            return range;
+        }
+
+        void MovingAverage::setRange(const uint32_t r) {
+            range = r;
+        }
+
+        const string MovingAverage::toString() const {
+            stringstream sstr;
+
+            sstr << "Computed average:" << computedAverage << "" << endl;
+
+            return sstr.str();
         }
 
     }

@@ -7,7 +7,7 @@ namespace bsn {
 
         FreqUpdate::FreqUpdate() : freq() {}
         
-        FreqUpdate::FreqUpdate(const int &_freq) : 
+        FreqUpdate::FreqUpdate(const int32_t &_freq) : 
             freq(_freq) {}
         
         FreqUpdate::~FreqUpdate() {}
@@ -41,11 +41,11 @@ namespace bsn {
             return FreqUpdate::LongName();
         }
         
-        void FreqUpdate::setFreq(const int &_freq) {
+        void FreqUpdate::setFreq(const int32_t &_freq) {
             freq = _freq;
         }
 
-        int FreqUpdate::getFreq() const {
+        int32_t FreqUpdate::getFreq() const {
             return freq;
         }
 

@@ -5,25 +5,25 @@ namespace bsn {
         
         using namespace std;
         
-        RawData::RawData() : m_sensor_data(), m_time() {}
+        RawData::RawData() : mSensorData(), mSensorType(), mTime() {}
         
-        RawData::RawData(const double &sensor_data,const std::string &sensor_type ,const std::string &ts): 
-            m_sensor_data(sensor_data),
-            m_sensor_type(sensor_type),
-            m_time(ts) {}
+        RawData::RawData(const double &sensorData,const std::string &sensorType ,const std::string &ts): 
+            mSensorData(sensorData),
+            mSensorType(sensorType),
+            mTime(ts) {}
         
         RawData::~RawData() {}
         
         RawData::RawData(const RawData &obj) :
             SerializableData(),
-            m_sensor_data(obj.getSensorData()),
-            m_sensor_type(obj.getSensorType()),
-            m_time(obj.getTime()) {}
+            mSensorData(obj.getSensorData()),
+            mSensorType(obj.getSensorType()),
+            mTime(obj.getTime()) {}
         
         RawData& RawData::operator=(const RawData &obj) {
-            m_sensor_data = obj.getSensorData();
-            m_sensor_type = obj.getSensorType();
-            m_time = obj.getTime();          
+            mSensorData = obj.getSensorData();
+            mSensorType = obj.getSensorType();
+            mTime = obj.getTime();          
             return (*this);
         }
         
@@ -49,37 +49,37 @@ namespace bsn {
             return RawData::LongName();
         }
 
-        void RawData::setSensorData(const double &sensor_data) {
-            m_sensor_data = sensor_data;
+        void RawData::setSensorData(const double &sensorData) {
+            mSensorData = sensorData;
         }
         
         double RawData::getSensorData() const {
-            return m_sensor_data;
+            return mSensorData;
         }
 
         void RawData::setTime(const std::string &ts) {
-            m_time = ts;
+            mTime = ts;
         }
 
         std::string RawData::getTime() const {
-            return m_time;
+            return mTime;
         }
 
         void RawData::setSensorType(const string &type) {
-            m_sensor_type = type;
+            mSensorType = type;
         }
 
         string RawData::getSensorType() const {
-            return m_sensor_type;
+            return mSensorType;
         }
         
         ostream& RawData::operator<<(ostream &out) const {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
             
-            s->write(1, m_sensor_data);
-            s->write(2, m_sensor_type);
-            s->write(3, m_time);
+            s->write(1, mSensorData);
+            s->write(2, mSensorType);
+            s->write(3, mTime);
 
             return out;
         }
@@ -88,9 +88,9 @@ namespace bsn {
             odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
             std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
             
-            d->read(1, m_sensor_data);
-            d->read(2, m_sensor_type);
-            d->read(3, m_time);
+            d->read(1, mSensorData);
+            d->read(2, mSensorType);
+            d->read(3, mTime);
 
             return in;
         }
@@ -98,7 +98,7 @@ namespace bsn {
         const string RawData::toString() const {
             stringstream sstr;
 
-            sstr << "Raw Data: " << m_sensor_data << "" << endl;
+            sstr << "Raw Data: " << mSensorData << "" << endl;
 
             return sstr.str();
         }

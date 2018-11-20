@@ -8,6 +8,7 @@
 #include <mutex>
 #include <atomic>
 #include <algorithm>
+
 #include <opendavinci/odcore/base/Thread.h>
 #include <opendavinci/odcore/io/tcp/TCPAcceptor.h>
 #include <opendavinci/odcore/io/tcp/TCPFactory.h>
@@ -19,35 +20,54 @@
 #include <opendavinci/odcore/wrapper/SharedMemory.h>
 #include <opendavinci/odcore/wrapper/SharedMemoryFactory.h>
 
-class TCPReceive: 
-    public odcore::io::ConnectionListener,
-    public odcore::io::StringListener,
-    public odcore::io::tcp::TCPAcceptorListener {
+#include "bsn/operation/Operation.hpp"
 
-    private:
-        std::mutex buffer_lock; 
-        std::atomic_bool should_run;
-        std::shared_ptr<odcore::io::tcp::TCPConnection> this_connection;
-        std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
-        int port;
+namespace bsn {
+    namespace communication {
 
-        virtual void nextString(const std::string &s);
+        class TCPReceive: 
+            public odcore::io::ConnectionListener,
+            public odcore::io::StringListener,
+            public odcore::io::tcp::TCPAcceptorListener {
+            
+            public:
+              TCPReceive();
+              TCPReceive(int32_t p);
+              TCPReceive(const TCPReceive &);
+              TCPReceive &operator=(const TCPReceive & /*obj*/);
 
-        void push(std::string);
+            private:
+                int32_t port;
+                std::mutex bufferLock; 
+                std::atomic_bool shouldRun;
+                std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
+                // std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
 
-        virtual void onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection);
+                virtual void nextString(const std::string &s);
 
-        virtual void handleConnectionError();
+                void push(std::string);
 
-    public:
-        void print_buffer();
-        void set_port(int p);
-        TCPReceive(int p);
-        std::string get_package();
-        void start_connection();
-        void stop_connection();
-        void initialize();
-        int get_port();
-    
-};
+                virtual void onNewConnection(std::shared_ptr<odcore::io::tcp::TCPConnection> connection);
+
+                virtual void handleConnectionError();
+
+            public:
+                void initialize();
+
+                void set_port(const int32_t p);
+                int32_t get_port() const;
+
+                std::string get_package();
+
+                void start_connection();
+                void stop_connection();
+
+                void print_buffer();
+
+                const std::string toString() const;
+            
+        };
+
+    }
+}
 
