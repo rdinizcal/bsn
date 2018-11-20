@@ -1,0 +1,35 @@
+# BSN Thermometer configuration file
+
+global.type0 = thermometer
+global.type1 = thermometer
+global.type2 = thermometer
+
+global.thermometerHighRisk0 = 30.0,35.4
+global.thermometerMidRisk0 = 35.5,36.4
+global.thermometerLowRisk = 36.5,37.5
+global.thermometerMidRisk1 = 37.6,39.5
+global.thermometerHighRisk1 = 39.6,42.0
+
+datacollectormodule.0to0 = 20
+datacollectormodule.0to1 = 70
+datacollectormodule.0to2 = 10
+
+datacollectormodule.1to0 = 10
+datacollectormodule.1to1 = 10
+datacollectormodule.1to2 = 80
+
+datacollectormodule.2to0 = 0
+datacollectormodule.2to1 = 25
+datacollectormodule.2to2 = 75
+
+datasender.ip = localhost
+
+datasender.lowPercentage = 0,20
+datasender.midPercentage = 21,65
+datasender.highPercentage = 66,100
+
+# Resource monitor configuration
+resourcemonitor.name = Battery
+resourcemonitor.capacity = 100.0
+resourcemonitor.initialLevel = 100.0
+resourcemonitor.unit = 0.01

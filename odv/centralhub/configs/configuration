@@ -1,0 +1,27 @@
+# BSN CentralHub Configuration File
+
+dataprocessor.thermometerLowRange = 30.0,36.4
+dataprocessor.thermometerMidRange = 36.5,37.5
+dataprocessor.thermometerHighRange = 37.6,42.0
+
+dataprocessor.ecgLowRange = 40.0,55.0
+dataprocessor.ecgMidRange = 60.0,100.0
+dataprocessor.ecgHighRange = 120.0,150.0
+
+dataprocessor.oximeterLowRange = 50.0,89.0 
+dataprocessor.oximeterMidRange = 90.0,100.0
+dataprocessor.oximeterHighRange = 100.1,110.1
+
+dataprocessor.bpmdLowRange = 40.0,60.0 
+dataprocessor.bpmdMidRange = 61.0,80.0
+dataprocessor.bpmdHighRange = 81.0,100.0
+
+dataprocessor.bpmsLowRange = 70.0,90.0 
+dataprocessor.bpmsMidRange = 91.0,120.0
+dataprocessor.bpmsHighRange = 121,190.0
+
+# Resource monitor configuration
+resourcemonitor.name = Battery
+resourcemonitor.capacity = 100.0
+resourcemonitor.initialLevel = 100.0
+resourcemonitor.unit = 0.01

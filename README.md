@@ -1,120 +1,88 @@
-# OpenBASN
+# BSN
 
-**Open** **B**ody **A**rea **S**ensor **N**etwork é o protótipo de rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo desenvolvido para o Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília de Ricardo Diniz Caldas.
-
-## Introdução
-
-Estas instruções descrevem o conteúdo do galho (tcc) do repositório OpenBASN e apresentam por meio de um passo-a-passo como instalar, compilar e executar o protótipo dem ambiente Linux.
-
-##Descrição
-
-No presente galho do repositório encontram-se o protótipo no OpenDaVINCI, e modelo do UPPAAL utilizados na apresentação do Trabalho de Graduação em Engenharia Mecatrônica na Universidade de Brasília do aluno Ricardo Diniz Caldas, na data de 08/12/2017, de título "Prototipação e Verificação Formal de Sistema Autônomo com Propriedades Tempo-Real: Um estudo de caso no Body Sensor Network".
+**B**ody **S**ensor **N**etwork é o protótipo de sistema de software para uma rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo.
 
 ### Pré-Requisitos
 
-É necessário ter a versão v4.16.0 do OpenDaVINCI instalada para executar o protótipo. O *framework* pode ser encontrado no repositório: https://github.com/se-research/OpenDaVINCI, onde há instruções para instalação para diversos sistemas operacionais.
+É necessário ter a versão v4.16.0 do OpenDaVINCI instalada para executar o 
+protótipo. O *framework* pode ser encontrado no repositório: 
+https://github.com/se-research/OpenDaVINCI, onde há instruções para 
+instalação para diversos sistemas operacionais. Link para o pacote 
+pré-compilado: https://github.com/se-research/OpenDaVINCI/blob/master/docs/installation.pre-compiled.rst
 
 Para execução em tempo real (*realtime*) o sistema operacional de execução do protótipo deve permitir esse tipo de operação. 
 
+É usada também a biblioteca 'cxx test' para testar o programa. Para 
+baixá-la basta digitar o seguinte comando:
+
+```
+sudo apt-get install cxxtest
+```
+
 ### Instalação
 
-Um passo-a-passo com exemplos descrevem como instalar o OpenBASN (testado em Linux Ubuntu 16.04).
+Um passo-a-passo com exemplos descrevem como instalar o BSN (testado em Linux Ubuntu 16.04).
 
 Clone o galho específico do repositório
 
 ```
-git clone -b tcc https://github.com/rdinizcal/OpenBASN.git
-```
-
-Entre na pasta da biblioteca libopenbasn
-
-```
-cd ./OpenBASN/libopenbasn
-```
-
-Crie uma pasta build e entre nela
-
-```
-mkdir build && build
-```
-
-Utilize o CMAKE para criar os arquivos para compilar o código
-
-```
-cmake ..
-```
-
-Compile a biblioteca
-
-```
-make
-```
-
-E o instale usando permissão de administrador
-
-```
-sudo make install
+git clone https://github.com/leooleo/bsn
 ```
 
 ## Compilação
 
-Para compilar os módulos deve-se executar os seguintes passos, tanto para o bodyhub quanto para o sensornode:
-
-Entre na pasta da plataforma central
+Apenas rode o script com:
 
 ```
-cd ./bodyhub
+bash script.sh
 ```
 
-Crie uma pasta build e entre nela
-
-```
-mkdir build && build
-```
-
-Utilize o CMAKE para criar os arquivos para compilar o código
-
-```
-cmake ..
-```
-
-Compile o código
-
-```
-make
-```
+A instalção será feita de forma automática.
 
 ### Execução
 
-Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então emakxecutá-los:
+Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então executá-los:
 
 Antes de executar, o arquivo configuration.txt do diretorio *configs* deve ser colocado em */opt/od/bin/*
 
 ```
-cp ./configs/configuration.txt /opt/od/bin/
+sudo cp /configs/configuration /opt/od/bin/
 ```
-
-Exemplo de execução do odsupercomponent:
+O comando 
 
 ```
 sudo odsupercomponent --cid=111 --freq=10 --realtime=20 --managed=simulation_rt
 ```
+é utilizado para iniciar a execução de uma conferência. Cada conferência é definida pelo parâmetro --cid. Para iniciar a execução do CentralHub, é necessário estar dentro da pasta configs:
 
-E os módulos:
 ```
-./bodyhub --cid=111
+cd odv/centralhub/configs
 ```
+e então, iniciar o odsupercomponent, com um cid à sua escolha. Após isso, em um outro terminal, utilize
 ```
-./sensornode --cid=111 --id=0
+cd odv/centralhub/listener && ./tcp_listenerApp --cid=
 ```
+e 
 ```
-./sensornode --cid=111 --id=1
+cd odv/centralhub/processor && ./ProcessorApp --cid= 
 ```
-```
-./sensornode --cid=111 --id=2
-```
+com o mesmo cid do odsupercomponent iniciado nas configurações do CentralHub. 
 
-Nesta configuração o protótipo será executado com uma plataforma central, três sensores (termômetro, eletrocardiógrafo e oxímetro). O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
+Para execução do SensorNode, é necessário iniciar um odsupercomponent para cada tipo de sensor. Atualmente, temos 4 tipos de sensores: termômetro, oxímetro, eletrocardíografo e pressão arterial. Cada sensor possui seu arquivo de configuração próprio, encontrado em odv/sensornode/configs e é possível utilizar mais de um sensor na mesma conferência, sendo necessário apenas mudanças nas configurações.
+
+Para executar o SensorNode por completo, é necessário utilizar os seguintes comandos, após iniciar um odsupercomponent com cid própria:
+```
+cd odv/sensornode/collector/build && ./DataCollectorApp --cid=
+```
+```
+cd odv/sensornode/filter/build && ./FilterModulleApp --cid=
+```
+```
+cd odv/sensornode/sender/build && ./SenderApp --cid=
+```
+Cada comando deve ser utilizado em terminais distintos, estando na pasta bsn. A cid deve ser a mesma utilizada pelo odsupercomponent correspondente à conferência que deseja executar.
+
+O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
 
 ## Configurações de teste
 
@@ -123,4 +91,6 @@ Nesta configuração o protótipo será executado com uma plataforma central, tr
 
 ## Autores
 
-* **Ricardo D. Caldas** - (https://github.com/rdinizcal)
+* **Ricardo D. Caldas** - https://github.com/rdinizcal
+* **Gabriel Levi** - https://github.com/gabrielevi10
+* **Léo Moraes** - https://github.com/leooleo 
