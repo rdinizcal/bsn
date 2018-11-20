@@ -5,7 +5,8 @@ using namespace bsn::data;
 
 TxtPersister::TxtPersister(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "TxtPersister"),
-    data_buffer() {}
+    data_buffer(),
+    fp(){}
 
 TxtPersister::~TxtPersister() {}
 

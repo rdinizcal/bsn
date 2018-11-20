@@ -5,6 +5,14 @@ using namespace bsn::range;
 
 namespace bsn {
 	namespace configuration {
+		SensorConfiguration::SensorConfiguration():
+			id(),
+			lowRisk(),
+			mediumRisk(),
+			highRisk(),
+			lowPercentage(),
+			midPercentage(),
+			highPercentage() {}
 
 		SensorConfiguration::SensorConfiguration(int32_t i, Range l, 
 			array<Range, 2> m, array<Range, 2> h, array<Range, 3> p) : 

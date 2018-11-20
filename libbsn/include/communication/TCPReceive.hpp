@@ -37,11 +37,11 @@ namespace bsn {
               TCPReceive &operator=(const TCPReceive & /*obj*/);
 
             private:
+                int32_t port;
                 std::mutex bufferLock; 
                 std::atomic_bool shouldRun;
                 std::shared_ptr<odcore::io::tcp::TCPConnection> thisConnection;
                 // std::shared_ptr<odcore::io::tcp::TCPAcceptor> tcpacceptor;
-                int32_t port;
 
                 virtual void nextString(const std::string &s);
 

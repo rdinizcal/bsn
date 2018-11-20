@@ -13,7 +13,10 @@ using namespace std;
 
 DataSender::DataSender(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "datasender"),
-    mBuffer() {}
+    mBuffer(),
+    ip("localhost"),
+    configsMap(),
+    configsVet() {}
 
 DataSender::~DataSender() {}
 

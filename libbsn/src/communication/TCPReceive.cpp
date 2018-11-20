@@ -13,12 +13,20 @@ namespace bsn {
 
         deque<string> buffer;
         
-        TCPReceive::TCPReceive(int32_t p) : port(p) {}
+        TCPReceive::TCPReceive(int32_t p) :
+            port(p),
+            bufferLock(),
+            shouldRun(false),
+            thisConnection(nullptr) {}
 
-        TCPReceive::TCPReceive(const TCPReceive &obj) : port(obj.get_port()) {}
+        TCPReceive::TCPReceive(const TCPReceive &obj) : 
+            port(obj.get_port()),
+            bufferLock(),
+            shouldRun(false),
+            thisConnection(nullptr) {}
 
         TCPReceive& TCPReceive::operator=(const TCPReceive &obj) {
-            port = obj.get_port();          
+            port = obj.get_port();        
             return (*this);
         }
 

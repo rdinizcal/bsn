@@ -8,7 +8,8 @@ using namespace bsn::range;
 
 ControllerModule::ControllerModule(const int32_t  &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ControllerModule"),
-    dataBuffer(){}
+    dataBuffer(),
+    rangesArray() {}
 
 ControllerModule::~ControllerModule() {}
 

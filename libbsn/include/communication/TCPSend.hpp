@@ -39,9 +39,9 @@ namespace bsn {
 
                 // Retorna a porta à qual tenta-se conectar        
                 int32_t get_port() const;
-
                 void set_port(const int32_t p);
 
+                std::string getIP() const;
                 void setIP(const std::string vIP);
 
                 const std::string toString() const;

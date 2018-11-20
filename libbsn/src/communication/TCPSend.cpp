@@ -7,14 +7,21 @@ using namespace odcore::io::tcp;
 namespace bsn {
     namespace communication {
 
-        TCPSend::TCPSend(int32_t thisPort) : port(thisPort), is_connected(false) {}
+        TCPSend::TCPSend(int32_t thisPort) : port(thisPort), ip("localhost"), is_connected(false), thisConnection(nullptr) {}
 
-        TCPSend::TCPSend(std::string thisIp, int32_t thisPort) : port(thisPort), ip(thisIp), is_connected(false) {}
+        TCPSend::TCPSend(std::string thisIp, int32_t thisPort) : port(thisPort), ip(thisIp), is_connected(false), thisConnection(nullptr) {}
 
-        TCPSend::TCPSend(const TCPSend &obj) : port(obj.get_port()) {}
+        TCPSend::TCPSend(const TCPSend &obj) : 
+            port(obj.get_port()), 
+            ip(obj.getIP()),
+            is_connected(false),
+            thisConnection(nullptr) {}
 
         TCPSend& TCPSend::operator=(const TCPSend &obj) {
-            port = obj.get_port();           
+            port = obj.get_port();
+            ip = obj.getIP();
+            is_connected = false;
+            thisConnection = nullptr;
             return (*this);
         }
 
@@ -36,6 +43,10 @@ namespace bsn {
 
         void TCPSend::setIP(const string vIP) {
             this->ip = vIP;
+        }   
+
+        string TCPSend::getIP() const {
+            return ip;
         }
 
         void TCPSend::set_port(const int32_t p) {
