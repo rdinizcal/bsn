@@ -22,3 +22,8 @@ fi
 ${terminal_name} -e ./odv/sensornode/collector/build/DataCollectorApp --cid=111  &
 ${terminal_name} -e ./odv/sensornode/filter/build/Filter --cid=111 &
 ${terminal_name} -e ./odv/sensornode/sender/build/SenderApp --cid=111 --id=8080 &
+
+
+${terminal_name} -e ./odv/sensornode/collector/build/DataCollectorApp --cid=112  &
+${terminal_name} -e ./odv/sensornode/filter/build/Filter --cid=112 &
+${terminal_name} -e ./odv/sensornode/sender/build/SenderApp --cid=112 --id=8081 &

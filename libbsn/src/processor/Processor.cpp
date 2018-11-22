@@ -30,11 +30,11 @@ namespace bsn {
 
         // Retorna true se as tres listas são não vazias
         bool available_to_process(vector<list<double>> packetsReceived){
-            bool available = true;
+            bool available = false;
 
             for(auto packet_list : packetsReceived){
-                if(packet_list.empty()){
-                    available = false;
+                if(!packet_list.empty()){
+                    available = true;
                     break;
                 }
             }
