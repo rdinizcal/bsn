@@ -12,5 +12,3 @@ mkdir -p odv/monitor/resource/build
 mkdir -p odv/persister/txt/build
 
 python3 make_generator.py
-
-make
