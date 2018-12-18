@@ -14,7 +14,7 @@ namespace bsn {
         class FreqUpdate : public odcore::data::SerializableData {
         
             public:
-                FreqUpdate(const int32_t &/*units*/);
+                FreqUpdate(const double &/*units*/);
  
                 FreqUpdate(); // construtor
                 virtual ~FreqUpdate();// destrutor 
@@ -41,11 +41,11 @@ namespace bsn {
                 
             // setters e getters
             public:
-                void setFreq(const int32_t &/*freq*/);
-                int32_t getFreq() const;
+                void setFreq(const double &/*freq*/);
+                double getFreq() const;
             
             private:
-                int32_t freq;
+                double freq;
         };
     }
 }

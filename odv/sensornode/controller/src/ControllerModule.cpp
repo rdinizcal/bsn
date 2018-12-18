@@ -50,11 +50,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
     Container container;
     double rawVal;
     int32_t sensorStatus = 0;
-    int32_t freq = 1;
-    int32_t lowRiskFreq = 10;
-    int32_t medRiskFreq = 5;
-    int32_t highRiskFreq = 1;
-
+    double freq = 0.1;
+    double lowRiskFreq = 0.1;
+    double medRiskFreq = 0.5;
+    double highRiskFreq = 1;
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         while(!dataBuffer.isEmpty()) {
@@ -97,7 +97,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                 getConference().send(fUpdContainer);
 
                 std::cout << "Estado atual do sensor: " << sensorStatus << endl;
-                std::cout << "Frequencia enviada ao collector: " << 1/freq << " Hz" << endl ;
+                std::cout << "Frequencia enviada ao collector: " << freq << " Hz" << endl ;
             }
 
         }

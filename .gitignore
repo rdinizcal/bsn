@@ -45,6 +45,7 @@ test.cpp
 
 *.txt
 levi.sh
+launch.sh
 
 # Doxygen documentation
 docs/doxygen

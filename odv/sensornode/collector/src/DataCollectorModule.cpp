@@ -108,8 +108,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
     Markov markovGenerator(markovTransitions, rangesArray, 2);
 
     Container container;
-    int32_t freq = 10;
-    int32_t nCycles = 0;
+    double freq = 1;
+    double nCycles = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -117,10 +117,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         while(!dataBuffer.isEmpty()) {
             container = dataBuffer.leave();
             freq = container.getData<FreqUpdate>().getFreq();
-            std::cout<< "Recebi a nova frequencia: " << freq << endl; 
+            std::cout<< "The new execution frequency is " << freq << " Hz "<<endl; 
         }
 
-        if(++nCycles >= freq){
+        if(++nCycles >= 1/freq){
             string now_time = time_data.get_time();
             cout << "Estado atual: " << markovGenerator.currentState << endl;
             mGeneratedData = markovGenerator.calculate_state();      
