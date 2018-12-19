@@ -6,8 +6,7 @@
 
 #include "bsn/range/Range.hpp"
 #include "bsn/operation/Operation.hpp"
-#include "bsn/data/SensorStatusInfo.h"
-#include "bsn/data/FreqUpdate.h"
+#include "bsn/msg/data/SensorStatusInfo.h"
 
 #include <iostream>
 

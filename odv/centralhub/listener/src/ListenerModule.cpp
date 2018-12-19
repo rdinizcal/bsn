@@ -1,32 +1,32 @@
-#include "../include/Listener.hpp"
+#include "ListenerModule.hpp"
 
 using namespace std;
 
 using namespace odcore::base::module;
 using namespace odcore::data;
-using namespace bsn::data;
+using namespace bsn::msg::data;
 using namespace bsn::operation;
 using namespace bsn::communication;
 
 TCPReceive server(8000);
 
-TimeTriggeredSender::TimeTriggeredSender(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "Listener")
+ListenerModule::ListenerModule(const int32_t &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "ListenerModule")
     {}
 
-TimeTriggeredSender::~TimeTriggeredSender() {}
+ListenerModule::~ListenerModule() {}
 
-void TimeTriggeredSender::setUp() {
+void ListenerModule::setUp() {
     // É usado o id do módulo para receber a porta desejada
     server.set_port(getIdentifier());
     server.start_connection();    
 }
 
-void TimeTriggeredSender::tearDown() {
+void ListenerModule::tearDown() {
     server.stop_connection();
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode TimeTriggeredSender::body() {
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ListenerModule::body() {
     vector<string> splitted_package;
     Operation op;
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {

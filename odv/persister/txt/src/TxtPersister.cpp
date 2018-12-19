@@ -1,7 +1,7 @@
-#include "../include/TxtPersister.hpp"
+#include "TxtPersister.hpp"
 
 using namespace odcore::data; 
-using namespace bsn::data;
+using namespace bsn::msg::data;
 
 TxtPersister::TxtPersister(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "TxtPersister"),

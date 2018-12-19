@@ -1,9 +1,9 @@
-#include "../include/DataProcessor.hpp"
+#include "DataProcessor.hpp"
 
 // ecg termomther oximeter and blood pressure
 #define number_sensors 5
 
-using namespace bsn::data;
+using namespace bsn::msg::data;
 using namespace bsn::range;
 using namespace bsn::operation;
 using namespace bsn::processor;

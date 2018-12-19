@@ -15,10 +15,10 @@
 #include "bsn/configuration/SensorConfiguration.hpp"
 #include "bsn/operation/Operation.hpp"
 #include "bsn/processor/Processor.hpp"
-#include "bsn/data/SensorData.h"
+#include "bsn/msg/data/SensorData.h"
 #include "bsn/range/Range.hpp"
-#include "bsn/data/ResourceUpdate.h"
-#include "bsn/data/PatientStatusInfo.h"
+#include "bsn/msg/data/ResourceUpdate.h"
+#include "bsn/msg/data/PatientStatusInfo.h"
 
 class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

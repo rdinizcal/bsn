@@ -1,9 +1,9 @@
-#include "../include/DataSender.hpp"
+#include "DataSender.hpp"
 
 using namespace odcore::base;
 using namespace odcore::base::module;
 using namespace odcore::data;
-using namespace bsn::data;
+using namespace bsn::msg::data;
 using namespace bsn::time;
 using namespace bsn::configuration;
 using namespace bsn::communication;

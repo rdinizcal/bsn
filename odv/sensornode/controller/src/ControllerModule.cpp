@@ -1,8 +1,8 @@
-#include "../include/ControllerModule.hpp"
+#include "ControllerModule.hpp"
 
 using namespace odcore::data;
 
-using namespace bsn::data;
+using namespace bsn::msg::data;
 using namespace bsn::operation;
 using namespace bsn::range;
 
@@ -92,9 +92,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                         freq = highRiskFreq;
                         break;
                 }
-                FreqUpdate fUpdate(freq);
-                Container fUpdContainer(fUpdate);
-                getConference().send(fUpdContainer);
+                
+                // TODO: Freq update doesnt exist anymore
+                //FreqUpdate fUpdate(freq);
+                //Container fUpdContainer(fUpdate);
+                //getConference().send(fUpdContainer);
 
                 std::cout << "Estado atual do sensor: " << sensorStatus << endl;
                 std::cout << "Frequencia enviada ao collector: " << freq << " Hz" << endl ;

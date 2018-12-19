@@ -11,11 +11,11 @@
 
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
-#include "bsn/data/FilteredData.h"
+#include "bsn/msg/data/FilteredData.h"
 #include "bsn/communication/TCPSend.hpp"
 #include "bsn/time/TimeData.hpp"
-#include "bsn/data/ResourceUpdate.h"
-#include "bsn/data/SensorStatusInfo.h"
+#include "bsn/msg/data/ResourceUpdate.h"
+#include "bsn/msg/data/SensorStatusInfo.h"
 #include "bsn/configuration/SensorConfiguration.hpp"
 #include "bsn/operation/Operation.hpp"
 

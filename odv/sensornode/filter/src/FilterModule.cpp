@@ -1,7 +1,7 @@
-#include "../include/FilterModule.hpp"
+#include "FilterModule.hpp"
 
 using namespace bsn::filters;
-using namespace bsn::data;
+using namespace bsn::msg::data;
 using namespace odcore::data;
 using namespace odcore::base;
 using namespace odcore::base::module;

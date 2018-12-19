@@ -5,20 +5,20 @@
 #include <opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h>
 #include "opendavinci/odcore/data/TimeStamp.h"
 #include "bsn/communication/TCPReceive.hpp"
-#include "bsn/data/SensorData.h"
-#include "bsn/data/ResourceUpdate.h"
+#include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/data/ResourceUpdate.h"
 #include "bsn/operation/Operation.hpp"
 
-class TimeTriggeredSender : public odcore::base::module::TimeTriggeredConferenceClientModule {
+class ListenerModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:
-        TimeTriggeredSender(const TimeTriggeredSender &/*obj*/);
+        ListenerModule(const ListenerModule &/*obj*/);
         
-        TimeTriggeredSender& operator=(const TimeTriggeredSender &/*obj*/);
+        ListenerModule& operator=(const ListenerModule &/*obj*/);
 
     public:
-        TimeTriggeredSender(const int32_t &argc, char **argv);
+        ListenerModule(const int32_t &argc, char **argv);
 
-        virtual ~TimeTriggeredSender();
+        virtual ~ListenerModule();
 
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 

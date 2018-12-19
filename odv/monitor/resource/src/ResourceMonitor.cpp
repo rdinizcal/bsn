@@ -1,7 +1,7 @@
-#include "../include/ResourceMonitor.hpp"
+#include "ResourceMonitor.hpp"
 
 using namespace odcore::data; 
-using namespace bsn::data;
+using namespace bsn::msg::data;
 
 ResourceMonitor::ResourceMonitor(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ResourceMonitor"),

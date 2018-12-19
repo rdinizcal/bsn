@@ -8,11 +8,11 @@
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
-#include "bsn/data/FilteredData.h"
-#include "bsn/data/RawData.h"
+#include "bsn/msg/data/FilteredData.h"
+#include "bsn/msg/data/RawData.h"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/time/TimeData.hpp"
-#include "bsn/data/ResourceUpdate.h"
+#include "bsn/msg/data/ResourceUpdate.h"
 
 class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
     private:
