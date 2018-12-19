@@ -19,6 +19,7 @@
 #include "bsn/generator/Markov.hpp"
 #include "bsn/operation/Operation.hpp"
 #include "bsn/msg/data/ResourceUpdate.h"
+#include "bsn/msg/control/DataCollectorModuleControlCommand.hpp"
 
 class DataCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -27,8 +28,6 @@ class DataCollectorModule : public odcore::base::module::TimeTriggeredConference
     	DataCollectorModule &operator=(const DataCollectorModule & /*obj*/);
     	virtual void setUp();
     	virtual void tearDown();
-
-		void updateParameters(const std::map<std::string, double> &_params);
 
   	public:
     	DataCollectorModule(const int32_t &argc, char **argv);

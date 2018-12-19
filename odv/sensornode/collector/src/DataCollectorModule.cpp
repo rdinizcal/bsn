@@ -2,6 +2,7 @@
 
 using namespace odcore::base::module;
 using namespace bsn::msg::data;
+using namespace bsn::msg::control;
 using namespace bsn::generator;
 using namespace odcore::data;
 using namespace bsn::time;
@@ -12,7 +13,7 @@ DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "DataCollectorModule"),
     buffer(),
     active(true),
-    params({{"freq",1}}),
+    params({{"freq",0.1}}),
     mGeneratedData(),
     timeRef(),
     markovTransitions(),
@@ -22,7 +23,7 @@ DataCollectorModule::~DataCollectorModule() {}
 
 void DataCollectorModule::setUp() {
     // TODO: Modify for DataCollectorModuleControlCommand
-    addDataStoreFor(877, buffer);
+    addDataStoreFor(900, buffer);
     
     {
         int32_t probability;
@@ -84,10 +85,6 @@ void DataCollectorModule::setUp() {
 
 void DataCollectorModule::tearDown(){}
 
-void DataCollectorModule::updateParameters(const std::map<std::string,double> &_params) {
-    params["freq"] = _params.at("freq");
-}
-
 // Retorna os parametros necessários à distribuição normal
 std::tuple<double,double> DataCollectorModule::get_normal_params(string sensorType) {
     tuple<double,double> result;
@@ -116,9 +113,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
     Markov markovGenerator(markovTransitions, rangesArray, 2);
 
     Container container;
-    double freq = 1;
     double nCycles = 0;
-    std::map<std::string,double> new_params;
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         /*
@@ -127,14 +122,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode DataCollectorModule::b
         while(!buffer.isEmpty()){
             container = buffer.leave();
             active = container.getData<DataCollectorModuleControlCommand>().getActive();
-            new_params = container.getData<DataCollectorModuleControlCommand>().getParams();
+            params = container.getData<DataCollectorModuleControlCommand>().getParams();
         }
 
         if(!active){
             continue;
         }
-
-        updateParameters(new_params);
 
         /*
          * Module execution
