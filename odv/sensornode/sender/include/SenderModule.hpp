@@ -1,5 +1,5 @@
-#ifndef DataSender_HPP
-#define DataSender_HPP
+#ifndef SENDER_MODULE_HPP
+#define SENDER_MODULE_HPP
 
 #include <iostream>
 #include <string>
@@ -12,17 +12,18 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "bsn/msg/data/FilteredData.h"
+#include "bsn/msg/data/SensorStatusInfo.h"
+#include "bsn/msg/data/ResourceUpdate.h"
+#include "bsn/msg/control/SenderModuleControlCommand.hpp"
 #include "bsn/communication/TCPSend.hpp"
 #include "bsn/time/TimeData.hpp"
-#include "bsn/msg/data/ResourceUpdate.h"
-#include "bsn/msg/data/SensorStatusInfo.h"
 #include "bsn/configuration/SensorConfiguration.hpp"
 #include "bsn/operation/Operation.hpp"
 
-class DataSender : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class SenderModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
-        DataSender(const DataSender & /*obj*/);
-        DataSender &operator=(const DataSender & /*obj*/);
+        SenderModule(const SenderModule & /*obj*/);
+        SenderModule &operator=(const SenderModule & /*obj*/);
         virtual void setUp();
         virtual void tearDown();
 
@@ -30,8 +31,8 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         /**
          * Construtor e destrutor da classe.
         */
-        DataSender(const int32_t &argc, char **argv);
-        virtual ~DataSender();
+        SenderModule(const int32_t &argc, char **argv);
+        virtual ~SenderModule();
 
         /**
          * Método efetivamente executado.
@@ -39,7 +40,11 @@ class DataSender : public odcore::base::module::TimeTriggeredConferenceClientMod
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        odcore::base::FIFOQueue mBuffer;
+        odcore::base::FIFOQueue buffer;
+
+        bool active;
+		std::map<std::string,double> params;
+
         std::string ip;
         std::map<std::string, std::map<std::string, bsn::range::Range>> configsMap;
         std::vector<bsn::configuration::SensorConfiguration> configsVet;

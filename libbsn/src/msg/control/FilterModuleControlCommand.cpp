@@ -34,7 +34,7 @@ namespace bsn {
                 return "FilterModuleControlCommand";
             }
             const string FilterModuleControlCommand::LongName() {
-                return "data.FilterModuleControlCommand";
+                return "control.FilterModuleControlCommand";
             }
             
             int32_t FilterModuleControlCommand::getID() const {

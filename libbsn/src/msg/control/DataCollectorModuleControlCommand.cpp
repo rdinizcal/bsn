@@ -34,7 +34,7 @@ namespace bsn {
                 return "DataCollectorModuleControlCommand";
             }
             const string DataCollectorModuleControlCommand::LongName() {
-                return "data.DataCollectorModuleControlCommand";
+                return "control.DataCollectorModuleControlCommand";
             }
             
             int32_t DataCollectorModuleControlCommand::getID() const {
