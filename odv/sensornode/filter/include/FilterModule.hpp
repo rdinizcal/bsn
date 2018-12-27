@@ -10,6 +10,7 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 #include "bsn/msg/data/FilteredData.h"
 #include "bsn/msg/data/RawData.h"
+#include "bsn/msg/control/FilterModuleControlCommand.hpp"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/time/TimeData.hpp"
 #include "bsn/msg/data/ResourceUpdate.h"
@@ -34,7 +35,10 @@ class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientM
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        odcore::base::FIFOQueue dataBuffer;
+        odcore::base::FIFOQueue buffer;
+
+        bool active;
+		std::map<std::string,double> params;
 };
 
 #endif 

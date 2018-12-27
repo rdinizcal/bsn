@@ -1,4 +1,4 @@
-#include "bsn/msg/data/SensorStatusInfo.h"
+#include "msg/data/SensorStatusInfo.h"
 
 namespace bsn {
     namespace msg { 

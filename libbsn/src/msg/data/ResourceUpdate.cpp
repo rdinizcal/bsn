@@ -1,4 +1,4 @@
-#include "bsn/msg/data/ResourceUpdate.h"
+#include "msg/data/ResourceUpdate.h"
 
 namespace bsn {
     namespace msg { 

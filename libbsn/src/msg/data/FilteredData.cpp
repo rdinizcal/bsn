@@ -1,4 +1,4 @@
-#include "bsn/msg/data/FilteredData.h"
+#include "msg/data/FilteredData.h"
 
 namespace bsn {
     namespace msg { 

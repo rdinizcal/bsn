@@ -1,4 +1,4 @@
-#include "bsn/msg/data/RawData.h"
+#include "msg/data/RawData.h"
 
 namespace bsn {
     namespace msg { 

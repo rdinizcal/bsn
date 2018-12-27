@@ -1,4 +1,4 @@
-#include "bsn/msg/control/DataCollectorModuleControlCommand.hpp"
+#include "msg/control/DataCollectorModuleControlCommand.hpp"
 
 namespace bsn {
     namespace msg { 
@@ -28,7 +28,7 @@ namespace bsn {
             }
             
             int32_t DataCollectorModuleControlCommand::ID() {
-                return 901;
+                return 900;
             }
             const string DataCollectorModuleControlCommand::ShortName() {
                 return "DataCollectorModuleControlCommand";

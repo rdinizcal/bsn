@@ -22,7 +22,6 @@ DataCollectorModule::DataCollectorModule(const int32_t &argc, char **argv) :
 DataCollectorModule::~DataCollectorModule() {}
 
 void DataCollectorModule::setUp() {
-    // TODO: Modify for DataCollectorModuleControlCommand
     addDataStoreFor(900, buffer);
     
     {

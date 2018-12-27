@@ -1,4 +1,4 @@
-#include "bsn/msg/data/PatientStatusInfo.h"
+#include "msg/data/PatientStatusInfo.h"
 
 namespace bsn {
     namespace msg { 

@@ -1,4 +1,4 @@
-#include "bsn/msg/data/ResourceInfo.h"
+#include "msg/data/ResourceInfo.h"
 
 #include<iostream>
 
