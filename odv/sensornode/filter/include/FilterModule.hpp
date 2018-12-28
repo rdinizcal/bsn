@@ -23,15 +23,9 @@ class FilterModule : public odcore::base::module::TimeTriggeredConferenceClientM
         virtual void tearDown();
 
     public:
-        /**
-         * Construtor e destrutor da classe.
-        */
         FilterModule(const int32_t &argc, char **argv);
         virtual ~FilterModule();
 
-        /**
-         * Método efetivamente executado.
-        */
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
