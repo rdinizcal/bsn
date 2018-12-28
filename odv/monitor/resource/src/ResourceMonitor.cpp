@@ -2,16 +2,17 @@
 
 using namespace odcore::data; 
 using namespace bsn::msg::data;
+using namespace bsn::msg::info;
 
 ResourceMonitor::ResourceMonitor(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ResourceMonitor"),
-    data_buffer(),
+    buffer(),
     mResource() {}
 
 ResourceMonitor::~ResourceMonitor() {}
 
 void ResourceMonitor::setUp() {
-    addDataStoreFor(874,data_buffer);
+    addDataStoreFor(874,buffer);
 
     const std::string rName  = getKeyValueConfiguration().getValue<std::string>("resourcemonitor.name");
     const double rCapacity = getKeyValueConfiguration().getValue<double>("resourcemonitor.capacity");
@@ -33,9 +34,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ResourceMonitor::body(
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        while (!data_buffer.isEmpty()) {
+        while (!buffer.isEmpty()) {
             
-            container = data_buffer.leave();
+            container = buffer.leave();
             units = container.getData<ResourceUpdate>().getUnits();
             
             if(units>=0){

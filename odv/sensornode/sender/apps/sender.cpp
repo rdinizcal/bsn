@@ -1,7 +1,7 @@
-#include "DataSender.hpp"
+#include "SenderModule.hpp"
 
 int32_t main(int32_t argc, char **argv) {
-    DataSender dh(argc, argv);
+    SenderModule sm(argc, argv);
     
-    return dh.runModule();
+    return sm.runModule();
 }

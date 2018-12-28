@@ -5,8 +5,10 @@ gnome-terminal --working-directory=${bsn_folder}/libbsn/build -- bash -c 'cmake 
 
 mkdir -p odv/sensornode/collector/build
 gnome-terminal --working-directory=${bsn_folder}/odv/sensornode/collector/build -- bash -c 'cmake ..; sudo make; bash'
-mkdir -p odv/sensornode/controller/build
-gnome-terminal --working-directory=${bsn_folder}/odv/sensornode/controller/build -- bash -c 'cmake ..; sudo make; bash'
+mkdir -p odv/sensornode/controllerAPI/controllerAPIReceiver/build
+gnome-terminal --working-directory=${bsn_folder}/odv/sensornode/controllerAPI/controllerAPIReceiver/build -- bash -c 'cmake ..; sudo make; bash'
+mkdir -p odv/sensornode/controllerAPI/controllerAPISender/build
+gnome-terminal --working-directory=${bsn_folder}/odv/sensornode/controllerAPI/controllerAPISender/build-- bash -c 'cmake ..; sudo make; bash'
 mkdir -p odv/sensornode/filter/build
 gnome-terminal --working-directory=${bsn_folder}/odv/sensornode/filter/build -- bash -c 'cmake ..; sudo make; bash'
 mkdir -p odv/sensornode/sender/build

@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "bsn/msg/data/ResourceUpdate.h"
-#include "bsn/msg/data/ResourceInfo.h"
+#include "bsn/msg/info/ResourceInfo.h"
 #include "bsn/resource/Resource.hpp"
 
 class ResourceMonitor : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -25,7 +25,7 @@ class ResourceMonitor : public odcore::base::module::TimeTriggeredConferenceClie
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
-        odcore::base::FIFOQueue data_buffer;
+        odcore::base::FIFOQueue buffer;
         bsn::resource::Resource mResource;
 };
 
