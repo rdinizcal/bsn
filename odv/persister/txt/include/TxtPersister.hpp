@@ -4,8 +4,8 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "bsn/msg/data/ResourceInfo.h"
-#include "bsn/msg/data/PatientStatusInfo.h"
+#include "bsn/msg/info/ResourceInfo.h"
+#include "bsn/msg/info/PatientStatusInfo.h"
 
 #include <string>
 #include <vector>

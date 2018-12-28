@@ -18,7 +18,7 @@
 #include "bsn/msg/data/SensorData.h"
 #include "bsn/range/Range.hpp"
 #include "bsn/msg/data/ResourceUpdate.h"
-#include "bsn/msg/data/PatientStatusInfo.h"
+#include "bsn/msg/info/PatientStatusInfo.h"
 
 class DataProcessor : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

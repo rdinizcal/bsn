@@ -4,6 +4,7 @@
 #define number_sensors 5
 
 using namespace bsn::msg::data;
+using namespace bsn::msg::info;
 using namespace bsn::range;
 using namespace bsn::operation;
 using namespace bsn::processor;
