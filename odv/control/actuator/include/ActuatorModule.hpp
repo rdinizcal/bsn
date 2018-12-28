@@ -2,6 +2,9 @@
 #define ACTUATOR_MODULE_HPP
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
+#include "opendavinci/odcore/base/FIFOQueue.h"
+
+#include "bsn/communication/TCPSend.hpp"
 
 class ActuatorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -17,6 +20,7 @@ class ActuatorModule : public odcore::base::module::TimeTriggeredConferenceClien
         odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
     private:
+        odcore::base::FIFOQueue buffer;
 };
 
 #endif 
