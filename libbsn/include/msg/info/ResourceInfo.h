@@ -1,5 +1,5 @@
-#ifndef SENSOR_STATUS_INFO_H
-#define SENSOR_STATUS_INFO_H
+#ifndef RESOURCE_INFO_H
+#define RESOURCE_INFO_H
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
@@ -8,21 +8,23 @@
 
 #include <stdint.h>
 
+#include "bsn/resource/Resource.hpp"
+
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace info {
         
-            class SensorStatusInfo : public odcore::data::SerializableData {
+            class ResourceInfo : public odcore::data::SerializableData {
             
                 public:
-                    SensorStatusInfo(const double &/*value*/);
+                    ResourceInfo(const bsn::resource::Resource &/*resource*/);
     
-                    SensorStatusInfo(); // construtor
-                    virtual ~SensorStatusInfo();// destrutor 
+                    ResourceInfo(); // construtor
+                    virtual ~ResourceInfo();// destrutor 
                     
                     //Boas praticas do manual do OpenDaVINCI
-                    SensorStatusInfo(const SensorStatusInfo &/*obj*/);
-                    SensorStatusInfo& operator=(const SensorStatusInfo &/*obj*/);
+                    ResourceInfo(const ResourceInfo &/*obj*/);
+                    ResourceInfo& operator=(const ResourceInfo &/*obj*/);
                 
                 // Métodos abstratos
                 public:
@@ -42,12 +44,11 @@ namespace bsn {
                     
                 // setters e getters
                 public:
-                    void setValue(const double &/*value*/);
-                    double getValue() const;
+                    void setResource(const bsn::resource::Resource &/*resource*/);
+                    bsn::resource::Resource getResource() const;
                 
                 private:
-                    double value;
-
+                    bsn::resource::Resource mResource;
             };
         }
     }

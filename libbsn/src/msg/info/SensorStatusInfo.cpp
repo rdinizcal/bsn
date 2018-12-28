@@ -1,8 +1,8 @@
-#include "msg/data/SensorStatusInfo.h"
+#include "msg/info/SensorStatusInfo.h"
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace info {
         
             using namespace std;
 
@@ -30,7 +30,7 @@ namespace bsn {
                 return "SensorStatusInfo";
             }
             const string SensorStatusInfo::LongName() {
-                return "data.SensorStatusInfo";
+                return "info.SensorStatusInfo";
             }
             
             int32_t SensorStatusInfo::getID() const {

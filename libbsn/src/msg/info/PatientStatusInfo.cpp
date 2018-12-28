@@ -1,8 +1,8 @@
-#include "msg/data/PatientStatusInfo.h"
+#include "msg/info/PatientStatusInfo.h"
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace info {
         
             using namespace std;
 
@@ -46,7 +46,7 @@ namespace bsn {
                 return "PatientStatusInfo";
             }
             const string PatientStatusInfo::LongName() {
-                return "data.PatientStatusInfo";
+                return "info.PatientStatusInfo";
             }
             
             int32_t PatientStatusInfo::getID() const {

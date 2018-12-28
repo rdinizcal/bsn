@@ -1,10 +1,10 @@
-#include "msg/data/ResourceInfo.h"
+#include "msg/info/ResourceInfo.h"
 
 #include<iostream>
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace info {
         
             using namespace std;
             using namespace bsn::resource;
@@ -31,7 +31,7 @@ namespace bsn {
                 return "ResourceInfo";
             }
             const string ResourceInfo::LongName() {
-                return "data.ResourceInfo";
+                return "info.ResourceInfo";
             }
             
             int32_t ResourceInfo::getID() const {

@@ -12,7 +12,7 @@
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace info {
         
             class PatientStatusInfo : public odcore::data::SerializableData {
             
