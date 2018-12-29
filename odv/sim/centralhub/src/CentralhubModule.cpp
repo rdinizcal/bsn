@@ -1,11 +1,12 @@
 #include "CentralhubModule.hpp"
 
-// ecg termomther oximeter and blood pressure
-#define number_sensors 5
-
 using namespace odcore::data;
 
-using namespace bsn::configuration;
+using namespace bsn::processor;
+
+using namespace bsn::msg::data;
+using namespace bsn::msg::info;
+
 
 CentralhubModule::CentralhubModule(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
@@ -14,123 +15,88 @@ TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
 CentralhubModule::~CentralhubModule() {}
 
 void CentralhubModule::setUp() {
-    addDataStoreFor(/*900*/, buffer);
-
+    addDataStoreFor(873, buffer);
 }
 
 void CentralhubModule::tearDown(){}
 
-void CentralhubModule::print_packs(){
-	int32_t i = 0;
-	for(auto l : packets_received){
-		cout << i << ": ";
-		i++;
-		for(auto el : l){
-			cout << el << ' ';
-		}
-		cout << endl;
-	}
-}
-
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body(){
     
     Container container;    
-    
-    
-    /*
-     *  array<string, 2> types;
-     *  array<double, 4> data;
-     *  array<string, 8> times;
-     *  int32_t sensor_id;
-     *  double evaluated_packet;
-     *  double patient_status;
-    */
+    double patient_status;
+    bool received = false;
+
+    vector<list<double>> data_list(5);
+    for(std::vector<std::list<double>>::iterator it = data_list.begin();
+        it != data_list.end(); ++it) {
+            (*it).push_back(0.0);
+    }
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
 
         while(!buffer.isEmpty()){
+            
+            container = buffer.leave();
 
-            /*
-                // Retira o dado da FIFO
-                container = data_buffer.leave();
-                types = container.getData<SensorData>().getSensorType();
-                data = container.getData<SensorData>().getSensorData();
-                times = container.getData<SensorData>().getTimes();
+            std::string type = container.getData<SensorData>().getType();
+            double risk = container.getData<SensorData>().getRisk();
+            int32_t sensor_id = get_sensor_id(type);
 
-                sensor_id = get_sensor_id(types[0]);
+            if (int32_t(risk) == -1) { continue; }
+            data_list[sensor_id].push_back(risk);
 
-                if (types[0] == "bpms" or types[0] == "bpmd") {
-                // O mais discrepante é o que conta(Guideline brasileiro)
-                    evaluated_packet = max(data[1],data[3]);
-                    if (evaluated_packet == data[3])
-                        sensor_id = get_sensor_id(types[1]); 
-                }
-                else {
-                // Para os sensores que não são de pressão
-                    evaluated_packet = data[1];
-                }
-
-                // Se o pacote for válido...
-                if (evaluated_packet != -1) {                
-                    packets_received[sensor_id].push_back(evaluated_packet);
-                    print_packs();
-
-                    patient_status = data_fuse(packets_received);
-                } else {
-                    continue;
-                }
-
-                // Para cada execução do loop, contabilizar e enviar duas unidades de bateria consumida
-                ResourceUpdate rUpdate(-1);
-                Container rUpdContainer(rUpdate);
-                getConference().send(rUpdContainer);
-
-                
-                // Envia dados para persistencia
-                {
-                    std::string sensor_risk_str;
-                    std::string bpr_risk;
-                    std::string oxi_risk;
-                    std::string ecg_risk;
-                    std::string trm_risk;
-
-                    for(int i = 0; i < 4; i++){
-                        double sensor_risk = packets_received[i].back();
-
-                        if(sensor_risk > 0 && sensor_risk <= 20) {
-                            sensor_risk_str = "low risk";
-                        } else if (sensor_risk > 20 && sensor_risk <= 65) {
-                            sensor_risk_str = "moderate risk";
-                        } else if (sensor_risk > 65 && sensor_risk <= 100) {
-                            sensor_risk_str = "high risk";
-                        } else {
-                            sensor_risk_str = "unknown";
-                        }
-
-                        if(i==0) {
-                            trm_risk = sensor_risk_str;
-                        } else if (i == 1){
-                            ecg_risk = sensor_risk_str;
-                        } else if (i == 2) {
-                            oxi_risk = sensor_risk_str;
-                        } else {
-                            bpr_risk = sensor_risk_str;
-                        }
-
-                    }           
-
-                    PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=85)?"CRITICAL STATE":"NORMAL STATE");
-                    Container psInfoContainer(psInfo);
-                    getConference().send(psInfoContainer);
-
-                    std::cout << "Message sent:" << endl;
-                    std::cout << "*****************************************" << endl;
-                    std::cout << psInfo.toString();
-                    std::cout << "*****************************************" << endl;
-                }
-            */
+            received = true;
         }
 
+        if (!received) { continue; }
+
+        patient_status = data_fuse(data_list);
+
+        // Envia dados para persistencia
+        {
+            std::string sensor_risk_str;
+            std::string bpr_risk;
+            std::string oxi_risk;
+            std::string ecg_risk;
+            std::string trm_risk;
+
+            for(int i = 0; i < 4; i++){
+                double sensor_risk = data_list[i].back();
+
+                if(sensor_risk > 0 && sensor_risk <= 20) {
+                    sensor_risk_str = "low risk";
+                } else if (sensor_risk > 20 && sensor_risk <= 65) {
+                    sensor_risk_str = "moderate risk";
+                } else if (sensor_risk > 65 && sensor_risk <= 100) {
+                    sensor_risk_str = "high risk";
+                } else {
+                    sensor_risk_str = "unknown";
+                }
+
+                if(i==0) {
+                    trm_risk = sensor_risk_str;
+                } else if (i == 1){
+                    ecg_risk = sensor_risk_str;
+                } else if (i == 2) {
+                    oxi_risk = sensor_risk_str;
+                } else {
+                    bpr_risk = sensor_risk_str;
+                }
+
+            }           
+
+            PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=85)?"CRITICAL STATE":"NORMAL STATE");
+            Container psInfoContainer(psInfo);
+            getConference().send(psInfoContainer);
+
+            std::cout << "\nMessage sent for persistence:" << endl;
+            std::cout << "*****************************************" << endl;
+            std::cout << psInfo.toString();
+            std::cout << "*****************************************" << endl;
+
+            received = false;
+        }
+        
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

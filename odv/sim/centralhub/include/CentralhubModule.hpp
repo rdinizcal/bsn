@@ -14,7 +14,11 @@
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
-#include "bsn/configuration/SensorConfiguration.hpp"
+#include "bsn/processor/Processor.hpp"
+
+#include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/info/PatientStatusInfo.h"
+
 
 class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -22,7 +26,6 @@ class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceCli
         CentralhubModule &operator=(const CentralhubModule & /*obj*/);
         virtual void setUp();
         virtual void tearDown();        
-        void print_packs();
 
     public:
         CentralhubModule(const int32_t &argc, char **argv);
