@@ -1,24 +1,4 @@
-# BSN electrocardiograph configuration file
-
-# Sensor type definition
-sensor.type0 = thm
-sensor.type10 = ecg
-sensor.type20 = oxi
-sensor.type30 = abp
-
-# Sensor markov chain
-sensor.thm0=20.0,20.0,10.0,20.0,20.0
-sensor.thm1=20.0,20.0,10.0,20.0,20.0
-sensor.thm2=20.0,20.0,10.0,20.0,20.0
-sensor.thm3=20.0,20.0,10.0,20.0,20.0
-sensor.thm4=20.0,20.0,10.0,20.0,20.0
-
-# Sensor risk values
-sensor.thmHighRisk0 = 0.0,31.9
-sensor.thmMidRisk0 = 32.0,35.9
-sensor.thmLowRisk = 36.0,37.9
-sensor.thmMidRisk1 = 38.0,40.9
-sensor.thmHighRisk1 = 41.0,50.0
+# BSN configuration file
 
 #datasender.ip = localhost
 
@@ -31,3 +11,18 @@ sensor.thmHighRisk1 = 41.0,50.0
 #resourcemonitor.capacity = 100.0
 #resourcemonitor.initialLevel = 100.0
 #resourcemonitor.unit = 0.01
+
+# Thermometer markov chain
+thermometer.state0=20.0,20.0,10.0,20.0,20.0
+thermometer.state1=20.0,20.0,10.0,20.0,20.0
+thermometer.state2=20.0,20.0,10.0,20.0,20.0
+thermometer.state3=20.0,20.0,10.0,20.0,20.0
+thermometer.state4=20.0,20.0,10.0,20.0,20.0
+
+# Thermometer risk values
+thermometer.HighRisk0 = 0.0,31.9
+thermometer.MidRisk0 = 32.0,35.9
+thermometer.LowRisk = 36.0,37.9
+thermometer.MidRisk1 = 38.0,40.9
+thermometer.HighRisk1 = 41.0,50.0
+

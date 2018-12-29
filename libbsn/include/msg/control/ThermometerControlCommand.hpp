@@ -1,5 +1,5 @@
-#ifndef DATACOLLECTORMODULE_CONTROL_COMMAND_H
-#define DATACOLLECTORMODULE_CONTROL_COMMAND_H
+#ifndef THERMOMETER_CONTROL_COMMAND_H
+#define THERMOMETER_CONTROL_COMMAND_H
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
@@ -14,16 +14,16 @@ namespace bsn {
     namespace msg {
         namespace control {
             
-            class ControlSignal : public odcore::data::SerializableData {
+            class ThermometerControlCommand : public odcore::data::SerializableData {
             
                 public:
-                    ControlSignal(const int32_t &/*id*/, const bool &/*active*/, const std::map<std::string,double> &/*params*/);
+                    ThermometerControlCommand(const bool &/*active*/, const std::map<std::string, double> &/*params*/);
     
-                    ControlSignal();        
-                    virtual ~ControlSignal();
+                    ThermometerControlCommand();        
+                    virtual ~ThermometerControlCommand();
                     
-                    ControlSignal(const ControlSignal &/*obj*/);
-                    ControlSignal& operator=(const ControlSignal &/*obj*/);
+                    ThermometerControlCommand(const ThermometerControlCommand &/*obj*/);
+                    ThermometerControlCommand& operator=(const ThermometerControlCommand &/*obj*/);
                 
                 public:
                     virtual int32_t getID() const;
@@ -41,9 +41,6 @@ namespace bsn {
                     virtual const std::string toString() const;
                     
                 public:
-                    void setRecipientID(const int32_t &/*id*/);
-                    int32_t getRecipientID() const;
-
                     void setActive(const bool &/*active*/);
                     bool getActive() const;
 
@@ -51,8 +48,6 @@ namespace bsn {
                     std::map<std::string,double> getParams() const;
                 
                 private:
-                    int32_t recipient;
-
                     bool active;
                     std::map<std::string,double> params;
             };
