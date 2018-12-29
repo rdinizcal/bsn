@@ -1,4 +1,4 @@
-#include "bsn/generator/Markov.hpp"
+#include "generator/Markov.hpp"
 
 using namespace std;
 using namespace bsn::range;
@@ -11,6 +11,8 @@ namespace bsn {
         mt19937 seed(rd());
         // Gerador de inteiros aleatorios
         uniform_int_distribution<int> probabilityGenerator(1,100);
+
+        Markov::Markov() : transitions(), currentState(), ranges(){}
 
         // Construtor
         Markov::Markov(array<float,25> t, array<Range, 5> r, int32_t initialState) :

@@ -16,6 +16,8 @@ namespace bsn {
 
         class Markov {
             public:
+                Markov();
+                
                 Markov(std::array<float, 25> transitions, std::array<bsn::range::Range, 5> ranges, int32_t initialState);
 
                 Markov(const Markov & /*obj*/);
