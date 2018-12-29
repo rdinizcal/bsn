@@ -1,13 +1,6 @@
-#ifndef SENSOR_MODULE_HPP
-#define SENSOR_MODULE_HPP
+#ifndef OXIMETER_MODULE_HPP
+#define OXIMETER_MODULE_HPP
 
-#include <iostream>
-#include <string>
-#include <random>
-#include <unistd.h>
-#include <map>
-
-#include "opendavinci/odcore/base/Thread.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
@@ -17,25 +10,26 @@
 #include "bsn/operation/Operation.hpp"
 
 #include "bsn/msg/data/SpecData.h"
-#include "bsn/msg/control/ControlSignal.hpp"
+#include "bsn/msg/control/OximeterControlCommand.hpp"
 
-class SensorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class OximeterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	SensorModule(const SensorModule & /*obj*/);
-    	SensorModule &operator=(const SensorModule & /*obj*/);
+      	OximeterModule(const OximeterModule & /*obj*/);
+    	OximeterModule &operator=(const OximeterModule & /*obj*/);
     	virtual void setUp();
     	virtual void tearDown();
 
   	public:
-    	SensorModule(const int32_t &argc, char **argv);
-    	virtual ~SensorModule();
+    	OximeterModule(const int32_t &argc, char **argv);
+    	virtual ~OximeterModule();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
   	private:
 	    odcore::base::FIFOQueue buffer;
 		
+		std::string type;
 		double battery;
 
 		bool active;

@@ -1,4 +1,4 @@
-#include "ThermometerModule.hpp"
+#include "OximeterModule.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -10,20 +10,20 @@ using namespace bsn::operation;
 using namespace bsn::msg::data;
 using namespace bsn::msg::control;
 
-ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
+OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
-    type("thermometer"),
+    type("oximeter"),
     battery(100),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
     filter(5) {}
 
-ThermometerModule::~ThermometerModule() {}
+OximeterModule::~OximeterModule() {}
 
-void ThermometerModule::setUp() {
-    addDataStoreFor(900, buffer);
+void OximeterModule::setUp() {
+    addDataStoreFor(901, buffer);
     
     Operation op;
     
@@ -33,33 +33,31 @@ void ThermometerModule::setUp() {
 
     for(uint32_t i = 0; i < transitions.size(); i++){
         for(uint32_t j = 0; j < 5; j++){
-            t_probs = op.split(getKeyValueConfiguration().getValue<std::string>("thermometer.state"+to_string(j)), ',');
+            t_probs = op.split(getKeyValueConfiguration().getValue<std::string>("oximeter.state"+to_string(j)), ',');
             for(uint32_t k = 0; k < 5; k++){
                 transitions[i++] = stod(t_probs[k]);
             }
         }
     }
     
-    vector<string> lrs,mrs0,hrs0,mrs1,hrs1;
+    vector<string> lrs,mrs,hrs;
 
-    lrs = op.split(getKeyValueConfiguration().getValue<string>("thermometer.LowRisk"), ',');
-    mrs0 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.MidRisk0"), ',');
-    hrs0 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.HighRisk0"), ',');
-    mrs1 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.MidRisk1"), ',');
-    hrs1 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.HighRisk1"), ',');
+    lrs = op.split(getKeyValueConfiguration().getValue<string>("oximeter.LowRisk"), ',');
+    mrs = op.split(getKeyValueConfiguration().getValue<string>("oximeter.MidRisk"), ',');
+    hrs = op.split(getKeyValueConfiguration().getValue<string>("oximeter.HighRisk"), ',');
 
-    ranges[0] = Range(stod(hrs0[0]), stod(hrs0[1]));
-    ranges[1] = Range(stod(mrs0[0]), stod(mrs0[1]));
+    ranges[0] = Range(-1, -1);
+    ranges[1] = Range(-1, -1);
     ranges[2] = Range(stod(lrs[0]),  stod(lrs[1]));
-    ranges[3] = Range(stod(mrs1[0]), stod(mrs1[1]));
-    ranges[4] = Range(stod(hrs1[0]), stod(hrs1[1]));
+    ranges[3] = Range(stod(mrs[0]), stod(mrs[1]));
+    ranges[4] = Range(stod(hrs[0]), stod(hrs[1]));
 
     markov = Markov(transitions, ranges, 2);
 }
 
-void ThermometerModule::tearDown(){}
+void OximeterModule::tearDown(){}
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body(){
 
     double data;
     Container container;
@@ -72,8 +70,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         while(!buffer.isEmpty()){
             container = buffer.leave();
 
-            active = container.getData<ThermometerControlCommand>().getActive();
-            params = container.getData<ThermometerControlCommand>().getParams();
+            active = container.getData<OximeterControlCommand>().getActive();
+            params = container.getData<OximeterControlCommand>().getParams();
         }
 
         if(!active){
@@ -89,7 +87,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             cout << "Estado atual: " << markov.currentState << endl;
              
             /*
-             * TASK: Collect thermometer data
+             * TASK: Collect oximeter data
              */
             data = markov.calculate_state();      
             markov.next_state();

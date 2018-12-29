@@ -1,15 +1,6 @@
 #ifndef THERMOMETER_MODULE_HPP
 #define THERMOMETER_MODULE_HPP
 
-/*
-#include <iostream>
-#include <string>
-#include <random>
-#include <unistd.h>
-#include <map>
-*/
-
-#include "opendavinci/odcore/base/Thread.h"
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 

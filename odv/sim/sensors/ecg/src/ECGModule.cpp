@@ -1,4 +1,4 @@
-#include "ThermometerModule.hpp"
+#include "ECGModule.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -10,20 +10,20 @@ using namespace bsn::operation;
 using namespace bsn::msg::data;
 using namespace bsn::msg::control;
 
-ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
+ECGModule::ECGModule(const int32_t &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
-    type("thermometer"),
+    type("ecg"),
     battery(100),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
     filter(5) {}
 
-ThermometerModule::~ThermometerModule() {}
+ECGModule::~ECGModule() {}
 
-void ThermometerModule::setUp() {
-    addDataStoreFor(900, buffer);
+void ECGModule::setUp() {
+    addDataStoreFor(902, buffer);
     
     Operation op;
     
@@ -33,7 +33,7 @@ void ThermometerModule::setUp() {
 
     for(uint32_t i = 0; i < transitions.size(); i++){
         for(uint32_t j = 0; j < 5; j++){
-            t_probs = op.split(getKeyValueConfiguration().getValue<std::string>("thermometer.state"+to_string(j)), ',');
+            t_probs = op.split(getKeyValueConfiguration().getValue<std::string>("ecg.state"+to_string(j)), ',');
             for(uint32_t k = 0; k < 5; k++){
                 transitions[i++] = stod(t_probs[k]);
             }
@@ -42,11 +42,11 @@ void ThermometerModule::setUp() {
     
     vector<string> lrs,mrs0,hrs0,mrs1,hrs1;
 
-    lrs = op.split(getKeyValueConfiguration().getValue<string>("thermometer.LowRisk"), ',');
-    mrs0 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.MidRisk0"), ',');
-    hrs0 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.HighRisk0"), ',');
-    mrs1 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.MidRisk1"), ',');
-    hrs1 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.HighRisk1"), ',');
+    lrs = op.split(getKeyValueConfiguration().getValue<string>("ecg.LowRisk"), ',');
+    mrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk0"), ',');
+    hrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk0"), ',');
+    mrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk1"), ',');
+    hrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk1"), ',');
 
     ranges[0] = Range(stod(hrs0[0]), stod(hrs0[1]));
     ranges[1] = Range(stod(mrs0[0]), stod(mrs0[1]));
@@ -57,9 +57,9 @@ void ThermometerModule::setUp() {
     markov = Markov(transitions, ranges, 2);
 }
 
-void ThermometerModule::tearDown(){}
+void ECGModule::tearDown(){}
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
 
     double data;
     Container container;
@@ -72,8 +72,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         while(!buffer.isEmpty()){
             container = buffer.leave();
 
-            active = container.getData<ThermometerControlCommand>().getActive();
-            params = container.getData<ThermometerControlCommand>().getParams();
+            active = container.getData<ECGControlCommand>().getActive();
+            params = container.getData<ECGControlCommand>().getParams();
         }
 
         if(!active){
@@ -89,7 +89,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             cout << "Estado atual: " << markov.currentState << endl;
              
             /*
-             * TASK: Collect thermometer data
+             * TASK: Collect ecg data
              */
             data = markov.calculate_state();      
             markov.next_state();

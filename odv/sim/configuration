@@ -8,21 +8,76 @@
 
 # Resource monitor configuration
 #resourcemonitor.name = Battery
-#resourcemonitor.capacity = 100.0
-#resourcemonitor.initialLevel = 100.0
-#resourcemonitor.unit = 0.01
+#resourcemonitor.capacity = 100
+#resourcemonitor.initialLevel = 100
+#resourcemonitor.unit = 01
 
-# Thermometer markov chain
-thermometer.state0=20.0,20.0,10.0,20.0,20.0
-thermometer.state1=20.0,20.0,10.0,20.0,20.0
-thermometer.state2=20.0,20.0,10.0,20.0,20.0
-thermometer.state3=20.0,20.0,10.0,20.0,20.0
-thermometer.state4=20.0,20.0,10.0,20.0,20.0
+# Thermometer
+# markov chain
+thermometer.state0 = 20,20,10,20,20
+thermometer.state1 = 20,20,10,20,20
+thermometer.state2 = 20,20,10,20,20
+thermometer.state3 = 20,20,10,20,20
+thermometer.state4 = 20,20,10,20,20
 
-# Thermometer risk values
-thermometer.HighRisk0 = 0.0,31.9
-thermometer.MidRisk0 = 32.0,35.9
-thermometer.LowRisk = 36.0,37.9
-thermometer.MidRisk1 = 38.0,40.9
-thermometer.HighRisk1 = 41.0,50.0
+# risk values
+thermometer.HighRisk0 = 0,31.9
+thermometer.MidRisk0 = 32,35.9
+thermometer.LowRisk = 36,37.9
+thermometer.MidRisk1 = 38,40.9
+thermometer.HighRisk1 = 41,50
+
+# Oximeter
+# markov chain
+oximeter.state0 = 0,0,0,0,0
+oximeter.state1 = 0,0,0,0,0
+oximeter.state2 = 0,0,50,20,20
+oximeter.state3 = 0,0,50,20,20
+oximeter.state4 = 0,0,50,20,20
+
+# risk values
+oximeter.LowRisk = 65,100
+oximeter.MidRisk = 55,65
+oximeter.HighRisk = 0,55
+
+# Electrocardiograph (ECG)
+# markov chain
+ecg.state0 = 20,20,10,20,20
+ecg.state1 = 20,20,10,20,20
+ecg.state2 = 20,20,10,20,20
+ecg.state3 = 20,20,10,20,20
+ecg.state4 = 20,20,10,20,20
+
+# risk values
+ecg.HighRisk0 = 0,70
+ecg.MidRisk0 = 70,85
+ecg.LowRisk = 85,97
+ecg.MidRisk1 = 97,115
+ecg.HighRisk1 = 115,300
+
+# Sphygmomanometer (bloodpressure)
+# markov chain (diastolic pressure)
+bloodpressure.diasstate0 = 0,0,0,0,0
+bloodpressure.diasstate1 = 0,0,0,0,0
+bloodpressure.diasstate2 = 0,0,30,40,40
+bloodpressure.diasstate3 = 0,0,30,40,40
+bloodpressure.diasstate4 = 0,0,30,40,40
+
+# risk values (diastolic pressure)
+bloodpressure.diasLowRisk = 0,80
+bloodpressure.diasMidRisk = 80,90
+bloodpressure.diasHighRisk = 90,300
+
+# markov chain (systolic pressure)
+bloodpressure.syststate0 = 0,0,0,0,0
+bloodpressure.syststate1 = 0,0,0,0,0
+bloodpressure.syststate2 = 0,0,30,40,40
+bloodpressure.syststate3 = 0,0,30,40,40
+bloodpressure.syststate4 = 0,0,30,40,40
+
+# risk values (systolic pressure)
+bloodpressure.systLowRisk = 0,120
+bloodpressure.systMidRisk = 120,140
+bloodpressure.systHighRisk = 140,300
+
 

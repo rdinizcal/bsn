@@ -1,7 +1,7 @@
-#include "SensorModule.hpp"
+#include "BloodpressureModule.hpp"
 
 int32_t main(int32_t argc, char **argv) {
-    SensorModule sensor(argc, argv);
+    BloodpressureModule sensor(argc, argv);
     
     return sensor.runModule();
 }
