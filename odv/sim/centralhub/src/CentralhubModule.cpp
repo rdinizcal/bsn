@@ -85,7 +85,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
             }           
 
-            PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=85)?"CRITICAL STATE":"NORMAL STATE");
+            PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=66)?"CRITICAL STATE":"NORMAL STATE");
             Container psInfoContainer(psInfo);
             getConference().send(psInfoContainer);
 

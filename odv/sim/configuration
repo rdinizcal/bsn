@@ -7,11 +7,11 @@ global.highrisk = 66,100
 
 # Thermometer
 # markov chain
-thermometer.state0 = 20,20,10,20,20
-thermometer.state1 = 20,20,10,20,20
-thermometer.state2 = 20,20,10,20,20
-thermometer.state3 = 20,20,10,20,20
-thermometer.state4 = 20,20,10,20,20
+thermometer.state0 = 10,10,10,20,40
+thermometer.state1 = 10,10,10,20,40
+thermometer.state2 = 10,10,10,20,40
+thermometer.state3 = 10,10,10,20,40
+thermometer.state4 = 10,10,10,20,40
 
 # risk values
 thermometer.HighRisk0 = 0,31.99
@@ -24,9 +24,9 @@ thermometer.HighRisk1 = 41,50
 # markov chain
 oximeter.state0 = 0,0,0,0,0
 oximeter.state1 = 0,0,0,0,0
-oximeter.state2 = 0,0,50,20,20
-oximeter.state3 = 0,0,50,20,20
-oximeter.state4 = 0,0,50,20,20
+oximeter.state2 = 0,0,20,20,60
+oximeter.state3 = 0,0,20,20,60
+oximeter.state4 = 0,0,20,20,60
 
 # risk values
 oximeter.LowRisk = 65,100
@@ -35,11 +35,11 @@ oximeter.HighRisk = 0,55
 
 # Electrocardiograph (ECG)
 # markov chain
-ecg.state0 = 20,20,10,20,20
-ecg.state1 = 20,20,10,20,20
-ecg.state2 = 20,20,10,20,20
-ecg.state3 = 20,20,10,20,20
-ecg.state4 = 20,20,10,20,20
+ecg.state0 = 10,10,10,20,40
+ecg.state1 = 10,10,10,20,40
+ecg.state2 = 10,10,10,20,40
+ecg.state3 = 10,10,10,20,40
+ecg.state4 = 10,10,10,20,40
 
 # risk values
 ecg.HighRisk0 = 0,70
@@ -52,9 +52,9 @@ ecg.HighRisk1 = 115,300
 # markov chain (diastolic pressure)
 bloodpressure.diasstate0 = 0,0,0,0,0
 bloodpressure.diasstate1 = 0,0,0,0,0
-bloodpressure.diasstate2 = 0,0,30,40,40
-bloodpressure.diasstate3 = 0,0,30,40,40
-bloodpressure.diasstate4 = 0,0,30,40,40
+bloodpressure.diasstate2 = 0,0,20,20,60
+bloodpressure.diasstate3 = 0,0,20,20,60
+bloodpressure.diasstate4 = 0,0,20,20,60
 
 # risk values (diastolic pressure)
 bloodpressure.diasLowRisk = 0,80
@@ -64,9 +64,9 @@ bloodpressure.diasHighRisk = 90,300
 # markov chain (systolic pressure)
 bloodpressure.syststate0 = 0,0,0,0,0
 bloodpressure.syststate1 = 0,0,0,0,0
-bloodpressure.syststate2 = 0,0,30,40,40
-bloodpressure.syststate3 = 0,0,30,40,40
-bloodpressure.syststate4 = 0,0,30,40,40
+bloodpressure.syststate2 = 0,0,20,20,60
+bloodpressure.syststate3 = 0,0,20,20,60
+bloodpressure.syststate4 = 0,0,20,20,60
 
 # risk values (systolic pressure)
 bloodpressure.systLowRisk = 0,120

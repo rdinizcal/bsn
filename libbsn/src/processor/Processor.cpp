@@ -69,7 +69,7 @@ namespace bsn {
             // Status de risco do paciente dado em porcentagem
 
             // 85.0 é um número totalmente ARBITRARIO
-            if(risk_status > 85.0){
+            if(risk_status > 66.0){
                 cout << "============EMERGÊNCIA============(" << risk_status << ")" << endl;
             }
             else{
