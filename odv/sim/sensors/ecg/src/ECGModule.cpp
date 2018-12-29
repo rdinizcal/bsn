@@ -6,6 +6,7 @@ using namespace odcore::data;
 using namespace bsn::range;
 using namespace bsn::generator;
 using namespace bsn::operation;
+using namespace bsn::configuration;
 
 using namespace bsn::msg::data;
 using namespace bsn::msg::control;
@@ -18,7 +19,8 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
-    filter(5) {}
+    filter(5),
+    sensorConfig() {}
 
 ECGModule::~ECGModule() {}
 
@@ -40,30 +42,65 @@ void ECGModule::setUp() {
         }
     }
     
-    vector<string> lrs,mrs0,hrs0,mrs1,hrs1;
+    /**
+     * Configure markov chain
+     */ 
+    {
+        vector<string> lrs,mrs0,hrs0,mrs1,hrs1;
 
-    lrs = op.split(getKeyValueConfiguration().getValue<string>("ecg.LowRisk"), ',');
-    mrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk0"), ',');
-    hrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk0"), ',');
-    mrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk1"), ',');
-    hrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk1"), ',');
+        lrs = op.split(getKeyValueConfiguration().getValue<string>("ecg.LowRisk"), ',');
+        mrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk0"), ',');
+        hrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk0"), ',');
+        mrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk1"), ',');
+        hrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk1"), ',');
 
-    ranges[0] = Range(stod(hrs0[0]), stod(hrs0[1]));
-    ranges[1] = Range(stod(mrs0[0]), stod(mrs0[1]));
-    ranges[2] = Range(stod(lrs[0]),  stod(lrs[1]));
-    ranges[3] = Range(stod(mrs1[0]), stod(mrs1[1]));
-    ranges[4] = Range(stod(hrs1[0]), stod(hrs1[1]));
+        ranges[0] = Range(stod(hrs0[0]), stod(hrs0[1]));
+        ranges[1] = Range(stod(mrs0[0]), stod(mrs0[1]));
+        ranges[2] = Range(stod(lrs[0]),  stod(lrs[1]));
+        ranges[3] = Range(stod(mrs1[0]), stod(mrs1[1]));
+        ranges[4] = Range(stod(hrs1[0]), stod(hrs1[1]));
 
-    markov = Markov(transitions, ranges, 2);
+        markov = Markov(transitions, ranges, 2);
+    }
+
+    /**
+     * Configure sensor configuration
+     */
+    {
+        Range low_range = ranges[2];
+        
+        array<Range,2> midRanges;
+        midRanges[0] = ranges[1];
+        midRanges[1] = ranges[3];
+        
+        array<Range,2> highRanges;
+        highRanges[0] = ranges[0];
+        highRanges[1] = ranges[4];
+
+        array<Range,3> percentages;
+
+        vector<string> low_p = op.split(getKeyValueConfiguration().getValue<string>("global.lowrisk"), ',');
+        percentages[0] = Range(stod(low_p[0]),stod(low_p[1]));
+
+        vector<string> mid_p = op.split(getKeyValueConfiguration().getValue<string>("global.midrisk"), ',');
+        percentages[1] = Range(stod(mid_p[0]),stod(mid_p[1]));
+
+        vector<string> high_p = op.split(getKeyValueConfiguration().getValue<string>("global.highrisk"), ',');
+        percentages[2] = Range(stod(high_p[0]),stod(high_p[1]));
+
+        sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
+    }
 }
 
 void ECGModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
 
-    double data;
     Container container;
+    double data;
+    double risk;
     double nCycles = 0;
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         /*
@@ -76,9 +113,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
             params = container.getData<ECGControlCommand>().getParams();
         }
 
-        if(!active){
-            continue;
-        }
+        if(!active){ continue; }
 
         /*
          * Module execution
@@ -104,20 +139,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
              */
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
-            double fData = filter.getValue(type);
+            data = filter.getValue(type);
             battery -= 0.005*params["m_avg"];
             // TODO: send cost and reliability from "filtering" to controller
 
             //for debugging 
-            cout << "Dado filtrado: " << fData << endl;
+            cout << "Dado filtrado: " << data << endl;
 
             /*
              * TASK: Transfer information to CentralHub
              */
-            SpecData sdata(data, type);
+            
+            // evaluate risk
+            risk = sensorConfig.evaluateNumber(data);
+            
+            SensorData sdata(type, data, risk);
             Container sdataContainer(sdata);
             getConference().send(sdataContainer);
             battery -= 0.01;
+
+            // for debugging
+            cout << sdata.toString() << endl;
+
             // TODO: send cost and reliability from "transfering" to controller      
 
             nCycles = 0;

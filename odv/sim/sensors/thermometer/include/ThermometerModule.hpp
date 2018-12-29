@@ -8,8 +8,9 @@
 #include "bsn/generator/Markov.hpp"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/operation/Operation.hpp"
+#include "bsn/configuration/SensorConfiguration.hpp"
 
-#include "bsn/msg/data/SpecData.h"
+#include "bsn/msg/data/SensorData.h"
 #include "bsn/msg/control/ThermometerControlCommand.hpp"
 
 class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -37,6 +38,7 @@ class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceCl
 
 		bsn::generator::Markov markov;
 		bsn::filters::MovingAverage filter;
+		bsn::configuration::SensorConfiguration sensorConfig;
 };
 
 #endif 

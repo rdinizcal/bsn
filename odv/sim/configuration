@@ -1,16 +1,9 @@
 # BSN configuration file
 
-#datasender.ip = localhost
-
-#datasender.lowPercentage = 0,20
-#datasender.midPercentage = 21,65
-#datasender.highPercentage = 66,100
-
-# Resource monitor configuration
-#resourcemonitor.name = Battery
-#resourcemonitor.capacity = 100
-#resourcemonitor.initialLevel = 100
-#resourcemonitor.unit = 01
+# Defines the percentages to consider low, moderate or high risk
+global.lowrisk = 0,20
+global.midrisk = 21,65
+global.highrisk = 66,100
 
 # Thermometer
 # markov chain
@@ -21,10 +14,10 @@ thermometer.state3 = 20,20,10,20,20
 thermometer.state4 = 20,20,10,20,20
 
 # risk values
-thermometer.HighRisk0 = 0,31.9
-thermometer.MidRisk0 = 32,35.9
-thermometer.LowRisk = 36,37.9
-thermometer.MidRisk1 = 38,40.9
+thermometer.HighRisk0 = 0,31.99
+thermometer.MidRisk0 = 32,35.99
+thermometer.LowRisk = 36,37.99
+thermometer.MidRisk1 = 38,40.99
 thermometer.HighRisk1 = 41,50
 
 # Oximeter

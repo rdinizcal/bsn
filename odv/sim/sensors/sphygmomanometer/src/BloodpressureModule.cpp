@@ -6,6 +6,7 @@ using namespace odcore::data;
 using namespace bsn::range;
 using namespace bsn::generator;
 using namespace bsn::operation;
+using namespace bsn::configuration;
 
 using namespace bsn::msg::data;
 using namespace bsn::msg::control;
@@ -20,7 +21,9 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     markovSystolic(),
     markovDiastolic(),
     filterSystolic(5),
-    filterDiastolic(5) {}
+    filterDiastolic(5),
+    sensorConfigSystolic(),
+    sensorConfigDiastolic() {}
 
 BloodpressureModule::~BloodpressureModule() {}
 
@@ -46,20 +49,57 @@ void BloodpressureModule::setUp() {
             }
         }
 
-        lrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"LowRisk"), ',');
-        mrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"MidRisk"), ',');
-        hrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"HighRisk"), ',');
+        /**
+         * Configure markov chain
+         */ 
+        {
+            lrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"LowRisk"), ',');
+            mrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"MidRisk"), ',');
+            hrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"HighRisk"), ',');
 
-        ranges[0] = Range(-1, -1);
-        ranges[1] = Range(-1, -1);
-        ranges[2] = Range(stod(lrs[0]), stod(lrs[1]));
-        ranges[3] = Range(stod(mrs[0]), stod(mrs[1]));
-        ranges[4] = Range(stod(hrs[0]), stod(hrs[1]));
-        
-        if(i==0){
-            markovSystolic = Markov(transitions, ranges, 2);
-        } else {
-            markovDiastolic = Markov(transitions, ranges, 2);
+            ranges[0] = Range(-1, -1);
+            ranges[1] = Range(-1, -1);
+            ranges[2] = Range(stod(lrs[0]), stod(lrs[1]));
+            ranges[3] = Range(stod(mrs[0]), stod(mrs[1]));
+            ranges[4] = Range(stod(hrs[0]), stod(hrs[1]));
+            
+            if(i==0){
+                markovSystolic = Markov(transitions, ranges, 2);
+            } else {
+                markovDiastolic = Markov(transitions, ranges, 2);
+            }
+        }
+
+        /**
+         * Configure sensor configuration
+         */
+        {
+            Range low_range = ranges[2];
+            
+            array<Range,2> midRanges;
+            midRanges[0] = ranges[1];
+            midRanges[1] = ranges[3];
+            
+            array<Range,2> highRanges;
+            highRanges[0] = ranges[0];
+            highRanges[1] = ranges[4];
+
+            array<Range,3> percentages;
+
+            vector<string> low_p = op.split(getKeyValueConfiguration().getValue<string>("global.lowrisk"), ',');
+            percentages[0] = Range(stod(low_p[0]),stod(low_p[1]));
+
+            vector<string> mid_p = op.split(getKeyValueConfiguration().getValue<string>("global.midrisk"), ',');
+            percentages[1] = Range(stod(mid_p[0]),stod(mid_p[1]));
+
+            vector<string> high_p = op.split(getKeyValueConfiguration().getValue<string>("global.highrisk"), ',');
+            percentages[2] = Range(stod(high_p[0]),stod(high_p[1]));
+
+            if(i==0){
+                sensorConfigSystolic = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
+            } else {
+                sensorConfigDiastolic = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
+            }
         }
     }
 }
@@ -68,10 +108,12 @@ void BloodpressureModule::tearDown(){}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::body(){
 
+    Container container;
     double dataS;
     double dataD;
-    Container container;
+    double risk;
     double nCycles = 0;
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         /*
@@ -84,9 +126,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             params = container.getData<BloodpressureControlCommand>().getParams();
         }
 
-        if(!active){
-            continue;
-        }
+        if(!active){ continue; }
 
         /*
          * Module execution
@@ -116,32 +156,42 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
              * TASK: Filter data with moving average
              */
             filterSystolic.setRange(params["m_avg"]);
-            filterSystolic.insert(dataS, type);
-            double fDataS = filterSystolic.getValue(type);
+            filterSystolic.insert(dataS, "bpms");
+            dataS = filterSystolic.getValue("bpms");
             battery -= 0.005*params["m_avg"];
 
             filterDiastolic.setRange(params["m_avg"]);
-            filterDiastolic.insert(dataD, type);
-            double fDataD = filterDiastolic.getValue(type);
+            filterDiastolic.insert(dataD, "bpmd");
+            dataD = filterDiastolic.getValue("bpmd");
             battery -= 0.005*params["m_avg"];
             // TODO: send cost and reliability from "filtering" to controller
 
             //for debugging 
-            cout << "Dado filtrado (systolic): " << fDataS << endl;
-            cout << "Dado filtrado (diastolic): " << fDataD << endl;
+            cout << "Dado filtrado (systolic): " << dataS << endl;
+            cout << "Dado filtrado (diastolic): " << dataD << endl;
 
             /*
              * TASK: Transfer information to CentralHub
              */
-            SpecData sdatas(fDataS, type);
-            Container sdatasContainer(sdatas);
-            getConference().send(sdatasContainer);
+            risk = sensorConfigSystolic.evaluateNumber(dataS);
+
+            SensorData sdataS("bpms", dataS, risk);
+            Container sdataSContainer(sdataS);
+            getConference().send(sdataSContainer);
             battery -= 0.01;
 
-            SpecData sdatad(fDataD, type);
-            Container sdatadContainer(sdatad);
+            // for debugging
+            cout << sdataS.toString() << endl;
+
+            risk = sensorConfigDiastolic.evaluateNumber(dataD);
+            SensorData sdataD("bpmd", dataD, risk);
+            Container sdatadContainer(sdataD);
             getConference().send(sdatadContainer);
             battery -= 0.01;
+
+            // for debugging
+            cout << sdataD.toString() << endl;
+
             // TODO: send cost and reliability from "transfering" to controller      
 
             nCycles = 0;

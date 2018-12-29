@@ -1,10 +1,6 @@
 #ifndef DATA_SENSOR_H_
 #define DATA_SENSOR_H_
 
-#include <algorithm>
-#include <vector>
-#include <string>
-
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
 #include "opendavinci/odcore/serialization/SerializationFactory.h"
@@ -19,17 +15,14 @@ namespace bsn {
             class SensorData : public odcore::data::SerializableData {
             
                 public:
-                    //construtor parametrizado
-                    SensorData(const std::array<std::string, 2> &, const std::array<double, 4> &, const std::array<std::string, 8> &);
+                    SensorData(const std::string &/*type*/, const double &/*data*/, const double &/*risk*/);
     
-                    SensorData(); // construtor
-                    virtual ~SensorData();// destrutor 
+                    SensorData();
+                    virtual ~SensorData();
                     
-                    //Boas práticas do manual do OpenDaVINCI
                     SensorData(const SensorData &/*obj*/);
                     SensorData& operator=(const SensorData &/*obj*/);
                 
-                // Métodos abstratos
                 public:
                     virtual int32_t getID() const;
                     virtual const std::string getShortName() const;
@@ -45,21 +38,20 @@ namespace bsn {
             
                     virtual const std::string toString() const;
                     
-                // setters e getters
                 public:
-                    void setSensorType(const std::array<std::string, 2>);
-                    std::array<std::string, 2> getSensorType() const;
+                    void setType(const std::string &/*type*/);
+                    std::string getType() const;
 
-                    void setSensorData(const std::array<double, 4>);
-                    std::array<double, 4> getSensorData() const;
+                    void setData(const double &/*data*/);
+                    double getData() const;
 
-                    void setTimes(const std::array<std::string, 8>);
-                    std::array<std::string, 8> getTimes() const;
-                
+                    void setRisk(const double &/*risk*/);
+                    double getRisk() const;
+
                 private:
-                    std::array<std::string, 2> sensorType; // tipo do sensor
-                    std::array<double, 4> sensorData; // estado do sensor
-                    std::array<std::string, 8> times;  // instante de geração do dado
+                    std::string type;
+                    double data;
+                    double risk;
             };
         }
     }

@@ -8,8 +8,9 @@
 #include "bsn/generator/Markov.hpp"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/operation/Operation.hpp"
+#include "bsn/configuration/SensorConfiguration.hpp"
 
-#include "bsn/msg/data/SpecData.h"
+#include "bsn/msg/data/SensorData.h"
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
 class BloodpressureModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -39,6 +40,9 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
 		bsn::generator::Markov markovDiastolic;
 		bsn::filters::MovingAverage filterSystolic;
 		bsn::filters::MovingAverage filterDiastolic;
+		bsn::configuration::SensorConfiguration sensorConfigSystolic;
+		bsn::configuration::SensorConfiguration sensorConfigDiastolic;
+
 };
 
 #endif 
