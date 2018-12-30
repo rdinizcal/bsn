@@ -35,9 +35,10 @@ Makefile
 # VSCode
 *.vscode/
 
-# Project Specific
+# Project Specific Folders
 build/
 output/
+lepton/
 
 # Tests
 runner.cpp
