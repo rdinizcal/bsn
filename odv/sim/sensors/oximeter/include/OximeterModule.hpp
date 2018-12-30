@@ -11,15 +11,19 @@
 #include "bsn/configuration/SensorConfiguration.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/control/OximeterControlCommand.hpp"
 
 class OximeterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	OximeterModule(const OximeterModule & /*obj*/);
-    	OximeterModule &operator=(const OximeterModule & /*obj*/);
+      	OximeterModule(const OximeterModule &);
+    	OximeterModule &operator=(const OximeterModule &);
+
     	virtual void setUp();
     	virtual void tearDown();
+
+		void sendContextInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
 
   	public:
     	OximeterModule(const int32_t &argc, char **argv);
@@ -32,6 +36,7 @@ class OximeterModule : public odcore::base::module::TimeTriggeredConferenceClien
 		
 		std::string type;
 		double battery;
+		bool available;
 
 		bool active;
 		std::map<std::string,double> params;

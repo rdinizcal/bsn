@@ -11,15 +11,19 @@
 #include "bsn/configuration/SensorConfiguration.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
 class BloodpressureModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	BloodpressureModule(const BloodpressureModule & /*obj*/);
-    	BloodpressureModule &operator=(const BloodpressureModule & /*obj*/);
-    	virtual void setUp();
+      	BloodpressureModule(const BloodpressureModule &);
+    	BloodpressureModule &operator=(const BloodpressureModule &);
+    	
+		virtual void setUp();
     	virtual void tearDown();
+
+		void sendContextInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
 
   	public:
     	BloodpressureModule(const int32_t &argc, char **argv);
@@ -32,6 +36,7 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
 		
 		std::string type;
 		double battery;
+		bool available;
 
 		bool active;
 		std::map<std::string,double> params;

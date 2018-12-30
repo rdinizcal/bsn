@@ -9,6 +9,7 @@ using namespace bsn::operation;
 using namespace bsn::configuration;
 
 using namespace bsn::msg::data;
+using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
 BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
@@ -17,6 +18,7 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     type("bloodpressure"),
     battery(100),
     active(true),
+    available(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markovSystolic(),
     markovDiastolic(),
@@ -49,10 +51,7 @@ void BloodpressureModule::setUp() {
             }
         }
 
-        /**
-         * Configure markov chain
-         */ 
-        {
+        { // Configure markov chain
             lrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"LowRisk"), ',');
             mrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"MidRisk"), ',');
             hrs = op.split(getKeyValueConfiguration().getValue<string>("bloodpressure."+x+"HighRisk"), ',');
@@ -70,10 +69,7 @@ void BloodpressureModule::setUp() {
             }
         }
 
-        /**
-         * Configure sensor configuration
-         */
-        {
+        { // Configure sensor configuration
             Range low_range = ranges[2];
             
             array<Range,2> midRanges;
@@ -106,6 +102,12 @@ void BloodpressureModule::setUp() {
 
 void BloodpressureModule::tearDown(){}
 
+void BloodpressureModule::sendContextInfo(const std::string &task_id, const double &cost, const double &reliability) {
+    ContextInfo context(task_id,cost,reliability);
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::body(){
 
     Container container;
@@ -133,66 +135,60 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
          */
         if(++nCycles >= int32_t(1.0/params["freq"])){
             
-            //for debugging 
-            cout << "Estado atual (systolic): " << markovSystolic.currentState << endl;
-            cout << "Estado atual (diastolic): " << markovDiastolic.currentState << endl;
+            { // TASK: Collect bloodpressure data
+
+                dataS = markovSystolic.calculate_state();      
+                markovSystolic.next_state();
+                battery -= 0.001;
+
+                dataD = markovDiastolic.calculate_state();      
+                markovDiastolic.next_state();
+                battery -= 0.001;
+                
+                sendContextInfo("T1.13",0.001*2,100);
+
+                //for debugging 
+                cout << "Dado gerado (systolic): " << dataS << endl;
+                cout << "Dado gerado (diastolic): " << dataD << endl;
+            }
+
+            { // TASK: Filter data with moving average
+                filterSystolic.setRange(params["m_avg"]);
+                filterSystolic.insert(dataS, "bpms");
+                dataS = filterSystolic.getValue("bpms");
+                battery -= 0.005*params["m_avg"];
+
+                filterDiastolic.setRange(params["m_avg"]);
+                filterDiastolic.insert(dataD, "bpmd");
+                dataD = filterDiastolic.getValue("bpmd");
+                battery -= 0.005*params["m_avg"];
+
+                sendContextInfo("T2.3",0.005*params["m_avg"]*2,100);
+
+                //for debugging 
+                cout << "Dado filtrado (systolic): " << dataS << endl;
+                cout << "Dado filtrado (diastolic): " << dataD << endl;
+            }
             
-            /*
-             * TASK: Collect bloodpressure data
-             */
-            dataS = markovSystolic.calculate_state();      
-            markovSystolic.next_state();
-            battery -= 0.001;
-            dataD = markovDiastolic.calculate_state();      
-            markovDiastolic.next_state();
-            battery -= 0.001;
-            // TODO: send cost and reliability from "data generation" to controller
-            
-            //for debugging 
-            cout << "Dado gerado (systolic): " << dataS << endl;
-            cout << "Dado gerado (diastolic): " << dataD << endl;
+            { //TASK: Transfer information to CentralHub
+                risk = sensorConfigSystolic.evaluateNumber(dataS);
+                SensorData sdataS("bpms", dataS, risk);
+                Container sdataSContainer(sdataS);
+                getConference().send(sdataSContainer);
+                battery -= 0.01;
 
-            /*
-             * TASK: Filter data with moving average
-             */
-            filterSystolic.setRange(params["m_avg"]);
-            filterSystolic.insert(dataS, "bpms");
-            dataS = filterSystolic.getValue("bpms");
-            battery -= 0.005*params["m_avg"];
+                risk = sensorConfigDiastolic.evaluateNumber(dataD);
+                SensorData sdataD("bpmd", dataD, risk);
+                Container sdatadContainer(sdataD);
+                getConference().send(sdatadContainer);
+                battery -= 0.01;
 
-            filterDiastolic.setRange(params["m_avg"]);
-            filterDiastolic.insert(dataD, "bpmd");
-            dataD = filterDiastolic.getValue("bpmd");
-            battery -= 0.005*params["m_avg"];
-            // TODO: send cost and reliability from "filtering" to controller
+                sendContextInfo("T3.3",0.01,100);
 
-            //for debugging 
-            cout << "Dado filtrado (systolic): " << dataS << endl;
-            cout << "Dado filtrado (diastolic): " << dataD << endl;
-
-            /*
-             * TASK: Transfer information to CentralHub
-             */
-            risk = sensorConfigSystolic.evaluateNumber(dataS);
-
-            SensorData sdataS("bpms", dataS, risk);
-            Container sdataSContainer(sdataS);
-            getConference().send(sdataSContainer);
-            battery -= 0.01;
-
-            // for debugging
-            cout << sdataS.toString() << endl;
-
-            risk = sensorConfigDiastolic.evaluateNumber(dataD);
-            SensorData sdataD("bpmd", dataD, risk);
-            Container sdatadContainer(sdataD);
-            getConference().send(sdatadContainer);
-            battery -= 0.01;
-
-            // for debugging
-            cout << sdataD.toString() << endl;
-
-            // TODO: send cost and reliability from "transfering" to controller      
+                // for debugging
+                cout << sdataS.toString() << endl;
+                cout << sdataD.toString() << endl;
+            }
 
             nCycles = 0;
         }

@@ -9,6 +9,7 @@ using namespace bsn::operation;
 using namespace bsn::configuration;
 
 using namespace bsn::msg::data;
+using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
 OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
@@ -16,6 +17,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     buffer(),
     type("oximeter"),
     battery(100),
+    available(true),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
@@ -42,10 +44,7 @@ void OximeterModule::setUp() {
         }
     }
     
-    /**
-     * Configure markov chain
-     */ 
-    {
+    { // Configure markov chain
         vector<string> lrs,mrs,hrs;
 
         lrs = op.split(getKeyValueConfiguration().getValue<string>("oximeter.LowRisk"), ',');
@@ -61,10 +60,7 @@ void OximeterModule::setUp() {
         markov = Markov(transitions, ranges, 2);
     }
 
-    /**
-     * Configure sensor configuration
-     */
-    {
+    { // Configure sensor configuration
         Range low_range = ranges[2];
         
         array<Range,2> midRanges;
@@ -92,6 +88,12 @@ void OximeterModule::setUp() {
 
 void OximeterModule::tearDown(){}
 
+void OximeterModule::sendContextInfo(const std::string &task_id, const double &cost, const double &reliability) {
+    ContextInfo context(task_id,cost,reliability);
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body(){
 
     Container container;
@@ -118,48 +120,42 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
          */
         if(++nCycles >= int32_t(1.0/params["freq"])){
             
-            //for debugging 
-            cout << "Estado atual: " << markov.currentState << endl;
-             
-            /*
-             * TASK: Collect oximeter data
-             */
-            data = markov.calculate_state();      
-            markov.next_state();
-            battery -= 0.001;
-            // TODO: send cost and reliability from "data generation" to controller
+            { // TASK: Collect oximeter data
+                data = markov.calculate_state();      
+                markov.next_state();
+                battery -= 0.001;
+                
+                sendContextInfo("T1.13",0.001,100);
+
+                //for debugging 
+                cout << "Dado gerado: " << data << endl;
+            }
             
-            //for debugging 
-            cout << "Dado gerado: " << data << endl;
+            { // TASK: Filter data with moving average
+                filter.setRange(params["m_avg"]);
+                filter.insert(data, type);
+                data = filter.getValue(type);
+                battery -= 0.005*params["m_avg"];
 
-            /*
-             * TASK: Filter data with moving average
-             */
-            filter.setRange(params["m_avg"]);
-            filter.insert(data, type);
-            data = filter.getValue(type);
-            battery -= 0.005*params["m_avg"];
-            // TODO: send cost and reliability from "filtering" to controller
+                sendContextInfo("T2.3",0.005*params["m_avg"],100);
 
-            //for debugging 
-            cout << "Dado filtrado: " << data << endl;
-
-            /*
-             * TASK: Transfer information to CentralHub
-             */
+                //for debugging 
+                cout << "Dado filtrado: " << data << endl;
+            }
             
-            // evaluate risk
-            risk = sensorConfig.evaluateNumber(data);
-            
-            SensorData sdata(type, data, risk);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
-            battery -= 0.01;
+            { // TASK: Transfer information to CentralHub
+                risk = sensorConfig.evaluateNumber(data);
+                
+                SensorData sdata(type, data, risk);
+                Container sdataContainer(sdata);
+                getConference().send(sdataContainer);
+                battery -= 0.01;
 
-            // for debugging
-            cout << sdata.toString() << endl;
+                sendContextInfo("T3.3",0.01,100);
 
-            // TODO: send cost and reliability from "transfering" to controller      
+                // for debugging
+                cout << sdata.toString() << endl;
+            }
 
             nCycles = 0;
         }

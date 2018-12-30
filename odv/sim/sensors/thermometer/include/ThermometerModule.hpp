@@ -11,15 +11,19 @@
 #include "bsn/configuration/SensorConfiguration.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/control/ThermometerControlCommand.hpp"
 
 class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	ThermometerModule(const ThermometerModule & /*obj*/);
-    	ThermometerModule &operator=(const ThermometerModule & /*obj*/);
+      	ThermometerModule(const ThermometerModule &);
+    	ThermometerModule &operator=(const ThermometerModule &);
+		
     	virtual void setUp();
     	virtual void tearDown();
+
+		void sendContextInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
 
   	public:
     	ThermometerModule(const int32_t &argc, char **argv);
@@ -32,6 +36,7 @@ class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceCl
 		
 		std::string type;
 		double battery;
+		bool available;
 
 		bool active;
 		std::map<std::string,double> params;

@@ -11,15 +11,19 @@
 #include "bsn/configuration/SensorConfiguration.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/control/ECGControlCommand.hpp"
 
 class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	ECGModule(const ECGModule & /*obj*/);
-    	ECGModule &operator=(const ECGModule & /*obj*/);
+      	ECGModule(const ECGModule &);
+    	ECGModule &operator=(const ECGModule &);
+
     	virtual void setUp();
     	virtual void tearDown();
+
+		void sendContextInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
 
   	public:
     	ECGModule(const int32_t &argc, char **argv);
@@ -32,6 +36,7 @@ class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModu
 		
 		std::string type;
 		double battery;
+		bool available;
 
 		bool active;
 		std::map<std::string,double> params;
