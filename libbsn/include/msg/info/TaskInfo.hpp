@@ -1,5 +1,5 @@
-#ifndef CONTEXT_INFO_H
-#define CONTEXT_INFO_H
+#ifndef TASK_INFO_H
+#define TASK_INFO_H
 
 #include "opendavinci/odcore/data/SerializableData.h"
 #include "opendavinci/odcore/serialization/Deserializer.h"
@@ -10,16 +10,16 @@ namespace bsn {
     namespace msg { 
         namespace info {
         
-            class ContextInfo : public odcore::data::SerializableData {
+            class TaskInfo : public odcore::data::SerializableData {
             
                 public:
-                    ContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
+                    TaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
     
-                    ContextInfo();
-                    virtual ~ContextInfo();
+                    TaskInfo();
+                    virtual ~TaskInfo();
                     
-                    ContextInfo(const ContextInfo &);
-                    ContextInfo& operator=(const ContextInfo &);
+                    TaskInfo(const TaskInfo &);
+                    TaskInfo& operator=(const TaskInfo &);
                 
                 public:
                     virtual int32_t getID() const;
@@ -37,16 +37,19 @@ namespace bsn {
                     virtual const std::string toString() const;
                     
                 public:
-                    void setContext(const std::string &/*context_id*/);
-                    std::string getContext() const;
+                    void setTask(const std::string &/*task_id*/);
+                    std::string getTask() const;
 
-                    void setValue(const bool &/*value*/);
-                    bool getValue() const;
+                    void setCost(const double &/*cost*/);
+                    double getCost() const;
 
+                    void setReliability(const double &/*reliability*/);
+                    double getReliability() const;
                 
                 private:
-                    std::string context_id;
-                    bool value;
+                    std::string task_id;
+                    double      cost;
+                    double      reliability;
             };
         }
     }

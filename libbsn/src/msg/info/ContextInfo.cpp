@@ -7,32 +7,28 @@ namespace bsn {
             using namespace std;
 
             ContextInfo::ContextInfo() : 
-                task_id(),
-                cost(),
-                reliability() {}
+                context_id(),
+                value() {}
             
-            ContextInfo::ContextInfo(const std::string &_task_id, const double &_cost, const double &_reliability) : 
-                task_id(_task_id),
-                cost(_cost),
-                reliability(_reliability) {}
+            ContextInfo::ContextInfo(const std::string &_context_id, const bool &_value) : 
+                context_id(_context_id),
+                value(_value) {}
             
             ContextInfo::~ContextInfo() {}
             
             ContextInfo::ContextInfo(const ContextInfo &obj) :
                 SerializableData(),
-                task_id(obj.getTask()),
-                cost(obj.getCost()),
-                reliability(obj.getReliability()){}
+                context_id(obj.getContext()),
+                value(obj.getValue()) {}
             
             ContextInfo& ContextInfo::operator=(const ContextInfo &obj) {
-                task_id = obj.getTask();
-                cost = obj.getCost();
-                reliability = obj.getReliability();
+                context_id = obj.getContext();
+                value = obj.getValue();
                 return (*this);
             }
             
             int32_t ContextInfo::ID() {
-                return 700;
+                return 701;
             }
             const string ContextInfo::ShortName() {
                 return "ContextInfo";
@@ -51,37 +47,28 @@ namespace bsn {
                 return ContextInfo::LongName();
             }
 
-            void ContextInfo::setTask(const std::string &_task_id) {
-                task_id = _task_id;
+            void ContextInfo::setContext(const std::string &_context_id) {
+                context_id = _context_id;
             }
 
-            std::string ContextInfo::getTask() const{
-                return task_id;
+            std::string ContextInfo::getContext() const{
+                return context_id;
             }
 
-            void ContextInfo::setCost(const double &_cost) {
-                cost = _cost;
+            void ContextInfo::setValue(const bool &_value) {
+                value = _value;
             }
 
-            double ContextInfo::getCost() const {
-                return cost;
-            }
-
-            void ContextInfo::setReliability(const double &_reliability){
-                reliability = _reliability;
-            }
-
-            double ContextInfo::getReliability() const {
-                return reliability;
+            bool ContextInfo::getValue() const {
+                return value;
             }
 
             ostream& ContextInfo::operator<<(ostream &out) const {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
                 
-                s->write(1, task_id);
-                s->write(2, cost);
-                s->write(3, reliability);
+                s->write(1, context_id);
+                s->write(2, value);
 
                 return out;
             }
@@ -90,9 +77,8 @@ namespace bsn {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
                 
-                d->read(1, task_id);
-                d->read(2, cost);
-                d->read(3, reliability);
+                d->read(1, context_id);
+                d->read(2, value);
 
                 return in;
             }
@@ -101,9 +87,7 @@ namespace bsn {
                 stringstream sstr;
 
                 sstr << "ContextInfo#" << endl;
-                sstr << "Task: " << task_id << endl; 
-                sstr << "Cost: " << cost << endl;
-                sstr << "Reliability: " << reliability << "%" << endl;
+                sstr << "Task: " << context_id << ": " << value << endl; 
 
                 return sstr.str();
             }

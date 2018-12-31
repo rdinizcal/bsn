@@ -7,7 +7,7 @@ mkdir -p odv/sim/centralhub/build
 gnome-terminal --working-directory=${bsn_folder}/odv/sim/centralhub/build -- bash -c 'cmake ..; sudo make; bash'
 
 mkdir -p odv/sim/controller/build
-gnome-terminal --working-directory=${bsn_folder}/odv/sim/centralhub/build -- bash -c 'cmake ..; sudo make; bash'
+gnome-terminal --working-directory=${bsn_folder}/odv/sim/controller/build -- bash -c 'cmake ..; sudo make; bash'
 
 mkdir -p odv/sim/sensors/ecg/build
 gnome-terminal --working-directory=${bsn_folder}/odv/sim/sensors/ecg/build -- bash -c 'cmake ..; sudo make; bash'

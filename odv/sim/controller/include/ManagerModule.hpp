@@ -1,12 +1,27 @@
 #ifndef MANAGER_MODULE_HPP
 #define MANAGER_MODULE_HPP
 
-#include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
+#include <map>
+#include <iostream>
+#include <fstream>
 
-class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+#include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
+#include "opendavinci/odcore/base/FIFOQueue.h"
+
+#include "bsn/goalmodel/Task.hpp"
+#include "bsn/goalmodel/Context.hpp"
+
+#include "bsn/msg/info/TaskInfo.hpp"
+#include "bsn/msg/info/ContextInfo.hpp"
+
+#include "lepton/Lepton.h"
+
+class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
+
     private:
-      	ManagerModule(const ManagerModule & /*obj*/);
-    	ManagerModule &operator=(const ManagerModule & /*obj*/);
+      	ManagerModule(const ManagerModule &);
+    	ManagerModule &operator=(const ManagerModule &);
+
     	virtual void setUp();
     	virtual void tearDown();
 
@@ -17,7 +32,13 @@ class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClient
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
   	private:
+		odcore::base::FIFOQueue buffer;
 
+		std::map<std::string, bsn::goalmodel::Task> tasks;
+		std::map<std::string, bsn::goalmodel::Context> contexts;
+
+		std::string cost_formula;
+		std::string reliability_formula;
 };
 
 #endif 

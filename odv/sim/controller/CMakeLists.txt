@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-PROJECT (controller)
+PROJECT (manager)
 
 ###########################################################################
 # Set the search path for .cmake files.
@@ -28,10 +28,15 @@ FIND_PACKAGE (OpenDaVINCI REQUIRED)
 SET(BSN_DIR "${CMAKE_INSTALL_PREFIX}")
 FIND_PACKAGE (BSN REQUIRED)
 
+# Find LEPTON.
+SET(LEPTON_DIR "${CMAKE_INSTALL_PREFIX}")
+FIND_PACKAGE (LEPTON REQUIRED)
+
 ###########################################################################
 # Set linking libraries to successfully link test suites and binaries.
 SET (LIBRARIES ${OPENDAVINCI_LIBRARIES}
-                ${BSN_LIBRARIES})
+                ${BSN_LIBRARIES}
+                ${LEPTON_LIBRARIES})
 
 ###########################################################################
 # Set header files from OpenDaVINCI.
@@ -39,6 +44,9 @@ INCLUDE_DIRECTORIES (${OPENDAVINCI_INCLUDE_DIRS})
 
 # Set header files from BSN.
 INCLUDE_DIRECTORIES (${BSN_INCLUDE_DIRS})
+
+# Set header files from LEPTON.
+INCLUDE_DIRECTORIES (${LEPTON_INCLUDE_DIRS})
 
 # Set include directory.
 INCLUDE_DIRECTORIES(include)

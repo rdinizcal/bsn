@@ -1,4 +1,4 @@
-#include "bsn/resource/Resource.hpp"
+#include "resource/Resource.hpp"
 
 #include <stdexcept>
 
