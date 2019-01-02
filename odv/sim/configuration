@@ -21,7 +21,8 @@ thermometer.MidRisk1 = 38,40.99
 thermometer.HighRisk1 = 41,50
 
 # accuracy in percentage
-thermometer.accuracy = 95
+thermometer.data_accuracy = 90
+thermometer.comm_accuracy = 90
 
 # Oximeter
 # markov chain
@@ -37,7 +38,8 @@ oximeter.MidRisk = 55,65
 oximeter.HighRisk = 0,55
 
 # accuracy in percentage
-oximeter.accuracy = 95
+oximeter.data_accuracy = 96
+oximeter.comm_accuracy = 99
 
 # Electrocardiograph (ECG)
 # markov chain
@@ -55,7 +57,8 @@ ecg.MidRisk1 = 97,115
 ecg.HighRisk1 = 115,300
 
 # accuracy in percentage
-ecg.accuracy = 95
+ecg.data_accuracy = 90
+ecg.comm_accuracy = 88
 
 # Sphygmomanometer (bloodpressure)
 # markov chain (diastolic pressure)
@@ -70,6 +73,10 @@ bloodpressure.diasLowRisk = 0,80
 bloodpressure.diasMidRisk = 80,90
 bloodpressure.diasHighRisk = 90,300
 
+# accuracy in percentage
+bloodpressure.diasdata_accuracy = 85
+bloodpressure.diascomm_accuracy = 91
+
 # markov chain (systolic pressure)
 bloodpressure.syststate0 = 0,0,0,0,0
 bloodpressure.syststate1 = 0,0,0,0,0
@@ -83,4 +90,5 @@ bloodpressure.systMidRisk = 120,140
 bloodpressure.systHighRisk = 140,300
 
 # accuracy in percentage
-bloodpressure.accuracy = 95
+bloodpressure.systdata_accuracy = 85
+bloodpressure.systcomm_accuracy = 91

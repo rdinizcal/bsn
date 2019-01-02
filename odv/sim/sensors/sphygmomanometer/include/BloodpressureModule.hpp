@@ -38,7 +38,12 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
 		std::string type;
 		double battery;
 		bool available;
-		double accuracy;
+		double diasdata_accuracy;
+		double diascomm_accuracy;
+		double systdata_accuracy;
+		double systcomm_accuracy;
+
+
 
 		bool active;
 		std::map<std::string,double> params;

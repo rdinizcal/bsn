@@ -18,7 +18,10 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     type("bloodpressure"),
     battery(1),
     available(true),
-    accuracy(1),
+    diasdata_accuracy(1),
+    diascomm_accuracy(1),
+    systdata_accuracy(1),
+    systcomm_accuracy(1),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markovSystolic(),
@@ -31,6 +34,7 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
 BloodpressureModule::~BloodpressureModule() {}
 
 void BloodpressureModule::setUp() {
+    srand(time(NULL));
     addDataStoreFor(903, buffer);
     
     Operation op;
@@ -101,7 +105,11 @@ void BloodpressureModule::setUp() {
     }
 
     { // Configure sensor accuracy
-        accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.accuracy") / 100;
+        diasdata_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.diasdata_accuracy") / 100;
+        diascomm_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.diascomm_accuracy") / 100;
+        systdata_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.systdata_accuracy") / 100;
+        systcomm_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.systcomm_accuracy") / 100;
+
     }
 }
 
@@ -121,8 +129,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double risk;
     double nCycles = 0;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -151,11 +157,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         if(++nCycles >= int32_t(1.0/params["freq"])){
             
             { // TASK: Collect bloodpressure data
+                double offset = (1 - systdata_accuracy + (double)rand() / RAND_MAX * (1 - systdata_accuracy)) * dataS;
 
                 dataS = markovSystolic.calculate_state();      
-                srand(time(NULL));
-                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
-                offset = (1 - accuracyValue) * dataS;
 
                 if (rand() % 2 == 0)
                     dataS = dataS + offset;
@@ -165,12 +169,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 markovSystolic.next_state();
                 battery -= 0.001;
 
-                sendTaskInfo("T1.411",0.001,1);
+                sendTaskInfo("T1.411",0.001,systdata_accuracy);
 
+                offset = (1 - diasdata_accuracy + (double)rand() / RAND_MAX * (1 - diasdata_accuracy)) * dataD;
+                
                 dataD = markovDiastolic.calculate_state();
-                srand(time(NULL));
-                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
-                offset = (1 - accuracyValue) * dataD;
 
                 if (rand() % 2 == 0)
                     dataD = dataD + offset;
@@ -180,7 +183,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 markovDiastolic.next_state();
                 battery -= 0.001;
                 
-                sendTaskInfo("T1.412",0.001,1);
+                sendTaskInfo("T1.412",0.001,diasdata_accuracy);
 
                 //for debugging 
                 cout << "New data (systolic): " << dataS << endl;
@@ -209,20 +212,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 risk = sensorConfigSystolic.evaluateNumber(dataS);
                 SensorData sdataS("bpms", dataS, risk);
                 Container sdataSContainer(sdataS);
-                getConference().send(sdataSContainer);
+                if((rand() % 100)+1 > int32_t(systcomm_accuracy*100))getConference().send(sdataSContainer);
                 battery -= 0.01;
+
+                // for debugging
+                cout << "Risk: " << risk << "%"  << endl;
 
                 risk = sensorConfigDiastolic.evaluateNumber(dataD);
                 SensorData sdataD("bpmd", dataD, risk);
                 Container sdatadContainer(sdataD);
-                getConference().send(sdatadContainer);
+                if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
                 battery -= 0.01;
 
-                sendTaskInfo("T1.43",0.01,1);
+                sendTaskInfo("T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2);
 
                 // for debugging
-                cout << sdataS.toString() << endl;
-                cout << sdataD.toString() << endl;
+                cout << "Risk: " << risk << "%"  << endl;
             }
 
             nCycles = 0;

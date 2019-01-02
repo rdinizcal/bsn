@@ -18,7 +18,8 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
     type("thermometer"),
     battery(1),
     available(true),
-    accuracy(1),
+    data_accuracy(1),
+    comm_accuracy(1),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
@@ -28,6 +29,7 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
 ThermometerModule::~ThermometerModule() {}
 
 void ThermometerModule::setUp() {
+    srand(time(NULL));
     addDataStoreFor(900, buffer);
     
     Operation op;
@@ -87,9 +89,10 @@ void ThermometerModule::setUp() {
 
         sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
     }
-
-    { // Configure sensor accuracy
-        accuracy = getKeyValueConfiguration().getValue<double>("thermometer.accuracy") / 100;
+ 
+    { // Configure sensor data_accuracy
+        data_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
+        comm_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
     }
 
 }
@@ -109,8 +112,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
     double risk;
     double nCycles = 0;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -138,12 +139,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
          */
         if(++nCycles >= int32_t(1.0/params["freq"])){
             
-            { // TASK: Collect thermometer data with accuracy
+            { // TASK: Collect thermometer data with data_accuracy
+                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
+                
                 data = markov.calculate_state();
-
-                srand(time(NULL));
-                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
-                offset = (1 - accuracyValue) * data;
 
                 if (rand() % 2 == 0)
                     data = data + offset;
@@ -153,7 +152,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 markov.next_state();
                 battery -= 0.001;
 
-                sendTaskInfo("T1.31",0.001,1);
+                sendTaskInfo("T1.31",0.001,data_accuracy);
 
                 //for debugging
                 cout << "New data: " << data << endl;
@@ -176,10 +175,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             
                 SensorData sdata(type, data, risk);
                 Container sdataContainer(sdata);
-                getConference().send(sdataContainer);
+                if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
                 battery -= 0.01;
 
-                sendTaskInfo("T1.33",0.01,1);
+                sendTaskInfo("T1.33",0.01,comm_accuracy);
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;

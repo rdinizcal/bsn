@@ -18,7 +18,8 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     type("ecg"),
     battery(1),
     available(true),
-    accuracy(1),
+    data_accuracy(1),
+    comm_accuracy(1),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
@@ -28,6 +29,7 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
 ECGModule::~ECGModule() {}
 
 void ECGModule::setUp() {
+    srand(time(NULL));
     addDataStoreFor(902, buffer);
     
     Operation op;
@@ -88,8 +90,9 @@ void ECGModule::setUp() {
         sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
     }
 
-    { // Configure sensor accuracy
-        accuracy = getKeyValueConfiguration().getValue<double>("ecg.accuracy") / 100;
+    { // Configure accuracy
+        data_accuracy = getKeyValueConfiguration().getValue<double>("ecg.data_accuracy") / 100;
+        comm_accuracy = getKeyValueConfiguration().getValue<double>("ecg.comm_accuracy") / 100;
     }
 }
 
@@ -108,8 +111,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
     double risk;
     double nCycles = 0;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -138,11 +139,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
         if(++nCycles >= int32_t(1.0/params["freq"])){
             
             { // TASK: Collect ecg data
-                data = markov.calculate_state();
+                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
 
-                srand(time(NULL));
-                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
-                offset = (1 - accuracyValue) * data;
+                data = markov.calculate_state();
 
                 if (rand() % 2 == 0)
                     data = data + offset;
@@ -152,7 +151,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 markov.next_state();
                 battery -= 0.001;
                 
-                sendTaskInfo("T1.21",0.001,1);
+                sendTaskInfo("T1.21",0.001,data_accuracy);
 
                 //for debugging 
                 cout << "New data: " << data << endl;
@@ -175,10 +174,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 
                 SensorData sdata(type, data, risk);
                 Container sdataContainer(sdata);
-                getConference().send(sdataContainer);
+                if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
                 battery -= 0.01;
 
-                sendTaskInfo("T1.23",0.01,1);
+                sendTaskInfo("T1.23",0.01,comm_accuracy);
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;
