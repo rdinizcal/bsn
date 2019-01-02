@@ -16,7 +16,7 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
     type("ecg"),
-    battery(100),
+    battery(1),
     available(true),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
@@ -90,10 +90,10 @@ void ECGModule::setUp() {
 
 void ECGModule::tearDown(){}
 
-void ECGModule::sendContextInfo(const std::string &task_id, const double &cost, const double &reliability) {
-    ContextInfo context(task_id,cost,reliability);
-    Container contextContainer(context);
-    getConference().send(contextContainer);
+void ECGModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability) {
+    TaskInfo task(task_id, cost,reliability);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
@@ -102,9 +102,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
     double data;
     double risk;
     double nCycles = 0;
+    bool first_exec = true;
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+        if(first_exec){ // Send context info warning controller that this sensor is available
+            ContextInfo context("ECG_available", true);
+            Container contextContainer(context);
+            getConference().send(contextContainer);  
+            first_exec = false; 
+        }
+
         /*
          * Receive control command and module update
          */
@@ -127,10 +135,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 markov.next_state();
                 battery -= 0.001;
                 
-                sendContextInfo("T1.12",0.001,100);
+                sendTaskInfo("T1.21",0.001,1);
 
                 //for debugging 
-                cout << "Dado gerado: " << data << endl;
+                cout << "New data: " << data << endl;
             }
             
             { // TASK: Filter data with moving average
@@ -139,10 +147,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 data = filter.getValue(type);
                 battery -= 0.005*params["m_avg"];
 
-                sendContextInfo("T2.3",0.005*params["m_avg"],100);
+                sendTaskInfo("T1.22",0.005*params["m_avg"],1);
 
                 //for debugging 
-                cout << "Dado filtrado: " << data << endl;
+                cout << "Filtered data: " << data << endl;
             }
  
             { // TASK: Transfer information to CentralHub
@@ -153,10 +161,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 getConference().send(sdataContainer);
                 battery -= 0.01;
 
-                sendContextInfo("T3.3",0.01,100);
+                sendTaskInfo("T1.23",0.01,1);
 
                 // for debugging
-                cout << sdata.toString() << endl;
+                cout << "Risk: " << risk << "%"  << endl;
             }
             
             nCycles = 0;

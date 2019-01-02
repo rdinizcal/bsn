@@ -11,6 +11,7 @@
 #include "bsn/configuration/SensorConfiguration.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/info/TaskInfo.hpp"
 #include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
@@ -23,7 +24,7 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
 		virtual void setUp();
     	virtual void tearDown();
 
-		void sendContextInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
+		void sendTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
 
   	public:
     	BloodpressureModule(const int32_t &argc, char **argv);

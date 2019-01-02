@@ -1,4 +1,4 @@
-bsn_folder=/home/rdiniz/projects/seams19/bsn
+bsn_folder=$PWD
 
 gnome-terminal --working-directory=${bsn_folder}/odv/sim/ -e 'odsupercomponent --cid=111 --managed=simulation'      & sleep 3s
 

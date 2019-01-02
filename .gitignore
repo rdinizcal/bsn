@@ -45,7 +45,6 @@ runner.cpp
 test.cpp
 
 levi.sh
-launch.sh
 
 # Doxygen documentation
 docs/doxygen

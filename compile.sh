@@ -1,4 +1,4 @@
-bsn_folder=/home/rdiniz/projects/seams19/bsn
+bsn_folder=$PWD
 
 mkdir -p libbsn/build
 gnome-terminal --working-directory=${bsn_folder}/libbsn/build -- bash -c 'cmake ..; sudo make install; bash' & sleep 5s

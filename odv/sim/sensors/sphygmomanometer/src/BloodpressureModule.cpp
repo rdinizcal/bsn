@@ -16,7 +16,7 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "bloodpressure"),
     buffer(),
     type("bloodpressure"),
-    battery(100),
+    battery(1),
     active(true),
     available(true),
     params({{"freq",0.1},{"m_avg",5}}),
@@ -102,10 +102,10 @@ void BloodpressureModule::setUp() {
 
 void BloodpressureModule::tearDown(){}
 
-void BloodpressureModule::sendContextInfo(const std::string &task_id, const double &cost, const double &reliability) {
-    ContextInfo context(task_id,cost,reliability);
-    Container contextContainer(context);
-    getConference().send(contextContainer);
+void BloodpressureModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability) {
+    TaskInfo context(task_id,cost,reliability);
+    Container taskContainer(context);
+    getConference().send(taskContainer);
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::body(){
@@ -115,9 +115,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double dataD;
     double risk;
     double nCycles = 0;
-    
+    bool first_exec = true;
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+        if(first_exec){ // Send context info warning controller that this sensor is available
+            ContextInfo context("ABP_available", true);
+            Container contextContainer(context);
+            getConference().send(contextContainer);  
+            first_exec = false; 
+        }
+
         /*
          * Receive control command and module update
          */
@@ -141,15 +149,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 markovSystolic.next_state();
                 battery -= 0.001;
 
+                sendTaskInfo("T1.411",0.001,1);
+
                 dataD = markovDiastolic.calculate_state();      
                 markovDiastolic.next_state();
                 battery -= 0.001;
                 
-                sendContextInfo("T1.13",0.001*2,100);
+                sendTaskInfo("T1.412",0.001,1);
 
                 //for debugging 
-                cout << "Dado gerado (systolic): " << dataS << endl;
-                cout << "Dado gerado (diastolic): " << dataD << endl;
+                cout << "New data (systolic): " << dataS << endl;
+                cout << "New data (diastolic): " << dataD << endl;
             }
 
             { // TASK: Filter data with moving average
@@ -163,11 +173,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 dataD = filterDiastolic.getValue("bpmd");
                 battery -= 0.005*params["m_avg"];
 
-                sendContextInfo("T2.3",0.005*params["m_avg"]*2,100);
+                sendTaskInfo("T1.42",0.005*params["m_avg"]*2,1);
 
                 //for debugging 
-                cout << "Dado filtrado (systolic): " << dataS << endl;
-                cout << "Dado filtrado (diastolic): " << dataD << endl;
+                cout << "Filtered data (systolic): " << dataS << endl;
+                cout << "Filtered data (diastolic): " << dataD << endl;
             }
             
             { //TASK: Transfer information to CentralHub
@@ -183,7 +193,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 getConference().send(sdatadContainer);
                 battery -= 0.01;
 
-                sendContextInfo("T3.3",0.01,100);
+                sendTaskInfo("T1.43",0.01,1);
 
                 // for debugging
                 cout << sdataS.toString() << endl;

@@ -37,8 +37,15 @@ class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClient
 		std::map<std::string, bsn::goalmodel::Task> tasks;
 		std::map<std::string, bsn::goalmodel::Context> contexts;
 
-		std::string cost_formula;
-		std::string reliability_formula;
+		Lepton::CompiledExpression cost_expression;
+		Lepton::CompiledExpression reliability_expression;
+
+		std::map<std::string,double&> cost_formula_reliabilities;
+        std::map<std::string,double&> cost_formula_costs;
+        std::map<std::string,double&> cost_formula_contexts;
+
+        std::map<std::string,double&> reliability_formula_reliabilities;
+        std::map<std::string,double&> reliability_formula_contexts;
 };
 
 #endif 
