@@ -18,6 +18,7 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     type("ecg"),
     battery(1),
     available(true),
+    accuracy(1),
     active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
@@ -86,6 +87,10 @@ void ECGModule::setUp() {
 
         sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
     }
+
+    { // Configure sensor accuracy
+        accuracy = getKeyValueConfiguration().getValue<double>("ecg.accuracy") / 100;
+    }
 }
 
 void ECGModule::tearDown(){}
@@ -103,6 +108,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
     double risk;
     double nCycles = 0;
     bool first_exec = true;
+    double accuracyValue;
+    double offset;
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -131,7 +138,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
         if(++nCycles >= int32_t(1.0/params["freq"])){
             
             { // TASK: Collect ecg data
-                data = markov.calculate_state();      
+                data = markov.calculate_state();
+
+                srand(time(NULL));
+                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
+                offset = (1 - accuracyValue) * data;
+
+                if (rand() % 2 == 0)
+                    data = data + offset;
+                else
+                    data = data - offset;
+
                 markov.next_state();
                 battery -= 0.001;
                 
