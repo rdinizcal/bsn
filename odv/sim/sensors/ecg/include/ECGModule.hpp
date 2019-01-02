@@ -38,6 +38,7 @@ class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModu
 		std::string type;
 		double battery;
 		bool available;
+		double accuracy;
 
 		bool active;
 		std::map<std::string,double> params;

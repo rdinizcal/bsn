@@ -20,6 +20,9 @@ thermometer.LowRisk = 36,37.99
 thermometer.MidRisk1 = 38,40.99
 thermometer.HighRisk1 = 41,50
 
+# accuracy in percentage
+thermometer.accuracy = 95
+
 # Oximeter
 # markov chain
 oximeter.state0 = 0,0,0,0,0
@@ -32,6 +35,9 @@ oximeter.state4 = 0,0,20,20,60
 oximeter.LowRisk = 65,100
 oximeter.MidRisk = 55,65
 oximeter.HighRisk = 0,55
+
+# accuracy in percentage
+oximeter.accuracy = 95
 
 # Electrocardiograph (ECG)
 # markov chain
@@ -47,6 +53,9 @@ ecg.MidRisk0 = 70,85
 ecg.LowRisk = 85,97
 ecg.MidRisk1 = 97,115
 ecg.HighRisk1 = 115,300
+
+# accuracy in percentage
+ecg.accuracy = 95
 
 # Sphygmomanometer (bloodpressure)
 # markov chain (diastolic pressure)
@@ -73,4 +82,5 @@ bloodpressure.systLowRisk = 0,120
 bloodpressure.systMidRisk = 120,140
 bloodpressure.systHighRisk = 140,300
 
-
+# accuracy in percentage
+bloodpressure.accuracy = 95

@@ -17,8 +17,9 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     buffer(),
     type("bloodpressure"),
     battery(1),
-    active(true),
     available(true),
+    accuracy(1),
+    active(true),
     params({{"freq",0.1},{"m_avg",5}}),
     markovSystolic(),
     markovDiastolic(),
@@ -98,6 +99,10 @@ void BloodpressureModule::setUp() {
             }
         }
     }
+
+    { // Configure sensor accuracy
+        accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.accuracy") / 100;
+    }
 }
 
 void BloodpressureModule::tearDown(){}
@@ -116,6 +121,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double risk;
     double nCycles = 0;
     bool first_exec = true;
+    double accuracyValue;
+    double offset;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -146,12 +153,30 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             { // TASK: Collect bloodpressure data
 
                 dataS = markovSystolic.calculate_state();      
+                srand(time(NULL));
+                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
+                offset = (1 - accuracyValue) * dataS;
+
+                if (rand() % 2 == 0)
+                    dataS = dataS + offset;
+                else
+                    dataS = dataS - offset;
+
                 markovSystolic.next_state();
                 battery -= 0.001;
 
                 sendTaskInfo("T1.411",0.001,1);
 
-                dataD = markovDiastolic.calculate_state();      
+                dataD = markovDiastolic.calculate_state();
+                srand(time(NULL));
+                accuracyValue = accuracy + (double)rand() / RAND_MAX * (1 - accuracy);
+                offset = (1 - accuracyValue) * dataD;
+
+                if (rand() % 2 == 0)
+                    dataD = dataD + offset;
+                else
+                    dataD = dataD - offset;
+
                 markovDiastolic.next_state();
                 battery -= 0.001;
                 

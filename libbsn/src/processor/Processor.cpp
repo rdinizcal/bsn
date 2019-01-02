@@ -70,7 +70,7 @@ namespace bsn {
 
             // 85.0 é um número totalmente ARBITRARIO
             if(risk_status > 66.0){
-                cout << "============EMERGÊNCIA============(" << risk_status << ")" << endl;
+                cout << "============ EMERGENCY ============(" << risk_status << ")" << endl;
             }
             else{
                 cout << "General risk status: " << risk_status << '%' << endl;
