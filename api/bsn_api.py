@@ -67,6 +67,12 @@ def get_configs():
     # Returns a map associating categorie and subcategories
     return configuration_map
 
+# Check if requested path of configuration exists
+def is_configuration_available(path):
+    # Check if there is a configuration in specified folder
+    path = os.getcwd() + '/odv/sim/configs/' + path + '/configuration'
+    return os.path.exists(path)
+
 @app.route('/config')
 def config():    
     return jsonify(get_configs())
@@ -89,12 +95,15 @@ def status():
 @app.route('/start')
 def start():
     global processes_pids
-    try:
+    path = request.args.get('path')    
+    if is_configuration_available(path) is False:
+        return 'path error'
+    try:        
         processes_pids = start_execution()
         print(processes_pids)
         return 'ok'    
     except:
-        return 'error'
+        return 'execution error'
 
 # Sop bsn execution
 @app.route('/stop')
