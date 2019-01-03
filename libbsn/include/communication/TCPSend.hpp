@@ -10,6 +10,8 @@ namespace bsn {
 
         class TCPSend {
             public:
+                TCPSend();
+
                 TCPSend(int);
 
                 // Construtor recebe uma string com o ip e uma int32_t porta        
@@ -18,7 +20,7 @@ namespace bsn {
                 TCPSend(const TCPSend & /*obj*/);
                 TCPSend &operator=(const TCPSend & /*obj*/);
 
-              private:
+            private:
 
                 int32_t port;
                 std::string ip;

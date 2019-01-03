@@ -6,7 +6,6 @@ using namespace odcore::io::tcp;
 
 namespace bsn {
     namespace communication {
-
         TCPSend::TCPSend(int32_t thisPort) : port(thisPort), ip("localhost"), is_connected(false), thisConnection(nullptr) {}
 
         TCPSend::TCPSend(std::string thisIp, int32_t thisPort) : port(thisPort), ip(thisIp), is_connected(false), thisConnection(nullptr) {}

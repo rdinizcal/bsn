@@ -183,7 +183,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
 
             nCycles = 0;
         }
-
+        
         // TODO: persist it here
     }
 

@@ -15,6 +15,7 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/processor/Processor.hpp"
+#include "bsn/communication/TCPSend.hpp"
 
 #include "bsn/msg/data/SensorData.h"
 #include "bsn/msg/info/PatientStatusInfo.h"

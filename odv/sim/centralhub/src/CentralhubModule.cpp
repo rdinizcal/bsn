@@ -7,6 +7,8 @@ using namespace bsn::processor;
 using namespace bsn::msg::data;
 using namespace bsn::msg::info;
 
+using namespace bsn::communication;
+
 
 CentralhubModule::CentralhubModule(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
@@ -18,13 +20,18 @@ void CentralhubModule::setUp() {
     addDataStoreFor(873, buffer);
 }
 
-void CentralhubModule::tearDown(){}
+void CentralhubModule::tearDown() {}
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body(){
-    
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body() {
     Container container;    
     double patient_status;
     bool received = false;
+    std::string packet;
+    std::array<double, 5> data;
+
+    TCPSend sender(6060);
+    sender.setIP("localhost");
+    sender.connect();
 
     vector<list<double>> data_list(5);
     for(std::vector<std::list<double>>::iterator it = data_list.begin();
@@ -32,15 +39,16 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
             (*it).push_back(0.0);
     }
 
-    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
+    while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
-        while(!buffer.isEmpty()){
+        while (!buffer.isEmpty()) {
             
             container = buffer.leave();
 
             std::string type = container.getData<SensorData>().getType();
             double risk = container.getData<SensorData>().getRisk();
             int32_t sensor_id = get_sensor_id(type);
+            data[sensor_id] = container.getData<SensorData>().getData();
 
             if (int32_t(risk) == -1) { continue; }
             data_list[sensor_id].push_back(risk);
@@ -52,6 +60,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
         patient_status = data_fuse(data_list);
 
+        // Envia dados ao servidor
+        {
+            packet = "";
+            int i = 0;
+            for (list<double> li : data_list) {
+                if (!li.empty()) {
+                    double element = li.front();
+                    packet += to_string(element) += "=";
+                    packet += to_string(data[i]) + "/";
+                }
+                i++;                    
+            }
+            packet += to_string(patient_status);
+            sender.send(packet);
+        }
+
         // Envia dados para persistencia
         {
             std::string sensor_risk_str;
@@ -60,10 +84,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
             std::string ecg_risk;
             std::string trm_risk;
 
-            for(int i = 0; i < 4; i++){
+            for (int i = 0; i < 4; i++) {
                 double sensor_risk = data_list[i].back();
 
-                if(sensor_risk > 0 && sensor_risk <= 20) {
+                if (sensor_risk > 0 && sensor_risk <= 20) {
                     sensor_risk_str = "low risk";
                 } else if (sensor_risk > 20 && sensor_risk <= 65) {
                     sensor_risk_str = "moderate risk";
@@ -73,7 +97,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                     sensor_risk_str = "unknown";
                 }
 
-                if(i==0) {
+                if (i==0) {
                     trm_risk = sensor_risk_str;
                 } else if (i == 1){
                     ecg_risk = sensor_risk_str;
