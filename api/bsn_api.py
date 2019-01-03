@@ -1,4 +1,4 @@
-from flask import Flask, request, session
+from flask import Flask, request, session, jsonify
 import subprocess
 import os
 import signal
@@ -37,6 +37,7 @@ def start_execution():
         process = subprocess.Popen(command, stdout=subprocess.PIPE)
         processes_pids.append(process.pid)
 
+    # Returns all the pids started
     return processes_pids
 
 def check_status(pid):
@@ -49,7 +50,27 @@ def check_status(pid):
             return('zombie')
         else:
             return('active')
-            
+
+# Get all categories available
+def get_configs():
+    configuration_map = {}
+    path = 'odv/sim/configs'
+    # Get all folders from configs
+    # Each one is a categorie
+    categories = next(os.walk(path))[1]
+
+    for categorie in categories:
+        # Explore each subfolder to get all subcategories
+        new_path = path + '/' + categorie
+        configuration_map[categorie] = next(os.walk(new_path))[1]
+
+    # Returns a map associating categorie and subcategories
+    return configuration_map
+
+@app.route('/config')
+def config():    
+    return jsonify(get_configs())
+
 # Show active processes
 @app.route('/status')
 def status():
@@ -62,7 +83,7 @@ def status():
     for pid in processes_pids:
         response += str(pid)  + check_status(pid) + '<br>'
 
-    return response     
+    return response
 
 # Start bsn execution
 @app.route('/start')
@@ -70,6 +91,7 @@ def start():
     global processes_pids
     try:
         processes_pids = start_execution()
+        print(processes_pids)
         return 'ok'    
     except:
         return 'error'
