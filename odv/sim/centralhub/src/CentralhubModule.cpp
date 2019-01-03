@@ -12,12 +12,16 @@ using namespace bsn::communication;
 
 CentralhubModule::CentralhubModule(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
-	buffer() {}
+	buffer(),
+    connect(1),
+    port(6060) {}
 	
 CentralhubModule::~CentralhubModule() {}
 
 void CentralhubModule::setUp() {
     addDataStoreFor(873, buffer);
+    connect = getKeyValueConfiguration().getValue<int>("centralhub.connect");
+    port = getKeyValueConfiguration().getValue<int>("centralhub.port");
 }
 
 void CentralhubModule::tearDown() {}
@@ -29,9 +33,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
     std::string packet;
     std::array<double, 5> data;
 
-    TCPSend sender(6060);
-    sender.setIP("localhost");
-    sender.connect();
+    TCPSend sender;
+    if (connect) {
+        sender.set_port(port);
+        sender.setIP("localhost");
+        sender.connect();
+    }
 
     vector<list<double>> data_list(5);
     for(std::vector<std::list<double>>::iterator it = data_list.begin();
@@ -60,20 +67,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
         patient_status = data_fuse(data_list);
 
-        // Envia dados ao servidor
-        {
-            packet = "";
-            int i = 0;
-            for (list<double> li : data_list) {
-                if (!li.empty()) {
-                    double element = li.front();
-                    packet += to_string(element) += "=";
-                    packet += to_string(data[i]) + "/";
+        // Envia dados ao servidor, se configurado para tal
+        {   
+            if (connect) {
+                packet = "";
+                int i = 0;
+                for (list<double> li : data_list) {
+                    if (!li.empty()) {
+                        double element = li.front();
+                        packet += to_string(element) += "=";
+                        packet += to_string(data[i]) + "/";
+                    }
+                    i++;                    
                 }
-                i++;                    
+                packet += to_string(patient_status);
+                sender.send(packet);
             }
-            packet += to_string(patient_status);
-            sender.send(packet);
         }
 
         // Envia dados para persistencia

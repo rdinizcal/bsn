@@ -36,6 +36,8 @@ class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceCli
 
     private:
         odcore::base::FIFOQueue buffer;
+        uint32_t connect;
+        uint32_t port;
 };
 
 #endif 
