@@ -19,16 +19,16 @@ processes_pids = []
 
 def stop_execution():
     global processes_pids
-
+    # Send a Sigkill sign for all the processes pids
     for pid in processes_pids:
         os.kill(pid, signal.SIGKILL)
         processes_pids = []        
 
-def start_execution():
+def start_execution(path):
     global processes_pids
 
     # Initialize odsupercomponent
-    configuration_path = os.getcwd()  + '/odv/sim'    
+    configuration_path = os.getcwd()  + '/odv/sim/configs/' + path
     od_process = subprocess.Popen(['odsupercomponent','--cid=111'], stdout=subprocess.PIPE, cwd=configuration_path)
     processes_pids.append(od_process.pid)
 
@@ -73,6 +73,7 @@ def is_configuration_available(path):
     path = os.getcwd() + '/odv/sim/configs/' + path + '/configuration'
     return os.path.exists(path)
 
+# Returns all configurations available
 @app.route('/config')
 def config():    
     return jsonify(get_configs())
@@ -99,7 +100,7 @@ def start():
     if is_configuration_available(path) is False:
         return 'path error'
     try:        
-        processes_pids = start_execution()
+        processes_pids = start_execution(path)
         print(processes_pids)
         return 'ok'    
     except:
