@@ -116,6 +116,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             ContextInfo context("SaO2_available", true);
             Container contextContainer(context);
             getConference().send(contextContainer);  
+            sendTaskInfo("G3_T1.11",0.001,data_accuracy);
+            sendTaskInfo("G3_T1.12",0.005*params["m_avg"],1);
+            sendTaskInfo("G3_T1.13",0.01,comm_accuracy);
             first_exec = false; 
         }
 
@@ -149,7 +152,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 markov.next_state();
                 battery -= 0.001;
                 
-                sendTaskInfo("T1.11",0.001,data_accuracy);
 
                 //for debugging 
                 cout << "Dado gerado: " << data << endl;
@@ -161,7 +163,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 data = filter.getValue(type);
                 battery -= 0.005*params["m_avg"];
 
-                sendTaskInfo("T1.12",0.005*params["m_avg"],1);
 
                 //for debugging 
                 cout << "Dado filtrado: " << data << endl;
@@ -175,7 +176,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
                 battery -= 0.01;
 
-                sendTaskInfo("T1.13",0.01,comm_accuracy);
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;

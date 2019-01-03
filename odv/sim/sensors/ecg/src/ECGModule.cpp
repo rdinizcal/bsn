@@ -118,6 +118,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
             ContextInfo context("ECG_available", true);
             Container contextContainer(context);
             getConference().send(contextContainer);  
+            sendTaskInfo("G3_T1.21",0.001,data_accuracy);
+            sendTaskInfo("G3_T1.22",0.005*params["m_avg"],1);
+            sendTaskInfo("G3_T1.23",0.01,comm_accuracy);
             first_exec = false; 
         }
 
@@ -151,7 +154,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 markov.next_state();
                 battery -= 0.001;
                 
-                sendTaskInfo("T1.21",0.001,data_accuracy);
 
                 //for debugging 
                 cout << "New data: " << data << endl;
@@ -163,7 +165,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 data = filter.getValue(type);
                 battery -= 0.005*params["m_avg"];
 
-                sendTaskInfo("T1.22",0.005*params["m_avg"],1);
 
                 //for debugging 
                 cout << "Filtered data: " << data << endl;
@@ -177,7 +178,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
                 battery -= 0.01;
 
-                sendTaskInfo("T1.23",0.01,comm_accuracy);
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;

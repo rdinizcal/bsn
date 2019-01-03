@@ -27,30 +27,30 @@ void ManagerModule::setUp() {
 
     { // Set up map {id,object} of leaf task from goal model
         // Pulse oximeter
-        tasks.insert(std::pair<std::string,Task>("T1.11",Task("T1.11","Read data","W_G3_T1_11",0.3,"rTaskG3_T1_11",0.97)));
-        tasks.insert(std::pair<std::string,Task>("T1.12",Task("T1.12","Filter data","W_G3_T1_12",0.4,"rTaskG3_T1_12",0.95)));
-        tasks.insert(std::pair<std::string,Task>("T1.13",Task("T1.13","Transfer data","W_G3_T1_13",0.8,"rTaskG3_T1_13",0.9)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.11",Task("G3_T1.11","Read data","W_G3_T1_11",0,"rTaskG3_T1_11",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.12",Task("G3_T1.12","Filter data","W_G3_T1_12",0,"rTaskG3_T1_12",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.13",Task("G3_T1.13","Transfer data","W_G3_T1_13",0,"rTaskG3_T1_13",0)));
 
         // Electrocardiograph
-        tasks.insert(std::pair<std::string,Task>("T1.21",Task("T1.21","Read data","W_G3_T1_21",0.4,"rTaskG3_T1_21",0.95)));
-        tasks.insert(std::pair<std::string,Task>("T1.22",Task("T1.22","Filter data","W_G3_T1_22",0.4,"rTaskG3_T1_22",0.95)));
-        tasks.insert(std::pair<std::string,Task>("T1.23",Task("T1.23","Transfer data","W_G3_T1_22",0.4,"rTaskG3_T1_22",0.95)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.21",Task("G3_T1.21","Read data","W_G3_T1_21",0,"rTaskG3_T1_21",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.22",Task("G3_T1.22","Filter data","W_G3_T1_22",0,"rTaskG3_T1_22",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.23",Task("G3_T1.23","Transfer data","W_G3_T1_23",0,"rTaskG3_T1_23",0)));
 
         // Thermometer
-        tasks.insert(std::pair<std::string,Task>("T1.31",Task("T1.31","Read data","W_G3_T1_31",0.3,"rTaskG3_T1_31",0.9)));
-        tasks.insert(std::pair<std::string,Task>("T1.32",Task("T1.32","Filter data","W_G3_T1_32",0.3,"rTaskG3_T1_32",0.9)));
-        tasks.insert(std::pair<std::string,Task>("T1.33",Task("T1.33","Transfer data","W_G3_T1_33",0.3,"rTaskG3_T1_33",0.9)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.31",Task("G3_T1.31","Read data","W_G3_T1_31",0,"rTaskG3_T1_31",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.32",Task("G3_T1.32","Filter data","W_G3_T1_32",0,"rTaskG3_T1_32",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.33",Task("G3_T1.33","Transfer data","W_G3_T1_33",0,"rTaskG3_T1_33",0)));
 
         // Sphygmomanometer
-        tasks.insert(std::pair<std::string,Task>("T1.411",Task("T1.411","Read diastolic","W_G3_T1_411",0.8,"rTaskG3_T1_411",0.95)));
-        tasks.insert(std::pair<std::string,Task>("T1.412",Task("T1.412","Read systolic","W_G3_T1_412",0.8,"rTaskG3_T1_412",0.95)));
-        tasks.insert(std::pair<std::string,Task>("T1.42",Task("T1.42","Filter data","W_G3_T1_42",0.8,"rTaskG3_T1_42",0.95)));
-        tasks.insert(std::pair<std::string,Task>("T1.43",Task("T1.43","Transfer data","W_G3_T1_43",0.8,"rTaskG3_T1_43",0.95)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.411",Task("G3_T1.411","Read diastolic","W_G3_T1_411",0,"rTaskG3_T1_411",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.412",Task("G3_T1.412","Read systolic","W_G3_T1_412",0,"rTaskG3_T1_412",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.42",Task("G3_T1.42","Filter data","W_G3_T1_42",0,"rTaskG3_T1_42",0)));
+        tasks.insert(std::pair<std::string,Task>("G3_T1.43",Task("G3_T1.43","Transfer data","W_G3_T1_43",0,"rTaskG3_T1_43",0)));
 
         // Centralhub
-        tasks.insert(std::pair<std::string,Task>("T2.1",Task("T2.1","Fuse sensor data","W_G4_T2_1",0.8,"rTaskG4_T2_1",0.93)));
-        tasks.insert(std::pair<std::string,Task>("T2.2",Task("T2.2","Detect patient status","W_G4_T2_2",0.8,"rTaskG4_T2_2",0.93)));
-        tasks.insert(std::pair<std::string,Task>("T2.3",Task("T2.3","Persist data","W_G4_T2_3",0.8,"rTaskG4_T2_3",0.93)));
+        tasks.insert(std::pair<std::string,Task>("G4_T2.1",Task("G4_T2.1","Fuse sensor data","W_G4_T1_1",0.8,"rTaskG4_T1_1",0.99)));
+        tasks.insert(std::pair<std::string,Task>("G4_T2.2",Task("G4_T2.2","Detect patient status","W_G4_T1_2",0.8,"rTaskG4_T1_2",0.99)));
+        tasks.insert(std::pair<std::string,Task>("G4_T2.3",Task("G4_T2.3","Persist data","W_G4_T1_3",0.8,"rTaskG4_T1_3",0.99)));
     }
 
     { // Set up map {id,object} of context from goal model

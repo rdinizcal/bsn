@@ -136,6 +136,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             ContextInfo context("ABP_available", true);
             Container contextContainer(context);
             getConference().send(contextContainer);  
+            sendTaskInfo("G3_T1.411",0.001,systdata_accuracy);
+            sendTaskInfo("G3_T1.412",0.001,diasdata_accuracy);
+            sendTaskInfo("G3_T1.42",0.005*params["m_avg"]*2,1);
+            sendTaskInfo("G3_T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2);
             first_exec = false; 
         }
 
@@ -169,7 +173,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 markovSystolic.next_state();
                 battery -= 0.001;
 
-                sendTaskInfo("T1.411",0.001,systdata_accuracy);
 
                 offset = (1 - diasdata_accuracy + (double)rand() / RAND_MAX * (1 - diasdata_accuracy)) * dataD;
                 
@@ -183,7 +186,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 markovDiastolic.next_state();
                 battery -= 0.001;
                 
-                sendTaskInfo("T1.412",0.001,diasdata_accuracy);
 
                 //for debugging 
                 cout << "New data (systolic): " << dataS << endl;
@@ -201,7 +203,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 dataD = filterDiastolic.getValue("bpmd");
                 battery -= 0.005*params["m_avg"];
 
-                sendTaskInfo("T1.42",0.005*params["m_avg"]*2,1);
 
                 //for debugging 
                 cout << "Filtered data (systolic): " << dataS << endl;
@@ -224,7 +225,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
                 battery -= 0.01;
 
-                sendTaskInfo("T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2);
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;
