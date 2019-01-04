@@ -21,7 +21,7 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
     data_accuracy(1),
     comm_accuracy(1),
     active(true),
-    params({{"freq",0.1},{"m_avg",5}}),
+    params({{"freq",0.90},{"m_avg",5}}),
     markov(),
     filter(5),
     sensorConfig() {}
@@ -99,8 +99,8 @@ void ThermometerModule::setUp() {
 
 void ThermometerModule::tearDown(){}
 
-void ThermometerModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability) {
-    TaskInfo task(task_id, cost,reliability);
+void ThermometerModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    TaskInfo task(task_id, cost, reliability, frequency);
     Container taskContainer(task);
     getConference().send(taskContainer);
 }
@@ -110,7 +110,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
     Container container;
     double data;
     double risk;
-    double nCycles = 0;
     bool first_exec = true;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -119,9 +118,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             ContextInfo context("TEMP_available", true);
             Container contextContainer(context);
             getConference().send(contextContainer);  
-            sendTaskInfo("G3_T1.31",0.001,data_accuracy);
-            sendTaskInfo("G3_T1.32",0.005*params["m_avg"],1);
-            sendTaskInfo("G3_T1.33",0.01,comm_accuracy);
+            sendTaskInfo("G3_T1.31",0.001,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.32",0.005*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.33",0.01,comm_accuracy,params["freq"]);
             first_exec = false; 
         }
 
@@ -140,7 +139,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         /*
          * Module execution
          */
-        if(++nCycles >= int32_t(1.0/params["freq"])){
+        if((rand() % 100)+1 < int32_t(params["freq"]*100)){
             
             { // TASK: Collect thermometer data with data_accuracy
                 double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
@@ -179,15 +178,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
                 battery -= 0.01;
 
-
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;
             }
             
-            nCycles = 0;
         }
 
-        // TODO: persist it here
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

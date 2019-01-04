@@ -24,7 +24,7 @@ class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceCl
     	virtual void setUp();
     	virtual void tearDown();
 
-		void sendTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
+		void sendTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
 
   	public:
     	ThermometerModule(const int32_t &argc, char **argv);

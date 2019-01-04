@@ -20,11 +20,18 @@ void CentralhubModule::setUp() {
 
 void CentralhubModule::tearDown(){}
 
+void CentralhubModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    TaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body(){
     
     Container container;    
     double patient_status;
     bool received = false;
+    bool first_exec = true;
 
     vector<list<double>> data_list(5);
     for(std::vector<std::list<double>>::iterator it = data_list.begin();
@@ -33,6 +40,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
     }
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING){
+
+        if(first_exec){ // Send context info warning controller that the centralhub is available
+            sendTaskInfo("G4_T2.1",0,1,1);
+            sendTaskInfo("G4_T2.2",0,1,1);
+            sendTaskInfo("G4_T2.3",0,1,1);
+            first_exec = false; 
+        }
 
         while(!buffer.isEmpty()){
             
@@ -52,8 +66,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
         patient_status = data_fuse(data_list);
 
-        // Envia dados para persistencia
-        {
+        { // Envia dados para persistencia
             std::string sensor_risk_str;
             std::string bpr_risk;
             std::string oxi_risk;

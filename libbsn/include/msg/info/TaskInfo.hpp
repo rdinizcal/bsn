@@ -13,7 +13,7 @@ namespace bsn {
             class TaskInfo : public odcore::data::SerializableData {
             
                 public:
-                    TaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/);
+                    TaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
     
                     TaskInfo();
                     virtual ~TaskInfo();
@@ -45,11 +45,15 @@ namespace bsn {
 
                     void setReliability(const double &/*reliability*/);
                     double getReliability() const;
+
+                    void setFrequency(const double &/*frequency*/);
+                    double getFrequency() const;
                 
                 private:
                     std::string task_id;
                     double      cost;
                     double      reliability;
+                    double      frequency;
             };
         }
     }

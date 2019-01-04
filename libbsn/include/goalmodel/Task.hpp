@@ -9,8 +9,8 @@ namespace bsn {
         class Task {
 
             public:
-                Task(const std::string &/*task_id*/, const std::string &/*description*/, const std::string &/*cost_symbol*/, const std::string &/*reliability_symbol*/);
-                Task(const std::string &/*task_id*/, const std::string &/*description*/, const std::string &/*cost_symbol*/, const double &/*cost*/, const std::string &/*reliability_symbol*/, const double &/*reliability*/);
+                Task(const std::string &/*task_id*/, const std::string &/*description*/, const std::string &/*cost_symbol*/, const std::string &/*reliability_symbol*/, const std::string &/*frequency_symbol*/);
+                Task(const std::string &/*task_id*/, const std::string &/*description*/, const std::string &/*cost_symbol*/, const double &/*cost*/, const std::string &/*reliability_symbol*/, const double &/*reliability*/, const std::string &/*frequency_symbol*/, const double &/*frequency*/);
                 
                 Task();
                 ~Task();
@@ -36,6 +36,12 @@ namespace bsn {
                 void setReliability(const double &/*reliability*/);
                 double getReliability() const;
 
+                void setFrequencySymbol(const std::string &/*frequency_symbol*/);
+                std::string getFrequencySymbol() const;
+
+                void setFrequency(const double &/*frequency*/);
+                double getFrequency() const;
+
             private:
                 std::string task_id;
                 std::string description;
@@ -45,6 +51,9 @@ namespace bsn {
 
                 std::string reliability_symbol;
                 double reliability;
+
+                std::string frequency_symbol;
+                double frequency;
         };
     }  
 }

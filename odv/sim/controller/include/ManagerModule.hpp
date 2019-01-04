@@ -41,10 +41,12 @@ class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClient
 		Lepton::CompiledExpression reliability_expression;
 
 		std::map<std::string,double&> cost_formula_reliabilities;
+		std::map<std::string,double&> cost_formula_frequencies;
         std::map<std::string,double&> cost_formula_costs;
         std::map<std::string,double&> cost_formula_contexts;
 
         std::map<std::string,double&> reliability_formula_reliabilities;
+        std::map<std::string,double&> reliability_formula_frequencies;
         std::map<std::string,double&> reliability_formula_contexts;
 };
 

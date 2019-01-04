@@ -9,12 +9,14 @@ namespace bsn {
             TaskInfo::TaskInfo() : 
                 task_id(),
                 cost(),
-                reliability() {}
+                reliability(),
+                frequency() {}
             
-            TaskInfo::TaskInfo(const std::string &_task_id, const double &_cost, const double &_reliability) : 
+            TaskInfo::TaskInfo(const std::string &_task_id, const double &_cost, const double &_reliability, const double &_frequency) : 
                 task_id(_task_id),
                 cost(_cost),
-                reliability(_reliability) {}
+                reliability(_reliability),
+                frequency(_frequency) {}
             
             TaskInfo::~TaskInfo() {}
             
@@ -22,12 +24,14 @@ namespace bsn {
                 SerializableData(),
                 task_id(obj.getTask()),
                 cost(obj.getCost()),
-                reliability(obj.getReliability()){}
+                reliability(obj.getReliability()),
+                frequency(obj.getFrequency()){}
             
             TaskInfo& TaskInfo::operator=(const TaskInfo &obj) {
                 task_id = obj.getTask();
                 cost = obj.getCost();
                 reliability = obj.getReliability();
+                frequency = obj.getFrequency();
                 return (*this);
             }
             
@@ -75,6 +79,14 @@ namespace bsn {
                 return reliability;
             }
 
+            void TaskInfo::setFrequency(const double &_frequency){
+                frequency = _frequency;
+            }
+
+            double TaskInfo::getFrequency() const {
+                return frequency;
+            }
+
             ostream& TaskInfo::operator<<(ostream &out) const {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
@@ -82,6 +94,7 @@ namespace bsn {
                 s->write(1, task_id);
                 s->write(2, cost);
                 s->write(3, reliability);
+                s->write(4, frequency);
 
                 return out;
             }
@@ -93,6 +106,7 @@ namespace bsn {
                 d->read(1, task_id);
                 d->read(2, cost);
                 d->read(3, reliability);
+                d->read(4, frequency);
 
                 return in;
             }
@@ -104,6 +118,7 @@ namespace bsn {
                 sstr << "Task: " << task_id << endl; 
                 sstr << "Cost: " << cost << endl;
                 sstr << "Reliability: " << reliability << "%" << endl;
+                sstr << "Frequency: " << frequency << "%" << endl;
 
                 return sstr.str();
             }

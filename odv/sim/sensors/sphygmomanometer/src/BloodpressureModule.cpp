@@ -23,7 +23,7 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     systdata_accuracy(1),
     systcomm_accuracy(1),
     active(true),
-    params({{"freq",0.1},{"m_avg",5}}),
+    params({{"freq",0.90},{"m_avg",5}}),
     markovSystolic(),
     markovDiastolic(),
     filterSystolic(5),
@@ -115,9 +115,9 @@ void BloodpressureModule::setUp() {
 
 void BloodpressureModule::tearDown(){}
 
-void BloodpressureModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability) {
-    TaskInfo context(task_id,cost,reliability);
-    Container taskContainer(context);
+void BloodpressureModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    TaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
     getConference().send(taskContainer);
 }
 
@@ -127,7 +127,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double dataS;
     double dataD;
     double risk;
-    double nCycles = 0;
     bool first_exec = true;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -136,10 +135,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             ContextInfo context("ABP_available", true);
             Container contextContainer(context);
             getConference().send(contextContainer);  
-            sendTaskInfo("G3_T1.411",0.001,systdata_accuracy);
-            sendTaskInfo("G3_T1.412",0.001,diasdata_accuracy);
-            sendTaskInfo("G3_T1.42",0.005*params["m_avg"]*2,1);
-            sendTaskInfo("G3_T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2);
+            sendTaskInfo("G3_T1.411",0.001,systdata_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.412",0.001,diasdata_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.42",0.005*params["m_avg"]*2,1,params["freq"]);
+            sendTaskInfo("G3_T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
             first_exec = false; 
         }
 
@@ -158,7 +157,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         /*
          * Module execution
          */
-        if(++nCycles >= int32_t(1.0/params["freq"])){
+        if((rand() % 100)+1 < int32_t(params["freq"]*100)){
             
             { // TASK: Collect bloodpressure data
                 double offset = (1 - systdata_accuracy + (double)rand() / RAND_MAX * (1 - systdata_accuracy)) * dataS;
@@ -225,15 +224,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
                 battery -= 0.01;
 
-
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;
             }
 
-            nCycles = 0;
         }
 
-        // TODO: persist it here
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
