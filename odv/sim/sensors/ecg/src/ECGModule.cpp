@@ -104,6 +104,12 @@ void ECGModule::sendTaskInfo(const std::string &task_id, const double &cost, con
     getConference().send(taskContainer);
 }
 
+void ECGModule::sendContextInfo(const std::string &context_id, const bool &value) {
+    ContextInfo context(context_id, value);
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
 
     Container container;
@@ -114,13 +120,24 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(first_exec){ // Send context info warning controller that this sensor is available
-            ContextInfo context("ECG_available", true);
-            Container contextContainer(context);
-            getConference().send(contextContainer);  
+            sendContextInfo("ECG_available",true);
             sendTaskInfo("G3_T1.21",0.001,data_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.22",0.005*params["m_avg"],1,params["freq"]);
             sendTaskInfo("G3_T1.23",0.01,comm_accuracy,params["freq"]);
             first_exec = false; 
+        }
+
+    { // recharge routine
+            //for debugging
+            cout << "Battery level: " << battery*100 << "%" << endl;
+            if(!active && battery > 0.8){
+                active = true;
+                sendContextInfo("ECG_available",true);
+            }
+            if(active && battery < 0.02){
+                active = false;
+                sendContextInfo("ECG_available",true);
+            }
         }
 
         /*
@@ -133,7 +150,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
             params = container.getData<ECGControlCommand>().getParams();
         }
 
-        if(!active){ continue; }
+        if(!active){ 
+            if(battery <= 1) battery += 0.05;
+            continue; 
+        }
 
         /*
          * Module execution
@@ -175,7 +195,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
                 SensorData sdata(type, data, risk);
                 Container sdataContainer(sdata);
                 if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
-                battery -= 0.01;
+                battery -= 0.003;
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;

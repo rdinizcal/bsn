@@ -25,6 +25,7 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
     	virtual void tearDown();
 
 		void sendTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
+		void sendContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
 
   	public:
     	BloodpressureModule(const int32_t &argc, char **argv);

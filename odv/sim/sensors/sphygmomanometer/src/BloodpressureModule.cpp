@@ -121,6 +121,12 @@ void BloodpressureModule::sendTaskInfo(const std::string &task_id, const double 
     getConference().send(taskContainer);
 }
 
+void BloodpressureModule::sendContextInfo(const std::string &context_id, const bool &value) {
+    ContextInfo context(context_id, value);
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::body(){
 
     Container container;
@@ -132,14 +138,25 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(first_exec){ // Send context info warning controller that this sensor is available
-            ContextInfo context("ABP_available", true);
-            Container contextContainer(context);
-            getConference().send(contextContainer);  
+            sendContextInfo("ABP_available",true);
             sendTaskInfo("G3_T1.411",0.001,systdata_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.412",0.001,diasdata_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.42",0.005*params["m_avg"]*2,1,params["freq"]);
             sendTaskInfo("G3_T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
             first_exec = false; 
+        }
+
+        { // recharge routine
+            //for debugging
+            cout << "Battery level: " << battery*100 << "%" << endl;
+            if(!active && battery > 0.8){
+                active = true;
+                sendContextInfo("ABP_available",true);
+            }
+            if(active && battery < 0.02){
+                active = false;
+                sendContextInfo("ABP_available",true);
+            }
         }
 
         /*
@@ -152,7 +169,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             params = container.getData<BloodpressureControlCommand>().getParams();
         }
 
-        if(!active){ continue; }
+        if(!active){ 
+            if(battery <= 1) battery += 0.05;
+            continue; 
+        }
 
         /*
          * Module execution
@@ -213,7 +233,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 SensorData sdataS("bpms", dataS, risk);
                 Container sdataSContainer(sdataS);
                 if((rand() % 100)+1 > int32_t(systcomm_accuracy*100))getConference().send(sdataSContainer);
-                battery -= 0.01;
+                battery -= 0.003;
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;
@@ -222,7 +242,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 SensorData sdataD("bpmd", dataD, risk);
                 Container sdatadContainer(sdataD);
                 if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
-                battery -= 0.01;
+                battery -= 0.003;
 
                 // for debugging
                 cout << "Risk: " << risk << "%"  << endl;
