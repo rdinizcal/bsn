@@ -30,12 +30,15 @@ void CentralhubModule::setUp() {
     persist = getKeyValueConfiguration().getValue<int>("centralhub.persist");
     path = getKeyValueConfiguration().getValue<std::string>("centralhub.path");
 
-    fp.open(path);
-    fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERRAL_STATUS,PATIENT_STATE" << endl;
+    if (persist) {
+        fp.open(path);
+        fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERRAL_STATUS,PATIENT_STATE" << endl;
+    }
 }
 
 void CentralhubModule::tearDown() {
-    fp.close();
+    if (persist)
+        fp.close();
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body() {
@@ -131,13 +134,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
             }           
 
-            fp << id++ << ",";
-            fp << oxi_risk << ",";
-            fp << ecg_risk << ",";
-            fp << trm_risk << ",";
-            fp << bpr_risk << ",";
-            fp << patient_status << ",";
-            fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
+            if (persist) {
+                fp << id++ << ",";
+                fp << oxi_risk << ",";
+                fp << ecg_risk << ",";
+                fp << trm_risk << ",";
+                fp << bpr_risk << ",";
+                fp << patient_status << ",";
+                fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
+            }
 
             cout << endl << "*****************************************" << endl;
             cout << "PatientStatusInfo#" << endl;
