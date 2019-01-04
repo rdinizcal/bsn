@@ -14,7 +14,11 @@ CentralhubModule::CentralhubModule(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
 	buffer(),
     connect(1),
-    port(6060) {}
+    port(6060),
+    ip("localhost"),
+    persist(1),
+    fp(),
+    path("centralhub_output.csv") {}
 	
 CentralhubModule::~CentralhubModule() {}
 
@@ -22,9 +26,17 @@ void CentralhubModule::setUp() {
     addDataStoreFor(873, buffer);
     connect = getKeyValueConfiguration().getValue<int>("centralhub.connect");
     port = getKeyValueConfiguration().getValue<int>("centralhub.port");
+    ip = getKeyValueConfiguration().getValue<std::string>("centralhub.ip");
+    persist = getKeyValueConfiguration().getValue<int>("centralhub.persist");
+    path = getKeyValueConfiguration().getValue<std::string>("centralhub.path");
+
+    fp.open(path);
+    fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERRAL_STATUS,PATIENT_STATE" << endl;
 }
 
-void CentralhubModule::tearDown() {}
+void CentralhubModule::tearDown() {
+    fp.close();
+}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body() {
     Container container;    
@@ -32,11 +44,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
     bool received = false;
     std::string packet;
     std::array<double, 5> data;
+    int id = 0;
 
     TCPSend sender;
     if (connect) {
         sender.set_port(port);
-        sender.setIP("localhost");
+        sender.setIP(ip);
         sender.connect();
     }
 
@@ -118,18 +131,24 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
             }           
 
-            PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=66)?"CRITICAL STATE":"NORMAL STATE");
-            Container psInfoContainer(psInfo);
-            getConference().send(psInfoContainer);
+            fp << id++ << ",";
+            fp << oxi_risk << ",";
+            fp << ecg_risk << ",";
+            fp << trm_risk << ",";
+            fp << bpr_risk << ",";
+            fp << patient_status << ",";
+            fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
 
-            std::cout << "\nMessage sent for persistence:" << endl;
-            std::cout << "*****************************************" << endl;
-            std::cout << psInfo.toString();
-            std::cout << "*****************************************" << endl;
-
-            received = false;
+            cout << endl << "*****************************************" << endl;
+            cout << "PatientStatusInfo#" << endl;
+            cout << "| THERM_RISK: " << trm_risk << endl;
+            cout << "| ECG_RISK: " << ecg_risk << endl;
+            cout << "| OXIM_RISK: " << oxi_risk << endl;
+            cout << "| BPRESS_RISK: " << bpr_risk << endl;
+            cout << "| PACIENT_STATE:" << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
+            cout << "*****************************************" << endl;
         }
-        
+
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
