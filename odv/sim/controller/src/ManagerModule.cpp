@@ -19,7 +19,8 @@ ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
     cost_formula_contexts(),
     reliability_formula_reliabilities(),
     reliability_formula_frequencies(),
-    reliability_formula_contexts() {}
+    reliability_formula_contexts(),
+    actions() {}
 
 ManagerModule::~ManagerModule() {}
 
@@ -60,6 +61,17 @@ void ManagerModule::setUp() {
         contexts.insert(std::pair<std::string,Context>("ECG_available",Context("ECG_available",false,"CTX_G3_T1_2")));
         contexts.insert(std::pair<std::string,Context>("TEMP_available",Context("TEMP_available",false,"CTX_G3_T1_3")));
         contexts.insert(std::pair<std::string,Context>("ABP_available",Context("ABP_available",false,"CTX_G3_T1_4")));
+    }
+
+    { // Set up map {id,object} of actions
+
+        actions = std::map<string,std::list<double>> {
+                                                  {"G3_T1.1X", {0.90,0.95,1.00}},
+                                                  {"G3_T1.2X", {0.90,0.95,1.00}},
+                                                  {"G3_T1.3X", {0.90,0.95,1.00}},
+                                                  {"G3_T1.4X", {0.90,0.95,1.00}}
+                                                };
+
     }
 
     { // Set up cost and reliability expressions
@@ -142,61 +154,63 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
         }
         
         if (new_info) {
+            new_info = false;
+            { // plug in costs, reliabilities, frequencies and contexts and evaluate formulas
+                { // in cost formula
+                    for (std::pair<std::string,double&> cost_formula_reliability : cost_formula_reliabilities) {
+                        cost_formula_reliability.second = tasks[cost_formula_reliability.first].getReliability();
+                        //std::cout << tasks[cost_formula_reliability.first].getReliabilitySymbol() << ": " << cost_formula_reliability.second << std::endl;
+                    }
+
+                    for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
+                        cost_formula_frequency.second = tasks[cost_formula_frequency.first].getFrequency();
+                        //std::cout << tasks[cost_formula_frequency.first].getFrequencySymbol() << ": " << cost_formula_frequency.second << std::endl;
+                    }
+
+                    for (std::pair<std::string,double&> cost_formula_cost : cost_formula_costs) {
+                        cost_formula_cost.second = tasks[cost_formula_cost.first].getCost();
+                        //std::cout << tasks[cost_formula_cost.first].getCostSymbol() << ": " << cost_formula_cost.second << std::endl;
+                    }
+
+                    for (std::pair<std::string,double&> cost_formula_context : cost_formula_contexts) {
+                        cost_formula_context.second = contexts[cost_formula_context.first].getValue() ? 1:0;
+                        //std::cout << contexts[cost_formula_context.first].getContextSymbol() << ": " << cost_formula_context.second << std::endl;
+                    }
+
+                    cost = cost_expression.evaluate();
+                }
+
+                { // in reliability formula
+
+                    for (std::pair<std::string,double&> reliability_formula_reliability : reliability_formula_reliabilities) {
+                        reliability_formula_reliability.second = tasks[reliability_formula_reliability.first].getReliability();
+                    }
+
+                    for (std::pair<std::string,double&> reliability_formula_frequency : reliability_formula_frequencies) {
+                        reliability_formula_frequency.second = tasks[reliability_formula_frequency.first].getFrequency();
+                    }
+
+                    for (std::pair<std::string,double&> reliability_formula_context : reliability_formula_contexts) {
+                        reliability_formula_context.second = contexts[reliability_formula_context.first].getValue() ? 1:0;
+                    }
+
+                    reliability = reliability_expression.evaluate();
+                }
+            }
+
             std::cout << "--------------------------------------------------" << std::endl;
-            // plug in costs, reliabilities, frequencies and contexts...
-            { // in cost formula and evaluate cost
-                for (std::pair<std::string,double&> cost_formula_reliability : cost_formula_reliabilities) {
-                    cost_formula_reliability.second = tasks[cost_formula_reliability.first].getReliability();
-                    //std::cout << tasks[cost_formula_reliability.first].getReliabilitySymbol() << ": " << cost_formula_reliability.second << std::endl;
-                }
-
-                for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
-                    cost_formula_frequency.second = tasks[cost_formula_frequency.first].getFrequency();
-                    //std::cout << tasks[cost_formula_frequency.first].getFrequencySymbol() << ": " << cost_formula_frequency.second << std::endl;
-                }
-
-                for (std::pair<std::string,double&> cost_formula_cost : cost_formula_costs) {
-                    cost_formula_cost.second = tasks[cost_formula_cost.first].getCost();
-                    //std::cout << tasks[cost_formula_cost.first].getCostSymbol() << ": " << cost_formula_cost.second << std::endl;
-                }
-
-                for (std::pair<std::string,double&> cost_formula_context : cost_formula_contexts) {
-                    cost_formula_context.second = contexts[cost_formula_context.first].getValue() ? 1:0;
-                    //std::cout << contexts[cost_formula_context.first].getContextSymbol() << ": " << cost_formula_context.second << std::endl;
-                }
-
-                cost = cost_expression.evaluate();
-            }
-
-            { // in reliability formula and evaluate reliability
-
-                for (std::pair<std::string,double&> reliability_formula_reliability : reliability_formula_reliabilities) {
-                    reliability_formula_reliability.second = tasks[reliability_formula_reliability.first].getReliability();
-                }
-
-                for (std::pair<std::string,double&> reliability_formula_frequency : reliability_formula_frequencies) {
-                    reliability_formula_frequency.second = tasks[reliability_formula_frequency.first].getFrequency();
-                }
-
-                for (std::pair<std::string,double&> reliability_formula_context : reliability_formula_contexts) {
-                    reliability_formula_context.second = contexts[reliability_formula_context.first].getValue() ? 1:0;
-                }
-
-                reliability = reliability_expression.evaluate();
-            }
-
             std::cout << "cost: " << cost << std::endl;
             std::cout << "reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
 
-            new_info = false;
-        }
+            if (reliability < 93 || cost > 0.003) { //triggers adaptation
 
-        /*
-        if (we need adaptation) {
-            
-        } 
-        */
+                for (std::pair<std::string,list<double>> action : actions){
+                    // O(n^m) we can use a greedy algorithm as for now we aint looking for the optimal solution
+                }
+
+            }
+        }
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

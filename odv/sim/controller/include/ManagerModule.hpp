@@ -2,6 +2,7 @@
 #define MANAGER_MODULE_HPP
 
 #include <map>
+#include <list>
 #include <iostream>
 #include <fstream>
 
@@ -48,6 +49,8 @@ class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClient
         std::map<std::string,double&> reliability_formula_reliabilities;
         std::map<std::string,double&> reliability_formula_frequencies;
         std::map<std::string,double&> reliability_formula_contexts;
+
+		std::map<std::string,std::list<double>> actions;
 };
 
 #endif 
