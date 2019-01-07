@@ -26,7 +26,10 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     filterSystolic(5),
     filterDiastolic(5),
     sensorConfigSystolic(),
-    sensorConfigDiastolic() {}
+    sensorConfigDiastolic(),
+    persist(1),
+    path("bloodpressure_output.csv"),
+    fp() {}
 
 BloodpressureModule::~BloodpressureModule() {}
 
@@ -103,9 +106,22 @@ void BloodpressureModule::setUp() {
     { // Configure sensor accuracy
         accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.accuracy") / 100;
     }
+
+    { // Configure sensor persistency
+        persist = getKeyValueConfiguration().getValue<int>("bloodpressure.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("bloodpressure.path");
+
+        if (persist) {
+            fp.open(path);
+            fp << "ID,SYSTOLIC_DATA,DIASTOLIC_DATA,RISK" << endl;
+        }
+    }
 }
 
-void BloodpressureModule::tearDown(){}
+void BloodpressureModule::tearDown() {
+    if (persist)
+        fp.close();
+}
 
 void BloodpressureModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability) {
     TaskInfo context(task_id,cost,reliability);
@@ -123,6 +139,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     bool first_exec = true;
     double accuracyValue;
     double offset;
+    int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -228,7 +245,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             nCycles = 0;
         }
 
-        // TODO: persist it here
+        { // Persist sensor data
+            fp << id++ << ",";
+            fp << dataS << ",";
+            fp << dataD << ",";
+            fp << risk << endl;
+        }
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

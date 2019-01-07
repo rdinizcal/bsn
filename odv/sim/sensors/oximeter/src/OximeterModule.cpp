@@ -23,7 +23,10 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     params({{"freq",0.1},{"m_avg",5}}),
     markov(),
     filter(5),
-    sensorConfig() {}
+    sensorConfig(),
+    persist(1),
+    path("oximeter_output.csv"),
+    fp() {}
 
 OximeterModule::~OximeterModule() {}
 
@@ -89,9 +92,23 @@ void OximeterModule::setUp() {
     { // Configure sensor accuracy
         accuracy = getKeyValueConfiguration().getValue<double>("oximeter.accuracy") / 100;
     }
+
+    { // Configure sensor persistency
+        persist = getKeyValueConfiguration().getValue<int>("oximeter.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("oximeter.path");
+
+        if (persist) {
+            fp.open(path);
+            fp << "ID,DATA,RISK" << endl;
+        }
+    }
+
 }
 
-void OximeterModule::tearDown(){}
+void OximeterModule::tearDown() {
+    if (persist)
+        fp.close();
+}
 
 void OximeterModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability) {
     TaskInfo task(task_id,cost,reliability);
@@ -108,6 +125,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
     bool first_exec = true;
     double accuracyValue;
     double offset;
+    int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -183,8 +201,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
 
             nCycles = 0;
         }
-        
-        // TODO: persist it here
+
+        { // Persist sensor data
+            fp << id++ << ",";
+            fp << data << ",";
+            fp << risk << endl;
+        }
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

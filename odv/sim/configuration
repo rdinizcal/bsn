@@ -33,6 +33,10 @@ thermometer.HighRisk1 = 41,50
 # accuracy in percentage
 thermometer.accuracy = 95
 
+# persistence
+thermometer.persist = 1
+thermometer.path = thermometer_output.csv
+
 ########## Oximeter ##########
 # markov chain
 oximeter.state0 = 0,0,0,0,0
@@ -48,6 +52,10 @@ oximeter.HighRisk = 0,55
 
 # accuracy in percentage
 oximeter.accuracy = 95
+
+# persistence
+oximeter.persist = 1
+oximeter.path = oximeter_output.csv
 
 ########## Electrocardiograph (ECG) ##########
 # markov chain
@@ -66,6 +74,10 @@ ecg.HighRisk1 = 115,300
 
 # accuracy in percentage
 ecg.accuracy = 95
+
+# persistence
+ecg.persist = 1
+ecg.path = ecg_output.csv
 
 ########## Sphygmomanometer (bloodpressure) ##########
 # markov chain (diastolic pressure)
@@ -94,3 +106,7 @@ bloodpressure.systHighRisk = 140,300
 
 # accuracy in percentage
 bloodpressure.accuracy = 95
+
+# persistence
+bloodpressure.persist = 1
+bloodpressure.path = bloodpressure_output.csv

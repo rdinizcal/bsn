@@ -32,7 +32,7 @@ void CentralhubModule::setUp() {
 
     if (persist) {
         fp.open(path);
-        fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERRAL_STATUS,PATIENT_STATE" << endl;
+        fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERALL_STATUS,PATIENT_STATE" << endl;
     }
 }
 

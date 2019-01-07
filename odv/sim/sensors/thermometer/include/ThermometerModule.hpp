@@ -1,6 +1,8 @@
 #ifndef THERMOMETER_MODULE_HPP
 #define THERMOMETER_MODULE_HPP
 
+#include <fstream>
+
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
@@ -46,6 +48,10 @@ class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceCl
 		bsn::generator::Markov markov;
 		bsn::filters::MovingAverage filter;
 		bsn::configuration::SensorConfiguration sensorConfig;
+
+		int persist;
+		std::string path;
+		std::ofstream fp;
 };
 
 #endif 

@@ -1,6 +1,8 @@
 #ifndef BLOODPRESSURE_MODULE_HPP
 #define BLOODPRESSURE_MODULE_HPP
 
+#include <fstream>
+
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
@@ -50,6 +52,9 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
 		bsn::configuration::SensorConfiguration sensorConfigSystolic;
 		bsn::configuration::SensorConfiguration sensorConfigDiastolic;
 
+		int persist;
+		std::string path;
+		std::ofstream fp;
 };
 
 #endif 
