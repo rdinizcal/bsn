@@ -1,4 +1,4 @@
-#include "bsn/communication/TCPSend.hpp"
+#include "communication/TCPSend.hpp"
 
 using namespace std;
 using namespace odcore;
@@ -6,7 +6,7 @@ using namespace odcore::io::tcp;
 
 namespace bsn {
     namespace communication {
-        TCPSend::TCPSend() {}
+        TCPSend::TCPSend() : port(6060), ip("localhost"), is_connected(false), thisConnection(nullptr) {}
 
         TCPSend::TCPSend(int32_t thisPort) : port(thisPort), ip("localhost"), is_connected(false), thisConnection(nullptr) {}
 
