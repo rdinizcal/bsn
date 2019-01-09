@@ -24,7 +24,10 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
     params({{"freq",0.90},{"m_avg",5}}),
     markov(),
     filter(5),
-    sensorConfig() {}
+    sensorConfig(),
+    persist(1),
+    path("thermometer_output.csv"),
+    fp() {}
 
 ThermometerModule::~ThermometerModule() {}
 
@@ -89,15 +92,28 @@ void ThermometerModule::setUp() {
 
         sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
     }
+
  
     { // Configure sensor data_accuracy
         data_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
         comm_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
+
+    { // Configure sensor persistency
+        persist = getKeyValueConfiguration().getValue<int>("thermometer.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("thermometer.path");
+
+        if (persist) {
+            fp.open(path);
+            fp << "ID,DATA,RISK" << endl;
+        }
     }
 
 }
 
-void ThermometerModule::tearDown(){}
+void ThermometerModule::tearDown() {
+    if (persist)
+        fp.close();
+}
 
 void ThermometerModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     TaskInfo task(task_id, cost, reliability, frequency);
@@ -117,6 +133,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
     double data;
     double risk;
     bool first_exec = true;
+    double accuracyValue;
+    double offset;
+    int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -160,7 +179,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
          * Module execution
          */
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
-            
+           
             { // TASK: Collect thermometer data with data_accuracy
                 double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
                 
@@ -200,6 +219,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 cout << "Risk: " << risk << "%"  << endl;
             }
             
+        }
+
+        { // Persist sensor data
+            if (persist) {
+              fp << id++ << ",";
+              fp << data << ",";
+              fp << risk << endl;
+           }
         }
 
     }

@@ -1,10 +1,13 @@
 #ifndef CENTRALHUB_MODULE_HPP
 #define CENTRALHUB_MODULE_HPP
 
+#include <fstream>
+
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/processor/Processor.hpp"
+#include "bsn/communication/TCPSend.hpp"
 
 #include "bsn/msg/info/TaskInfo.hpp"
 #include "bsn/msg/data/SensorData.h"
@@ -28,6 +31,14 @@ class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceCli
 
     private:
         odcore::base::FIFOQueue buffer;
+
+        uint32_t connect;
+        uint32_t port;
+        std::string ip;
+        
+        uint32_t persist;
+        std::ofstream fp;
+        std::string path;
 };
 
 #endif 

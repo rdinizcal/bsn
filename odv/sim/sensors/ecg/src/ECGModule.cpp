@@ -24,7 +24,10 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     params({{"freq",0.9},{"m_avg",5}}),
     markov(),
     filter(5),
-    sensorConfig() {}
+    sensorConfig(),
+    persist(1),
+    path("ecg_output.csv"),
+    fp() {}
 
 ECGModule::~ECGModule() {}
 
@@ -94,9 +97,22 @@ void ECGModule::setUp() {
         data_accuracy = getKeyValueConfiguration().getValue<double>("ecg.data_accuracy") / 100;
         comm_accuracy = getKeyValueConfiguration().getValue<double>("ecg.comm_accuracy") / 100;
     }
+
+    { // Configure sensor persistency
+        persist = getKeyValueConfiguration().getValue<int>("ecg.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("ecg.path");
+
+        if (persist) {
+            fp.open(path);
+            fp << "ID,DATA,RISK" << endl;
+        }
+    }
 }
 
-void ECGModule::tearDown(){}
+void ECGModule::tearDown() {
+    if (persist)
+        fp.close();
+}
 
 void ECGModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     TaskInfo task(task_id, cost, reliability, frequency);
@@ -110,12 +126,15 @@ void ECGModule::sendContextInfo(const std::string &context_id, const bool &value
     getConference().send(contextContainer);
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
-
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
+  
     Container container;
     double data;
     double risk;
     bool first_exec = true;
+    double accuracyValue;
+    double offset;
+    int id = 0;
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -203,6 +222,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body(){
             
         }
 
+        { // Persist sensor data
+          if (persist) {
+              fp << id++ << ",";
+              fp << data << ",";
+              fp << risk << endl;
+           }
+        }
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

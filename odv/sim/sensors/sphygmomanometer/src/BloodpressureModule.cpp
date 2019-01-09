@@ -29,7 +29,10 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     filterSystolic(5),
     filterDiastolic(5),
     sensorConfigSystolic(),
-    sensorConfigDiastolic() {}
+    sensorConfigDiastolic(),
+    persist(1),
+    path("bloodpressure_output.csv"),
+    fp() {}
 
 BloodpressureModule::~BloodpressureModule() {}
 
@@ -109,11 +112,23 @@ void BloodpressureModule::setUp() {
         diascomm_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.diascomm_accuracy") / 100;
         systdata_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.systdata_accuracy") / 100;
         systcomm_accuracy = getKeyValueConfiguration().getValue<double>("bloodpressure.systcomm_accuracy") / 100;
+    }
 
+    { // Configure sensor persistency
+        persist = getKeyValueConfiguration().getValue<int>("bloodpressure.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("bloodpressure.path");
+
+        if (persist) {
+            fp.open(path);
+            fp << "ID,SYSTOLIC_DATA,DIASTOLIC_DATA,RISK" << endl;
+        }
     }
 }
 
-void BloodpressureModule::tearDown(){}
+void BloodpressureModule::tearDown() {
+    if (persist)
+        fp.close();
+}
 
 void BloodpressureModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     TaskInfo task(task_id, cost, reliability, frequency);
@@ -134,6 +149,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double dataD;
     double risk;
     bool first_exec = true;
+    double accuracyValue;
+    double offset;
+    int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -192,10 +210,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 markovSystolic.next_state();
                 battery -= 0.001;
 
-
                 offset = (1 - diasdata_accuracy + (double)rand() / RAND_MAX * (1 - diasdata_accuracy)) * dataD;
                 
                 dataD = markovDiastolic.calculate_state();
+
 
                 if (rand() % 2 == 0)
                     dataD = dataD + offset;
@@ -250,6 +268,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
 
         }
 
+        { // Persist sensor data
+            if (persist) {
+              fp << id++ << ",";
+              fp << dataS << ",";
+              fp << dataD << ",";
+              fp << risk << endl;
+            }
+        }
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
