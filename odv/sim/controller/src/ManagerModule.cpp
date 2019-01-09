@@ -9,18 +9,24 @@ using namespace bsn::msg::info;
 ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "manager"),
     buffer(),
+
     tasks(),
     contexts(),
+
     cost_expression(),
     reliability_expression(),
+
     cost_formula_reliabilities(),
     cost_formula_frequencies(),
     cost_formula_costs(),
     cost_formula_contexts(),
+
     reliability_formula_reliabilities(),
     reliability_formula_frequencies(),
     reliability_formula_contexts(),
-    actions() {}
+
+    actions(),
+    strategies() {}
 
 ManagerModule::~ManagerModule() {}
 
@@ -63,22 +69,12 @@ void ManagerModule::setUp() {
         contexts.insert(std::pair<std::string,Context>("ABP_available",Context("ABP_available",false,"CTX_G3_T1_4")));
     }
 
-    { // Set up map {id,object} of actions
-
-        actions = std::map<string,std::list<double>> {
-                                                  {"G3_T1.1X", {0.90,0.95,1.00}},
-                                                  {"G3_T1.2X", {0.90,0.95,1.00}},
-                                                  {"G3_T1.3X", {0.90,0.95,1.00}},
-                                                  {"G3_T1.4X", {0.90,0.95,1.00}}
-                                                };
-
-    }
-
     { // Set up cost and reliability expressions
-        std::string cost_formula;
-        std::string reliability_formula;
         std::ifstream cost_file;
+        std::string cost_formula;
+
         std::ifstream reliability_file;
+        std::string reliability_formula;
 
         try{
             cost_file.open("../formulae/cost.formula");
@@ -96,17 +92,55 @@ void ManagerModule::setUp() {
         reliability_expression = Lepton::Parser::parse(reliability_formula).createCompiledExpression();
 
         for (std::pair<std::string,Task> task : tasks){
-            cost_formula_reliabilities.insert(std::pair<std::string,double&>(task.second.getTask(),cost_expression.getVariableReference(task.second.getReliabilitySymbol())));
-            cost_formula_frequencies.insert(std::pair<std::string,double&>(task.second.getTask(),cost_expression.getVariableReference(task.second.getFrequencySymbol())));
-            cost_formula_costs.insert(std::pair<std::string,double&>(task.second.getTask(),cost_expression.getVariableReference(task.second.getCostSymbol())));
-            reliability_formula_reliabilities.insert(std::pair<std::string,double&>(task.second.getTask(),reliability_expression.getVariableReference(task.second.getReliabilitySymbol())));
-            reliability_formula_frequencies.insert(std::pair<std::string,double&>(task.second.getTask(),reliability_expression.getVariableReference(task.second.getFrequencySymbol())));
+            cost_formula_reliabilities          .insert(std::pair<std::string,double&>(task.second.getTask(),cost_expression.getVariableReference(task.second.getReliabilitySymbol())));
+            cost_formula_frequencies            .insert(std::pair<std::string,double&>(task.second.getTask(),cost_expression.getVariableReference(task.second.getFrequencySymbol())));
+            cost_formula_costs                  .insert(std::pair<std::string,double&>(task.second.getTask(),cost_expression.getVariableReference(task.second.getCostSymbol())));
+            
+            reliability_formula_reliabilities   .insert(std::pair<std::string,double&>(task.second.getTask(),reliability_expression.getVariableReference(task.second.getReliabilitySymbol())));
+            reliability_formula_frequencies     .insert(std::pair<std::string,double&>(task.second.getTask(),reliability_expression.getVariableReference(task.second.getFrequencySymbol())));
         }
 
         
         for (std::pair<std::string,Context> context : contexts) {
-            cost_formula_contexts.insert(std::pair<std::string,double&>(context.second.getContext(),cost_expression.getVariableReference(context.second.getContextSymbol())));
-            reliability_formula_contexts.insert(std::pair<std::string,double&>(context.second.getContext(),reliability_expression.getVariableReference(context.second.getContextSymbol())));
+            cost_formula_contexts               .insert(std::pair<std::string,double&>(context.second.getContext(),cost_expression.getVariableReference(context.second.getContextSymbol())));
+            reliability_formula_contexts        .insert(std::pair<std::string,double&>(context.second.getContext(),reliability_expression.getVariableReference(context.second.getContextSymbol())));
+        }
+    }
+
+    { // Set up actions
+        actions = std::map<string,std::vector<double>> {
+                                          {"G3_T1.1X", {0.90,0.95,1.00}},
+                                          {"G3_T1.2X", {0.90,0.95,1.00}},
+                                          {"G3_T1.3X", {0.90,0.95,1.00}},
+                                          {"G3_T1.4X", {0.90,0.95,1.00}}
+                                        };
+
+        /*std::vector<std::vector> actions_combination = std::vector<std::vector> = { 
+                            {0,0,0,0},
+                            {0,0,0,1},
+                            {0,0,0,2},
+                            {0,0,1,0},
+                            {0,0,1,1},
+                            {0,0,1,2},
+                            {0,0,2,0},                            
+                            }
+        */
+        for (int32_t idx = 0, w = 0, x = 0, y = 0, z = 0; idx < actions["G3_T1.1X"].size()^actions.size(); ++idx){
+            strategies.insert(std::pair<int32_t,std::vector<int32_t>>(idx,{w,x,y,z}));
+            
+            if(++z == 3) { 
+                z = 0;
+                if(++y == 3) { 
+                    y = 0;
+                    if(++x == 3) { 
+                        x = 0;
+                        if(++w == 3) { 
+                            w = 0;
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -203,12 +237,24 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             std::cout << "reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
 
-            if (reliability < 93 || cost > 0.003) { //triggers adaptation
+            if (reliability < 90 || cost > 0.003) { //triggers adaptation
 
-                for (std::pair<std::string,list<double>> action : actions){
-                    // O(n^m) we can use a greedy algorithm as for now we aint looking for the optimal solution
-                }
+                for (std::pair<int32_t,std::vector<int32_t>> strategy : strategies ) {
 
+                    std::vector<int32_t> strat = strategy.second;
+
+                    for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
+                        
+                        std::pair<std::string,vector<double>> action1 = actions["G3_T1.1X"].at(strat[0]);
+                        cost_formula_frequency.second = tasks[cost_formula_frequency.first].getFrequency();
+                    }
+
+
+                    for (std::pair<std::string,vector<double>> action : actions) {
+                        // O(n^m) we can use a greedy algorithm as for now we aint looking for the optimal solution
+
+                    }
+                } 
             }
         }
     }

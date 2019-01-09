@@ -38,7 +38,7 @@ Makefile
 # Project Specific Folders
 build/
 output/
-lepton/
+# lepton/
 
 # Tests
 runner.cpp
