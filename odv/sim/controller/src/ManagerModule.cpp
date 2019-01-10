@@ -39,6 +39,7 @@ ManagerModule::~ManagerModule() {}
 void ManagerModule::setUp() {
     addDataStoreFor(700, buffer);
     addDataStoreFor(701, buffer);
+    addDataStoreFor(702, buffer);
 
     { // Set up map {id,object} of leaf task from goal model
         // Pulse oximeter
@@ -155,6 +156,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
 
     double cost;
     double reliability;
+    std::string patient_health_status = "NORMAL STATE";
+    double cost_goal;
+    double reliability_goal;
     bool new_info = false;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
@@ -179,16 +183,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                 std::string context_id = container.getData<ContextInfo>().getContext();
                 bool value = container.getData<ContextInfo>().getValue();
 
-                // context operationalization here ?
-
                 contexts[context_id].setValue(value);
 
-                // for debugging
-                //std::cout << "new context received: [" << context_id << ":" << value << "]" << std::endl;
-                
-                new_info = true;
+            } else if (container.getDataType() == 702) { // update patient health status
+                patient_health_status = container.getData<PatientStatusInfo>().getPatientStatus();
+
+                std::cout << "new patient status received> "<< patient_health_status << std::endl;
+                if (patient_health_status == "CRITICAL STATE") {
+                    cost_goal = 1;
+                    reliability_goal = 0.99;
+                } else {
+                    cost_goal = 0.032;
+                    reliability_goal = 0.85;
+                }
             }
 
+            new_info = true;
         }
         
         if (new_info) {
@@ -237,11 +247,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             }
 
             std::cout << "--------------------------------------------------" << std::endl;
+            std::cout << "|patient health status: " << patient_health_status << std::endl;
             std::cout << "|cost: " << cost << std::endl;
             std::cout << "|reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
 
-            if (reliability < 0.90 /*|| cost > 0.003*/) { //triggers adaptation
+            if (reliability < reliability_goal || cost > cost_goal) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
                 for (std::vector<double> strategy : strategies ) { // substitutues each strategy the formulas and calculates cost and reliability
@@ -280,31 +291,38 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     }
                     
                     policies[strategy] = {reliability,cost};            
-                    //policies.insert(std::pair<std::vector<double>,std::vector<double>>(strategy,{cost,reliability}));
                 }
 
                 for (std::pair<std::vector<double>,std::vector<double>> policy : policies) {
 
                     //std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << "] ";
                     //std::cout << "--> reliability: " << policy.second[0] /*<< " cost: " << policy.second[1]*/ << std::endl;
-                    if(policy.second[0] >= 0.90 /*&& policy.second[1] <= 0.003*/) {
+                    if(policy.second[0] >= reliability_goal && policy.second[1] <= cost_goal) {
                         std::cout << "Sending message to sensors..." << std::endl;
                         
-                        OximeterControlCommand oControlCommand(contexts["SaO2_available"].getValue(), policy.first[0], 0);
-                        Container oControlCommandContainer(oControlCommand);
-                        getConference().send(oControlCommandContainer);
+                        if (contexts["SaO2_available"].getValue()) {
+                            OximeterControlCommand oControlCommand(contexts["SaO2_available"].getValue(), policy.first[0], 0);
+                            Container oControlCommandContainer(oControlCommand);
+                            getConference().send(oControlCommandContainer);
+                        }
 
-                        ECGControlCommand eControlCommand(contexts["ECG_available"].getValue(), policy.first[1], 0);
-                        Container eControlCommandContainer(eControlCommand);
-                        getConference().send(eControlCommandContainer);
+                        if (contexts["ECG_available"].getValue()) {
+                            ECGControlCommand eControlCommand(contexts["ECG_available"].getValue(), policy.first[1], 0);
+                            Container eControlCommandContainer(eControlCommand);
+                            getConference().send(eControlCommandContainer);
+                        }
 
-                        ThermometerControlCommand tControlCommand(contexts["TEMP_available"].getValue(), policy.first[2], 0);
-                        Container tControlCommandContainer(tControlCommand);
-                        getConference().send(tControlCommandContainer);
+                        if (contexts["TEMP_available"].getValue()) {
+                            ThermometerControlCommand tControlCommand(contexts["TEMP_available"].getValue(), policy.first[2], 0);
+                            Container tControlCommandContainer(tControlCommand);
+                            getConference().send(tControlCommandContainer);
+                        }
 
-                        BloodpressureControlCommand sControlCommand(contexts["ABP_available"].getValue(), policy.first[3], 0);
-                        Container sControlCommandContainer(sControlCommand);
-                        getConference().send(sControlCommandContainer);
+                        if (contexts["ABP_available"].getValue()) {
+                            BloodpressureControlCommand sControlCommand(contexts["ABP_available"].getValue(), policy.first[3], 0);
+                            Container sControlCommandContainer(sControlCommand);
+                            getConference().send(sControlCommandContainer);
+                        }
 
                         break;
                     }

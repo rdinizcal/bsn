@@ -151,7 +151,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
 
         { // recharge routine
             //for debugging
-            cout << "Battery level: " << battery*100 << "%" << endl;
+        /*    cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
             }
@@ -159,7 +159,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 active = false;
             }
             sendContextInfo("TEMP_available",active);
-        }
+        */}
 
         /*
          * Receive control command and module update
@@ -195,7 +195,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 battery -= 0.001;
 
                 //for debugging
-                //cout << "New data: " << data << endl;
+                cout << "New data: " << data << endl << endl;
             }
 
             { // TASK: Filter data with moving average

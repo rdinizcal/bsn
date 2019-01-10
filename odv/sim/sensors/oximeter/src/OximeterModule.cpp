@@ -147,7 +147,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
 
         { // recharge routine
             //for debugging
-            cout << "Battery level: " << battery*100 << "%" << endl;
+        /*    cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
             }
@@ -155,7 +155,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 active = false;
             }
             sendContextInfo("SaO2_available",active);
-        }
+        */}
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -189,7 +189,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 
 
                 //for debugging 
-                //cout << "Dado gerado: " << data << endl;
+                cout << "New data: " << data << endl << endl;
             }
             
             { // TASK: Filter data with moving average

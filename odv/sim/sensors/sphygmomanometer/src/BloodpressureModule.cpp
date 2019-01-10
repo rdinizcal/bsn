@@ -167,14 +167,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
 
         { // recharge routine
             //for debugging
-            cout << "Battery level: " << battery*100 << "%" << endl;
+        /*    cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
             }
             if(active && battery < 0.02){
                 active = false;
             }
-            sendContextInfo("ABP_available", active);
+        */    sendContextInfo("ABP_available", active);
         }
 
         while(!buffer.isEmpty()){ // Receive control command and module update
@@ -222,8 +222,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 
 
                 //for debugging 
-                //cout << "New data (systolic): " << dataS << endl;
-                //cout << "New data (diastolic): " << dataD << endl;
+                cout << "New data (systolic): " << dataS << endl;
+                cout << "New data (diastolic): " << dataD << endl << endl;
             }
 
             { // TASK: Filter data with moving average
@@ -239,8 +239,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
 
 
                 //for debugging 
-                cout << "Filtered data (systolic): " << dataS << endl;
-                cout << "Filtered data (diastolic): " << dataD << endl;
+                //cout << "Filtered data (systolic): " << dataS << endl;
+                //cout << "Filtered data (diastolic): " << dataD << endl;
             }
             
             { //TASK: Transfer information to CentralHub

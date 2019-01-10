@@ -96,8 +96,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
         patient_status = data_fuse(data_list);
 
-        // Envia dados ao servidor, se configurado para tal
-        {   
+        {  // send data to the server
             if (connect) {
                 packet = "";
                 int i = 0;
@@ -114,8 +113,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
             }
         }
 
-        // Envia dados para persistencia
-        {
+        { // Persist and send data to controller
             std::string sensor_risk_str;
             std::string bpr_risk;
             std::string oxi_risk;
@@ -156,6 +154,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                 fp << patient_status << ",";
                 fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
             }
+            
+            PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=66)?"CRITICAL STATE":"NORMAL STATE");
+            Container psInfoContainer(psInfo);
+            getConference().send(psInfoContainer);
 
             cout << endl << "*****************************************" << endl;
             cout << "PatientStatusInfo#" << endl;

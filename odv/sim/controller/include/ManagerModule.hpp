@@ -15,6 +15,7 @@
 
 #include "bsn/msg/info/TaskInfo.hpp"
 #include "bsn/msg/info/ContextInfo.hpp"
+#include "bsn/msg/info/PatientStatusInfo.h"
 
 #include "bsn/msg/control/ThermometerControlCommand.hpp"
 #include "bsn/msg/control/OximeterControlCommand.hpp"

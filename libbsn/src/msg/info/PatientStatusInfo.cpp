@@ -40,7 +40,7 @@ namespace bsn {
             }
             
             int32_t PatientStatusInfo::ID() {
-                return 879;
+                return 702;
             }
             const string PatientStatusInfo::ShortName() {
                 return "PatientStatusInfo";
