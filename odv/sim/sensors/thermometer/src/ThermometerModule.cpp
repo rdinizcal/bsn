@@ -97,6 +97,7 @@ void ThermometerModule::setUp() {
     { // Configure sensor data_accuracy
         data_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
         comm_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
+    }
 
     { // Configure sensor persistency
         persist = getKeyValueConfiguration().getValue<int>("thermometer.persist");
@@ -152,12 +153,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
-                sendContextInfo("TEMP_available",true);
             }
             if(active && battery < 0.02){
                 active = false;
-                sendContextInfo("TEMP_available",false);
             }
+            sendContextInfo("TEMP_available",active);
         }
 
         /*
@@ -167,7 +167,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             container = buffer.leave();
 
             active = container.getData<ThermometerControlCommand>().getActive();
-            params = container.getData<ThermometerControlCommand>().getParams();
+            params["freq"] = container.getData<ThermometerControlCommand>().getFrequency();
+            cout << "New frequency: " << params["freq"]*100 << endl;
         }
 
         if(!active){ 
@@ -194,7 +195,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 battery -= 0.001;
 
                 //for debugging
-                cout << "New data: " << data << endl;
+                //cout << "New data: " << data << endl;
             }
 
             { // TASK: Filter data with moving average
@@ -204,7 +205,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 battery -= 0.005*params["m_avg"];
 
                 //for debugging 
-                cout << "Filtered data: " << data << endl;
+                //cout << "Filtered data: " << data << endl;
             }
             
             { // TASK: Transfer information to CentralHub
@@ -216,7 +217,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 battery -= 0.003;
 
                 // for debugging
-                cout << "Risk: " << risk << "%"  << endl;
+                //cout << "Risk: " << risk << "%"  << endl;
             }
             
         }

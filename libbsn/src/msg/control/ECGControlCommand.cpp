@@ -6,20 +6,22 @@ namespace bsn {
         
             using namespace std;
 
-            ECGControlCommand::ECGControlCommand() : active(), params() {}
+            ECGControlCommand::ECGControlCommand() : active(), frequency(), m_avg_size() {}
             
-            ECGControlCommand::ECGControlCommand(const bool &_active, const std::map<std::string,double> &_params) : active (_active), params(_params) {}
+            ECGControlCommand::ECGControlCommand(const bool &_active, const double &_frequency, const int32_t &_m_avg_size) : active (_active), frequency(_frequency), m_avg_size(_m_avg_size) {}
             
             ECGControlCommand::~ECGControlCommand() {}
             
             ECGControlCommand::ECGControlCommand(const ECGControlCommand &obj) :
                 SerializableData(),
                 active(obj.getActive()),
-                params(obj.getParams()){}
+                frequency(obj.getFrequency()),
+                m_avg_size(obj.getMovingAverageSize()) {}
             
             ECGControlCommand& ECGControlCommand::operator=(const ECGControlCommand &obj) {
                 active = obj.getActive();   
-                params = obj.getParams();     
+                frequency = obj.getFrequency();
+                m_avg_size = obj.getMovingAverageSize();                     
                 return (*this);
             }
             
@@ -51,12 +53,20 @@ namespace bsn {
                 return active;
             }
 
-            void ECGControlCommand::setParams(const std::map<std::string,double> &_params) {
-                params = _params;
+            void ECGControlCommand::setFrequency(const double &_frequency) {
+                frequency = _frequency;
             }
             
-            std::map<std::string,double> ECGControlCommand::getParams() const {
-                return params;
+            double ECGControlCommand::getFrequency() const {
+                return frequency;
+            }
+
+            void ECGControlCommand::setMovingAverageSize(const int32_t &_m_avg_size){
+                m_avg_size = _m_avg_size;
+            }
+
+            int32_t ECGControlCommand::getMovingAverageSize() const {
+                return m_avg_size;
             }
 
             ostream& ECGControlCommand::operator<<(ostream &out) const {
@@ -64,13 +74,8 @@ namespace bsn {
                 std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
                 
                 s->write(1, active);
-                s->write(2, params.size());
-
-                int32_t i = 2;
-                for (auto& x: params){
-                    s->write(++i,x.first);
-                    s->write(++i,x.second);
-                }
+                s->write(2, frequency);
+                s->write(3, m_avg_size);
 
                 return out;
             }
@@ -79,21 +84,9 @@ namespace bsn {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
                 
-                int32_t size; 
-
                 d->read(1, active);
-                d->read(2, size);
-
-                int32_t i = 2;
-                while(i<size) {
-                    std::string key;
-                    double value;
-
-                    d->read(++i, key);
-                    d->read(++i, value);
-
-                    params.insert ( std::pair<std::string,double>(key,value) );
-                }
+                d->read(2, frequency);
+                d->read(3, m_avg_size);
 
                 return in;
             }
@@ -103,10 +96,9 @@ namespace bsn {
 
                 sstr << "ECGControlCommand#" << endl;
                 sstr << "Activate module: " << active << endl;
-                for (auto& x: params){
-                    sstr << x.first << ": " << x.second << endl;
-                }
-
+                sstr << "Freq: " << frequency << endl;
+                sstr << "Moving Avg Size: "  << m_avg_size << endl;
+                
                 return sstr.str();
             }
         }

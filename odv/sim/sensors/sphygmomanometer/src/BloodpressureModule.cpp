@@ -169,12 +169,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
-                sendContextInfo("ABP_available",true);
             }
             if(active && battery < 0.02){
                 active = false;
-                sendContextInfo("ABP_available",true);
             }
+            sendContextInfo("ABP_available", active);
         }
 
         /*
@@ -184,7 +183,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             container = buffer.leave();
 
             active = container.getData<BloodpressureControlCommand>().getActive();
-            params = container.getData<BloodpressureControlCommand>().getParams();
+            params["freq"] = container.getData<BloodpressureControlCommand>().getFrequency();
+            cout << "New frequency: " << params["freq"]*100 << endl;
         }
 
         if(!active){ 

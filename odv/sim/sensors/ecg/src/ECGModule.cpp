@@ -151,12 +151,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
-                sendContextInfo("ECG_available",true);
             }
             if(active && battery < 0.02){
                 active = false;
-                sendContextInfo("ECG_available",true);
             }
+            sendContextInfo("ECG_available", active);
         }
 
         /*
@@ -166,7 +165,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             container = buffer.leave();
 
             active = container.getData<ECGControlCommand>().getActive();
-            params = container.getData<ECGControlCommand>().getParams();
+            params["freq"] = container.getData<ECGControlCommand>().getFrequency();
+            cout << "New frequency: " << params["freq"] * 100 << endl;
         }
 
         if(!active){ 

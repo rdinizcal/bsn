@@ -149,12 +149,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
                 active = true;
-                sendContextInfo("SaO2_available",true);
             }
             if(active && battery < 0.02){
                 active = false;
-                sendContextInfo("SaO2_available",true);
             }
+            sendContextInfo("SaO2_available",active);
         }
 
         /*
@@ -164,7 +163,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             container = buffer.leave();
 
             active = container.getData<OximeterControlCommand>().getActive();
-            params = container.getData<OximeterControlCommand>().getParams();
+            params["freq"] = container.getData<OximeterControlCommand>().getFrequency();
+            cout << "New frequency: " << params["freq"] * 100 << endl;
         }
 
         if(!active){ 

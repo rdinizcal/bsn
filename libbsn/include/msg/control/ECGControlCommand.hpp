@@ -17,7 +17,7 @@ namespace bsn {
             class ECGControlCommand : public odcore::data::SerializableData {
             
                 public:
-                    ECGControlCommand(const bool &/*active*/, const std::map<std::string, double> &/*params*/);
+                    ECGControlCommand(const bool &/*active*/, const double &/*frequency*/, const int32_t &/*m_avg_size*/);
     
                     ECGControlCommand();        
                     virtual ~ECGControlCommand();
@@ -44,12 +44,16 @@ namespace bsn {
                     void setActive(const bool &/*active*/);
                     bool getActive() const;
 
-                    void setParams(const std::map<std::string,double>  &/*params*/);
-                    std::map<std::string,double> getParams() const;
+                    void setFrequency(const double &/*frequency*/);
+                    double getFrequency() const;
+
+                    void setMovingAverageSize(const int32_t &/*m_avg_size*/);
+                    int32_t getMovingAverageSize() const;
                 
                 private:
                     bool active;
-                    std::map<std::string,double> params;
+                    double frequency;
+                    int32_t m_avg_size;
             };
         }
     }

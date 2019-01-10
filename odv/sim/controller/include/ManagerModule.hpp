@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <math.h>  
 #include <iostream>
 #include <fstream>
 
@@ -14,6 +15,11 @@
 
 #include "bsn/msg/info/TaskInfo.hpp"
 #include "bsn/msg/info/ContextInfo.hpp"
+
+#include "bsn/msg/control/ThermometerControlCommand.hpp"
+#include "bsn/msg/control/OximeterControlCommand.hpp"
+#include "bsn/msg/control/ECGControlCommand.hpp"
+#include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
 #include "lepton/Lepton.h"
 
@@ -50,8 +56,8 @@ class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClient
         std::map<std::string,double&> reliability_formula_frequencies;
         std::map<std::string,double&> reliability_formula_contexts;
 
-		std::map<std::string,std::vector<double>> actions;
-		std::map<int32_t,std::vector<int32_t>> strategies;
+		std::vector<std::vector<double>> actions;
+		std::vector<std::vector<double>> strategies;
 };
 
 #endif 

@@ -1,10 +1,16 @@
 #include "ManagerModule.hpp"
 
+#define G3_T1_1X 0
+#define G3_T1_2X 1
+#define G3_T1_3X 2
+#define G3_T1_4X 3
+
 using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::goalmodel;
 using namespace bsn::msg::info; 
+using namespace bsn::msg::control;
 
 ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "manager"),
@@ -108,26 +114,16 @@ void ManagerModule::setUp() {
     }
 
     { // Set up actions
-        actions = std::map<string,std::vector<double>> {
-                                          {"G3_T1.1X", {0.90,0.95,1.00}},
-                                          {"G3_T1.2X", {0.90,0.95,1.00}},
-                                          {"G3_T1.3X", {0.90,0.95,1.00}},
-                                          {"G3_T1.4X", {0.90,0.95,1.00}}
-                                        };
+        
+        actions = std::vector<std::vector<double>> {
+                                        {0.90,0.95,1.00},
+                                        {0.90,0.95,1.00},
+                                        {0.90,0.95,1.00},
+                                        {0.90,0.95,1.00}};
 
-        /*std::vector<std::vector> actions_combination = std::vector<std::vector> = { 
-                            {0,0,0,0},
-                            {0,0,0,1},
-                            {0,0,0,2},
-                            {0,0,1,0},
-                            {0,0,1,1},
-                            {0,0,1,2},
-                            {0,0,2,0},                            
-                            }
-        */
-        for (int32_t idx = 0, w = 0, x = 0, y = 0, z = 0; idx < actions["G3_T1.1X"].size()^actions.size(); ++idx){
-            strategies.insert(std::pair<int32_t,std::vector<int32_t>>(idx,{w,x,y,z}));
-            
+        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(actions[0].size(),actions.size()); ++idx){
+            strategies.push_back({(double)w, (double)x, (double)y, (double)z});
+
             if(++z == 3) { 
                 z = 0;
                 if(++y == 3) { 
@@ -140,7 +136,14 @@ void ManagerModule::setUp() {
                     }
                 }
             }
+        }
 
+        for (std::vector<std::vector<double>>::iterator it = strategies.begin(); it != strategies.end(); ++it) {
+            for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
+                if ((int)*itt == 0) *itt = 0.9;
+                else if ((int)*itt == 1) *itt = 0.95;
+                else if ((int)*itt == 2) *itt = 1;
+            }
         }
     }
 
@@ -233,28 +236,78 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             }
 
             std::cout << "--------------------------------------------------" << std::endl;
-            std::cout << "cost: " << cost << std::endl;
-            std::cout << "reliability: " << reliability << std::endl;
+            std::cout << "|cost: " << cost << std::endl;
+            std::cout << "|reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
 
-            if (reliability < 90 || cost > 0.003) { //triggers adaptation
+            if (reliability < 0.90 /*|| cost > 0.003*/) { //triggers adaptation
+                std::map<std::vector<double>, std::vector<double>> policies;
 
-                for (std::pair<int32_t,std::vector<int32_t>> strategy : strategies ) {
+                for (std::vector<double> strategy : strategies ) { // substitutues each strategy the formulas and calculates cost and reliability
+                    { // in cost formula
+                        for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
 
-                    std::vector<int32_t> strat = strategy.second;
+                            if (cost_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
+                                cost_formula_frequency.second = strategy[0];
+                            } else if (cost_formula_frequency.first.find("G3_T1.2") != std::string::npos) {
+                                cost_formula_frequency.second = strategy[1];
+                            } else if (cost_formula_frequency.first.find("G3_T1.3") != std::string::npos) {
+                                cost_formula_frequency.second = strategy[2];
+                            } else if (cost_formula_frequency.first.find("G3_T1.4") != std::string::npos) {
+                                cost_formula_frequency.second = strategy[3];
+                            }
+                           
+                        }
 
-                    for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
+                        cost = cost_expression.evaluate();
+                    }
+
+                    { // in reliability formula
+                        for (std::pair<std::string,double&> reliability_formula_frequency : reliability_formula_frequencies) {
+                            if (reliability_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
+                                reliability_formula_frequency.second = strategy[0];
+                            } else if (reliability_formula_frequency.first.find("G3_T1.2") != std::string::npos) {
+                                reliability_formula_frequency.second = strategy[1];
+                            } else if (reliability_formula_frequency.first.find("G3_T1.3") != std::string::npos) {
+                                reliability_formula_frequency.second = strategy[2];
+                            } else if (reliability_formula_frequency.first.find("G3_T1.4") != std::string::npos) {
+                                reliability_formula_frequency.second = strategy[3];
+                            }
+                        }
+
+                        reliability = reliability_expression.evaluate();
+                    }
+                    
+                    policies[strategy] = {reliability,cost};            
+                    //policies.insert(std::pair<std::vector<double>,std::vector<double>>(strategy,{cost,reliability}));
+                }
+
+                for (std::pair<std::vector<double>,std::vector<double>> policy : policies) {
+
+                    //std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << "] ";
+                    //std::cout << "--> reliability: " << policy.second[0] /*<< " cost: " << policy.second[1]*/ << std::endl;
+                    if(policy.second[0] >= 0.90 /*&& policy.second[1] <= 0.003*/) {
+                        std::cout << "Sending message to sensors..." << std::endl;
                         
-                        std::pair<std::string,vector<double>> action1 = actions["G3_T1.1X"].at(strat[0]);
-                        cost_formula_frequency.second = tasks[cost_formula_frequency.first].getFrequency();
+                        OximeterControlCommand oControlCommand(contexts["SaO2_available"].getValue(), policy.first[0], 0);
+                        Container oControlCommandContainer(oControlCommand);
+                        getConference().send(oControlCommandContainer);
+
+                        ECGControlCommand eControlCommand(contexts["ECG_available"].getValue(), policy.first[1], 0);
+                        Container eControlCommandContainer(eControlCommand);
+                        getConference().send(eControlCommandContainer);
+
+                        ThermometerControlCommand tControlCommand(contexts["TEMP_available"].getValue(), policy.first[2], 0);
+                        Container tControlCommandContainer(tControlCommand);
+                        getConference().send(tControlCommandContainer);
+
+                        BloodpressureControlCommand sControlCommand(contexts["ABP_available"].getValue(), policy.first[3], 0);
+                        Container sControlCommandContainer(sControlCommand);
+                        getConference().send(sControlCommandContainer);
+
+                        break;
                     }
-
-
-                    for (std::pair<std::string,vector<double>> action : actions) {
-                        // O(n^m) we can use a greedy algorithm as for now we aint looking for the optimal solution
-
-                    }
-                } 
+                }
             }
         }
     }

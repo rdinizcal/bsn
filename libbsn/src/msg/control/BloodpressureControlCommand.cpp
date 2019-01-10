@@ -6,20 +6,22 @@ namespace bsn {
         
             using namespace std;
 
-            BloodpressureControlCommand::BloodpressureControlCommand() : active(), params() {}
-            
-            BloodpressureControlCommand::BloodpressureControlCommand(const bool &_active, const std::map<std::string,double> &_params) : active (_active), params(_params) {}
-            
+            BloodpressureControlCommand::BloodpressureControlCommand() : active(), frequency(), m_avg_size() {}
+
+            BloodpressureControlCommand::BloodpressureControlCommand(const bool &_active, const double &_frequency, const int32_t &_m_avg_size) : active(_active), frequency(_frequency), m_avg_size(_m_avg_size) {}
+
             BloodpressureControlCommand::~BloodpressureControlCommand() {}
             
             BloodpressureControlCommand::BloodpressureControlCommand(const BloodpressureControlCommand &obj) :
                 SerializableData(),
                 active(obj.getActive()),
-                params(obj.getParams()){}
+                frequency(obj.getFrequency()),
+                m_avg_size(obj.getMovingAverageSize()) {}
             
             BloodpressureControlCommand& BloodpressureControlCommand::operator=(const BloodpressureControlCommand &obj) {
                 active = obj.getActive();   
-                params = obj.getParams();     
+                frequency = obj.getFrequency();
+                m_avg_size = obj.getMovingAverageSize();
                 return (*this);
             }
             
@@ -51,12 +53,20 @@ namespace bsn {
                 return active;
             }
 
-            void BloodpressureControlCommand::setParams(const std::map<std::string,double> &_params) {
-                params = _params;
+            void BloodpressureControlCommand::setFrequency(const double &_frequency) {
+                frequency = _frequency;
             }
             
-            std::map<std::string,double> BloodpressureControlCommand::getParams() const {
-                return params;
+            double BloodpressureControlCommand::getFrequency() const {
+                return frequency;
+            }
+
+            void BloodpressureControlCommand::setMovingAverageSize(const int32_t &_m_avg_size){
+                m_avg_size = _m_avg_size;
+            }
+
+            int32_t BloodpressureControlCommand::getMovingAverageSize() const {
+                return m_avg_size;
             }
 
             ostream& BloodpressureControlCommand::operator<<(ostream &out) const {
@@ -64,13 +74,8 @@ namespace bsn {
                 std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
                 
                 s->write(1, active);
-                s->write(2, params.size());
-
-                int32_t i = 2;
-                for (auto& x: params){
-                    s->write(++i,x.first);
-                    s->write(++i,x.second);
-                }
+                s->write(2, frequency);
+                s->write(3, m_avg_size);
 
                 return out;
             }
@@ -79,21 +84,9 @@ namespace bsn {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
                 
-                int32_t size; 
-
                 d->read(1, active);
-                d->read(2, size);
-
-                int32_t i = 2;
-                while(i<size) {
-                    std::string key;
-                    double value;
-
-                    d->read(++i, key);
-                    d->read(++i, value);
-
-                    params.insert ( std::pair<std::string,double>(key,value) );
-                }
+                d->read(2, frequency);
+                d->read(3, m_avg_size);
 
                 return in;
             }
@@ -103,9 +96,8 @@ namespace bsn {
 
                 sstr << "BloodpressureControlCommand#" << endl;
                 sstr << "Activate module: " << active << endl;
-                for (auto& x: params){
-                    sstr << x.first << ": " << x.second << endl;
-                }
+                sstr << "Freq: " << frequency << endl;
+                sstr << "Moving Avg Size: "  << m_avg_size << endl;
 
                 return sstr.str();
             }
