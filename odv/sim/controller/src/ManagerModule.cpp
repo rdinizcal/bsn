@@ -39,7 +39,6 @@ ManagerModule::~ManagerModule() {}
 void ManagerModule::setUp() {
     addDataStoreFor(700, buffer);
     addDataStoreFor(701, buffer);
-    addDataStoreFor(702, buffer);
 
     { // Set up map {id,object} of leaf task from goal model
         // Pulse oximeter
@@ -116,13 +115,14 @@ void ManagerModule::setUp() {
 
     { // Set up actions
         
-        actions = std::vector<std::vector<double>> {
-                                        {0.90,0.95,1.00},
-                                        {0.90,0.95,1.00},
-                                        {0.90,0.95,1.00},
-                                        {0.90,0.95,1.00}};
+        /*actions = std::vector<std::vector<double>> {
+                                        {0.5,0.7,1},
+                                        {0.5,0.7,1},
+                                        {0.5,0.7,1},
+                                        {0.8,0.7,1}};
+        */
 
-        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(actions[0].size(),actions.size()); ++idx){
+        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,3); ++idx){
             strategies.push_back({(double)w, (double)x, (double)y, (double)z});
 
             if(++z == 3) { 
@@ -141,8 +141,8 @@ void ManagerModule::setUp() {
 
         for (std::vector<std::vector<double>>::iterator it = strategies.begin(); it != strategies.end(); ++it) {
             for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
-                if ((int)*itt == 0) *itt = 0.9;
-                else if ((int)*itt == 1) *itt = 0.95;
+                if ((int)*itt == 0) *itt = 0.7;
+                else if ((int)*itt == 1) *itt = 0.9;
                 else if ((int)*itt == 2) *itt = 1;
             }
         }
@@ -181,20 +181,20 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             } else if (container.getDataType() == 701) { // update context
 
                 std::string context_id = container.getData<ContextInfo>().getContext();
-                bool value = container.getData<ContextInfo>().getValue();
 
-                contexts[context_id].setValue(value);
+                if (context_id.find("available") != std::string::npos){
+                    bool value = container.getData<ContextInfo>().getBoolValue();
+                    contexts[context_id].setValue(value);
+                } else if (context_id.find("patient health status") != std::string::npos){
+                    patient_health_status = container.getData<ContextInfo>().getStringValue();
 
-            } else if (container.getDataType() == 702) { // update patient health status
-                patient_health_status = container.getData<PatientStatusInfo>().getPatientStatus();
-
-                std::cout << "new patient status received> "<< patient_health_status << std::endl;
-                if (patient_health_status == "CRITICAL STATE") {
-                    cost_goal = 1;
-                    reliability_goal = 0.99;
-                } else {
-                    cost_goal = 0.032;
-                    reliability_goal = 0.85;
+                    if (patient_health_status == "CRITICAL STATE") {
+                        cost_goal = 1;
+                        reliability_goal = 0.99;
+                    } else {
+                        cost_goal = 0.025;
+                        reliability_goal = 0.80;
+                    }
                 }
             }
 

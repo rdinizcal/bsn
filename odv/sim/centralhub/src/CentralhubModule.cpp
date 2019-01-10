@@ -155,9 +155,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                 fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
             }
             
-            PatientStatusInfo psInfo(trm_risk, ecg_risk, oxi_risk, bpr_risk, (patient_status>=66)?"CRITICAL STATE":"NORMAL STATE");
-            Container psInfoContainer(psInfo);
-            getConference().send(psInfoContainer);
+            ContextInfo contextInfo("patient health status", false, 0, 0, (patient_status>=66)?"CRITICAL STATE":"NORMAL STATE");
+            Container contextInfoContainer(contextInfo);
+            getConference().send(contextInfoContainer);
 
             cout << endl << "*****************************************" << endl;
             cout << "PatientStatusInfo#" << endl;

@@ -123,7 +123,7 @@ void ThermometerModule::sendTaskInfo(const std::string &task_id, const double &c
 }
 
 void ThermometerModule::sendContextInfo(const std::string &context_id, const bool &value) {
-    ContextInfo context(context_id, value);
+    ContextInfo context(context_id, value, 0, 0, "");
     Container contextContainer(context);
     getConference().send(contextContainer);
 }

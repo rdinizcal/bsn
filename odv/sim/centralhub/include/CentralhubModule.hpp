@@ -10,8 +10,8 @@
 #include "bsn/communication/TCPSend.hpp"
 
 #include "bsn/msg/info/TaskInfo.hpp"
+#include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/data/SensorData.h"
-#include "bsn/msg/info/PatientStatusInfo.h"
 
 
 class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceClientModule{

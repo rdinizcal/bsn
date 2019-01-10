@@ -13,7 +13,7 @@ namespace bsn {
             class ContextInfo : public odcore::data::SerializableData {
             
                 public:
-                    ContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
+                    ContextInfo(const std::string &/*context_id*/, const bool &/*_b_value*/, const double &/*_d_value*/, const int32_t &/*_i_value*/, const std::string &/*_s_value*/);
     
                     ContextInfo();
                     virtual ~ContextInfo();
@@ -40,13 +40,24 @@ namespace bsn {
                     void setContext(const std::string &/*context_id*/);
                     std::string getContext() const;
 
-                    void setValue(const bool &/*value*/);
-                    bool getValue() const;
+                    void setBoolValue(const bool &/*_b_value*/);
+                    bool getBoolValue() const;
 
+                    void setDoubleValue(const double &/*_d_value*/);
+                    double getDoubleValue() const;
+
+                    void setIntegerValue(const int32_t &/*_i_value*/);
+                    int32_t getIntegerValue() const;
+
+                    void setStringValue(const std::string &/*_s_value*/);
+                    std::string getStringValue() const;
                 
                 private:
                     std::string context_id;
-                    bool value;
+                    bool        b_value;
+                    double      d_value;
+                    int32_t     i_value;
+                    std::string s_value;
             };
         }
     }
