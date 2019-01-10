@@ -32,7 +32,11 @@ ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
     reliability_formula_contexts(),
 
     actions(),
-    strategies() {}
+    strategies(),
+    
+    persist(1),
+    path("manager_output.csv"),
+    fp() {}
 
 ManagerModule::~ManagerModule() {}
 
@@ -148,9 +152,22 @@ void ManagerModule::setUp() {
         }
     }
 
+    { // Configure persistence
+        persist = getKeyValueConfiguration().getValue<int>("manager.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("manager.path");
+
+        if (persist) {
+            fp.open(path);
+            fp << "ID,RELIABILITY,COST,CLOCK_TIME" << endl;
+        }
+    }
+
 }
 
-void ManagerModule::tearDown(){}
+void ManagerModule::tearDown() {
+    if (persist)
+        fp.close();
+}
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
 
@@ -160,6 +177,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
     double cost_goal;
     double reliability_goal;
     bool new_info = false;
+    uint32_t id = 0;
+    timespec ts;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
@@ -192,7 +211,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                         cost_goal = 1;
                         reliability_goal = 0.99;
                     } else {
-                        cost_goal = 0.025;
+                        cost_goal = 0.055;
                         reliability_goal = 0.80;
                     }
                 }
@@ -246,6 +265,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                 }
             }
 
+            clock_gettime(CLOCK_REALTIME, &ts);
+
+            { // Persist data
+                if (persist) {
+                    fp << id++ << ',';
+                    fp << reliability << ',';
+                    fp << cost << ',';
+                    fp << ts.tv_nsec << endl;
+                }
+            }
+            
             std::cout << "--------------------------------------------------" << std::endl;
             std::cout << "|patient health status: " << patient_health_status << std::endl;
             std::cout << "|cost: " << cost << std::endl;
@@ -296,7 +326,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                 for (std::pair<std::vector<double>,std::vector<double>> policy : policies) {
 
                     //std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << "] ";
-                    //std::cout << "--> reliability: " << policy.second[0] /*<< " cost: " << policy.second[1]*/ << std::endl;
+                    //std::cout << "--> reliability: " << policy.second[0] << " cost: " << policy.second[1] << std::endl;
+
                     if(policy.second[0] >= reliability_goal && policy.second[1] <= cost_goal) {
                         std::cout << "Sending message to sensors..." << std::endl;
                         

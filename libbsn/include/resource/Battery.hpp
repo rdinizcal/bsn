@@ -1,29 +1,30 @@
-#ifndef RESOURCE_HPP
-#define RESOURCE_HPP
+#ifndef BATTERY_HPP
+#define BATTERY_HPP
 
 #include <sstream>
 #include <string>
 #include <stdint.h>
+#include <stdexcept>
 
 namespace bsn {
     namespace resource {
 
-        class Resource {
+        class Battery {
 
             public:
-                Resource(const std::string /*id*/, const double /*capacity*/, const double /*currentLevel*/, const double /*unit*/);
+                Battery(const std::string /*id*/, const double /*capacity*/, const double /*currentLevel*/, const double /*unit*/);
                 
-                Resource();
-                ~Resource();
+                Battery();
+                ~Battery();
 
-                Resource(const Resource & /*obj*/);
-                Resource &operator=(const Resource & /*obj*/);
+                Battery(const Battery & /*obj*/);
+                Battery &operator=(const Battery & /*obj*/);
 
-                void consume(const int32_t /*mult*/);
-                void generate(const int32_t /*mult*/);
+                void consume(const double /*mult*/);
+                void generate(const double /*mult*/);
 
-                void setName(const std::string &/*name*/);
-                std::string getName() const;
+                void setId(const std::string &/*id*/);
+                std::string getId() const;
 
                 void setCapacity(const double &/*capacity*/);
                 double getCapacity() const; 
@@ -37,7 +38,7 @@ namespace bsn {
                 const std::string toString() const;
 
             private:
-                std::string name;
+                std::string id;
                 double capacity;
                 double currentLevel;
                 double unit;

@@ -1,14 +1,12 @@
-#include "resource/Resource.hpp"
-
-#include <stdexcept>
+#include "resource/Battery.hpp"
 
 namespace bsn {
     namespace resource {
 
         using namespace std;
         
-        Resource::Resource(const std::string _name, const double _capacity, const double _currentLevel, const double _unit) :
-            name(_name),
+        Battery::Battery(const std::string _id, const double _capacity, const double _currentLevel, const double _unit) :
+            id(_id),
             capacity(_capacity),
             currentLevel(_currentLevel),
             unit(_unit) {
@@ -25,76 +23,76 @@ namespace bsn {
             }
         }
 
-        Resource::Resource() :
-            name(),
+        Battery::Battery() :
+            id(),
             capacity(),
             currentLevel(),
             unit() {}
         
-        Resource::Resource(const Resource &obj) : 
-            name(obj.getName()),
+        Battery::Battery(const Battery &obj) : 
+            id(obj.getId()),
             capacity(obj.getCapacity()),
             currentLevel(obj.getCurrentLevel()),
             unit(obj.getUnit()) {}
 
-        Resource& Resource::operator=(const Resource &obj) {
-            name = obj.getName();  
+        Battery& Battery::operator=(const Battery &obj) {
+            id = obj.getId();  
             capacity = obj.getCapacity(); 
             currentLevel = obj.getCurrentLevel();
             unit = obj.getUnit();        
             return (*this);
         }
 
-        Resource::~Resource(){};
+        Battery::~Battery(){};
         
-        void Resource::consume(const int32_t mult) {
+        void Battery::consume(const double mult) {
             currentLevel-= unit*mult;
 
             if(currentLevel < 0) currentLevel = 0;
         }
 
-        void Resource::generate(const int32_t mult) {
+        void Battery::generate(const double mult) {
             currentLevel += unit*mult;
             
             if(currentLevel >= capacity) currentLevel = capacity;
         }
 
-        void Resource::setName (const string &_name) {
-            name = _name;
+        void Battery::setId (const string &_id) {
+            id = _id;
         }
 
-        string Resource::getName() const {
-            return name;
+        string Battery::getId() const {
+            return id;
         }
 
-        void Resource::setCapacity (const double &_cap) {
+        void Battery::setCapacity (const double &_cap) {
             capacity = _cap;
         }
 
-        double Resource::getCapacity() const{
+        double Battery::getCapacity() const{
             return capacity;
         }
 
-        void Resource::setCurrentLevel(const double &_cLevel) {
+        void Battery::setCurrentLevel(const double &_cLevel) {
             currentLevel = _cLevel;
         }
 
-        double Resource::getCurrentLevel() const{
+        double Battery::getCurrentLevel() const{
             return currentLevel;
         }
 
-        void Resource::setUnit(const double &_unit){
+        void Battery::setUnit(const double &_unit){
             unit = _unit;
         }
 
-        double Resource::getUnit() const{
+        double Battery::getUnit() const{
             return unit; 
         }
 
-        const string Resource::toString() const {
+        const string Battery::toString() const {
             stringstream sstr;
 
-            sstr << "Resources: " << name  << " " << capacity << " " << currentLevel << " " << unit << endl;
+            sstr << "Battery: " << id  << " " << capacity << " " << currentLevel << " " << unit << endl;
 
             return sstr.str();
         }

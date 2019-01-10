@@ -11,9 +11,14 @@ centralhub.connect = 1
 centralhub.port = 6060
 centralhub.ip = localhost
 
-# Define if CentralHub will persist data and where
+# persistence
 centralhub.persist = 1
 centralhub.path = centralhub_output.csv
+
+########## Controller ##########
+# persistence
+manager.persist = 1
+manager.path = manager_output.csv
 
 ########## Thermometer ##########
 # markov chain

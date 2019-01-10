@@ -59,6 +59,10 @@ class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClient
 
 		std::vector<std::vector<double>> actions;
 		std::vector<std::vector<double>> strategies;
+
+		uint32_t persist;
+		std::string path;
+		std::ofstream fp;
 };
 
 #endif 

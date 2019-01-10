@@ -16,7 +16,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    battery(1),
+    battery("oxi_batt",100,100,1),
     available(true),
     data_accuracy(1),
     comm_accuracy(1),
@@ -102,7 +102,7 @@ void OximeterModule::setUp() {
 
         if (persist) {
             fp.open(path);
-            fp << "ID,DATA,RISK" << endl;
+            fp << "ID,DATA,RISK,CLOCK_TIME" << endl;
         }
     }
 }
@@ -130,7 +130,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
     double data;
     double risk;
     bool first_exec = true;
-    int id = 0;
+    uint32_t id = 0;
+    timespec ts;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -140,22 +141,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.11",0.001,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.12",0.005*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.11",0.01,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.12",0.01*params["m_avg"],1,params["freq"]);
             sendTaskInfo("G3_T1.13",0.01,comm_accuracy,params["freq"]);
         }
 
         { // recharge routine
             //for debugging
-        /*    cout << "Battery level: " << battery*100 << "%" << endl;
-            if(!active && battery > 0.8){
+            cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
+            if(!active && battery.getCurrentLevel() > 90){
                 active = true;
             }
-            if(active && battery < 0.02){
+            if(active && battery.getCurrentLevel() < 2){
                 active = false;
             }
             sendContextInfo("SaO2_available",active);
-        */}
+        }
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -165,7 +166,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         if(!active){ 
-            if(battery <= 1) battery += 0.05;
+            if(battery.getCurrentLevel() <= 100) battery.generate(0.05);
             continue; 
         }
 
@@ -175,9 +176,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
             
             { // TASK: Collect oximeter data
-                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
-
                 data = markov.calculate_state();
+
+                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
 
                 if (rand() % 2 == 0)
                     data = data + offset;
@@ -185,7 +186,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                     data = data - offset;
 
                 markov.next_state();
-                battery -= 0.001;
+                battery.consume(0.01);
                 
 
                 //for debugging 
@@ -196,7 +197,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 filter.setRange(params["m_avg"]);
                 filter.insert(data, type);
                 data = filter.getValue(type);
-                battery -= 0.005*params["m_avg"];
+                battery.consume(0.01*params["m_avg"]);
 
 
                 //for debugging 
@@ -209,7 +210,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 SensorData sdata(type, data, risk);
                 Container sdataContainer(sdata);
                 if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
-                battery -= 0.003;
+                battery.consume(0.01);
 
                 // for debugging
                 //cout << "Risk: " << risk << "%"  << endl;
@@ -217,12 +218,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
 
         }
 
+        clock_gettime(CLOCK_REALTIME, &ts);
+
         { // Persist sensor data
             if (persist) {
-              fp << id++ << ",";
-              fp << data << ",";
-              fp << risk << endl;
-           }
+                fp << id++ << ",";
+                fp << data << ",";
+                fp << risk << ",";
+                fp << ts.tv_nsec << endl;
+            }
         }
     }
 

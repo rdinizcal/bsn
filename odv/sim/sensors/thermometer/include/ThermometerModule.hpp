@@ -7,6 +7,7 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/range/Range.hpp"
+#include "bsn/resource/Battery.hpp"
 #include "bsn/generator/Markov.hpp"
 #include "bsn/filters/MovingAverage.hpp"
 #include "bsn/operation/Operation.hpp"
@@ -39,7 +40,7 @@ class ThermometerModule : public odcore::base::module::TimeTriggeredConferenceCl
 	    odcore::base::FIFOQueue buffer;
 		
 		std::string type;
-		double battery;
+		bsn::resource::Battery battery;
 		bool available;
 
 		double data_accuracy;
