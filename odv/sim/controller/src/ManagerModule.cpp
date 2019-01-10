@@ -11,6 +11,7 @@ using namespace odcore::data;
 using namespace bsn::goalmodel;
 using namespace bsn::msg::info; 
 using namespace bsn::msg::control;
+using namespace bsn::time;
 
 ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "manager"),
@@ -179,6 +180,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
     bool new_info = false;
     uint32_t id = 0;
     timespec ts;
+    TimeData tdata;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
@@ -265,14 +267,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                 }
             }
 
-            clock_gettime(CLOCK_REALTIME, &ts);
-
             { // Persist data
                 if (persist) {
                     fp << id++ << ',';
                     fp << reliability << ',';
                     fp << cost << ',';
-                    fp << ts.tv_nsec << endl;
+                    fp << tdata.get_time() << endl;
                 }
             }
             

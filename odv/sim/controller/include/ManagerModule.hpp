@@ -22,6 +22,8 @@
 #include "bsn/msg/control/ECGControlCommand.hpp"
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
+#include "bsn/time/TimeData.hpp"
+
 #include "lepton/Lepton.h"
 
 class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
