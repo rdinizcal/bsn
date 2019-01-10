@@ -132,21 +132,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
     double data;
     double risk;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
     int id = 0;
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(first_exec){ // Send context info warning controller that this sensor is available
             sendContextInfo("ECG_available",true);
-            sendTaskInfo("G3_T1.21",0.001,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.22",0.005*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.23",0.01,comm_accuracy,params["freq"]);
             first_exec = false; 
         }
 
-    { // recharge routine
+        {  // update controller with task info
+            sendTaskInfo("G3_T1.21",0.001,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.22",0.005*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.23",0.01,comm_accuracy,params["freq"]);
+        }
+
+        { // recharge routine
             //for debugging
             cout << "Battery level: " << battery*100 << "%" << endl;
             if(!active && battery > 0.8){
@@ -158,15 +159,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             sendContextInfo("ECG_available", active);
         }
 
-        /*
-         * Receive control command and module update
-         */
-        while(!buffer.isEmpty()){
+        while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
             active = container.getData<ECGControlCommand>().getActive();
             params["freq"] = container.getData<ECGControlCommand>().getFrequency();
-            cout << "New frequency: " << params["freq"] * 100 << endl;
         }
 
         if(!active){ 
@@ -194,7 +191,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
                 
 
                 //for debugging 
-                cout << "New data: " << data << endl;
+                //cout << "New data: " << data << endl;
             }
             
             { // TASK: Filter data with moving average
@@ -205,7 +202,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
 
 
                 //for debugging 
-                cout << "Filtered data: " << data << endl;
+                //cout << "Filtered data: " << data << endl;
             }
  
             { // TASK: Transfer information to CentralHub
@@ -217,7 +214,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
                 battery -= 0.003;
 
                 // for debugging
-                cout << "Risk: " << risk << "%"  << endl;
+                //cout << "Risk: " << risk << "%"  << endl;
             }
             
         }

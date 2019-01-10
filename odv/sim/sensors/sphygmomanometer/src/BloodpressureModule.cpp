@@ -149,19 +149,20 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double dataD;
     double risk;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
     int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(first_exec){ // Send context info warning controller that this sensor is available
             sendContextInfo("ABP_available",true);
+            first_exec = false; 
+        }
+
+        {  // update controller with task info
             sendTaskInfo("G3_T1.411",0.001,systdata_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.412",0.001,diasdata_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.42",0.005*params["m_avg"]*2,1,params["freq"]);
             sendTaskInfo("G3_T1.43",0.01,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
-            first_exec = false; 
         }
 
         { // recharge routine
@@ -176,15 +177,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             sendContextInfo("ABP_available", active);
         }
 
-        /*
-         * Receive control command and module update
-         */
-        while(!buffer.isEmpty()){
+        while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
             active = container.getData<BloodpressureControlCommand>().getActive();
             params["freq"] = container.getData<BloodpressureControlCommand>().getFrequency();
-            cout << "New frequency: " << params["freq"]*100 << endl;
         }
 
         if(!active){ 
@@ -225,8 +222,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 
 
                 //for debugging 
-                cout << "New data (systolic): " << dataS << endl;
-                cout << "New data (diastolic): " << dataD << endl;
+                //cout << "New data (systolic): " << dataS << endl;
+                //cout << "New data (diastolic): " << dataD << endl;
             }
 
             { // TASK: Filter data with moving average
@@ -254,7 +251,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 battery -= 0.003;
 
                 // for debugging
-                cout << "Risk: " << risk << "%"  << endl;
+                //cout << "Risk: " << risk << "%"  << endl;
 
                 risk = sensorConfigDiastolic.evaluateNumber(dataD);
                 SensorData sdataD("bpmd", dataD, risk);
@@ -263,7 +260,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 battery -= 0.003;
 
                 // for debugging
-                cout << "Risk: " << risk << "%"  << endl;
+                //cout << "Risk: " << risk << "%"  << endl;
             }
 
         }

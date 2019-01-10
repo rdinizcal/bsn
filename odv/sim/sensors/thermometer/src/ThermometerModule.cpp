@@ -134,20 +134,21 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
     double data;
     double risk;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
     int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(first_exec){ // Send context info warning controller that this sensor is available  
             sendContextInfo("TEMP_available",true);
-            sendTaskInfo("G3_T1.31",0.001,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.32",0.005*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.33",0.01,comm_accuracy,params["freq"]);
             first_exec = false; 
         }
         
+        { // update controller with task info
+            sendTaskInfo("G3_T1.31",0.001,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.32",0.005*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.33",0.01,comm_accuracy,params["freq"]);
+        }
+
         { // recharge routine
             //for debugging
             cout << "Battery level: " << battery*100 << "%" << endl;
@@ -168,7 +169,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
 
             active = container.getData<ThermometerControlCommand>().getActive();
             params["freq"] = container.getData<ThermometerControlCommand>().getFrequency();
-            cout << "New frequency: " << params["freq"]*100 << endl;
         }
 
         if(!active){ 

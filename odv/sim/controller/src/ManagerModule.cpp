@@ -185,9 +185,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
 
                 // for debugging
                 //std::cout << "new context received: [" << context_id << ":" << value << "]" << std::endl;
+                
+                new_info = true;
             }
 
-            new_info = true;
         }
         
         if (new_info) {

@@ -130,18 +130,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
     double data;
     double risk;
     bool first_exec = true;
-    double accuracyValue;
-    double offset;
     int id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(first_exec){ // Send context info warning controller that this sensor is available
             sendContextInfo("SaO2_available",true);
+            first_exec = false; 
+        }
+
+        {  // update controller with task info
             sendTaskInfo("G3_T1.11",0.001,data_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.12",0.005*params["m_avg"],1,params["freq"]);
             sendTaskInfo("G3_T1.13",0.01,comm_accuracy,params["freq"]);
-            first_exec = false; 
         }
 
         { // recharge routine
@@ -156,15 +157,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             sendContextInfo("SaO2_available",active);
         }
 
-        /*
-         * Receive control command and module update
-         */
-        while(!buffer.isEmpty()){
+        while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
             active = container.getData<OximeterControlCommand>().getActive();
             params["freq"] = container.getData<OximeterControlCommand>().getFrequency();
-            cout << "New frequency: " << params["freq"] * 100 << endl;
         }
 
         if(!active){ 
@@ -192,7 +189,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 
 
                 //for debugging 
-                cout << "Dado gerado: " << data << endl;
+                //cout << "Dado gerado: " << data << endl;
             }
             
             { // TASK: Filter data with moving average
@@ -203,7 +200,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
 
 
                 //for debugging 
-                cout << "Dado filtrado: " << data << endl;
+                //cout << "Dado filtrado: " << data << endl;
             }
             
             { // TASK: Transfer information to CentralHub
@@ -215,7 +212,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 battery -= 0.003;
 
                 // for debugging
-                cout << "Risk: " << risk << "%"  << endl;
+                //cout << "Risk: " << risk << "%"  << endl;
             }
 
         }
