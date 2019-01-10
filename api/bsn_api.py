@@ -1,7 +1,9 @@
 from flask import Flask, request, session, jsonify
+import requests
 import subprocess
 import os
 import signal
+import json
 from time import sleep
 
 commands = [
@@ -15,7 +17,7 @@ commands = [
 
 app = Flask(__name__)
 processes_pids = []
-
+main_dir = os.getcwd()
 
 def stop_execution():
     global processes_pids
@@ -106,7 +108,7 @@ def start():
     except:
         return 'execution error'
 
-# Sop bsn execution
+# Stop bsn execution
 @app.route('/stop')
 def stop():    
     global processes_pids
@@ -116,6 +118,25 @@ def stop():
     except:
         processes_pids = []
         return 'error'
+
+# Receive a JSON with the configuration file for BSN
+@app.route('/new_conf', methods=['POST'])
+def new_conf():
+    try:
+        json_file = request.get_json()
+        
+        os.chdir(main_dir)
+        os.chdir("../odv/sim/configs/custom")    
+        os.makedirs(json_file['name'], exist_ok=True)
+        os.chdir(json_file['name'])
+        
+        config = open('configuration', 'w')
+        config.write(str(json_file['content']))
+        config.close()
+        return 'ok'
+    except:
+        return "error"
+
 
 @app.route('/')
 def hello_world():
