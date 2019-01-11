@@ -102,7 +102,7 @@ void OximeterModule::setUp() {
 
         if (persist) {
             fp.open(path);
-            fp << "ID,DATA,RISK,CLOCK_TIME" << endl;
+            fp << "ID,DATA,RISK,TIME_MS" << endl;
         }
     }
 }
@@ -131,7 +131,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
     double risk;
     bool first_exec = true;
     uint32_t id = 0;
-    timespec ts;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -141,9 +140,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.11",0.01,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.12",0.01*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.13",0.01,comm_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.11",(0.1/100),data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.12",(0.1/100)*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.13",(0.1/100),comm_accuracy,params["freq"]);
         }
 
         { // recharge routine
@@ -166,7 +165,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         if(!active){ 
-            if(battery.getCurrentLevel() <= 100) battery.generate(0.05);
+            if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
         }
 
@@ -186,7 +185,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                     data = data - offset;
 
                 markov.next_state();
-                battery.consume(0.01);
+                battery.consume(0.1);
                 
 
                 //for debugging 
@@ -197,7 +196,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 filter.setRange(params["m_avg"]);
                 filter.insert(data, type);
                 data = filter.getValue(type);
-                battery.consume(0.01*params["m_avg"]);
+                battery.consume(0.1*params["m_avg"]);
 
 
                 //for debugging 
@@ -210,7 +209,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
                 SensorData sdata(type, data, risk);
                 Container sdataContainer(sdata);
                 if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
-                battery.consume(0.01);
+                battery.consume(0.1);
 
                 // for debugging
                 //cout << "Risk: " << risk << "%"  << endl;
@@ -218,14 +217,14 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
 
         }
 
-        clock_gettime(CLOCK_REALTIME, &ts);
-
         { // Persist sensor data
             if (persist) {
                 fp << id++ << ",";
                 fp << data << ",";
                 fp << risk << ",";
-                fp << ts.tv_nsec << endl;
+                fp << std::chrono::duration_cast<std::chrono::milliseconds>
+                        (std::chrono::time_point_cast<std::chrono::milliseconds>
+                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
             }
         }
     }

@@ -32,7 +32,7 @@ void CentralhubModule::setUp() {
 
     if (persist) {
         fp.open(path);
-        fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERALL_STATUS,PATIENT_STATE" << endl;
+        fp << "ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERALL_STATUS,PATIENT_STATE,TIME_MS" << endl;
     }
 }
 
@@ -152,7 +152,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                 fp << trm_risk << ",";
                 fp << bpr_risk << ",";
                 fp << patient_status << ",";
-                fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << endl;
+                fp << ((patient_status>=66)?"CRITICAL STATE":"NORMAL STATE") << ',';
+                fp << std::chrono::duration_cast<std::chrono::milliseconds>
+                        (std::chrono::time_point_cast<std::chrono::milliseconds>
+                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
             }
             
             ContextInfo contextInfo("patient health status", false, 0, 0, (patient_status>=66)?"CRITICAL STATE":"NORMAL STATE");

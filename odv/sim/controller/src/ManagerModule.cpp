@@ -121,22 +121,22 @@ void ManagerModule::setUp() {
     { // Set up actions
         
         /*actions = std::vector<std::vector<double>> {
-                                        {0.5,0.7,1},
-                                        {0.5,0.7,1},
-                                        {0.5,0.7,1},
-                                        {0.8,0.7,1}};
+                                        {0.9,0.925,0.95,0.975,1},
+                                        {0.9,0.925,0.95,0.975,1},
+                                        {0.9,0.925,0.95,0.975,1},
+                                        {0.9,0.925,0.95,0.975,1}};
         */
 
-        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,3); ++idx){
+        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,5); ++idx){
             strategies.push_back({(double)w, (double)x, (double)y, (double)z});
 
-            if(++z == 3) { 
+            if(++z == 5) { 
                 z = 0;
-                if(++y == 3) { 
+                if(++y == 5) { 
                     y = 0;
-                    if(++x == 3) { 
+                    if(++x == 5) { 
                         x = 0;
-                        if(++w == 3) { 
+                        if(++w == 5) { 
                             w = 0;
                         }
                     }
@@ -146,9 +146,11 @@ void ManagerModule::setUp() {
 
         for (std::vector<std::vector<double>>::iterator it = strategies.begin(); it != strategies.end(); ++it) {
             for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
-                if ((int)*itt == 0) *itt = 0.7;
-                else if ((int)*itt == 1) *itt = 0.9;
-                else if ((int)*itt == 2) *itt = 1;
+                if ((int)*itt == 0) *itt = 0.8;
+                else if ((int)*itt == 1) *itt = 0.85;
+                else if ((int)*itt == 2) *itt = 0.9;
+                else if ((int)*itt == 3) *itt = 0.95;
+                else if ((int)*itt == 4) *itt = 1;
             }
         }
     }
@@ -159,7 +161,7 @@ void ManagerModule::setUp() {
 
         if (persist) {
             fp.open(path);
-            fp << "ID,RELIABILITY,COST,CLOCK_TIME" << endl;
+            fp << "ID,RELIABILITY,COST,OXIM,ECG,TEMP,ABP,PATIENT_STATUS,TIME_MS" << endl;
         }
     }
 
@@ -175,12 +177,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
     double cost;
     double reliability;
     std::string patient_health_status = "NORMAL STATE";
-    double cost_goal;
-    double reliability_goal;
+    double cost_goal = 1;
+    double reliability_goal= 0.8;
     bool new_info = false;
     uint32_t id = 0;
-    timespec ts;
-    TimeData tdata;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
@@ -204,18 +204,30 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                 std::string context_id = container.getData<ContextInfo>().getContext();
 
                 if (context_id.find("available") != std::string::npos){
+
                     bool value = container.getData<ContextInfo>().getBoolValue();
                     contexts[context_id].setValue(value);
+
                 } else if (context_id.find("patient health status") != std::string::npos){
+
                     patient_health_status = container.getData<ContextInfo>().getStringValue();
 
-                    if (patient_health_status == "CRITICAL STATE") {
+                    /*if (patient_health_status == "CRITICAL STATE") {
+
                         cost_goal = 1;
                         reliability_goal = 0.99;
-                    } else {
-                        cost_goal = 0.055;
-                        reliability_goal = 0.80;
-                    }
+
+                        contexts["SaO2_available"].setValue(true);
+                        contexts["ECG_available"].setValue(true);
+                        contexts["TEMP_available"].setValue(true);
+                        contexts["ABP_available"].setValue(true);
+
+                    } else if (patient_health_status == "NORMAL STATE") {
+
+                        cost_goal = 0.0055;
+                        reliability_goal = 0.90;
+
+                    }*/
                 }
             }
 
@@ -272,7 +284,18 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     fp << id++ << ',';
                     fp << reliability << ',';
                     fp << cost << ',';
-                    fp << tdata.get_time() << endl;
+                    std::string yar = contexts["SaO2_available"].getValue()?"TRUE":"FALSE";
+                    fp << yar << ',';
+                    std::string yarr = contexts["ECG_available"].getValue()?"TRUE":"FALSE";
+                    fp << yarr << ',';
+                    std::string yarrr = contexts["TEMP_available"].getValue()?"TRUE":"FALSE";
+                    fp << yarrr << ',';
+                    std::string yarrrr = contexts["ABP_available"].getValue()?"TRUE":"FALSE";
+                    fp << yarrrr << ',';
+                    fp << patient_health_status << ',';
+                    fp << std::chrono::duration_cast<std::chrono::milliseconds>
+                            (std::chrono::time_point_cast<std::chrono::milliseconds>
+                            (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
                 }
             }
             
@@ -281,7 +304,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             std::cout << "|cost: " << cost << std::endl;
             std::cout << "|reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
-
+            /*
             if (reliability < reliability_goal || cost > cost_goal) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
@@ -359,6 +382,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     }
                 }
             }
+            */
         }
     }
 

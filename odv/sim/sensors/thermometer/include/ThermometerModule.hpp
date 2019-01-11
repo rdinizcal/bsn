@@ -2,6 +2,7 @@
 #define THERMOMETER_MODULE_HPP
 
 #include <fstream>
+#include <chrono>
 
 #include "opendavinci/odcore/base/module/TimeTriggeredConferenceClientModule.h"
 #include "opendavinci/odcore/base/FIFOQueue.h"

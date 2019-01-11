@@ -57,8 +57,8 @@ oximeter.MidRisk = 55,65
 oximeter.HighRisk = 0,55
 
 # accuracy in percentage
-oximeter.data_accuracy = 96
-oximeter.comm_accuracy = 99
+oximeter.data_accuracy = 90
+oximeter.comm_accuracy = 90
 
 # persistence
 oximeter.persist = 1
@@ -81,7 +81,7 @@ ecg.HighRisk1 = 115,300
 
 # accuracy in percentage
 ecg.data_accuracy = 90
-ecg.comm_accuracy = 88
+ecg.comm_accuracy = 90
 
 # persistence
 ecg.persist = 1
@@ -101,8 +101,8 @@ bloodpressure.diasMidRisk = 80,90
 bloodpressure.diasHighRisk = 90,300
 
 # accuracy in percentage
-bloodpressure.diasdata_accuracy = 85
-bloodpressure.diascomm_accuracy = 91
+bloodpressure.diasdata_accuracy = 90
+bloodpressure.diascomm_accuracy = 90
 
 # markov chain (systolic pressure)
 bloodpressure.syststate0 = 0,0,0,0,0
@@ -117,8 +117,8 @@ bloodpressure.systMidRisk = 120,140
 bloodpressure.systHighRisk = 140,300
 
 # accuracy in percentage
-bloodpressure.systdata_accuracy = 85
-bloodpressure.systcomm_accuracy = 91
+bloodpressure.systdata_accuracy = 90
+bloodpressure.systcomm_accuracy = 90
 
 # persistence
 bloodpressure.persist = 1

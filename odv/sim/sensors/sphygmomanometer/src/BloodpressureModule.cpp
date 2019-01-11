@@ -121,7 +121,7 @@ void BloodpressureModule::setUp() {
 
         if (persist) {
             fp.open(path);
-            fp << "ID,SYSTOLIC_DATA,DIASTOLIC_DATA,RISK,CLOCK_TIME" << endl;
+            fp << "ID,SYSTOLIC_DATA,DIASTOLIC_DATA,RISK,TIME_MS" << endl;
         }
     }
 }
@@ -151,7 +151,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
     double risk;
     bool first_exec = true;
     uint32_t id = 0;
-    timespec ts;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -161,10 +160,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.411",0.01,systdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.412",0.01,diasdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.42",0.01*params["m_avg"]*2,1,params["freq"]);
-            sendTaskInfo("G3_T1.43",0.01*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+            sendTaskInfo("G3_T1.411",(0.1/100),systdata_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.412",(0.1/100),diasdata_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.42",(0.1/100)*params["m_avg"]*2,1,params["freq"]);
+            sendTaskInfo("G3_T1.43",(0.1/100)*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
         }
 
         { // recharge routine
@@ -187,7 +186,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         }
 
         if(!active){ 
-            if(battery.getCurrentLevel() <= 100) battery.generate(0.05);
+            if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
         }
 
@@ -207,7 +206,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                     dataS = dataS - offset;
 
                 markovSystolic.next_state();
-                battery.consume(0.01);
+                battery.consume(0.1);
 
                 dataD = markovDiastolic.calculate_state();
 
@@ -219,7 +218,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                     dataD = dataD - offset;
 
                 markovDiastolic.next_state();
-                battery.consume(0.01);
+                battery.consume(0.1);
                 
 
                 //for debugging 
@@ -231,12 +230,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 filterSystolic.setRange(params["m_avg"]);
                 filterSystolic.insert(dataS, "bpms");
                 dataS = filterSystolic.getValue("bpms");
-                battery.consume(0.01*params["m_avg"]);
+                battery.consume(0.1*params["m_avg"]);
 
                 filterDiastolic.setRange(params["m_avg"]);
                 filterDiastolic.insert(dataD, "bpmd");
                 dataD = filterDiastolic.getValue("bpmd");
-                battery.consume(0.01*params["m_avg"]);
+                battery.consume(0.1*params["m_avg"]);
 
 
                 //for debugging 
@@ -249,7 +248,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 SensorData sdataS("bpms", dataS, risk);
                 Container sdataSContainer(sdataS);
                 if((rand() % 100)+1 > int32_t(systcomm_accuracy*100))getConference().send(sdataSContainer);
-                battery.consume(0.01);
+                battery.consume(0.1);
 
                 // for debugging
                 //cout << "Risk: " << risk << "%"  << endl;
@@ -258,15 +257,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 SensorData sdataD("bpmd", dataD, risk);
                 Container sdatadContainer(sdataD);
                 if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
-                battery.consume(0.01);
+                battery.consume(0.1);
 
                 // for debugging
                 //cout << "Risk: " << risk << "%"  << endl;
             }
 
         }
-        
-        clock_gettime(CLOCK_REALTIME, &ts);
 
         { // Persist sensor data
             if (persist) {
@@ -274,7 +271,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
               fp << dataS << ",";
               fp << dataD << ",";
               fp << risk << ",";
-              fp << ts.tv_nsec << endl;
+              fp << std::chrono::duration_cast<std::chrono::milliseconds>
+                        (std::chrono::time_point_cast<std::chrono::milliseconds>
+                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
             }
         }
     }
