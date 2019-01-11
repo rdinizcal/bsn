@@ -177,8 +177,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
     double cost;
     double reliability;
     std::string patient_health_status = "NORMAL STATE";
-    double cost_goal = 1;
-    double reliability_goal= 0.8;
+    double cost_goal_min = 0.0050;;
+    double cost_goal_max = 0.0056;
+    double reliability_goal_min = 0.88;
+    double reliability_goal_max = 0.92;
     bool new_info = false;
     uint32_t id = 0;
 
@@ -208,27 +210,32 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     bool value = container.getData<ContextInfo>().getBoolValue();
                     contexts[context_id].setValue(value);
 
-                } /*else if (context_id.find("patient health status") != std::string::npos){
+                } else if (context_id.find("patient health status") != std::string::npos){
 
                     patient_health_status = container.getData<ContextInfo>().getStringValue();
 
-                     (patient_health_status == "CRITICAL STATE") {
+                    /*if (patient_health_status == "CRITICAL STATE") {
 
-                        cost_goal = 1;
-                        reliability_goal = 0.99;
+                        cost_goal_min = 0;
+                        cost_goal_max = 1;
+                        reliability_goal_min = 0.98;
+                        reliability_goal_max = 1;
 
                         contexts["SaO2_available"].setValue(true);
                         contexts["ECG_available"].setValue(true);
                         contexts["TEMP_available"].setValue(true);
                         contexts["ABP_available"].setValue(true);
 
-                    } else if (patient_health_status == "NORMAL STATE") {
+                    } else */ if (patient_health_status == "NORMAL STATE") {
 
-                        cost_goal = 0.0055;
-                        reliability_goal = 0.90;
+                        cost_goal_min = 0.0050;
+                        cost_goal_max = 0.0056;
+
+                        reliability_goal_min = 0.88;
+                        reliability_goal_max = 0.92;
 
                     }
-                }*/
+                } 
             }
 
             new_info = true;
@@ -305,7 +312,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             std::cout << "|reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
             
-            if (reliability < reliability_goal || cost > cost_goal) { //triggers adaptation
+            if (reliability < reliability_goal_min || reliability > reliability_goal_max ||
+                cost < cost_goal_min || cost > cost_goal_max) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
                 for (std::vector<double> strategy : strategies ) { // substitutues each strategy the formulas and calculates cost and reliability
@@ -351,7 +359,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     //std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << "] ";
                     //std::cout << "--> reliability: " << policy.second[0] << " cost: " << policy.second[1] << std::endl;
 
-                    if(policy.second[0] >= reliability_goal && policy.second[1] <= cost_goal) {
+                    if(policy.second[0] >= reliability_goal_min && policy.second[0] <= reliability_goal_max &&
+                       policy.second[1] >= cost_goal_min && policy.second[1] <= cost_goal_max ) {
                         std::cout << "Sending message to sensors..." << std::endl;
                         
                         if (contexts["SaO2_available"].getValue()) {
@@ -384,7 +393,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             }
             
         }
-        
+
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
