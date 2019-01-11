@@ -208,11 +208,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     bool value = container.getData<ContextInfo>().getBoolValue();
                     contexts[context_id].setValue(value);
 
-                } else if (context_id.find("patient health status") != std::string::npos){
+                } /*else if (context_id.find("patient health status") != std::string::npos){
 
                     patient_health_status = container.getData<ContextInfo>().getStringValue();
 
-                    /*if (patient_health_status == "CRITICAL STATE") {
+                     (patient_health_status == "CRITICAL STATE") {
 
                         cost_goal = 1;
                         reliability_goal = 0.99;
@@ -227,13 +227,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                         cost_goal = 0.0055;
                         reliability_goal = 0.90;
 
-                    }*/
-                }
+                    }
+                }*/
             }
 
             new_info = true;
         }
-        
+    
         if (new_info) {
             new_info = false;
             { // plug in costs, reliabilities, frequencies and contexts and evaluate formulas
@@ -304,7 +304,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
             std::cout << "|cost: " << cost << std::endl;
             std::cout << "|reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
-            /*
+            
             if (reliability < reliability_goal || cost > cost_goal) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
@@ -382,8 +382,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                     }
                 }
             }
-            */
+            
         }
+        
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

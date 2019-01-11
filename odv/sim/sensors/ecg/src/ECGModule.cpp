@@ -16,7 +16,7 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
     type("ecg"),
-    battery("ecg_batt",100,100,1),
+    battery("ecg_batt",90,90,1),
     available(true),
     data_accuracy(1),
     comm_accuracy(1),

@@ -16,7 +16,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    battery("oxi_batt",100,100,1),
+    battery("oxi_batt",70,70,1),
     available(true),
     data_accuracy(1),
     comm_accuracy(1),

@@ -1,0 +1,7 @@
+Experiment for section 3C
+
+- Here we are just trying to evidence the difference between controlled and non-controlled system execution
+
+- No health status adaptation activated
+- policy: if cost > 0.0055 or reliability < 0.9 then adapt!
+- 5 minutes execution
