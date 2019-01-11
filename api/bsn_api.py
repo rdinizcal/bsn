@@ -54,12 +54,15 @@ def check_status(pid):
             return('active')
 
 # Get all categories available
-def get_configs():
+def get_configs():        
     configuration_map = {}
     path = 'odv/sim/configs'
     # Get all folders from configs
-    # Each one is a categorie
-    categories = next(os.walk(path))[1]
+    # Each one is a categorie    
+    categories = ''
+    for path, dirs, files in os.walk(path):        
+        categories = dirs
+        break
 
     for categorie in categories:
         # Explore each subfolder to get all subcategories
@@ -105,7 +108,8 @@ def start():
         processes_pids = start_execution(path)
         print(processes_pids)
         return 'ok'    
-    except:
+    except Exception as e: 
+        print(e)
         return 'execution error'
 
 # Stop bsn execution
@@ -115,26 +119,31 @@ def stop():
     try:
         stop_execution()
         return 'ok'
-    except:
+    except Exception as e: 
+        print(e)
         processes_pids = []
         return 'error'
 
 # Receive a JSON with the configuration file for BSN
 @app.route('/new_conf', methods=['POST'])
 def new_conf():
-    try:
+    try:        
         json_file = request.get_json()
+        # print(json_file)
         
         os.chdir(main_dir)
-        os.chdir("../odv/sim/configs/custom")    
+        os.chdir("odv/sim/configs/custom")    
         os.makedirs(json_file['name'], exist_ok=True)
         os.chdir(json_file['name'])
         
         config = open('configuration', 'w')
         config.write(str(json_file['content']))
         config.close()
+        os.chdir(main_dir)
         return 'ok'
-    except:
+    except Exception as e: 
+        print(e)
+        os.chdir(main_dir)
         return "error"
 
 
