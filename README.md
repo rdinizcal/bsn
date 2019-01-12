@@ -84,6 +84,14 @@ Cada comando deve ser utilizado em terminais distintos, estando na pasta bsn. A 
 
 O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
 
+## Api
+O sistema dispõe de uma api que, quando executada simultâneamente ao servidor da BSN, é capaz de receber configurações novas, iniciar e parar sua execução. Para tanto disponibiliza das rotas:
+* /config - Retorna todas as configurações disponíveis. Assim, o usuário consegue escolher qual delas deseja usar na BSN prestes a rodar.
+* /status - Retorna todos os processos atuais da BSN. Mostra cada PID e seu correspondente estado(Se ativo ou inexistente).
+* /start  - Inicia a execução. Requere um argumento por url(?path= your_path_here ). Quando executada juntamente ao servidor este deve mandar o caminho sem dificuldades.
+* /stop   - Para a execução da BSN mandando um sinal SIGKILL para cada PID.
+* /new_conf - Cria uma configuração nova na BSN. Para tanto, é recebido um Json pela rota pelo protocolo POST. Este deve conter duas variáveis: 'content', que contém os conteúdos da configuração nova e 'name', que contém o nome dado à nova configuração. 
+
 ## Configurações de teste
 
 * Sistema Operacional - Linux Ubuntu 16.04

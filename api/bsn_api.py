@@ -6,6 +6,11 @@ import signal
 import json
 from time import sleep
 
+"""
+    This file is used for the remote configuration and execution of the BSN.
+    It will be done by the BSN's server, written in NodeJs.
+"""
+
 commands = [
     ['./odv/sim/controller/build/manager', '--cid=111'],
     ['./odv/sim/sensors/ecg/build/ecg', '--cid=111'],
@@ -42,6 +47,7 @@ def start_execution(path):
     # Returns all the pids started
     return processes_pids
 
+# Show all the processes status(if active or dead)
 def check_status(pid):
     p = os.popen(' '.join(['ps','-p', str(pid), '-o', 'cmd'])).read()
     if ( p == "CMD\n" ):
@@ -53,7 +59,7 @@ def check_status(pid):
         else:
             return('active')
 
-# Get all categories available
+# Get all categories and subcategories available
 def get_configs():        
     configuration_map = {}
     path = 'odv/sim/configs'
@@ -127,15 +133,20 @@ def stop():
 # Receive a JSON with the configuration file for BSN
 @app.route('/new_conf', methods=['POST'])
 def new_conf():
+    """
+    Used for remote configuration. A Json with all
+    the required information will be sent to this route
+    """
     try:        
         json_file = request.get_json()
-        # print(json_file)
         
         os.chdir(main_dir)
         os.chdir("odv/sim/configs/custom")    
+        # Create the new directory inside the user's custom
         os.makedirs(json_file['name'], exist_ok=True)
         os.chdir(json_file['name'])
         
+        # Create the configuration file with the content sent
         config = open('configuration', 'w')
         config.write(str(json_file['content']))
         config.close()
