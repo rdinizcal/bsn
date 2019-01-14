@@ -32,7 +32,7 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
 ECGModule::~ECGModule() {}
 
 void ECGModule::setUp() {
-    srand(time(NULL));
+    //srand(time(NULL));
     addDataStoreFor(902, buffer);
     
     Operation op;
@@ -142,9 +142,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.21",(0.1/100),data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.22",(0.1/100)*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.23",(0.1/100),comm_accuracy,params["freq"]);
+            double cost = (rand() % 101)/100;
+            double reli = (rand() % 101)/100;
+            sendTaskInfo("G3_T1.21",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.22",cost*params["m_avg"],reli,params["freq"]);
+            sendTaskInfo("G3_T1.23",cost,reli,params["freq"]);
         }
 
         { // recharge routine

@@ -38,7 +38,7 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
 BloodpressureModule::~BloodpressureModule() {}
 
 void BloodpressureModule::setUp() {
-    srand(time(NULL));
+    //srand(time(NULL));
     addDataStoreFor(903, buffer);
     
     Operation op;
@@ -160,10 +160,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.411",(0.1/100),systdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.412",(0.1/100),diasdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.42",(0.1/100)*params["m_avg"]*2,1,params["freq"]);
-            sendTaskInfo("G3_T1.43",(0.1/100)*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+            double cost = (rand() % 101)/100;
+            double reli = (rand() % 101)/100;
+            sendTaskInfo("G3_T1.412",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.411",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.42",cost*params["m_avg"]*2,reli,params["freq"]);
+            sendTaskInfo("G3_T1.43",cost*2,reli,params["freq"]);
+            //sendTaskInfo("G3_T1.43",cost*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
         }
 
         { // recharge routine

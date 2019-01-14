@@ -33,7 +33,7 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
 ThermometerModule::~ThermometerModule() {}
 
 void ThermometerModule::setUp() {
-    srand(time(NULL));
+    //srand(time(NULL));
     addDataStoreFor(900, buffer);
     
     Operation op;
@@ -145,9 +145,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         }
         
         { // update controller with task info
-            sendTaskInfo("G3_T1.31",(0.1/100),data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.32",(0.1/100)*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.33",(0.1/100),comm_accuracy,params["freq"]);
+            double cost = (rand() % 101)/100;
+            double reli = (rand() % 101)/100;
+            sendTaskInfo("G3_T1.31",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.32",cost*params["m_avg"],reli,params["freq"]);
+            sendTaskInfo("G3_T1.33",cost,reli,params["freq"]);
         }
 
         { // recharge routine

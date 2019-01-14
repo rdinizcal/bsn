@@ -32,7 +32,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
 OximeterModule::~OximeterModule() {}
 
 void OximeterModule::setUp() {
-    srand(time(NULL));
+    //srand(time(NULL));
     addDataStoreFor(901, buffer);
     
     Operation op;
@@ -140,9 +140,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.11",(0.1/100),data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.12",(0.1/100)*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.13",(0.1/100),comm_accuracy,params["freq"]);
+            double cost = (rand() % 101)/100;
+            double reli = (rand() % 101)/100;
+            sendTaskInfo("G3_T1.11",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.12",cost*params["m_avg"],reli,params["freq"]);
+            sendTaskInfo("G3_T1.13",cost,reli,params["freq"]);
         }
 
         { // recharge routine
