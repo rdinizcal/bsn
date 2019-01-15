@@ -1,10 +1,5 @@
 #include "ManagerModule.hpp"
 
-#define G3_T1_1X 0
-#define G3_T1_2X 1
-#define G3_T1_3X 2
-#define G3_T1_4X 3
-
 using namespace odcore::base::module;
 using namespace odcore::data;
 
@@ -177,10 +172,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
     double cost;
     double reliability;
     std::string patient_health_status = "NORMAL STATE";
-    double cost_goal_min = 0.0050;;
-    double cost_goal_max = 0.0056;
+    double cost_goal_min = 0.5194;
+    double cost_goal_max = 0.5409;
+    double cost_setpoint = 0.53;
     double reliability_goal_min = 0.88;
     double reliability_goal_max = 0.92;
+    double reliability_setpoint = 0.90;
     bool new_info = false;
     uint32_t id = 0;
 
@@ -227,12 +224,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
                         contexts["ABP_available"].setValue(true);
 
                     } else */ if (patient_health_status == "NORMAL STATE") {
+                        
+                        cost_setpoint = 0.47;
+                        reliability_setpoint = 0.9;
 
-                        cost_goal_min = 0.0050;
-                        cost_goal_max = 0.0056;
+                        cost_goal_min = cost_setpoint*0.98;
+                        cost_goal_max = cost_setpoint*1.02;
 
-                        reliability_goal_min = 0.88;
-                        reliability_goal_max = 0.92;
+                        reliability_goal_min = reliability_setpoint*0.98;
+                        reliability_goal_max = reliability_setpoint*1.02;
 
                     }
                 } 

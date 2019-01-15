@@ -1,7 +1,13 @@
-Experiment for section 3C
+Experiment for section 4B
 
-- Here we are just trying to evidence the difference between controlled and non-controlled system execution
+- Here we explore three types of datasets to evidence that we tame uncertainties related to task cost and reliability during runtime.
+   1) dynamic randomized values for reliability and cost during runtime
+   2) static values for reliability and cost simulating engineering guesses for its values
+   3) static known values for relibaility and cost
 
-- No health status adaptation activated
-- policy: if cost > 0.0055 or reliability < 0.9 then adapt!
-- 5 minutes execution
+- policy not dealing with uncertainties:
+
+        cost_setpoint = 0.0047;
+        reliability_setpoint = 0.9;
+
+- 5 minutes execution for both scenarios

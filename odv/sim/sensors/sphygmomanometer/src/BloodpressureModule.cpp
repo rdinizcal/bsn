@@ -160,13 +160,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         }
 
         {  // update controller with task info
-            double cost = (rand() % 101)/100;
-            double reli = (rand() % 101)/100;
-            sendTaskInfo("G3_T1.412",cost,reli,params["freq"]);
-            sendTaskInfo("G3_T1.411",cost,reli,params["freq"]);
-            sendTaskInfo("G3_T1.42",cost*params["m_avg"]*2,reli,params["freq"]);
-            sendTaskInfo("G3_T1.43",cost*2,reli,params["freq"]);
-            //sendTaskInfo("G3_T1.43",cost*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+            sendTaskInfo("G3_T1.411",0.07,0.7,params["freq"]);
+            sendTaskInfo("G3_T1.412",0.03,0.89,params["freq"]);
+            sendTaskInfo("G3_T1.42",0.08*params["m_avg"]*2,0.92,params["freq"]);
+            sendTaskInfo("G3_T1.43",0.06*2,(0.7+0.89)/2,params["freq"]);
         }
 
         { // recharge routine

@@ -140,11 +140,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         {  // update controller with task info
-            double cost = (rand() % 101)/100;
-            double reli = (rand() % 101)/100;
-            sendTaskInfo("G3_T1.11",cost,reli,params["freq"]);
-            sendTaskInfo("G3_T1.12",cost*params["m_avg"],reli,params["freq"]);
-            sendTaskInfo("G3_T1.13",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.11",0.1,0.86,params["freq"]);
+            sendTaskInfo("G3_T1.12",0.05*params["m_avg"],0.99,params["freq"]);
+            sendTaskInfo("G3_T1.13",0.2,0.7,params["freq"]);
         }
 
         { // recharge routine

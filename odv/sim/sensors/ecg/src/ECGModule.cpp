@@ -142,11 +142,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
         }
 
         {  // update controller with task info
-            double cost = (rand() % 101)/100;
-            double reli = (rand() % 101)/100;
-            sendTaskInfo("G3_T1.21",cost,reli,params["freq"]);
-            sendTaskInfo("G3_T1.22",cost*params["m_avg"],reli,params["freq"]);
-            sendTaskInfo("G3_T1.23",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.21",0.02,0.93,params["freq"]);
+            sendTaskInfo("G3_T1.22",0.07*params["m_avg"],0.85,params["freq"]);
+            sendTaskInfo("G3_T1.23",0.06,0.88,params["freq"]);
         }
 
         { // recharge routine

@@ -145,11 +145,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         }
         
         { // update controller with task info
-            double cost = (rand() % 101)/100;
-            double reli = (rand() % 101)/100;
-            sendTaskInfo("G3_T1.31",cost,reli,params["freq"]);
-            sendTaskInfo("G3_T1.32",cost*params["m_avg"],reli,params["freq"]);
-            sendTaskInfo("G3_T1.33",cost,reli,params["freq"]);
+            sendTaskInfo("G3_T1.31",0.03,0.92,params["freq"]);
+            sendTaskInfo("G3_T1.32",0.06*params["m_avg"],0.96,params["freq"]);
+            sendTaskInfo("G3_T1.33",0.1,0.78,params["freq"]);
         }
 
         { // recharge routine
