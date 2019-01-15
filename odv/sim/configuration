@@ -17,8 +17,8 @@ centralhub.path = centralhub_output.csv
 
 ########## Controller ##########
 # persistence
-manager.persist = 1
-manager.path = ../../../../manager_output.csv
+controller.persist = 1
+controller.path = ../../../../controller_output.csv
 
 ########## Thermometer ##########
 # markov chain

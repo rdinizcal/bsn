@@ -5,7 +5,7 @@ import signal
 from time import sleep
 
 commands = [
-    ['./odv/sim/controller/build/manager', '--cid=111'],
+    ['./odv/sim/controller/build/controller', '--cid=111'],
     ['./odv/sim/sensors/ecg/build/ecg', '--cid=111'],
     ['./odv/sim/sensors/thermometer/build/thermometer', '--cid=111'],
     ['./odv/sim/sensors/oximeter/build/oximeter', '--cid=111'],
