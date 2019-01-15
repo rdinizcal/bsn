@@ -1,4 +1,4 @@
-#include "ManagerModule.hpp"
+#include "ControllerModule.hpp"
 
 #define G3_T1_1X 0
 #define G3_T1_2X 1
@@ -13,8 +13,8 @@ using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 using namespace bsn::time;
 
-ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "manager"),
+ControllerModule::ControllerModule(const int32_t  &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "controller"),
     buffer(),
 
     tasks(),
@@ -36,12 +36,12 @@ ManagerModule::ManagerModule(const int32_t  &argc, char **argv) :
     strategies(),
     
     persist(1),
-    path("manager_output.csv"),
+    path("controller_output.csv"),
     fp() {}
 
-ManagerModule::~ManagerModule() {}
+ControllerModule::~ControllerModule() {}
 
-void ManagerModule::setUp() {
+void ControllerModule::setUp() {
     addDataStoreFor(700, buffer);
     addDataStoreFor(701, buffer);
 
@@ -156,8 +156,8 @@ void ManagerModule::setUp() {
     }
 
     { // Configure persistence
-        persist = getKeyValueConfiguration().getValue<int>("manager.persist");
-        path = getKeyValueConfiguration().getValue<std::string>("manager.path");
+        persist = getKeyValueConfiguration().getValue<int>("controller.persist");
+        path = getKeyValueConfiguration().getValue<std::string>("controller.path");
 
         if (persist) {
             fp.open(path);
@@ -167,12 +167,12 @@ void ManagerModule::setUp() {
 
 }
 
-void ManagerModule::tearDown() {
+void ControllerModule::tearDown() {
     if (persist)
         fp.close();
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ManagerModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body(){
 
     double cost;
     double reliability;

@@ -27,18 +27,18 @@
 
 #include "lepton/Lepton.h"
 
-class ManagerModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
+class ControllerModule : public odcore::base::module::TimeTriggeredConferenceClientModule {
 
     private:
-      	ManagerModule(const ManagerModule &);
-    	ManagerModule &operator=(const ManagerModule &);
+      	ControllerModule(const ControllerModule &);
+    	ControllerModule &operator=(const ControllerModule &);
 
     	virtual void setUp();
     	virtual void tearDown();
 
   public:
-    	ManagerModule(const int32_t &argc, char **argv);
-    	virtual ~ManagerModule();
+    	ControllerModule(const int32_t &argc, char **argv);
+    	virtual ~ControllerModule();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
