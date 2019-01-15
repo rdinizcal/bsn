@@ -47,6 +47,12 @@ void CentralhubModule::sendTaskInfo(const std::string &task_id, const double &co
     getConference().send(taskContainer);
 }
 
+void CentralhubModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    MonitorTaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body() {
     Container container;    
     double patient_status;
@@ -71,9 +77,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         if(first_exec){ // Send context info warning controller that the centralhub is available
-            sendTaskInfo("G4_T2.1",0,1,1);
-            sendTaskInfo("G4_T2.2",0,1,1);
-            sendTaskInfo("G4_T2.3",0,1,1);
+            sendTaskInfo("G4_T1.1",0,1,1);
+            sendTaskInfo("G4_T1.2",0,1,1);
+            sendTaskInfo("G4_T1.3",0,1,1);
+
+            sendMonitorTaskInfo("G4_T1.1",0,1,1);
+            sendMonitorTaskInfo("G4_T1.2",0,1,1);
+            sendMonitorTaskInfo("G4_T1.3",0,1,1);
             first_exec = false; 
         }
 

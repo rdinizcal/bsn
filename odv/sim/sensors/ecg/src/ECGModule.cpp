@@ -126,6 +126,18 @@ void ECGModule::sendContextInfo(const std::string &context_id, const bool &value
     getConference().send(contextContainer);
 }
 
+void ECGModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    MonitorTaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
+}
+
+void ECGModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
+    MonitorContextInfo context(context_id, value, 0, 0, "");
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
   
     Container container;
@@ -138,6 +150,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
         
         if(first_exec){ // Send context info warning controller that this sensor is available
             sendContextInfo("ECG_available",true);
+            sendMonitorContextInfo("ECG_available",true);
             first_exec = false; 
         }
 
@@ -145,6 +158,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             sendTaskInfo("G3_T1.21",0.02,0.93,params["freq"]);
             sendTaskInfo("G3_T1.22",0.07*params["m_avg"],0.85,params["freq"]);
             sendTaskInfo("G3_T1.23",0.06,0.88,params["freq"]);
+           // and the monitor..
+            sendMonitorTaskInfo("G3_T1.21",0.1,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.22",0.1*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.23",0.1,comm_accuracy,params["freq"]);
         }
 
         { // recharge routine
@@ -157,6 +174,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
                 active = false;
             }
             sendContextInfo("ECG_available", active);
+            sendMonitorContextInfo("ECG_available", active);
         }
 
         while(!buffer.isEmpty()){ // Receive control command and module update

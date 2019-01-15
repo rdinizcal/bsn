@@ -129,6 +129,18 @@ void ThermometerModule::sendContextInfo(const std::string &context_id, const boo
     getConference().send(contextContainer);
 }
 
+void ThermometerModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    MonitorTaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
+}
+
+void ThermometerModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
+    MonitorContextInfo context(context_id, value, 0, 0, "");
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::body(){
 
     Container container;
@@ -141,6 +153,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         
         if(first_exec){ // Send context info warning controller that this sensor is available  
             sendContextInfo("TEMP_available",true);
+            sendMonitorContextInfo("TEMP_available",true);
             first_exec = false; 
         }
         
@@ -148,6 +161,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             sendTaskInfo("G3_T1.31",0.03,0.92,params["freq"]);
             sendTaskInfo("G3_T1.32",0.06*params["m_avg"],0.96,params["freq"]);
             sendTaskInfo("G3_T1.33",0.1,0.78,params["freq"]);
+          // and the monitor..
+            sendMonitorTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
         }
 
         { // recharge routine
@@ -160,6 +177,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 active = false;
             }
             sendContextInfo("TEMP_available",active);
+            sendMonitorContextInfo("TEMP_available",active);
+
         }
 
         /*

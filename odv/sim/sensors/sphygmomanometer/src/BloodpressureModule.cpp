@@ -143,6 +143,18 @@ void BloodpressureModule::sendContextInfo(const std::string &context_id, const b
     getConference().send(contextContainer);
 }
 
+void BloodpressureModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    MonitorTaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
+}
+
+void BloodpressureModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
+    MonitorContextInfo context(context_id, value, 0, 0, "");
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::body(){
 
     Container container;
@@ -156,6 +168,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         
         if(first_exec){ // Send context info warning controller that this sensor is available
             sendContextInfo("ABP_available",true);
+            sendMonitorContextInfo("ABP_available",true);
             first_exec = false; 
         }
 
@@ -164,6 +177,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             sendTaskInfo("G3_T1.412",0.03,0.89,params["freq"]);
             sendTaskInfo("G3_T1.42",0.08*params["m_avg"]*2,0.92,params["freq"]);
             sendTaskInfo("G3_T1.43",0.06*2,(0.7+0.89)/2,params["freq"]);
+           // and the monitor..
+            sendMonitorTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
         }
 
         { // recharge routine
@@ -176,6 +194,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 active = false;
             }
             sendContextInfo("ABP_available", active);
+            sendMonitorContextInfo("ABP_available", active);
         }
 
         while(!buffer.isEmpty()){ // Receive control command and module update
