@@ -8,6 +8,7 @@ gnome-terminal --working-directory=${bsn_folder}/odv/sim/controller/build -e "./
 # execute monitor node (must be executed first)
 gnome-terminal --working-directory=${bsn_folder}/odv/sim/monitor/build -e "./monitor --cid=111"                        & sleep 1s
 
+
 # execute sensor node
 gnome-terminal --working-directory=${bsn_folder} -e "./odv/sim/sensors/ecg/build/ecg --cid=111"                              & sleep 1s
 gnome-terminal --working-directory=${bsn_folder} -e "./odv/sim/sensors/thermometer/build/thermometer --cid=111"              & sleep 1s

@@ -1,7 +1,7 @@
 bsn_folder=$PWD
 
-mkdir -p libbsn/build
-gnome-terminal --working-directory=${bsn_folder}/libbsn/build -- bash -c 'cmake ..; sudo make install; bash' & sleep 5s
+# mkdir -p libbsn/build
+# gnome-terminal --working-directory=${bsn_folder}/libbsn/build -- bash -c 'cmake ..; sudo make install; bash' & sleep 5s
 
 mkdir -p odv/sim/controller/build
 gnome-terminal --working-directory=${bsn_folder}/odv/sim/controller/build -- bash -c 'cmake ..; sudo make; bash'

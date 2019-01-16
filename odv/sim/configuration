@@ -12,11 +12,12 @@ centralhub.port = 6060
 centralhub.ip = localhost
 
 # persistence
-centralhub.persist = 1
+centralhub.persist = 0
 centralhub.path = centralhub_output.csv
 
 ########## Controller ##########
 # persistence
+<<<<<<< HEAD
 controller.persist = 1
 controller.path = ../../../../controller_output.csv
 
@@ -24,6 +25,15 @@ controller.path = ../../../../controller_output.csv
 # persistence
 monitor.persist = 1
 monitor.path = ../../../../monitor_output.csv
+=======
+<<<<<<< HEAD
+manager.persist = 0
+manager.path = ../../../../manager_output.csv
+=======
+controller.persist = 1
+controller.path = ../../../../controller_output.csv
+>>>>>>> 5774d7c... manager -> controller refactoring
+>>>>>>> exp_4A
 
 ########## Thermometer ##########
 # markov chain
@@ -45,7 +55,7 @@ thermometer.data_accuracy = 90
 thermometer.comm_accuracy = 90
 
 # persistence
-thermometer.persist = 1
+thermometer.persist = 0
 thermometer.path = thermometer_output.csv
 
 ########## Oximeter ##########
@@ -66,7 +76,7 @@ oximeter.data_accuracy = 90
 oximeter.comm_accuracy = 90
 
 # persistence
-oximeter.persist = 1
+oximeter.persist = 0
 oximeter.path = oximeter_output.csv
 
 ########## Electrocardiograph (ECG) ##########
@@ -89,7 +99,7 @@ ecg.data_accuracy = 90
 ecg.comm_accuracy = 90
 
 # persistence
-ecg.persist = 1
+ecg.persist = 0
 ecg.path = ecg_output.csv
 
 ########## Sphygmomanometer (bloodpressure) ##########
@@ -126,6 +136,6 @@ bloodpressure.systdata_accuracy = 90
 bloodpressure.systcomm_accuracy = 90
 
 # persistence
-bloodpressure.persist = 1
+bloodpressure.persist = 0
 bloodpressure.path = bloodpressure_output.csv
 

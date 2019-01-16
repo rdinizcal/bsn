@@ -182,12 +182,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
     double reliability_setpoint = 0.90;
     bool new_info = false;
     uint32_t id = 0;
+    ofstream exp_fp("../../../../exp_results/exp10");
+    exp_fp << "first_timestamp,second_timestamp" << endl;
+    std::chrono::nanoseconds::rep ts1;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
         while(!buffer.isEmpty()){
 
             Container container = buffer.leave();
+
+            ts1 = std::chrono::duration_cast<std::chrono::nanoseconds>
+                            (std::chrono::time_point_cast<std::chrono::nanoseconds>
+                            (std::chrono::high_resolution_clock::now()).time_since_epoch()).count();
 
             if(container.getDataType() == 700) { // update task properties
 
@@ -288,25 +295,32 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                 }
             }
 
-            { // Persist data
-                if (persist) {
-                    fp << id++ << ',';
-                    fp << reliability << ',';
-                    fp << cost << ',';
-                    std::string yar = contexts["SaO2_available"].getValue()?"TRUE":"FALSE";
-                    fp << yar << ',';
-                    std::string yarr = contexts["ECG_available"].getValue()?"TRUE":"FALSE";
-                    fp << yarr << ',';
-                    std::string yarrr = contexts["TEMP_available"].getValue()?"TRUE":"FALSE";
-                    fp << yarrr << ',';
-                    std::string yarrrr = contexts["ABP_available"].getValue()?"TRUE":"FALSE";
-                    fp << yarrrr << ',';
-                    fp << patient_health_status << ',';
-                    fp << std::chrono::duration_cast<std::chrono::milliseconds>
-                            (std::chrono::time_point_cast<std::chrono::milliseconds>
-                            (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
-                }
-            }
+            auto ts2 = std::chrono::duration_cast<std::chrono::nanoseconds>
+                            (std::chrono::time_point_cast<std::chrono::nanoseconds>
+                            (std::chrono::high_resolution_clock::now()).time_since_epoch()).count();
+
+            // { // Persist data
+            //     if (persist) {
+            //         fp << id++ << ',';
+            //         fp << reliability << ',';
+            //         fp << cost << ',';
+            //         std::string yar = contexts["SaO2_available"].getValue()?"TRUE":"FALSE";
+            //         fp << yar << ',';
+            //         std::string yarr = contexts["ECG_available"].getValue()?"TRUE":"FALSE";
+            //         fp << yarr << ',';
+            //         std::string yarrr = contexts["TEMP_available"].getValue()?"TRUE":"FALSE";
+            //         fp << yarrr << ',';
+            //         std::string yarrrr = contexts["ABP_available"].getValue()?"TRUE":"FALSE";
+            //         fp << yarrrr << ',';
+            //         fp << patient_health_status << ',';
+            //         fp << std::chrono::duration_cast<std::chrono::milliseconds>
+            //                 (std::chrono::time_point_cast<std::chrono::milliseconds>
+            //                 (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
+            //     }
+            // }
+
+            exp_fp << ts1 << ",";
+            exp_fp << ts2 << endl;
             
             std::cout << "CONTROLLER:" << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
