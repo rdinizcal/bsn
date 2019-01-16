@@ -50,4 +50,5 @@ levi.sh
 docs/doxygen
 
 # Experiments data
-*.csv
+#*.csv
+.Rproj.user

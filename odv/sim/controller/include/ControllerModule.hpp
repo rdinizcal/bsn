@@ -61,7 +61,6 @@ class ControllerModule : public odcore::base::module::TimeTriggeredConferenceCli
         std::map<std::string,double&> reliability_formula_contexts;
 
 		std::vector<std::vector<double>> actions;
-		std::vector<std::vector<double>> strategies;
 
 		uint32_t persist;
 		std::string path;

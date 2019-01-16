@@ -16,7 +16,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    battery("oxi_batt",100,100,1),
+    battery("oxi_batt",100,70,1),
     available(true),
     data_accuracy(1),
     comm_accuracy(1),
@@ -32,7 +32,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
 OximeterModule::~OximeterModule() {}
 
 void OximeterModule::setUp() {
-    srand(time(NULL));
+    //srand(time(NULL));
     addDataStoreFor(901, buffer);
     
     Operation op;
@@ -124,6 +124,19 @@ void OximeterModule::sendContextInfo(const std::string &context_id, const bool &
     getConference().send(contextContainer);
 }
 
+void OximeterModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+    MonitorTaskInfo task(task_id, cost, reliability, frequency);
+    Container taskContainer(task);
+    getConference().send(taskContainer);
+}
+
+void OximeterModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
+    MonitorContextInfo context(context_id, value, 0, 0, "");
+    Container contextContainer(context);
+    getConference().send(contextContainer);
+}
+
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body(){
 
     Container container;
@@ -136,13 +149,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         
         if(first_exec){ // Send context info warning controller that this sensor is available
             sendContextInfo("SaO2_available",true);
+            sendMonitorContextInfo("SaO2_available",true);
+
             first_exec = false; 
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.11",(0.1/100),data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.12",(0.1/100)*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.13",(0.1/100),comm_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
+           // and the monitor..
+            sendMonitorTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
         }
 
         { // recharge routine
@@ -154,7 +173,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             if(active && battery.getCurrentLevel() < 2){
                 active = false;
             }
-            sendContextInfo("SaO2_available",active);
+
+            if (rand()%10 > 6) {
+                bool x_active = (rand()%2==0)?active:!active;
+                sendContextInfo("SaO2_available", x_active);
+            }
+            //sendContextInfo("SaO2_available", active);
+            sendMonitorContextInfo("SaO2_available", active);
         }
 
         while(!buffer.isEmpty()){ // Receive control command and module update

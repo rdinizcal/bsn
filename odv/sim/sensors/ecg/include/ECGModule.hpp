@@ -17,6 +17,8 @@
 #include "bsn/msg/data/SensorData.h"
 #include "bsn/msg/info/TaskInfo.hpp"
 #include "bsn/msg/info/ContextInfo.hpp"
+#include "bsn/msg/info/MonitorTaskInfo.hpp"
+#include "bsn/msg/info/MonitorContextInfo.hpp"
 #include "bsn/msg/control/ECGControlCommand.hpp"
 
 class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -30,6 +32,9 @@ class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModu
 
 		void sendTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
 		void sendContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
+
+		void sendMonitorTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
+		void sendMonitorContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
 
   	public:
     	ECGModule(const int32_t &argc, char **argv);

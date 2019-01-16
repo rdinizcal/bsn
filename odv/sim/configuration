@@ -20,6 +20,11 @@ centralhub.path = centralhub_output.csv
 controller.persist = 1
 controller.path = ../../../../controller_output.csv
 
+########## Monitor ##########
+# persistence
+monitor.persist = 1
+monitor.path = ../../../../monitor_output.csv
+
 ########## Thermometer ##########
 # markov chain
 thermometer.state0 = 10,10,10,20,40

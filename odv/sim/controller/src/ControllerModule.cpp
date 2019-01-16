@@ -1,10 +1,5 @@
 #include "ControllerModule.hpp"
 
-#define G3_T1_1X 0
-#define G3_T1_2X 1
-#define G3_T1_3X 2
-#define G3_T1_4X 3
-
 using namespace odcore::base::module;
 using namespace odcore::data;
 
@@ -33,7 +28,6 @@ ControllerModule::ControllerModule(const int32_t  &argc, char **argv) :
     reliability_formula_contexts(),
 
     actions(),
-    strategies(),
     
     persist(1),
     path("controller_output.csv"),
@@ -68,9 +62,9 @@ void ControllerModule::setUp() {
         tasks.insert(std::pair<std::string,Task>("G3_T1.43",Task("G3_T1.43","Transfer data","W_G3_T1_43","R_G3_T1_43","F_G3_T1_43")));
 
         // Centralhub
-        tasks.insert(std::pair<std::string,Task>("G4_T2.1",Task("G4_T2.1","Fuse sensor data","W_G4_T1_1","R_G4_T1_1","F_G4_T1_1")));
-        tasks.insert(std::pair<std::string,Task>("G4_T2.2",Task("G4_T2.2","Detect patient status","W_G4_T1_2","R_G4_T1_2","F_G4_T1_2")));
-        tasks.insert(std::pair<std::string,Task>("G4_T2.3",Task("G4_T2.3","Persist data","W_G4_T1_3","R_G4_T1_3","F_G4_T1_3")));
+        tasks.insert(std::pair<std::string,Task>("G4_T1.1",Task("G4_T1.1","Fuse sensor data","W_G4_T1_1","R_G4_T1_1","F_G4_T1_1")));
+        tasks.insert(std::pair<std::string,Task>("G4_T1.2",Task("G4_T1.2","Detect patient status","W_G4_T1_2","R_G4_T1_2","F_G4_T1_2")));
+        tasks.insert(std::pair<std::string,Task>("G4_T1.3",Task("G4_T1.3","Persist data","W_G4_T1_3","R_G4_T1_3","F_G4_T1_3")));
     }
 
     { // Set up map {id,object} of context from goal model
@@ -121,22 +115,22 @@ void ControllerModule::setUp() {
     { // Set up actions
         
         /*actions = std::vector<std::vector<double>> {
-                                        {0.9,0.925,0.95,0.975,1},
-                                        {0.9,0.925,0.95,0.975,1},
-                                        {0.9,0.925,0.95,0.975,1},
-                                        {0.9,0.925,0.95,0.975,1}};
+                                        {0.8,0.85,0.9,0.95,1},
+                                        {0.8,0.85,0.9,0.95,1},
+                                        {0.8,0.85,0.9,0.95,1},
+                                        {0.8,0.85,0.9,0.95,1}};
         */
 
-        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,5); ++idx){
-            strategies.push_back({(double)w, (double)x, (double)y, (double)z});
+        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,8); ++idx){
+            actions.push_back({(double)w, (double)x, (double)y, (double)z});
 
-            if(++z == 5) { 
+            if(++z == 8) { 
                 z = 0;
-                if(++y == 5) { 
+                if(++y == 8) { 
                     y = 0;
-                    if(++x == 5) { 
+                    if(++x == 8) { 
                         x = 0;
-                        if(++w == 5) { 
+                        if(++w == 8) { 
                             w = 0;
                         }
                     }
@@ -144,13 +138,16 @@ void ControllerModule::setUp() {
             }
         }
 
-        for (std::vector<std::vector<double>>::iterator it = strategies.begin(); it != strategies.end(); ++it) {
+        for (std::vector<std::vector<double>>::iterator it = actions.begin(); it != actions.end(); ++it) {
             for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
-                if ((int)*itt == 0) *itt = 0.8;
-                else if ((int)*itt == 1) *itt = 0.85;
-                else if ((int)*itt == 2) *itt = 0.9;
-                else if ((int)*itt == 3) *itt = 0.95;
-                else if ((int)*itt == 4) *itt = 1;
+                if ((int)*itt == 0) *itt = 0.7375;
+                else if ((int)*itt == 1) *itt = 0.775;
+                else if ((int)*itt == 2) *itt = 0.8125;
+                else if ((int)*itt == 3) *itt = 0.85;
+                else if ((int)*itt == 4) *itt = 0.8875;
+                else if ((int)*itt == 5) *itt = 0.925;
+                else if ((int)*itt == 6) *itt = 0.9625;
+                else if ((int)*itt == 7) *itt = 1;
             }
         }
     }
@@ -177,8 +174,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
     double cost;
     double reliability;
     std::string patient_health_status = "NORMAL STATE";
-    double cost_goal = 1;
-    double reliability_goal= 0.8;
+    double cost_goal_min = 0.5194;
+    double cost_goal_max = 0.5409;
+    double cost_setpoint = 0.53;
+    double reliability_goal_min = 0.88;
+    double reliability_goal_max = 0.92;
+    double reliability_setpoint = 0.90;
     bool new_info = false;
     uint32_t id = 0;
 
@@ -214,26 +215,34 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
 
                     /*if (patient_health_status == "CRITICAL STATE") {
 
-                        cost_goal = 1;
-                        reliability_goal = 0.99;
+                        cost_goal_min = 0;
+                        cost_goal_max = 1;
+                        reliability_goal_min = 0.98;
+                        reliability_goal_max = 1;
 
                         contexts["SaO2_available"].setValue(true);
                         contexts["ECG_available"].setValue(true);
                         contexts["TEMP_available"].setValue(true);
                         contexts["ABP_available"].setValue(true);
 
-                    } else if (patient_health_status == "NORMAL STATE") {
+                    } else */ if (patient_health_status == "NORMAL STATE") {
+                        
+                        cost_setpoint = 0.47;
+                        reliability_setpoint = 0.9;
 
-                        cost_goal = 0.0055;
-                        reliability_goal = 0.90;
+                        cost_goal_min = cost_setpoint*0.98;
+                        cost_goal_max = cost_setpoint*1.02;
 
-                    }*/
-                }
+                        reliability_goal_min = reliability_setpoint*0.98;
+                        reliability_goal_max = reliability_setpoint*1.02;
+
+                    }
+                } 
             }
 
             new_info = true;
         }
-        
+    
         if (new_info) {
             new_info = false;
             { // plug in costs, reliabilities, frequencies and contexts and evaluate formulas
@@ -299,16 +308,18 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                 }
             }
             
+            std::cout << "CONTROLLER:" << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
             std::cout << "|patient health status: " << patient_health_status << std::endl;
             std::cout << "|cost: " << cost << std::endl;
             std::cout << "|reliability: " << reliability << std::endl;
             std::cout << "--------------------------------------------------" << std::endl;
-            /*
-            if (reliability < reliability_goal || cost > cost_goal) { //triggers adaptation
+            
+            if (reliability < reliability_goal_min || reliability > reliability_goal_max ||
+                cost < cost_goal_min || cost > cost_goal_max) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
-                for (std::vector<double> strategy : strategies ) { // substitutues each strategy the formulas and calculates cost and reliability
+                for (std::vector<double> strategy : actions ) { // substitutues each strategy the formulas and calculates cost and reliability
                     { // in cost formula
                         for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
 
@@ -351,7 +362,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                     //std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << "] ";
                     //std::cout << "--> reliability: " << policy.second[0] << " cost: " << policy.second[1] << std::endl;
 
-                    if(policy.second[0] >= reliability_goal && policy.second[1] <= cost_goal) {
+                    if(policy.second[0] >= reliability_goal_min && policy.second[0] <= reliability_goal_max &&
+                       policy.second[1] >= cost_goal_min && policy.second[1] <= cost_goal_max ) {
                         std::cout << "Sending message to sensors..." << std::endl;
                         
                         if (contexts["SaO2_available"].getValue()) {
@@ -382,8 +394,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                     }
                 }
             }
-            */
+            
         }
+
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

@@ -1,0 +1,297 @@
+ID,SPO2_DATA,ECG_DATA,TEMP_DATA,BLOODPRESSURE_DATA,OVERALL_STATUS,PATIENT_STATE,TIME_MS
+0,low risk,unknown,unknown,unknown,0,NORMAL STATE,1547646782471
+1,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646782608
+2,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646784590
+3,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646785507
+4,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646786515
+5,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646787510
+6,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646788510
+7,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646789511
+8,low risk,unknown,unknown,unknown,5.9824,NORMAL STATE,1547646790521
+9,low risk,high risk,unknown,unknown,5.9824,NORMAL STATE,1547646791512
+10,low risk,high risk,unknown,unknown,20.2913,NORMAL STATE,1547646791694
+11,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646792685
+12,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646793692
+13,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646794696
+14,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646796516
+15,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646797519
+16,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646797701
+17,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646799510
+18,low risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646800503
+19,high risk,high risk,unknown,unknown,32.1856,NORMAL STATE,1547646801504
+20,high risk,high risk,high risk,unknown,44.6892,NORMAL STATE,1547646802514
+21,high risk,high risk,high risk,unknown,58.8507,NORMAL STATE,1547646803500
+22,high risk,high risk,high risk,unknown,58.8507,NORMAL STATE,1547646804496
+23,high risk,high risk,high risk,unknown,58.8507,NORMAL STATE,1547646804686
+24,high risk,high risk,high risk,unknown,58.8507,NORMAL STATE,1547646805691
+25,high risk,high risk,high risk,unknown,61.0298,NORMAL STATE,1547646807507
+26,high risk,high risk,high risk,unknown,61.0298,NORMAL STATE,1547646808502
+27,high risk,high risk,high risk,unknown,61.0298,NORMAL STATE,1547646809508
+28,high risk,high risk,high risk,unknown,62.3575,NORMAL STATE,1547646810516
+29,high risk,high risk,high risk,unknown,62.3575,NORMAL STATE,1547646811501
+30,high risk,high risk,high risk,unknown,62.3575,NORMAL STATE,1547646812506
+31,high risk,high risk,moderate risk,unknown,62.3575,NORMAL STATE,1547646813512
+32,high risk,high risk,moderate risk,unknown,53.3547,NORMAL STATE,1547646813697
+33,high risk,high risk,moderate risk,unknown,53.3547,NORMAL STATE,1547646815500
+34,high risk,high risk,moderate risk,unknown,53.3547,NORMAL STATE,1547646816546
+35,high risk,high risk,moderate risk,unknown,53.3547,NORMAL STATE,1547646817602
+36,high risk,high risk,moderate risk,unknown,53.3547,NORMAL STATE,1547646818699
+37,high risk,high risk,moderate risk,unknown,56.895,NORMAL STATE,1547646819807
+38,high risk,high risk,moderate risk,high risk,56.895,NORMAL STATE,1547646820914
+39,high risk,high risk,moderate risk,high risk,69.1636,CRITICAL STATE,1547646821052
+40,high risk,high risk,moderate risk,high risk,69.1636,CRITICAL STATE,1547646822004
+41,high risk,high risk,moderate risk,high risk,69.1636,CRITICAL STATE,1547646823971
+42,high risk,high risk,moderate risk,high risk,72.9164,CRITICAL STATE,1547646824900
+43,high risk,high risk,moderate risk,high risk,72.9164,CRITICAL STATE,1547646825904
+44,high risk,high risk,moderate risk,high risk,75.4784,CRITICAL STATE,1547646826914
+45,high risk,high risk,moderate risk,high risk,75.4784,CRITICAL STATE,1547646827915
+46,high risk,high risk,moderate risk,high risk,76.0045,CRITICAL STATE,1547646828922
+47,high risk,high risk,moderate risk,high risk,74.8004,CRITICAL STATE,1547646829963
+48,high risk,high risk,moderate risk,high risk,74.8004,CRITICAL STATE,1547646830911
+49,high risk,high risk,moderate risk,high risk,74.8004,CRITICAL STATE,1547646831911
+50,high risk,high risk,moderate risk,high risk,74.8004,CRITICAL STATE,1547646832977
+51,high risk,high risk,moderate risk,high risk,74.8004,CRITICAL STATE,1547646833895
+52,high risk,high risk,moderate risk,high risk,73.9119,CRITICAL STATE,1547646834935
+53,high risk,high risk,moderate risk,high risk,73.9119,CRITICAL STATE,1547646836052
+54,high risk,high risk,moderate risk,moderate risk,69.2616,CRITICAL STATE,1547646837071
+55,high risk,high risk,moderate risk,moderate risk,66.78,CRITICAL STATE,1547646838085
+56,high risk,high risk,moderate risk,moderate risk,62.6655,NORMAL STATE,1547646839161
+57,high risk,high risk,moderate risk,moderate risk,62.6655,NORMAL STATE,1547646840112
+58,high risk,high risk,moderate risk,moderate risk,62.6655,NORMAL STATE,1547646841073
+59,high risk,high risk,moderate risk,moderate risk,62.6655,NORMAL STATE,1547646842090
+60,high risk,high risk,moderate risk,moderate risk,62.6655,NORMAL STATE,1547646843083
+61,high risk,high risk,moderate risk,moderate risk,64.9584,NORMAL STATE,1547646844188
+62,high risk,high risk,moderate risk,moderate risk,64.9584,NORMAL STATE,1547646845242
+63,high risk,high risk,moderate risk,moderate risk,64.9584,NORMAL STATE,1547646846198
+64,high risk,high risk,moderate risk,moderate risk,65.4582,NORMAL STATE,1547646846336
+65,high risk,high risk,moderate risk,moderate risk,65.4582,NORMAL STATE,1547646848235
+66,high risk,high risk,moderate risk,moderate risk,65.4582,NORMAL STATE,1547646849340
+67,high risk,high risk,moderate risk,moderate risk,65.4582,NORMAL STATE,1547646850434
+68,high risk,high risk,moderate risk,moderate risk,65.4582,NORMAL STATE,1547646851406
+69,high risk,high risk,moderate risk,moderate risk,67.7824,CRITICAL STATE,1547646852356
+70,high risk,high risk,moderate risk,moderate risk,67.7824,CRITICAL STATE,1547646853424
+71,high risk,high risk,moderate risk,moderate risk,69.7704,CRITICAL STATE,1547646854362
+72,high risk,high risk,high risk,moderate risk,69.7704,CRITICAL STATE,1547646855429
+73,high risk,high risk,high risk,moderate risk,77.8796,CRITICAL STATE,1547646856366
+74,high risk,high risk,high risk,moderate risk,77.8796,CRITICAL STATE,1547646857436
+75,high risk,high risk,high risk,moderate risk,78.0502,CRITICAL STATE,1547646858367
+76,high risk,high risk,high risk,moderate risk,79.3341,CRITICAL STATE,1547646859459
+77,high risk,high risk,high risk,moderate risk,79.3341,CRITICAL STATE,1547646860392
+78,high risk,high risk,moderate risk,moderate risk,79.3341,CRITICAL STATE,1547646861465
+79,high risk,high risk,moderate risk,moderate risk,62.758,NORMAL STATE,1547646862395
+80,high risk,high risk,moderate risk,moderate risk,64.6318,NORMAL STATE,1547646863393
+81,high risk,high risk,moderate risk,moderate risk,63.3682,NORMAL STATE,1547646864412
+82,high risk,high risk,moderate risk,moderate risk,59.2076,NORMAL STATE,1547646865442
+83,high risk,high risk,moderate risk,moderate risk,59.2076,NORMAL STATE,1547646866380
+84,high risk,high risk,moderate risk,moderate risk,58.4633,NORMAL STATE,1547646867452
+85,high risk,high risk,moderate risk,moderate risk,58.4633,NORMAL STATE,1547646868455
+86,high risk,high risk,high risk,moderate risk,58.4633,NORMAL STATE,1547646869395
+87,high risk,high risk,high risk,moderate risk,67.8639,CRITICAL STATE,1547646870408
+88,high risk,moderate risk,high risk,moderate risk,67.8639,CRITICAL STATE,1547646871423
+89,high risk,moderate risk,high risk,moderate risk,66.1317,CRITICAL STATE,1547646872482
+90,high risk,moderate risk,high risk,moderate risk,71.119,CRITICAL STATE,1547646873460
+91,high risk,high risk,high risk,moderate risk,71.119,CRITICAL STATE,1547646874413
+92,high risk,high risk,high risk,moderate risk,80.9065,CRITICAL STATE,1547646875413
+93,high risk,high risk,high risk,moderate risk,80.9065,CRITICAL STATE,1547646876423
+94,high risk,high risk,high risk,moderate risk,76.5742,CRITICAL STATE,1547646877428
+95,high risk,high risk,high risk,moderate risk,76.5742,CRITICAL STATE,1547646878566
+96,high risk,high risk,high risk,high risk,76.5742,CRITICAL STATE,1547646879628
+97,high risk,high risk,high risk,high risk,74.0782,CRITICAL STATE,1547646879722
+98,high risk,high risk,high risk,high risk,74.0782,CRITICAL STATE,1547646881577
+99,high risk,high risk,high risk,high risk,72.1885,CRITICAL STATE,1547646882592
+100,high risk,high risk,moderate risk,high risk,71.0489,CRITICAL STATE,1547646883599
+101,high risk,high risk,moderate risk,high risk,69.0132,CRITICAL STATE,1547646884665
+102,high risk,high risk,moderate risk,low risk,69.0132,CRITICAL STATE,1547646885598
+103,high risk,high risk,moderate risk,low risk,58.3923,NORMAL STATE,1547646886764
+104,high risk,high risk,high risk,low risk,58.3923,NORMAL STATE,1547646886968
+105,high risk,high risk,high risk,low risk,60.5966,NORMAL STATE,1547646888859
+106,high risk,high risk,high risk,low risk,60.5966,NORMAL STATE,1547646888960
+107,high risk,high risk,high risk,low risk,60.5966,NORMAL STATE,1547646889966
+108,high risk,high risk,high risk,low risk,60.5966,NORMAL STATE,1547646890957
+109,high risk,high risk,high risk,low risk,60.5966,NORMAL STATE,1547646892782
+110,high risk,high risk,high risk,low risk,60.5966,NORMAL STATE,1547646893962
+111,high risk,high risk,high risk,high risk,60.5966,NORMAL STATE,1547646896062
+112,high risk,high risk,high risk,high risk,70.6559,CRITICAL STATE,1547646897141
+113,high risk,high risk,high risk,high risk,70.6559,CRITICAL STATE,1547646897329
+114,high risk,high risk,high risk,high risk,70.6559,CRITICAL STATE,1547646899117
+115,high risk,high risk,moderate risk,high risk,70.9528,CRITICAL STATE,1547646900237
+116,high risk,high risk,moderate risk,high risk,64.7532,NORMAL STATE,1547646900424
+117,high risk,low risk,moderate risk,high risk,64.7532,NORMAL STATE,1547646902206
+118,high risk,low risk,moderate risk,high risk,51.5189,NORMAL STATE,1547646903174
+119,high risk,low risk,moderate risk,high risk,51.5189,NORMAL STATE,1547646904164
+120,high risk,low risk,moderate risk,high risk,52.2329,NORMAL STATE,1547646905183
+121,high risk,low risk,moderate risk,high risk,52.2329,NORMAL STATE,1547646906165
+122,high risk,low risk,moderate risk,high risk,52.2329,NORMAL STATE,1547646907161
+123,high risk,low risk,moderate risk,high risk,52.2329,NORMAL STATE,1547646908241
+124,high risk,low risk,moderate risk,high risk,52.5394,NORMAL STATE,1547646909344
+125,high risk,low risk,moderate risk,high risk,51.8569,NORMAL STATE,1547646909439
+126,high risk,low risk,moderate risk,high risk,51.8569,NORMAL STATE,1547646911387
+127,high risk,low risk,moderate risk,high risk,51.8569,NORMAL STATE,1547646912309
+128,high risk,low risk,moderate risk,high risk,51.8569,NORMAL STATE,1547646913298
+129,high risk,low risk,moderate risk,high risk,51.8569,NORMAL STATE,1547646914306
+130,high risk,low risk,low risk,high risk,51.8569,NORMAL STATE,1547646914492
+131,high risk,low risk,low risk,high risk,46.8981,NORMAL STATE,1547646916311
+132,high risk,low risk,low risk,high risk,48.36,NORMAL STATE,1547646917308
+133,high risk,low risk,low risk,high risk,48.36,NORMAL STATE,1547646918307
+134,high risk,low risk,low risk,high risk,48.115,NORMAL STATE,1547646919382
+135,high risk,low risk,low risk,high risk,51.6731,NORMAL STATE,1547646920344
+136,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646921297
+137,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646922298
+138,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646923299
+139,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646924306
+140,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646924486
+141,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646926306
+142,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646927308
+143,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646928304
+144,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646929300
+145,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646930308
+146,high risk,low risk,low risk,high risk,54.6145,NORMAL STATE,1547646931308
+147,high risk,high risk,low risk,high risk,54.6145,NORMAL STATE,1547646932398
+148,high risk,high risk,low risk,high risk,67.6241,CRITICAL STATE,1547646933395
+149,high risk,high risk,low risk,high risk,67.6241,CRITICAL STATE,1547646934309
+150,high risk,high risk,low risk,high risk,67.6241,CRITICAL STATE,1547646935318
+151,high risk,high risk,low risk,high risk,56.4627,NORMAL STATE,1547646936344
+152,high risk,high risk,low risk,high risk,59.2228,NORMAL STATE,1547646937328
+153,high risk,high risk,low risk,high risk,59.2228,NORMAL STATE,1547646938309
+154,high risk,high risk,low risk,high risk,59.2228,NORMAL STATE,1547646939323
+155,high risk,high risk,low risk,high risk,59.2228,NORMAL STATE,1547646940317
+156,high risk,high risk,low risk,high risk,59.2228,NORMAL STATE,1547646941320
+157,high risk,high risk,low risk,high risk,59.2228,NORMAL STATE,1547646942312
+158,high risk,high risk,low risk,high risk,58.7506,NORMAL STATE,1547646943327
+159,high risk,high risk,low risk,high risk,58.7506,NORMAL STATE,1547646944313
+160,high risk,high risk,low risk,high risk,58.7506,NORMAL STATE,1547646945306
+161,high risk,high risk,low risk,high risk,58.9429,NORMAL STATE,1547646946313
+162,high risk,high risk,low risk,high risk,58.9429,NORMAL STATE,1547646947429
+163,high risk,high risk,low risk,high risk,58.9429,NORMAL STATE,1547646948452
+164,high risk,high risk,high risk,high risk,58.9429,NORMAL STATE,1547646949475
+165,high risk,high risk,high risk,high risk,68.078,CRITICAL STATE,1547646950473
+166,high risk,high risk,high risk,high risk,75.4633,CRITICAL STATE,1547646951418
+167,high risk,high risk,high risk,high risk,75.4633,CRITICAL STATE,1547646952432
+168,high risk,high risk,high risk,high risk,75.4633,CRITICAL STATE,1547646953405
+169,high risk,high risk,high risk,high risk,75.4633,CRITICAL STATE,1547646954404
+170,high risk,high risk,high risk,high risk,75.4633,CRITICAL STATE,1547646955553
+171,high risk,high risk,high risk,high risk,75.1188,CRITICAL STATE,1547646955643
+172,high risk,high risk,high risk,high risk,75.1188,CRITICAL STATE,1547646957532
+173,high risk,high risk,high risk,high risk,75.1188,CRITICAL STATE,1547646958461
+174,high risk,high risk,high risk,high risk,75.1188,CRITICAL STATE,1547646958652
+175,high risk,high risk,moderate risk,high risk,75.1188,CRITICAL STATE,1547646960461
+176,high risk,high risk,moderate risk,high risk,65.797,NORMAL STATE,1547646961537
+177,high risk,high risk,high risk,high risk,65.797,NORMAL STATE,1547646961647
+178,high risk,high risk,high risk,high risk,74.459,CRITICAL STATE,1547646963464
+179,high risk,high risk,high risk,high risk,74.459,CRITICAL STATE,1547646964470
+180,high risk,high risk,high risk,high risk,74.459,CRITICAL STATE,1547646965576
+181,high risk,high risk,high risk,high risk,74.459,CRITICAL STATE,1547646965666
+182,high risk,high risk,high risk,high risk,74.459,CRITICAL STATE,1547646967560
+183,high risk,high risk,high risk,high risk,75.4424,CRITICAL STATE,1547646968615
+184,high risk,high risk,high risk,high risk,75.4424,CRITICAL STATE,1547646969530
+185,high risk,high risk,high risk,high risk,75.4424,CRITICAL STATE,1547646970532
+186,high risk,high risk,high risk,high risk,75.4424,CRITICAL STATE,1547646971531
+187,high risk,high risk,high risk,high risk,75.4424,CRITICAL STATE,1547646972532
+188,high risk,high risk,high risk,high risk,75.4424,CRITICAL STATE,1547646973542
+189,high risk,low risk,high risk,high risk,75.4424,CRITICAL STATE,1547646974549
+190,high risk,low risk,high risk,high risk,64.2528,NORMAL STATE,1547646975543
+191,high risk,low risk,high risk,high risk,64.2528,NORMAL STATE,1547646975712
+192,high risk,low risk,high risk,high risk,65.0788,NORMAL STATE,1547646977549
+193,high risk,low risk,high risk,high risk,66.2016,CRITICAL STATE,1547646977723
+194,high risk,low risk,moderate risk,high risk,66.2016,CRITICAL STATE,1547646979648
+195,high risk,low risk,moderate risk,high risk,59.8054,NORMAL STATE,1547646980699
+196,high risk,low risk,moderate risk,high risk,59.8054,NORMAL STATE,1547646981682
+197,high risk,low risk,moderate risk,high risk,59.8054,NORMAL STATE,1547646981795
+198,high risk,low risk,moderate risk,high risk,59.8054,NORMAL STATE,1547646983624
+199,high risk,low risk,moderate risk,high risk,59.8054,NORMAL STATE,1547646984621
+200,high risk,low risk,moderate risk,high risk,59.4914,NORMAL STATE,1547646985639
+201,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646986636
+202,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646987768
+203,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646988813
+204,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646989911
+205,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646990891
+206,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646991902
+207,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646992906
+208,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646993831
+209,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646994891
+210,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646995900
+211,high risk,low risk,moderate risk,high risk,60.9169,NORMAL STATE,1547646996831
+212,high risk,low risk,moderate risk,high risk,60.2738,NORMAL STATE,1547646997835
+213,high risk,low risk,moderate risk,high risk,60.2738,NORMAL STATE,1547646998831
+214,high risk,high risk,moderate risk,high risk,60.2738,NORMAL STATE,1547646999836
+215,high risk,high risk,moderate risk,high risk,71.0442,CRITICAL STATE,1547647000842
+216,high risk,high risk,moderate risk,high risk,71.0442,CRITICAL STATE,1547647001900
+217,high risk,high risk,moderate risk,high risk,71.0442,CRITICAL STATE,1547647002900
+218,high risk,high risk,moderate risk,high risk,70.0667,CRITICAL STATE,1547647003008
+219,high risk,high risk,moderate risk,high risk,70.0667,CRITICAL STATE,1547647004010
+220,high risk,high risk,moderate risk,high risk,75.4605,CRITICAL STATE,1547647005015
+221,high risk,high risk,moderate risk,high risk,75.4605,CRITICAL STATE,1547647006019
+222,high risk,high risk,moderate risk,high risk,76.7326,CRITICAL STATE,1547647007022
+223,high risk,high risk,moderate risk,high risk,76.7326,CRITICAL STATE,1547647008839
+224,high risk,high risk,moderate risk,high risk,76.7326,CRITICAL STATE,1547647009847
+225,high risk,high risk,moderate risk,high risk,76.7326,CRITICAL STATE,1547647010830
+226,high risk,high risk,low risk,high risk,76.7326,CRITICAL STATE,1547647011019
+227,high risk,high risk,low risk,high risk,67.1795,CRITICAL STATE,1547647012826
+228,high risk,high risk,low risk,high risk,67.1795,CRITICAL STATE,1547647013887
+229,high risk,high risk,low risk,high risk,67.1795,CRITICAL STATE,1547647014831
+230,high risk,high risk,low risk,high risk,67.5763,CRITICAL STATE,1547647015838
+231,high risk,high risk,low risk,high risk,67.5763,CRITICAL STATE,1547647016852
+232,high risk,high risk,low risk,high risk,63.638,NORMAL STATE,1547647017834
+233,high risk,moderate risk,low risk,high risk,63.638,NORMAL STATE,1547647018836
+234,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647019913
+235,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647020007
+236,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647021000
+237,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647022002
+238,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647023839
+239,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647024836
+240,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647025833
+241,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647026836
+242,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647027012
+243,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647027997
+244,high risk,moderate risk,low risk,high risk,62.6965,NORMAL STATE,1547647029820
+245,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647030867
+246,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647031940
+247,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647032853
+248,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647033861
+249,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647034875
+250,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647035867
+251,high risk,moderate risk,low risk,high risk,62.3747,NORMAL STATE,1547647036858
+252,high risk,high risk,low risk,high risk,64.2303,NORMAL STATE,1547647037033
+253,high risk,high risk,low risk,high risk,65.8286,NORMAL STATE,1547647038895
+254,high risk,high risk,moderate risk,high risk,65.8286,NORMAL STATE,1547647039869
+255,high risk,high risk,moderate risk,high risk,75.4924,CRITICAL STATE,1547647040862
+256,high risk,high risk,moderate risk,high risk,75.4924,CRITICAL STATE,1547647041852
+257,high risk,high risk,low risk,high risk,75.4924,CRITICAL STATE,1547647042856
+258,high risk,high risk,low risk,high risk,65.1543,NORMAL STATE,1547647043963
+259,high risk,high risk,low risk,high risk,65.1543,NORMAL STATE,1547647045059
+260,high risk,high risk,low risk,high risk,65.1543,NORMAL STATE,1547647046154
+261,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647047185
+262,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647048266
+263,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647049251
+264,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647050198
+265,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647050363
+266,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647052197
+267,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647053361
+268,high risk,high risk,low risk,high risk,64.1309,NORMAL STATE,1547647054441
+269,high risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647055363
+270,high risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647056368
+271,high risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647057372
+272,high risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647058366
+273,high risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647059361
+274,high risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647060358
+275,low risk,high risk,low risk,high risk,63.5153,NORMAL STATE,1547647061364
+276,low risk,high risk,low risk,high risk,47.0306,NORMAL STATE,1547647062367
+277,low risk,high risk,high risk,high risk,47.0306,NORMAL STATE,1547647063357
+278,low risk,high risk,high risk,high risk,62.9209,NORMAL STATE,1547647064426
+279,low risk,high risk,high risk,high risk,62.9209,NORMAL STATE,1547647065441
+280,low risk,high risk,high risk,high risk,66.6482,CRITICAL STATE,1547647066522
+281,low risk,high risk,high risk,high risk,66.6482,CRITICAL STATE,1547647067466
+282,low risk,high risk,high risk,high risk,66.6482,CRITICAL STATE,1547647068446
+283,low risk,high risk,moderate risk,high risk,66.6482,CRITICAL STATE,1547647069457
+284,low risk,high risk,moderate risk,high risk,54.9858,NORMAL STATE,1547647070452
+285,low risk,high risk,moderate risk,high risk,54.9858,NORMAL STATE,1547647071478
+286,low risk,high risk,moderate risk,high risk,54.9858,NORMAL STATE,1547647072528
+287,low risk,high risk,moderate risk,high risk,54.9858,NORMAL STATE,1547647073578
+288,low risk,high risk,moderate risk,high risk,54.9858,NORMAL STATE,1547647074562
+289,low risk,high risk,moderate risk,high risk,55.6502,NORMAL STATE,1547647075532
+290,low risk,moderate risk,moderate risk,high risk,55.6502,NORMAL STATE,1547647075684
+291,high risk,moderate risk,moderate risk,high risk,51.5968,NORMAL STATE,1547647076670
+292,high risk,moderate risk,moderate risk,high risk,67.8537,CRITICAL STATE,1547647077669
+293,high risk,moderate risk,moderate risk,high risk,67.8537,CRITICAL STATE,1547647079659
+294,high risk,moderate risk,moderate risk,high risk,67.8537,CRITICAL STATE,1547647080619
+295,high risk,moderate risk,moderate risk,high risk,67.8537,CRITICAL STATE,1547647081605

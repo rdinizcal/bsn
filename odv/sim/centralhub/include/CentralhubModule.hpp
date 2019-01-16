@@ -12,6 +12,7 @@
 
 #include "bsn/msg/info/TaskInfo.hpp"
 #include "bsn/msg/info/ContextInfo.hpp"
+#include "bsn/msg/info/MonitorTaskInfo.hpp"
 #include "bsn/msg/data/SensorData.h"
 
 
@@ -23,6 +24,8 @@ class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceCli
         virtual void tearDown();   
 
 		void sendTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
+		
+        void sendMonitorTaskInfo(const std::string &/*task_id*/, const double &/*cost*/, const double &/*reliability*/, const double &/*frequency*/);
 
     public:
         CentralhubModule(const int32_t &argc, char **argv);
