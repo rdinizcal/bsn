@@ -155,9 +155,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         {  // update controller with task info
-            sendTaskInfo("G3_T1.11",0.1,0.86,params["freq"]);
-            sendTaskInfo("G3_T1.12",0.05*params["m_avg"],0.99,params["freq"]);
-            sendTaskInfo("G3_T1.13",0.2,0.7,params["freq"]);
+            sendTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
            // and the monitor..
             sendMonitorTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
             sendMonitorTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
@@ -173,8 +173,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             if(active && battery.getCurrentLevel() < 2){
                 active = false;
             }
-            sendContextInfo("SaO2_available",active);
-            sendMonitorContextInfo("SaO2_available",active);
+
+            if (rand()%10 > 6) {
+                bool x_active = (rand()%2==0)?active:!active;
+                sendContextInfo("SaO2_available", x_active);
+            }
+            //sendContextInfo("SaO2_available", active);
+            sendMonitorContextInfo("SaO2_available", active);
         }
 
         while(!buffer.isEmpty()){ // Receive control command and module update

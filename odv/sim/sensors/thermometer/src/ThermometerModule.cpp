@@ -158,9 +158,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         }
         
         { // update controller with task info
-            sendTaskInfo("G3_T1.31",0.03,0.92,params["freq"]);
-            sendTaskInfo("G3_T1.32",0.06*params["m_avg"],0.96,params["freq"]);
-            sendTaskInfo("G3_T1.33",0.1,0.78,params["freq"]);
+            sendTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
           // and the monitor..
             sendMonitorTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
             sendMonitorTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
@@ -176,7 +176,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             if(active && battery.getCurrentLevel() < 2){
                 active = false;
             }
-            sendContextInfo("TEMP_available",active);
+            
+            if (rand()%10 > 6) {
+                    bool x_active = (rand()%2==0)?active:!active;
+                    sendContextInfo("TEMP_available", x_active);
+            }
+            //sendContextInfo("TEMP_available", active);
             sendMonitorContextInfo("TEMP_available",active);
 
         }

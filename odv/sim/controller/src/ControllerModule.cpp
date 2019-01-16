@@ -28,7 +28,6 @@ ControllerModule::ControllerModule(const int32_t  &argc, char **argv) :
     reliability_formula_contexts(),
 
     actions(),
-    strategies(),
     
     persist(1),
     path("controller_output.csv"),
@@ -116,22 +115,22 @@ void ControllerModule::setUp() {
     { // Set up actions
         
         /*actions = std::vector<std::vector<double>> {
-                                        {0.9,0.925,0.95,0.975,1},
-                                        {0.9,0.925,0.95,0.975,1},
-                                        {0.9,0.925,0.95,0.975,1},
-                                        {0.9,0.925,0.95,0.975,1}};
+                                        {0.8,0.85,0.9,0.95,1},
+                                        {0.8,0.85,0.9,0.95,1},
+                                        {0.8,0.85,0.9,0.95,1},
+                                        {0.8,0.85,0.9,0.95,1}};
         */
 
-        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,5); ++idx){
-            strategies.push_back({(double)w, (double)x, (double)y, (double)z});
+        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,8); ++idx){
+            actions.push_back({(double)w, (double)x, (double)y, (double)z});
 
-            if(++z == 5) { 
+            if(++z == 8) { 
                 z = 0;
-                if(++y == 5) { 
+                if(++y == 8) { 
                     y = 0;
-                    if(++x == 5) { 
+                    if(++x == 8) { 
                         x = 0;
-                        if(++w == 5) { 
+                        if(++w == 8) { 
                             w = 0;
                         }
                     }
@@ -139,13 +138,16 @@ void ControllerModule::setUp() {
             }
         }
 
-        for (std::vector<std::vector<double>>::iterator it = strategies.begin(); it != strategies.end(); ++it) {
+        for (std::vector<std::vector<double>>::iterator it = actions.begin(); it != actions.end(); ++it) {
             for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
-                if ((int)*itt == 0) *itt = 0.8;
-                else if ((int)*itt == 1) *itt = 0.85;
-                else if ((int)*itt == 2) *itt = 0.9;
-                else if ((int)*itt == 3) *itt = 0.95;
-                else if ((int)*itt == 4) *itt = 1;
+                if ((int)*itt == 0) *itt = 0.7375;
+                else if ((int)*itt == 1) *itt = 0.775;
+                else if ((int)*itt == 2) *itt = 0.8125;
+                else if ((int)*itt == 3) *itt = 0.85;
+                else if ((int)*itt == 4) *itt = 0.8875;
+                else if ((int)*itt == 5) *itt = 0.925;
+                else if ((int)*itt == 6) *itt = 0.9625;
+                else if ((int)*itt == 7) *itt = 1;
             }
         }
     }
@@ -317,7 +319,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                 cost < cost_goal_min || cost > cost_goal_max) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
-                for (std::vector<double> strategy : strategies ) { // substitutues each strategy the formulas and calculates cost and reliability
+                for (std::vector<double> strategy : actions ) { // substitutues each strategy the formulas and calculates cost and reliability
                     { // in cost formula
                         for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
 

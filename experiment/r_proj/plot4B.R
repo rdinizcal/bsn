@@ -3,6 +3,27 @@ library(tidyverse)
 library(ggplot2)
 library(cowplot) 
 
+r <- 0.90
+rmin <- r*0.98
+rmax <- r*1.02
+
+nt_m_data %>% 
+  mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
+  ggplot() + 
+  geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=0.5) +
+  geom_point(data=nt_c_data,aes(TIME..ms./1000,RELIABILITY*100, color="model"), size=0.5) +
+  #stat_smooth(aes(TIME..ms./1000,RELIABILITY*100, color='system'), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
+  #stat_smooth(data=nt_c_data, aes(TIME..ms./1000,RELIABILITY*100, color='model'), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
+  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
+  geom_hline(yintercept = r*100, color = 'black') +
+  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
+  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
+  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="active sensors")) +
+  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "system" = 'black', "model" = 'orange'), name = "") +
+  labs(title="overall reliability for static estimated reliability and cost", x="time (s)", y="reliability (%)") +
+  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
+
+
 ## Reliability analysis
 
 r <- 0.90
