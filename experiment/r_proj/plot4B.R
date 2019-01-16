@@ -58,16 +58,16 @@ plot_grid(uc_m_pg, legend, nrow=1, align='h', rel_widths=c(1,0.2))
 ###########################################################
 t_a_m_reli <- t_a_m_data %>%
   mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() +
+  ggplot() + 
   geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=1) +
   stat_smooth(aes(TIME..ms./1000,RELIABILITY*100), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
   geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = r*100, color = 'black') +
   geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
   geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(title="bsn behavior for all uncertainties tamed", x="time (s)", y="reliability (%)") +
+  labs(title="bsn behavior for tamed uncertainties", x="time (s)", y="reliability (%)") +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
 
 t_a_m_cost <- t_a_m_data %>%
@@ -79,7 +79,7 @@ t_a_m_cost <- t_a_m_data %>%
   geom_hline(yintercept = c, color = 'black') +
   geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
   geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
   labs(x="time (s)", y="cost") + 
   theme(legend.position='none') +
@@ -104,7 +104,7 @@ nt_as_gs_m_reli <- nt_as_gs_m_data %>%
   geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = r*100, color = 'black') +
   geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "model" = 'orange'), name = "") +
   labs(title="bsn behavior for randomized active sensors", x="time (s)", y="reliability (%)") +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
@@ -118,7 +118,7 @@ nt_as_gs_m_cost <- nt_as_gs_m_data %>%
   geom_hline(yintercept = c, color = 'black') +
   geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
   geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
   labs(x="time (s)", y="cost") + 
   theme(legend.position='none') +
@@ -137,7 +137,7 @@ nt_as_gs_c_reli <- nt_as_gs_c_data %>%
   geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = r*100, color = 'black') +
   geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "model" = 'orange'), name = "") +
   labs(title="model behavior for randomized active sensors", x="time (s)", y="reliability (%)") +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
@@ -151,7 +151,7 @@ nt_as_gs_c_cost <- nt_as_gs_c_data %>%
   geom_hline(yintercept = c, color = 'black') +
   geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
   geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
   labs(x="time (s)", y="cost") + 
   theme(legend.position='none') +
@@ -178,9 +178,9 @@ nt_as_c_m_reli <- nt_as_c_m_data %>%
   geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = r*100, color = 'black') +
   geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25), name="active sensors") +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "model" = 'orange'), name = "") +
-  labs(title="bsn behavior for randomized active sensors", x="time (s)", y="reliability (%)") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="active sensors")) +
+  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
+  labs(title="bsn behavior for constant active sensors", x="time (s)", y="reliability (%)") +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
 
 nt_as_c_m_cost <- nt_as_c_m_data %>%
@@ -192,7 +192,7 @@ nt_as_c_m_cost <- nt_as_c_m_data %>%
   geom_hline(yintercept = c, color = 'black') +
   geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
   geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
   labs(x="time (s)", y="cost") + 
   theme(legend.position='none') +
@@ -211,8 +211,8 @@ nt_as_c_c_reli <- nt_as_c_c_data %>%
   geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = r*100, color = 'black') +
   geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25), name="active sensors") +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "model" = 'orange'), name = "") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="active sensors")) +
+  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
   labs(title="model behavior for constant active sensors", x="time (s)", y="reliability (%)") +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
 
@@ -225,7 +225,7 @@ nt_as_c_c_cost <- nt_as_c_c_data %>%
   geom_hline(yintercept = c, color = 'black') +
   geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
   geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15), name="active sensors") +
+  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="active sensors")) +
   scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
   labs(x="time (s)", y="cost") + 
   theme(legend.position='none') +
