@@ -299,25 +299,25 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                             (std::chrono::time_point_cast<std::chrono::nanoseconds>
                             (std::chrono::high_resolution_clock::now()).time_since_epoch()).count();
 
-            // { // Persist data
-            //     if (persist) {
-            //         fp << id++ << ',';
-            //         fp << reliability << ',';
-            //         fp << cost << ',';
-            //         std::string yar = contexts["SaO2_available"].getValue()?"TRUE":"FALSE";
-            //         fp << yar << ',';
-            //         std::string yarr = contexts["ECG_available"].getValue()?"TRUE":"FALSE";
-            //         fp << yarr << ',';
-            //         std::string yarrr = contexts["TEMP_available"].getValue()?"TRUE":"FALSE";
-            //         fp << yarrr << ',';
-            //         std::string yarrrr = contexts["ABP_available"].getValue()?"TRUE":"FALSE";
-            //         fp << yarrrr << ',';
-            //         fp << patient_health_status << ',';
-            //         fp << std::chrono::duration_cast<std::chrono::milliseconds>
-            //                 (std::chrono::time_point_cast<std::chrono::milliseconds>
-            //                 (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
-            //     }
-            // }
+            { // Persist data
+                if (persist) {
+                    fp << id++ << ',';
+                    fp << reliability << ',';
+                    fp << cost << ',';
+                    std::string yar = contexts["SaO2_available"].getValue()?"TRUE":"FALSE";
+                    fp << yar << ',';
+                    std::string yarr = contexts["ECG_available"].getValue()?"TRUE":"FALSE";
+                    fp << yarr << ',';
+                    std::string yarrr = contexts["TEMP_available"].getValue()?"TRUE":"FALSE";
+                    fp << yarrr << ',';
+                    std::string yarrrr = contexts["ABP_available"].getValue()?"TRUE":"FALSE";
+                    fp << yarrrr << ',';
+                    fp << patient_health_status << ',';
+                    fp << std::chrono::duration_cast<std::chrono::milliseconds>
+                            (std::chrono::time_point_cast<std::chrono::milliseconds>
+                            (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
+                }
+            }
 
             exp_fp << ts1 << ",";
             exp_fp << ts2 << endl;

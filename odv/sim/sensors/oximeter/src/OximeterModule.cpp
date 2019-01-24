@@ -16,7 +16,7 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    battery("oxi_batt",100,70,1),
+    battery("oxi_batt",100,100,1),
     available(true),
     data_accuracy(1),
     comm_accuracy(1),
@@ -164,7 +164,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             sendMonitorTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
         }
 
-        { // recharge routine
+        /*{ // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 90){
@@ -180,7 +180,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             }
             //sendContextInfo("SaO2_available", active);
             sendMonitorContextInfo("SaO2_available", active);
-        }
+        }*/
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -189,10 +189,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             params["freq"] = container.getData<OximeterControlCommand>().getFrequency();
         }
 
-        if(!active){ 
+        /*if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }
+        }*/
 
         /*
          * Module execution

@@ -14,370 +14,42 @@ cmin <- c*0.98
 cmax <- c*1.02
 
 ###########################################################
-##             Plot uncontrolled scenario                ##
-###########################################################
-uc_m_reli <- uc_m_data %>%
-  mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() + 
-  geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000,RELIABILITY*100), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(title="uncontrolled bsn behavior", x="time (s)", y="reliability (%)") +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-uc_m_cost <- uc_m_data %>%
-  mutate(color = if_else(cmin<=COST & COST<=cmax,"ok", "not ok")) %>%
-  ggplot() + 
-  geom_point(aes(TIME..ms./1000, COST, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000, COST), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(x="time (s)", y="cost") + 
-  theme(legend.position='none') +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.65))
-
-legend <- get_legend(uc_m_reli)
-uc_m_pg <- plot_grid(uc_m_reli+theme(legend.position='none'),uc_m_cost, ncol=1)
-plot_grid(uc_m_pg, legend, nrow=1, align='h', rel_widths=c(1,0.2))
-
-###########################################################
-##             Plot uncontrolled scenario                ##
-###########################################################
-
-###########################################################
-##         Plot taming uncertainties scenario            ##
-###########################################################
-#Our transformation function
-scaleFUN <- function(x) sprintf("%.2f", x)
-
-t_a_m_reli <- #t_a_m_data %>%
-  #mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() + 
-  geom_line(data=t_a_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25, color='available sensors'), size=0.5) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=t_a_c_data, aes(TIME..ms./1000, RELIABILITY*100, color="model"), size=1) +
-  stat_smooth(data=t_a_m_data, aes(TIME..ms./1000, RELIABILITY*100, color='model'), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=t_a_m_data, aes(TIME..ms./1000,RELIABILITY*100, color='color'system'), size=1) +
-  stat_smooth(data=t_a_m_data, aes(TIME..ms./1000, RELIABILITY*100, color='system'), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100)), sec.axis = sec_axis(~ ./25, name="available\nsensors")) +
-  scale_color_manual(values=c("system"='blue',"model"='orange', "available sensors"='gray'), name = "") +
-  labs(title="", x="time (s)", y="reliability (%)") +
-  theme(legend.position='bottom', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-t_a_m_cost <- #t_a_m_data %>%
-  #mutate(color = if_else(cmin<=COST & COST<=cmax,"ok", "not ok")) %>%
-  ggplot() +
-  geom_line(data=t_a_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15, color='available sensors'), size=0.5) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=t_a_m_data, aes(TIME..ms./1000, COST, color='model'), size=1) +
-  stat_smooth(data=t_a_m_data, aes(TIME..ms./1000, COST, color='model'), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=t_a_m_data, aes(TIME..ms./1000, COST, color='system'), size=1) +
-  stat_smooth(data=t_a_m_data, aes(TIME..ms./1000, COST, color='system'), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, cmin, label='setpoint', vjust=-1), size=3)+
-  scale_y_continuous(labels=scaleFUN, breaks=sort(c(seq(0,0.7,length.out=5), c)), sec.axis = sec_axis(~ ./0.175, name="available\nsensors")) +
-  scale_color_manual(values=c("system"='blue',"model"='orange', "available sensors"='gray'), name = "") +
-  labs(x="time (s)", y="cost (W)") +  
-  theme(legend.position='none', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.70))
-
-legend <- get_legend(t_a_m_reli)
-t_a_m_pg <- plot_grid(t_a_m_reli+theme(legend.position='none'),t_a_m_cost, ncol=1)
-plot_grid(t_a_m_pg, legend, ncol=1, rel_heights=c(1,0.05))
-###########################################################
-##         Plot taming uncertainties scenario            ##
-###########################################################
-
-###########################################################
-##       Plot randomized actives sensors scenario        ##
-###########################################################
-nt_as_gs_m_reli <- nt_as_gs_m_data %>%
-  mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000,RELIABILITY*100), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "model" = 'orange'), name = "") +
-  labs(title="bsn behavior for randomized available sensors", x="time (s)", y="reliability (%)") +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-nt_as_gs_m_cost <- nt_as_gs_m_data %>%
-  mutate(color = if_else(cmin<=COST & COST<=cmax,"ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000, COST, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000, COST), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(x="time (s)", y="cost") + 
-  theme(legend.position='none') +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.65))
-
-legend <- get_legend(nt_as_gs_m_reli)
-nt_as_gs_m_pg <- plot_grid(nt_as_gs_m_reli+theme(legend.position='none'),nt_as_gs_m_cost, ncol=1)
-plot_grid(nt_as_gs_m_pg, legend, nrow=1, align='h', rel_widths=c(1,0.2))
-
-nt_as_gs_c_reli <- nt_as_gs_c_data %>%
-  mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000,RELIABILITY*100), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red', "model" = 'orange'), name = "") +
-  labs(title="model behavior for randomized available sensors", x="time (s)", y="reliability (%)") +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-nt_as_gs_c_cost <- nt_as_gs_c_data %>%
-  mutate(color = if_else(cmin<=COST & COST<=cmax,"ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000, COST, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000, COST), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(x="time (s)", y="cost") + 
-  theme(legend.position='none') +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.65))
-
-legend <- get_legend(nt_as_gs_c_reli)
-nt_as_gs_c_pg <- plot_grid(nt_as_gs_c_reli+theme(legend.position='none'),nt_as_gs_c_cost, ncol=1)
-plot_grid(nt_as_gs_c_pg, legend, nrow=1, align='h', rel_widths=c(1,0.2))
-
-plot_grid(nt_as_gs_c_pg, nt_as_gs_m_pg, legend, nrow=1, align='h', rel_widths=c(1,1,0.2))
-
-#####################
-##   ANOTHER PLOT  ##
-#####################
-
-#Our transformation function
-scaleFUN <- function(x) sprintf("%.2f", x)
-
-nt_as_gs_mc_reli <- ggplot() +
-  geom_line(data=nt_as_gs_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25, color = "available sensors"), size=0.5) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=nt_as_gs_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="system"), size=1) +
-  stat_smooth(data=nt_as_gs_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="system"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=nt_as_gs_c_data, aes(TIME..ms./1000, RELIABILITY*100, color="model"), size=1) +
-  stat_smooth(data=nt_as_gs_c_data, aes(TIME..ms./1000, RELIABILITY*100, color="model"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, rmin*100, label = 'setpoint', vjust = -1), size=3)+
-  scale_color_manual(values=c("system"='blue',"model"='orange', "available sensors"='gray'), name = "") +
-  scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100)), sec.axis = sec_axis(~ ./25, name="available\nsensors")) +
-  labs(x="time(s)", y="reliability (%)") +  
-  theme(legend.position='bottom', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-nt_as_gs_mc_cost <- ggplot() +
-  geom_line(data=nt_as_gs_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.175, color="available sensors"), size=0.5) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=nt_as_gs_m_data, aes(TIME..ms./1000, COST, color="system"), size=1) +
-  stat_smooth(data=nt_as_gs_m_data, aes(TIME..ms./1000, COST, color="system"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=nt_as_gs_c_data, aes(TIME..ms./1000, COST, color="model"), size=1) +
-  stat_smooth(data=nt_as_gs_c_data, aes(TIME..ms./1000, COST, color="model"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, cmin, label = 'setpoint', vjust = -1), size=3)+
-  scale_color_manual(values=c("system"='blue',"model"='orange', "available sensors"='gray'), name = "") +
-  scale_y_continuous(labels=scaleFUN, breaks=sort(c(seq(0,0.7,length.out=5), c)), sec.axis = sec_axis(~ ./0.175, name="available\nsensors")) +
-  labs(x="time (s)", y="cost (W)") +  
-  theme(legend.position='none', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.70))
-
-legend <- get_legend(nt_as_gs_mc_reli)
-nt_as_gs_mc_pg <- plot_grid(nt_as_gs_mc_reli+theme(legend.position='none'),nt_as_gs_mc_cost, ncol=1)
-plot_grid(nt_as_gs_mc_pg, legend, ncol=1, rel_heights=c(1,0.05))
-#####################
-##   ANOTHER PLOT  ##
-#####################
-###########################################################
-##       Plot randomized actives sensors scenario        ##
-###########################################################
-
-###########################################################
-##       Plot constant actives sensors scenario          ##
-###########################################################
-nt_as_c_m_reli <- nt_as_c_m_data %>%
-  mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000,RELIABILITY*100), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(title="bsn behavior for constant available sensors", x="time (s)", y="reliability (%)") +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-nt_as_c_m_cost <- nt_as_c_m_data %>%
-  mutate(color = if_else(cmin<=COST & COST<=cmax,"ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000, COST, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000, COST), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(x="time (s)", y="cost") + 
-  theme(legend.position='none') +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.65))
-
-legend <- get_legend(nt_as_c_m_reli)
-nt_as_c_m_pg <- plot_grid(nt_as_c_m_reli+theme(legend.position='none'),nt_as_c_m_cost, ncol=1)
-plot_grid(nt_as_c_m_pg, legend, nrow=1, align='h', rel_widths=c(1,0.2))
-
-nt_as_c_c_reli <- nt_as_c_c_data %>%
-  mutate(color = if_else(RELIABILITY>=rmin & RELIABILITY<=rmax, "ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000,RELIABILITY*100, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000,RELIABILITY*100), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25), alpha=0.3) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./25, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(title="model behavior for constant available sensors", x="time (s)", y="reliability (%)") +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-nt_as_c_c_cost <- nt_as_c_c_data %>%
-  mutate(color = if_else(cmin<=COST & COST<=cmax,"ok", "not ok")) %>%
-  ggplot() +
-  geom_point(aes(TIME..ms./1000, COST, color=color), size=1) +
-  stat_smooth(aes(TIME..ms./1000, COST), color='black', method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  geom_line(aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.15), alpha=0.3) +
-  scale_y_continuous(sec.axis = sec_axis(~ ./0.15, name="available sensors")) +
-  scale_color_manual(values = c("ok" = 'blue', "not ok" = 'red'), name = "") +
-  labs(x="time (s)", y="cost") + 
-  theme(legend.position='none') +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.65))
-
-legend <- get_legend(nt_as_c_c_reli)
-nt_as_c_c_pg <- plot_grid(nt_as_c_c_reli+theme(legend.position='none'),nt_as_c_c_cost, ncol=1)
-plot_grid(nt_as_c_c_pg, legend, nrow=1, align='h', rel_widths=c(1,0.2))
-
-plot_grid(nt_as_c_c_pg, nt_as_c_m_pg, legend, nrow=1, align='h', rel_widths=c(1,1,0.2))
-
-#####################
-##   ANOTHER PLOT  ##
-#####################
-
-#Our transformation function
-scaleFUN <- function(x) sprintf("%.2f", x)
-
-nt_as_c_mc_reli <- ggplot() +
-  geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25, color = "available sensors"), size=0.5) +
-  geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = r*100, color = 'black') +
-  geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="system"), size=1) +
-  stat_smooth(data=nt_as_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="system"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=nt_as_c_c_data, aes(TIME..ms./1000, RELIABILITY*100, color="model"), size=1) +
-  stat_smooth(data=nt_as_c_c_data, aes(TIME..ms./1000, RELIABILITY*100, color="model"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, rmin*100, label = 'setpoint', vjust = -1), size=3)+
-  scale_color_manual(values=c("system"='blue',"model"='orange', "available sensors"='gray'), name = "") +
-  scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100)), sec.axis = sec_axis(~ ./25, name="available\nsensors")) +
-  labs(x="time(s)", y="reliability (%)") +  
-  theme(legend.position='bottom', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
-
-nt_as_c_mc_cost <- ggplot() +
-  geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.175, color="available sensors"), size=0.5) +
-  geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
-  geom_hline(yintercept = c, color = 'black') +
-  geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000, COST, color="system"), size=1) +
-  stat_smooth(data=nt_as_c_m_data, aes(TIME..ms./1000, COST, color="system"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=nt_as_c_c_data, aes(TIME..ms./1000, COST, color="model"), size=1) +
-  stat_smooth(data=nt_as_c_c_data, aes(TIME..ms./1000, COST, color="model"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, cmin, label = 'setpoint', vjust = -1), size=3)+
-  scale_color_manual(values=c("system"='blue',"model"='orange', "available sensors"='gray'), name = "") +
-  scale_y_continuous(labels=scaleFUN, breaks=sort(c(seq(0,0.7,length.out=5), c)), sec.axis = sec_axis(~ ./0.175, name="available\nsensors")) +
-  labs(x="time (s)", y="cost (W)") +  
-  theme(legend.position='none', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.70))
-
-legend <- get_legend(nt_as_c_mc_reli)
-nt_as_c_mc_pg <- plot_grid(nt_as_c_mc_reli+theme(legend.position='none'),nt_as_c_mc_cost, ncol=1)
-plot_grid(nt_as_c_mc_pg, legend, ncol=1, rel_heights=c(1,0.05))
-#####################
-##   ANOTHER PLOT  ##
-#####################
-###########################################################
-##       Plot constant actives sensors scenario          ##
-###########################################################
-
-###########################################################
 ##          Plot constant vs. tamed scenario             ##
 ###########################################################
 #Our transformation function
 scaleFUN <- function(x) sprintf("%.2f", x)
 
 nt_as_c_mc_reli <- ggplot() +
-  #geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25, color = "available sensors"), size=0.5) +
+  #geom_line(data=nt_fr_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*25, color = "available sensors"), size=0.5) +
   geom_hline(yintercept = rmin*100, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = r*100, color = 'black') +
   geom_hline(yintercept = rmax*100, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="untamed"), size=1) +
-  stat_smooth(data=nt_as_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="untamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=t_a_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="tamed"), size=1) +
-  stat_smooth(data=t_a_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="tamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, rmin*100, label = 'setpoint', vjust = -1), size=3)+
+  #geom_line(data=nt_fr_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="untamed"), size=1) +
+  stat_smooth(data=nt_fr_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="untamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
+  #geom_line(data=t_fr_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="tamed"), size=1) +
+  stat_smooth(data=t_fr_c_m_data, aes(TIME..ms./1000, RELIABILITY*100, color="tamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
+  geom_text(aes(1, rmin*100, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100))) +
   labs(x="time(s)", y="reliability (%)") +  
   theme(legend.position='bottom', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
+  coord_cartesian(xlim=c(0, 30), ylim=c(0, 100))
 
 nt_as_c_mc_cost <- ggplot() +
-  #geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.175, color="available sensors"), size=0.5) +
+  #geom_line(data=nt_fr_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.175, color="available sensors"), size=0.5) +
   geom_hline(yintercept = cmin, color = 'black', linetype=2, alpha=0.3) +
   geom_hline(yintercept = c, color = 'black') +
   geom_hline(yintercept = cmax, color = 'black', linetype=2, alpha=0.3) +
-  #geom_line(data=nt_as_c_m_data, aes(TIME..ms./1000, COST, color="untamed"), size=1) +
-  stat_smooth(data=nt_as_c_m_data, aes(TIME..ms./1000, COST, color="untamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  #geom_line(data=t_a_m_data, aes(TIME..ms./1000, COST, color="tamed"), size=1) +
-  stat_smooth(data=t_a_m_data, aes(TIME..ms./1000, COST, color="tamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
-  geom_text(aes(5, cmin, label = 'setpoint', vjust = -1), size=3)+
+  #geom_line(data=nt_fr_c_m_data, aes(TIME..ms./1000, COST, color="untamed"), size=1) +
+  stat_smooth(data=nt_fr_c_m_data, aes(TIME..ms./1000, COST, color="untamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
+  #geom_line(data=t_fr_c_m_data, aes(TIME..ms./1000, COST, color="tamed"), size=1) +
+  stat_smooth(data=t_fr_c_m_data, aes(TIME..ms./1000, COST, color="tamed"), method = lm, formula = y ~ poly(x, 25), se = FALSE) +
+  geom_text(aes(1, cmin, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(labels=scaleFUN, breaks=sort(c(seq(0,0.7,length.out=5), c))) +
   labs(x="time (s)", y="cost (W)") +  
   theme(legend.position='none', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.70))
+  coord_cartesian(xlim=c(0, 30), ylim=c(0, 0.70))
 
 legend <- get_legend(nt_as_c_mc_reli)
 nt_as_c_mc_pg <- plot_grid(nt_as_c_mc_reli+theme(legend.position='none'),nt_as_c_mc_cost, ncol=1)

@@ -22,7 +22,7 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
     data_accuracy(1),
     comm_accuracy(1),
     active(true),
-    params({{"freq",0.90},{"m_avg",5}}),
+    params({{"freq",0.9},{"m_avg",5}}),
     markov(),
     filter(5),
     sensorConfig(),
@@ -167,7 +167,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             sendMonitorTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
         }
 
-        { // recharge routine
+        /*{ // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 90){
@@ -184,7 +184,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             //sendContextInfo("TEMP_available", active);
             sendMonitorContextInfo("TEMP_available",active);
 
-        }
+        }*/
 
         /*
          * Receive control command and module update
@@ -196,10 +196,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             params["freq"] = container.getData<ThermometerControlCommand>().getFrequency();
         }
 
-        if(!active){ 
+        /*if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }
+        }*/
 
         /*
          * Module execution

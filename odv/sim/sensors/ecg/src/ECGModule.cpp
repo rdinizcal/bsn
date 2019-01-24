@@ -16,7 +16,7 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
     type("ecg"),
-    battery("ecg_batt",100,90,1),
+    battery("ecg_batt",100,100,1),
     available(true),
     data_accuracy(1),
     comm_accuracy(1),
@@ -164,7 +164,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             sendMonitorTaskInfo("G3_T1.23",0.1,comm_accuracy,params["freq"]);
         }
 
-        { // recharge routine
+        /*{ // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 80){
@@ -180,7 +180,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             }
             //sendContextInfo("ECG_available", active);
             sendMonitorContextInfo("ECG_available", active);
-        }
+        }*/
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -189,10 +189,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             params["freq"] = container.getData<ECGControlCommand>().getFrequency();
         }
 
-        if(!active){ 
+        /*if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }
+        }*/
 
         /*
          * Module execution

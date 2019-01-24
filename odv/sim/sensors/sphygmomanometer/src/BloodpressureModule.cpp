@@ -184,7 +184,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             sendMonitorTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
         }
 
-        { // recharge routine
+        /*{ // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 90){
@@ -201,7 +201,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
 
             //sendContextInfo("ABP_available", active);
             sendMonitorContextInfo("ABP_available", active);
-        }
+        }*/
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -210,10 +210,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             params["freq"] = container.getData<BloodpressureControlCommand>().getFrequency();
         }
 
-        if(!active){ 
+        /*if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }
+        }*/
 
         /*
          * Module execution
