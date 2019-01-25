@@ -120,9 +120,10 @@ void ControllerModule::setUp() {
                                         {0.8,0.85,0.9,0.95,1},
                                         {0.8,0.85,0.9,0.95,1}};
         */
-
-        for (int idx = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(4,8); ++idx){
-            actions.push_back({(double)w, (double)x, (double)y, (double)z});
+        
+        /*
+        for (int idx = 0, v = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(5,7); ++idx){
+            actions.push_back({(double)v, (double)w, (double)x, (double)y, (double)z});
 
             if(++z == 8) { 
                 z = 0;
@@ -132,6 +133,9 @@ void ControllerModule::setUp() {
                         x = 0;
                         if(++w == 8) { 
                             w = 0;
+                            if(++v == 8) { 
+                                v = 0;
+                            }
                         }
                     }
                 }
@@ -140,16 +144,18 @@ void ControllerModule::setUp() {
 
         for (std::vector<std::vector<double>>::iterator it = actions.begin(); it != actions.end(); ++it) {
             for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
-                if ((int)*itt == 0) *itt = 0.7375;
-                else if ((int)*itt == 1) *itt = 0.775;
-                else if ((int)*itt == 2) *itt = 0.8125;
-                else if ((int)*itt == 3) *itt = 0.85;
-                else if ((int)*itt == 4) *itt = 0.8875;
-                else if ((int)*itt == 5) *itt = 0.925;
-                else if ((int)*itt == 6) *itt = 0.9625;
-                else if ((int)*itt == 7) *itt = 1;
+                if ((int)*itt == 0) *itt = 0.775;
+                else if ((int)*itt == 1) *itt = 0.8125;
+                else if ((int)*itt == 2) *itt = 0.85;
+                else if ((int)*itt == 3) *itt = 0.8875;
+                else if ((int)*itt == 4) *itt = 0.925;
+                else if ((int)*itt == 5) *itt = 0.9625;
+                else if ((int)*itt == 6) *itt = 1;
             }
-        }
+        }*/
+
+        for (double idx = 0; idx <= 1; idx += 0.0009765625) actions.push_back({idx});
+
     }
 
     { // Configure persistence
@@ -220,19 +226,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
 
                     patient_health_status = container.getData<ContextInfo>().getStringValue();
 
-                    /*if (patient_health_status == "CRITICAL STATE") {
-
-                        cost_goal_min = 0;
-                        cost_goal_max = 1;
-                        reliability_goal_min = 0.98;
-                        reliability_goal_max = 1;
-
-                        contexts["SaO2_available"].setValue(true);
-                        contexts["ECG_available"].setValue(true);
-                        contexts["TEMP_available"].setValue(true);
-                        contexts["ABP_available"].setValue(true);
-
-                    } else */ if (patient_health_status == "NORMAL STATE") {
+                    if (patient_health_status == "NORMAL STATE") {
                         
                         cost_setpoint = 0.47;
                         reliability_setpoint = 0.9;
@@ -333,18 +327,20 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                 cost < cost_goal_min || cost > cost_goal_max) { //triggers adaptation
                 std::map<std::vector<double>, std::vector<double>> policies;
 
-                for (std::vector<double> strategy : actions ) { // substitutues each strategy the formulas and calculates cost and reliability
+                for (std::vector<double> action : actions ) { // substitutues each action the formulas and calculates cost and reliability
                     { // in cost formula
                         for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
 
-                            if (cost_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
-                                cost_formula_frequency.second = strategy[0];
+                            /*if (cost_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
+                                cost_formula_frequency.second = action[0];
                             } else if (cost_formula_frequency.first.find("G3_T1.2") != std::string::npos) {
-                                cost_formula_frequency.second = strategy[1];
+                                cost_formula_frequency.second = action[1];
                             } else if (cost_formula_frequency.first.find("G3_T1.3") != std::string::npos) {
-                                cost_formula_frequency.second = strategy[2];
+                                cost_formula_frequency.second = action[2];
                             } else if (cost_formula_frequency.first.find("G3_T1.4") != std::string::npos) {
-                                cost_formula_frequency.second = strategy[3];
+                                cost_formula_frequency.second = action[3];
+                            } else */if (cost_formula_frequency.first.find("G4_T1") != std::string::npos) {
+                                cost_formula_frequency.second = action[0];
                             }
                            
                         }
@@ -354,32 +350,34 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
 
                     { // in reliability formula
                         for (std::pair<std::string,double&> reliability_formula_frequency : reliability_formula_frequencies) {
-                            if (reliability_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
-                                reliability_formula_frequency.second = strategy[0];
+                            /*if (reliability_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
+                                reliability_formula_frequency.second = action[0];
                             } else if (reliability_formula_frequency.first.find("G3_T1.2") != std::string::npos) {
-                                reliability_formula_frequency.second = strategy[1];
+                                reliability_formula_frequency.second = action[1];
                             } else if (reliability_formula_frequency.first.find("G3_T1.3") != std::string::npos) {
-                                reliability_formula_frequency.second = strategy[2];
+                                reliability_formula_frequency.second = action[2];
                             } else if (reliability_formula_frequency.first.find("G3_T1.4") != std::string::npos) {
-                                reliability_formula_frequency.second = strategy[3];
+                                reliability_formula_frequency.second = action[3];
+                            } else */ if (reliability_formula_frequency.first.find("G4_T1") != std::string::npos) {
+                                reliability_formula_frequency.second = action[0];
                             }
                         }
 
                         reliability = reliability_expression.evaluate();
                     }
                     
-                    policies[strategy] = {reliability,cost};            
+                    policies[action] = {reliability,cost};            
                 }
 
                 for (std::pair<std::vector<double>,std::vector<double>> policy : policies) {
 
-                    //std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << "] ";
-                    //std::cout << "--> reliability: " << policy.second[0] << " cost: " << policy.second[1] << std::endl;
+                    std::cout << "[" << policy.first[0] /*<< "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << ", " << policy.first[4] <<*/ << "] ";
+                    std::cout << "--> reliability: " << policy.second[0] << " cost: " << policy.second[1] << std::endl;
 
                     if(policy.second[0] >= reliability_goal_min && policy.second[0] <= reliability_goal_max &&
                        policy.second[1] >= cost_goal_min && policy.second[1] <= cost_goal_max ) {
-                        std::cout << "Sending message to sensors..." << std::endl;
-                        
+                        std::cout << "Adaptation triggered!" << std::endl;
+                        /*
                         if (contexts["SaO2_available"].getValue()) {
                             OximeterControlCommand oControlCommand(contexts["SaO2_available"].getValue(), policy.first[0], 0);
                             Container oControlCommandContainer(oControlCommand);
@@ -403,6 +401,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                             Container sControlCommandContainer(sControlCommand);
                             getConference().send(sControlCommandContainer);
                         }
+                        */
+                        CentralHubControlCommand chControlCommand(true, policy.first[0]);
+                        Container chControlCommandContainer(chControlCommand);
+                        getConference().send(chControlCommandContainer);
 
                         break;
                     }

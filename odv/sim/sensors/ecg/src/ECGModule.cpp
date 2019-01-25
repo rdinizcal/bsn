@@ -155,13 +155,26 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
         }
 
         {  // update controller with task info
+            /*
+            sendContextInfo("ECG_available",true);
             sendTaskInfo("G3_T1.21",0.1,data_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.22",0.1*params["m_avg"],1,params["freq"]);
             sendTaskInfo("G3_T1.23",0.1,comm_accuracy,params["freq"]);
            // and the monitor..
+            sendMonitorContextInfo("ECG_available",true);
             sendMonitorTaskInfo("G3_T1.21",0.1,data_accuracy,params["freq"]);
             sendMonitorTaskInfo("G3_T1.22",0.1*params["m_avg"],1,params["freq"]);
             sendMonitorTaskInfo("G3_T1.23",0.1,comm_accuracy,params["freq"]);
+            */
+            sendContextInfo("ECG_available",true);
+            sendTaskInfo("G3_T1.21",0.076,1,1);
+            sendTaskInfo("G3_T1.22",0.076*params["m_avg"],1,1);
+            sendTaskInfo("G3_T1.23",0.076,1,1);
+           // and the monitor..
+            sendMonitorContextInfo("ECG_available",true);
+            sendMonitorTaskInfo("G3_T1.21",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.22",0.076*params["m_avg"],1,1);
+            sendMonitorTaskInfo("G3_T1.23",0.076,1,1);
         }
 
         /*{ // recharge routine

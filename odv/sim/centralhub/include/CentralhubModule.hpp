@@ -14,6 +14,8 @@
 #include "bsn/msg/info/ContextInfo.hpp"
 #include "bsn/msg/info/MonitorTaskInfo.hpp"
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/control/CentralHubControlCommand.hpp"
+
 
 
 class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -35,6 +37,10 @@ class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceCli
 
     private:
         odcore::base::FIFOQueue buffer;
+        odcore::base::FIFOQueue localQueue;
+
+        bool active;
+		std::map<std::string,double> params;
 
         uint32_t connect;
         uint32_t port;

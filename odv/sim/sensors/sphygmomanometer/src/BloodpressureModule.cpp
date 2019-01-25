@@ -173,15 +173,30 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         }
 
         {  // update controller with task info
+            /*
+            sendContextInfo("ABP_available",true);
             sendTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
             sendTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
             sendTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
            // and the monitor..
+            sendMonitorContextInfo("ABP_available",true);
             sendMonitorTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
             sendMonitorTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
             sendMonitorTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
             sendMonitorTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+            */
+            sendContextInfo("ABP_available",true);
+            sendTaskInfo("G3_T1.411",0.076,1,1);
+            sendTaskInfo("G3_T1.412",0.076,1,1);
+            sendTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,1);
+            sendTaskInfo("G3_T1.43",0.076*2,(1+1)/2,1);
+           // and the monitor..
+            sendMonitorContextInfo("ABP_available",true);
+            sendMonitorTaskInfo("G3_T1.411",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.412",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,1);
+            sendMonitorTaskInfo("G3_T1.43",0.076*2,(1+1)/2,1);
         }
 
         /*{ // recharge routine

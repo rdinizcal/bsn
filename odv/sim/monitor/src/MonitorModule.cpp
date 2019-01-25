@@ -151,8 +151,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode MonitorModule::body(){
                 tasks[task_id].setReliability(task_reliability);
                 tasks[task_id].setFrequency(task_frequency);
 
-                if(task_id.find("G4") != std::string::npos) cout << tasks[task_id].getCost() << " " << tasks[task_id].getReliability() << " " << tasks[task_id].getFrequency();
-
             } else if (container.getDataType() == 707) { // update context
 
                 std::string context_id = container.getData<MonitorContextInfo>().getContext();

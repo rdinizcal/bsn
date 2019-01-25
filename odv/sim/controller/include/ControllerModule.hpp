@@ -22,6 +22,7 @@
 #include "bsn/msg/control/OximeterControlCommand.hpp"
 #include "bsn/msg/control/ECGControlCommand.hpp"
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
+#include "bsn/msg/control/CentralHubControlCommand.hpp"
 
 #include "bsn/time/TimeData.hpp"
 
