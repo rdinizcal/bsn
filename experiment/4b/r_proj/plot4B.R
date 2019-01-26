@@ -31,9 +31,9 @@ nt_as_c_mc_reli <- ggplot() +
   geom_text(aes(1, rmin*100, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100))) +
-  labs(x="time(s)", y="reliability (%)") +  
+  labs(x="", y="") +  
   theme(legend.position='bottom', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 30), ylim=c(0, 100))
+  coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
 
 nt_as_c_mc_cost <- ggplot() +
   #geom_line(data=nt_fr_c_m_data, aes(TIME..ms./1000,(OXIM+ECG+TEMP+ABP)*0.175, color="available sensors"), size=0.5) +
@@ -47,13 +47,13 @@ nt_as_c_mc_cost <- ggplot() +
   geom_text(aes(1, cmin, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(labels=scaleFUN, breaks=sort(c(seq(0,0.7,length.out=5), c))) +
-  labs(x="time (s)", y="cost (W)") +  
+  labs(x="time (s)", y="") +  
   theme(legend.position='none', axis.text=element_text(size=10)) +
-  coord_cartesian(xlim=c(0, 30), ylim=c(0, 0.70))
+  coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.70))
 
 legend <- get_legend(nt_as_c_mc_reli)
 nt_as_c_mc_pg <- plot_grid(nt_as_c_mc_reli+theme(legend.position='none'),nt_as_c_mc_cost, ncol=1)
-plot_grid(nt_as_c_mc_pg, legend, ncol=1, rel_heights=c(1,0.05))
+#plot_grid(nt_as_c_mc_pg, legend, ncol=1, rel_heights=c(1,0.05))
 ###########################################################
 ##          Plot constant vs. tamed scenario             ##
 ###########################################################
