@@ -359,7 +359,7 @@ nt_as_c_mc_reli <- ggplot() +
   geom_text(aes(5, rmin*100, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100))) +
-  labs(x="time(s)", y="reliability (%)") +  
+  labs(x="", y="reliability (%)") +  
   theme(legend.position='bottom', axis.text=element_text(size=10)) +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
 
