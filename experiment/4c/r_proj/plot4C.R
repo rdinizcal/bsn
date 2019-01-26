@@ -31,7 +31,7 @@ nt_as_c_mc_reli <- ggplot() +
   geom_text(aes(1, rmin*100, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(breaks=sort(c(seq(0,100,length.out=5), r*100))) +
-  labs(x="", y="") +  
+  labs(x="", y="reliability (%)") +  
   theme(legend.position='bottom', axis.text=element_text(size=10)) +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 100))
 
@@ -47,7 +47,7 @@ nt_as_c_mc_cost <- ggplot() +
   geom_text(aes(1, cmin, label = 'setpoint', vjust = -1), size=3)+
   scale_color_manual(values=c("tamed"='blue',"untamed"='red'), name = "") +
   scale_y_continuous(labels=scaleFUN, breaks=sort(c(seq(0,0.7,length.out=5), c))) +
-  labs(x="time (s)", y=")") +  
+  labs(x="time (s)", y="cost (W)") +  
   theme(legend.position='none', axis.text=element_text(size=10)) +
   coord_cartesian(xlim=c(0, 300), ylim=c(0, 0.70))
 
