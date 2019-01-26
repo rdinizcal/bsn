@@ -121,7 +121,6 @@ void ControllerModule::setUp() {
                                         {0.8,0.85,0.9,0.95,1}};
         */
         
-        /*
         for (int idx = 0, v = 0, w = 0, x = 0, y = 0, z = 0; idx < std::pow(5,7); ++idx){
             actions.push_back({(double)v, (double)w, (double)x, (double)y, (double)z});
 
@@ -144,17 +143,28 @@ void ControllerModule::setUp() {
 
         for (std::vector<std::vector<double>>::iterator it = actions.begin(); it != actions.end(); ++it) {
             for (std::vector<double>::iterator itt = (*it).begin(); itt != (*it).end(); ++itt) {
-                if ((int)*itt == 0) *itt = 0.775;
-                else if ((int)*itt == 1) *itt = 0.8125;
-                else if ((int)*itt == 2) *itt = 0.85;
-                else if ((int)*itt == 3) *itt = 0.8875;
-                else if ((int)*itt == 4) *itt = 0.925;
-                else if ((int)*itt == 5) *itt = 0.9625;
-                else if ((int)*itt == 6) *itt = 1;
+                if ((int)*itt == 0) *itt = 0.7375;
+                else if ((int)*itt == 1) *itt = 0.775;
+                else if ((int)*itt == 2) *itt = 0.8125;
+                else if ((int)*itt == 3) *itt = 0.85;
+                else if ((int)*itt == 4) *itt = 0.8875;
+                else if ((int)*itt == 5) *itt = 0.925;
+                else if ((int)*itt == 6) *itt = 0.9625;
+                else if ((int)*itt == 7) *itt = 1;
             }
-        }*/
+        }
 
-        for (double idx = 0; idx <= 1; idx += 0.0009765625) actions.push_back({idx});
+        // for (double idx = 0; idx <= 1; idx += 0.0009765625) actions.push_back({idx});
+       for (std::vector<std::vector<double>>::iterator it = actions.begin(); it != actions.end(); ++it) {
+                if ((*it)[4] == 0.7375) (*it)[4] = 0.9125;
+                else if ((*it)[4] == 0.775) (*it)[4] = 0.925;
+                else if ((*it)[4] == 0.8125) (*it)[4] = 0.9375;
+                else if ((*it)[4] == 0.85) (*it)[4] = 0.95;
+                else if ((*it)[4] == 0.8875) (*it)[4] = 0.9625;
+                else if ((*it)[4] == 0.925) (*it)[4] = 0.975;
+                else if ((*it)[4] == 0.9625) (*it)[4] = 0.9875;
+                else if ((*it)[4] == 1) (*it)[4] = 1;
+       }
 
     }
 
@@ -231,11 +241,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                         cost_setpoint = 0.47;
                         reliability_setpoint = 0.9;
 
-                        cost_goal_min = cost_setpoint*0.98;
-                        cost_goal_max = cost_setpoint*1.02;
+                        cost_goal_min = cost_setpoint*0.95;
+                        cost_goal_max = cost_setpoint*1.05;
 
-                        reliability_goal_min = reliability_setpoint*0.98;
-                        reliability_goal_max = reliability_setpoint*1.02;
+                        reliability_goal_min = reliability_setpoint*0.95;
+                        reliability_goal_max = reliability_setpoint*1.05;
 
                     }
                 } 
@@ -331,7 +341,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                     { // in cost formula
                         for (std::pair<std::string,double&> cost_formula_frequency : cost_formula_frequencies) {
 
-                            /*if (cost_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
+                            if (cost_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
                                 cost_formula_frequency.second = action[0];
                             } else if (cost_formula_frequency.first.find("G3_T1.2") != std::string::npos) {
                                 cost_formula_frequency.second = action[1];
@@ -339,8 +349,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                                 cost_formula_frequency.second = action[2];
                             } else if (cost_formula_frequency.first.find("G3_T1.4") != std::string::npos) {
                                 cost_formula_frequency.second = action[3];
-                            } else */if (cost_formula_frequency.first.find("G4_T1") != std::string::npos) {
-                                cost_formula_frequency.second = action[0];
+                            } else if (cost_formula_frequency.first.find("G4_T1") != std::string::npos) {
+                                cost_formula_frequency.second = action[4];
                             }
                            
                         }
@@ -350,7 +360,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
 
                     { // in reliability formula
                         for (std::pair<std::string,double&> reliability_formula_frequency : reliability_formula_frequencies) {
-                            /*if (reliability_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
+                            if (reliability_formula_frequency.first.find("G3_T1.1") != std::string::npos) {
                                 reliability_formula_frequency.second = action[0];
                             } else if (reliability_formula_frequency.first.find("G3_T1.2") != std::string::npos) {
                                 reliability_formula_frequency.second = action[1];
@@ -358,8 +368,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                                 reliability_formula_frequency.second = action[2];
                             } else if (reliability_formula_frequency.first.find("G3_T1.4") != std::string::npos) {
                                 reliability_formula_frequency.second = action[3];
-                            } else */ if (reliability_formula_frequency.first.find("G4_T1") != std::string::npos) {
-                                reliability_formula_frequency.second = action[0];
+                            } else if (reliability_formula_frequency.first.find("G4_T1") != std::string::npos) {
+                                reliability_formula_frequency.second = action[4];
                             }
                         }
 
@@ -371,13 +381,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
 
                 for (std::pair<std::vector<double>,std::vector<double>> policy : policies) {
 
-                    std::cout << "[" << policy.first[0] /*<< "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << ", " << policy.first[4] <<*/ << "] ";
+                    std::cout << "[" << policy.first[0] << "," << policy.first[1] << "," << policy.first[2] << "," << policy.first[3] << ", " << policy.first[4] << "] ";
                     std::cout << "--> reliability: " << policy.second[0] << " cost: " << policy.second[1] << std::endl;
 
                     if(policy.second[0] >= reliability_goal_min && policy.second[0] <= reliability_goal_max &&
                        policy.second[1] >= cost_goal_min && policy.second[1] <= cost_goal_max ) {
                         std::cout << "Adaptation triggered!" << std::endl;
-                        /*
+                        
                         if (contexts["SaO2_available"].getValue()) {
                             OximeterControlCommand oControlCommand(contexts["SaO2_available"].getValue(), policy.first[0], 0);
                             Container oControlCommandContainer(oControlCommand);
@@ -401,8 +411,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ControllerModule::body
                             Container sControlCommandContainer(sControlCommand);
                             getConference().send(sControlCommandContainer);
                         }
-                        */
-                        CentralHubControlCommand chControlCommand(true, policy.first[0]);
+                        
+                        CentralHubControlCommand chControlCommand(true, policy.first[4]);
                         Container chControlCommandContainer(chControlCommand);
                         getConference().send(chControlCommandContainer);
 

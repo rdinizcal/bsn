@@ -154,29 +154,29 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
         }
 
         {  // update controller with task info
-            /*
+            /*tamed
             sendContextInfo("SaO2_available",true);
-            sendTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.11",0.076,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.12",0.076*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.13",0.076,comm_accuracy,params["freq"]);
            // and the monitor..
             sendMonitorContextInfo("SaO2_available",true);
-            sendMonitorTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.11",0.076,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.12",0.076*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.13",0.076,comm_accuracy,params["freq"]);
             */
-            sendContextInfo("SaO2_available",true);
-            sendTaskInfo("G3_T1.11",0.076,1,1);
+           /* untamed */
+            sendTaskInfo("G3_T1.11",0.076,data_accuracy,1);
             sendTaskInfo("G3_T1.12",0.076*params["m_avg"],1,1);
-            sendTaskInfo("G3_T1.13",0.076,1,1);
+            sendTaskInfo("G3_T1.13",0.076,comm_accuracy,1);
            // and the monitor..
-            sendMonitorContextInfo("SaO2_available",true);
-            sendMonitorTaskInfo("G3_T1.11",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.12",0.076*params["m_avg"],1,1);
-            sendMonitorTaskInfo("G3_T1.13",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.11",0.076,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.12",0.076*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.13",0.076,comm_accuracy,params["freq"]);
+            
         }
 
-        /*{ // recharge routine
+        { // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 90){
@@ -185,14 +185,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             if(active && battery.getCurrentLevel() < 2){
                 active = false;
             }
-
+            
             if (rand()%10 > 6) {
                 bool x_active = (rand()%2==0)?active:!active;
                 sendContextInfo("SaO2_available", x_active);
             }
+            
             //sendContextInfo("SaO2_available", active);
             sendMonitorContextInfo("SaO2_available", active);
-        }*/
+        }
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -201,10 +202,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             params["freq"] = container.getData<OximeterControlCommand>().getFrequency();
         }
 
-        /*if(!active){ 
+        if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }*/
+        }
 
         /*
          * Module execution

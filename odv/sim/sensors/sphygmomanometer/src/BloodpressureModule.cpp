@@ -173,33 +173,33 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
         }
 
         {  // update controller with task info
-            /*
+        /* tamed
             sendContextInfo("ABP_available",true);
-            sendTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
-            sendTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+            sendTaskInfo("G3_T1.411",0.076,systdata_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.412",0.076,diasdata_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,params["freq"]);
+            sendTaskInfo("G3_T1.43",0.076*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
            // and the monitor..
             sendMonitorContextInfo("ABP_available",true);
-            sendMonitorTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
-            */
-            sendContextInfo("ABP_available",true);
-            sendTaskInfo("G3_T1.411",0.076,1,1);
-            sendTaskInfo("G3_T1.412",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.411",0.076,systdata_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.412",0.076,diasdata_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.43",0.076*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+          */
+           /*untamed*/
+            sendTaskInfo("G3_T1.411",0.076,systdata_accuracy,1);
+            sendTaskInfo("G3_T1.412",0.076,diasdata_accuracy,1);
             sendTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,1);
-            sendTaskInfo("G3_T1.43",0.076*2,(1+1)/2,1);
+            sendTaskInfo("G3_T1.43",0.076*2,(systcomm_accuracy+diascomm_accuracy)/2,1);
            // and the monitor..
-            sendMonitorContextInfo("ABP_available",true);
-            sendMonitorTaskInfo("G3_T1.411",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.412",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,1);
-            sendMonitorTaskInfo("G3_T1.43",0.076*2,(1+1)/2,1);
+            sendMonitorTaskInfo("G3_T1.411",0.076,systdata_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.412",0.076,diasdata_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.43",0.076*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
+            
         }
 
-        /*{ // recharge routine
+        { // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 90){
@@ -214,9 +214,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 sendContextInfo("ABP_available", x_active);
             }
 
-            //sendContextInfo("ABP_available", active);
+            //sendContextInfo("ABP_available", false);
             sendMonitorContextInfo("ABP_available", active);
-        }*/
+        }
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -225,10 +225,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             params["freq"] = container.getData<BloodpressureControlCommand>().getFrequency();
         }
 
-        /*if(!active){ 
+        if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }*/
+        }
 
         /*
          * Module execution

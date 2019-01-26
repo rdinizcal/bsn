@@ -158,29 +158,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         }
         
         { // update controller with task info 
-        /*           
+            /* tamed       
             sendContextInfo("TEMP_available",true);
-            sendTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.31",0.076,data_accuracy,params["freq"]);
+            sendTaskInfo("G3_T1.32",0.076*params["m_avg"],1,params["freq"]);
+            sendTaskInfo("G3_T1.33",0.076,comm_accuracy,params["freq"]);
           // and the monitor..
             sendMonitorContextInfo("TEMP_available",true);
-            sendMonitorTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
-        */
-            sendContextInfo("TEMP_available",true);
-            sendTaskInfo("G3_T1.31",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.31",0.076,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.32",0.076*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.33",0.076,comm_accuracy,params["freq"]);
+            */
+            /* untamed */
+            sendTaskInfo("G3_T1.31",0.076,data_accuracy,1);
             sendTaskInfo("G3_T1.32",0.076*params["m_avg"],1,1);
-            sendTaskInfo("G3_T1.33",0.076,1,1);
+            sendTaskInfo("G3_T1.33",0.076,comm_accuracy,1);
           // and the monitor..
-            sendMonitorContextInfo("TEMP_available",true);
-            sendMonitorTaskInfo("G3_T1.31",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.32",0.076*params["m_avg"],1,1);
-            sendMonitorTaskInfo("G3_T1.33",0.076,1,1);
+            sendMonitorTaskInfo("G3_T1.31",0.076,data_accuracy,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.32",0.076*params["m_avg"],1,params["freq"]);
+            sendMonitorTaskInfo("G3_T1.33",0.076,comm_accuracy,params["freq"]);
         }
 
-        /*{ // recharge routine
+        { // recharge routine
             //for debugging
             cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
             if(!active && battery.getCurrentLevel() > 90){
@@ -194,10 +193,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                     bool x_active = (rand()%2==0)?active:!active;
                     sendContextInfo("TEMP_available", x_active);
             }
+            
             //sendContextInfo("TEMP_available", active);
             sendMonitorContextInfo("TEMP_available",active);
 
-        }*/
+        }
 
         /*
          * Receive control command and module update
@@ -209,10 +209,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
             params["freq"] = container.getData<ThermometerControlCommand>().getFrequency();
         }
 
-        /*if(!active){ 
+        if(!active){ 
             if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
             continue; 
-        }*/
+        }
 
         /*
          * Module execution
