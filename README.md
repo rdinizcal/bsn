@@ -1,96 +1,47 @@
 # BSN
 
-**B**ody **S**ensor **N**etwork é o protótipo de sistema de software para uma rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo.
+**B**ody **S**ensor **N**etwork is a software system prototype of a sensor network for monitoring human body vital signs with self-adaptability capabilities.
 
-### Pré-Requisitos
+### Folder content
 
-É necessário ter a versão v4.16.0 do OpenDaVINCI instalada para executar o 
-protótipo. O *framework* pode ser encontrado no repositório: 
-https://github.com/se-research/OpenDaVINCI, onde há instruções para 
-instalação para diversos sistemas operacionais. Link para o pacote 
-pré-compilado: https://github.com/se-research/OpenDaVINCI/blob/master/docs/installation.pre-compiled.rst
+./docs - contains the goal models and formulae generated
+./experiment - contains the details, data and r algorithms used to derive the graphs in the paper
+./lepton - contains the library used for formulae parsing
+./libbsn - contains the classes the support the bsn
+./odv - contains the modules used in bsn execution and configuration files
 
-Para execução em tempo real (*realtime*) o sistema operacional de execução do protótipo deve permitir esse tipo de operação. 
+### Prerequesites
 
-É usada também a biblioteca 'cxx test' para testar o programa. Para 
-baixá-la basta digitar o seguinte comando:
+You must have OpenDaVINCI version v4.16.0 installed to run the prototype. The * framework * can be found in the repository: https://github.com/se-research/OpenDaVINCI, where there are various operating systems. Link to the precompiled package: https://github.com/se-research/OpenDaVINCI/blob/master/docs/installation.pre-compiled.rst
 
-```
-sudo apt-get install cxxtest
-```
+### Compiling
 
-### Instalação
-
-Um passo-a-passo com exemplos descrevem como instalar o BSN (testado em Linux Ubuntu 16.04).
-
-Clone o galho específico do repositório
+To compile, one must execute the compile.sh file:
 
 ```
-git clone https://github.com/leooleo/bsn
+sudo bash compile.sh
 ```
 
-## Compilação
+The installation shall be automatic.
 
-Apenas rode o script com:
+### Execution
 
-```
-bash script.sh
-```
-
-A instalção será feita de forma automática.
-
-### Execução
-
-Para executar o protótipo deve-se executar o escalonador dos módulos do próprio OpenDaVINCI, o odsupercomponent, para então executá-los:
-
-Antes de executar, o arquivo configuration.txt do diretorio *configs* deve ser colocado em */opt/od/bin/*
+A standard execution can be performed by calling, used for the experiments:
 
 ```
-sudo cp /configs/configuration /opt/od/bin/
+sudo bash launch.sh
 ```
-O comando 
 
-```
-sudo odsupercomponent --cid=111 --freq=10 --realtime=20 --managed=simulation_rt
-```
-é utilizado para iniciar a execução de uma conferência. Cada conferência é definida pelo parâmetro --cid. Para iniciar a execução do CentralHub, é necessário estar dentro da pasta configs:
+If one wants to execute in a different set, it is straightforward to execute separately the commandlines place in launch.sh. Other instructions about configuring the OpenDaVINCI commandline execution instructions can be found in their GitHub.
 
-```
-cd odv/centralhub/configs
-```
-e então, iniciar o odsupercomponent, com um cid à sua escolha. Após isso, em um outro terminal, utilize
-```
-cd odv/centralhub/listener && ./tcp_listenerApp --cid=
-```
-e 
-```
-cd odv/centralhub/processor && ./ProcessorApp --cid= 
-```
-com o mesmo cid do odsupercomponent iniciado nas configurações do CentralHub. 
+### Configurations
 
-Para execução do SensorNode, é necessário iniciar um odsupercomponent para cada tipo de sensor. Atualmente, temos 4 tipos de sensores: termômetro, oxímetro, eletrocardíografo e pressão arterial. Cada sensor possui seu arquivo de configuração próprio, encontrado em odv/sensornode/configs e é possível utilizar mais de um sensor na mesma conferência, sendo necessário apenas mudanças nas configurações.
+* Operational System - Linux Ubuntu 16.04
+* Compiler -  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.5)
 
-Para executar o SensorNode por completo, é necessário utilizar os seguintes comandos, após iniciar um odsupercomponent com cid própria:
-```
-cd odv/sensornode/collector/build && ./DataCollectorApp --cid=
-```
-```
-cd odv/sensornode/filter/build && ./FilterModulleApp --cid=
-```
-```
-cd odv/sensornode/sender/build && ./SenderApp --cid=
-```
-Cada comando deve ser utilizado em terminais distintos, estando na pasta bsn. A cid deve ser a mesma utilizada pelo odsupercomponent correspondente à conferência que deseja executar.
-
-O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) com sincronização dos módulos com a frequência de 10Hz.
-
-## Configurações de teste
-
-* Sistema Operacional - Linux Ubuntu 16.04
-* Compilador -  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.5)
-
-## Autores
+## Authors
 
 * **Ricardo D. Caldas** - https://github.com/rdinizcal
 * **Gabriel Levi** - https://github.com/gabrielevi10
 * **Léo Moraes** - https://github.com/leooleo 
+* **Genaína N. Rodrigues** _(adviser)_ - genaina@unb.br
