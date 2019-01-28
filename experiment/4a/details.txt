@@ -1,40 +1,31 @@
-Experiment for section 4B
+Experiments for section 4
 
-- We can explore 4 uncertainty variables in runtime model: costs, reliabilities, frequencies and sensors activation. Though, we will make sure to explore scenarios where we present the controlled system behavior with one or more untamed uncertainties and with all uncertainties tamed. Thus, evidencing that our approach guides the development of controllers with capabilities of taming uncertainties in runtime.
+- We can explore 3 uncertainty classes in the bsn through formulae variables: costs, reliabilities, frequencies and sensors availability. With it, we want to make sure that we explore scenarios where we present the controlled system behavior with one or more untamed uncertainties and with all uncertainties tamed. Thus, evidencing that our approach guides the development of controllers capable of taming uncertainties in runtime.
 
 - Our experimentation scenarios are:
-   1) without approach (¿maybe the uncontrolled system?) <-
-   2) approach without taming uncertainties
-        2.1) not taming any
-        2.2) not taming cost
-        2.3) not taming reliability
-        2.4) not taming frequencies
-        2.5) not taming active sensors <-
-                2.5.1) by not informing the controller that a sensor have been deactivated or
-                        ´´´
-                        //sendContextInfo("ABP_available", active);
-                        ´´´
-                2.5.2) by randomizing inside the controller whether the sensors are active
-                        ´´´
-                        if (rand()%10 > 6) {
-                                bool x_active = (rand()%2==0)?active:!active;
-                                sendContextInfo("ABP_available", x_active);
-                        }
-                        ´´´
-            sendMonitorContextInfo("ABP_available", active);
-   3) approach with taming uncertainties
-        3.1) taming all uncertainties <-
-        3.2) taming only cost
-        3.3) taming only reliability
-        3.4) taming only frequencies
-        3.5) taming only active sensors
 
-* where taming an uncertainty is to take its real value to runtime model,
-  and not taming is by pluggin approximated (or random) values to the model
+   1) approach untamed uncertainties
+        1.1) untamed environmental sources
+                1.1.1) uncertain available sensors @ runtime 
+                1.1.2) uncertainty regarding the presence of the moving average filter 
+        1.2) untamed system goals sources
+                1.2.1) uncertainty regarding the sensors sampling rate configuration  (in progress..)
+                              -- may harm patients with specific usage profile (e.g. cardiac)
+       1.3) untamed system itself sources
+                1.3.1) uncertain centralhub reliability 
+                              -- may be due to exceeding patients (messaging queue overflow)
+       1.4) untamed sources salad
+                1.4.1) mix all three sources above 
 
-- adaptation goal:
+   2) approach tamed uncertainties
+        2.1) no uncertainties with respect to the modeled ones (done)
 
-        cost_setpoint = 0.0047;
-        reliability_setpoint = 0.9;
-
-- 5 minutes execution for both scenarios
+- policies:
+     adaptation goals:
+          cost setpoint = 0.47 w +- 2%;
+          reliability setpoint =  90% +- 2%;
+     actions (knobs): 
+          change sensors sampling rate
+          change centralhub frequency
+   
+- 5 minutes execution
