@@ -1,0 +1,402 @@
+{
+  "actors": [
+    {
+      "id": "1e1efc9b-9e95-442b-94f8-129165642de4",
+      "text": "BSN",
+      "type": "istar.Actor",
+      "x": 160,
+      "y": 33,
+      "nodes": [
+        {
+          "id": "f86f961e-3866-4eef-b220-00be273f4e28",
+          "text": "G1: Emergency is detected",
+          "type": "istar.Goal",
+          "x": 644,
+          "y": 33,
+          "customProperties": {
+            "selected": "true"
+          }
+        },
+        {
+          "id": "bc0563bd-1b58-41ac-adb1-0b49c76957e6",
+          "text": "G2: Patient status is monitored",
+          "type": "istar.Goal",
+          "x": 641,
+          "y": 97
+        },
+        {
+          "id": "f7ae3b4b-62dd-4456-b58d-f8cdb26f3c9e",
+          "text": "G4: Vital signs are analyzed",
+          "type": "istar.Goal",
+          "x": 846,
+          "y": 164
+        },
+        {
+          "id": "3700ada8-0515-48f8-8bee-6c3854a93f3f",
+          "text": "G3: Vital signs are monitored",
+          "type": "istar.Goal",
+          "x": 549,
+          "y": 159
+        },
+        {
+          "id": "8e003be8-3661-4b15-a45f-81e6f814b9b3",
+          "text": "T1: Monitor vital signs [D M(T1.1,T1.2,T 1.3,T1.4,T1.X) ]",
+          "type": "istar.Task",
+          "x": 534,
+          "y": 232
+        },
+        {
+          "id": "a326d06a-39fa-49d8-9f17-8e2f05addead",
+          "text": "T1.1: Collect SaO2 data",
+          "type": "istar.Task",
+          "x": 347,
+          "y": 285,
+          "customProperties": {
+            "creationProperty": "assertion trigger SaO2_sensor = true"
+          }
+        },
+        {
+          "id": "331a250b-d16d-4f1c-94a0-bc01195dec3d",
+          "text": "T1.2: Collect ECG data",
+          "type": "istar.Task",
+          "x": 426,
+          "y": 334,
+          "customProperties": {
+            "creationProperty": "assertion trigger ECG_sensor = true"
+          }
+        },
+        {
+          "id": "fd04fbff-1238-406b-8c39-e781b578c08c",
+          "text": "T1.3: Collect TEMP data",
+          "type": "istar.Task",
+          "x": 532,
+          "y": 334,
+          "customProperties": {
+            "creationProperty": "assertion trigger TEMP_sensor = true"
+          }
+        },
+        {
+          "id": "f7cb8206-18d8-41b5-ad6c-9a33b96cea9e",
+          "text": "T1.4: Collect ABP data",
+          "type": "istar.Task",
+          "x": 647,
+          "y": 338,
+          "customProperties": {
+            "creationProperty": "assertion trigger ABP_sensor = true"
+          }
+        },
+        {
+          "id": "e071097c-ccd6-44b9-926c-d1d4d1b03296",
+          "text": "T1: Analyze vital signs",
+          "type": "istar.Task",
+          "x": 856,
+          "y": 235,
+          "customProperties": {
+            "creationProperty": "assertion trigger SaO2_data>0 & SaO2_data<100 & ECG_data>0 & ECG_data<300 & TEMP_data>0 & TEMP_data<50 & Systolic_data>0 & Systolic_data<300 & Diastolic_data>0 & Diastolic_data<300"
+          }
+        },
+        {
+          "id": "d162df62-ea6e-4a59-99fb-f7c08dfa1976",
+          "text": "T1.X: Unknown",
+          "type": "istar.Task",
+          "x": 700,
+          "y": 297,
+          "customProperties": {
+            "creationProperty": "assertion trigger Unknown_sensor = true"
+          }
+        },
+        {
+          "id": "dfd67495-335b-4a05-bf6a-7183e008ee1f",
+          "text": "T1.11: Read data",
+          "type": "istar.Task",
+          "x": 175,
+          "y": 308
+        },
+        {
+          "id": "0f7698fe-9797-4f35-abee-473d42f4f7a0",
+          "text": "T1.13: Transfer data",
+          "type": "istar.Task",
+          "x": 190,
+          "y": 395
+        },
+        {
+          "id": "458ceca7-03e9-44a5-a1b7-5b187ca3cfca",
+          "text": "T1.12: Filter data",
+          "type": "istar.Task",
+          "x": 170,
+          "y": 352
+        },
+        {
+          "id": "c7239536-24e2-46eb-a731-5f5f0da5dbcd",
+          "text": "T1.21: Read data",
+          "type": "istar.Task",
+          "x": 267,
+          "y": 413
+        },
+        {
+          "id": "a666ca86-3dc4-4fd1-b9de-d25ccbaa6f34",
+          "text": "T1.22: Filter data",
+          "type": "istar.Task",
+          "x": 296,
+          "y": 451
+        },
+        {
+          "id": "47fbf1cd-5eb7-4c63-9731-3ecbe095c897",
+          "text": "T1.23: Transfer data",
+          "type": "istar.Task",
+          "x": 368,
+          "y": 483
+        },
+        {
+          "id": "0b827471-56e7-4845-8960-bafb293b7f81",
+          "text": "T1.31: Read data",
+          "type": "istar.Task",
+          "x": 461,
+          "y": 463
+        },
+        {
+          "id": "bd4983bd-7c9d-4762-a8df-297fe1e39ff1",
+          "text": "T1.32: Filter data",
+          "type": "istar.Task",
+          "x": 508,
+          "y": 500
+        },
+        {
+          "id": "ebe661e4-91b5-4bee-a7c7-84ff3bb916e0",
+          "text": "T1.33: Transfer data",
+          "type": "istar.Task",
+          "x": 575,
+          "y": 459
+        },
+        {
+          "id": "a7856748-bff3-4273-b1be-d9a51c1f7a4d",
+          "text": "T1.41: Read data",
+          "type": "istar.Task",
+          "x": 669,
+          "y": 448
+        },
+        {
+          "id": "dad4f592-6a93-4ef3-b53d-00dc853c0739",
+          "text": "T1.42: Filter data",
+          "type": "istar.Task",
+          "x": 775,
+          "y": 459
+        },
+        {
+          "id": "66721d8b-aff0-495e-8928-b97efd913d32",
+          "text": "T1.43: Transfer data",
+          "type": "istar.Task",
+          "x": 865,
+          "y": 436
+        },
+        {
+          "id": "2f5fb562-cff1-4208-bcfd-e26fea780aef",
+          "text": "T1.411: Read diastolic",
+          "type": "istar.Task",
+          "x": 626,
+          "y": 512
+        },
+        {
+          "id": "12141a70-8077-41f8-aad3-e89ee22894df",
+          "text": "T1.412: Read systolic",
+          "type": "istar.Task",
+          "x": 718,
+          "y": 506
+        },
+        {
+          "id": "57748dfa-a84f-4507-a0b1-c75906361dea",
+          "text": "T1.1: Fuse sensors data",
+          "type": "istar.Task",
+          "x": 828,
+          "y": 327
+        },
+        {
+          "id": "63dd8e37-ea46-4d92-80e6-c418f9b5b3a4",
+          "text": "T1.3: Persist data",
+          "type": "istar.Task",
+          "x": 1043,
+          "y": 303
+        },
+        {
+          "id": "dc1d61bb-da1b-4a54-8913-f7958a6f37d9",
+          "text": "T1.2: Detect patient status",
+          "type": "istar.Task",
+          "x": 939,
+          "y": 325
+        }
+      ]
+    }
+  ],
+  "dependencies": [],
+  "links": [
+    {
+      "id": "892ac092-3b5d-49d7-991f-5e0198f846e4",
+      "type": "istar.AndRefinementLink",
+      "source": "bc0563bd-1b58-41ac-adb1-0b49c76957e6",
+      "target": "f86f961e-3866-4eef-b220-00be273f4e28"
+    },
+    {
+      "id": "1ebd992d-cb8c-4ff6-a250-6b0002ef3c63",
+      "type": "istar.AndRefinementLink",
+      "source": "3700ada8-0515-48f8-8bee-6c3854a93f3f",
+      "target": "bc0563bd-1b58-41ac-adb1-0b49c76957e6"
+    },
+    {
+      "id": "db5140c3-4958-4021-b884-1f1ec0331f57",
+      "type": "istar.AndRefinementLink",
+      "source": "f7ae3b4b-62dd-4456-b58d-f8cdb26f3c9e",
+      "target": "bc0563bd-1b58-41ac-adb1-0b49c76957e6"
+    },
+    {
+      "id": "8f7fa9a9-4d30-45ab-8543-38da97a1759e",
+      "type": "istar.AndRefinementLink",
+      "source": "8e003be8-3661-4b15-a45f-81e6f814b9b3",
+      "target": "3700ada8-0515-48f8-8bee-6c3854a93f3f"
+    },
+    {
+      "id": "d9981c91-2e5c-49b9-9382-63fd8dcbdb9e",
+      "type": "istar.AndRefinementLink",
+      "source": "e071097c-ccd6-44b9-926c-d1d4d1b03296",
+      "target": "f7ae3b4b-62dd-4456-b58d-f8cdb26f3c9e"
+    },
+    {
+      "id": "7568f812-90d2-4eb8-9906-db1fd09a30f9",
+      "type": "istar.OrRefinementLink",
+      "source": "a326d06a-39fa-49d8-9f17-8e2f05addead",
+      "target": "8e003be8-3661-4b15-a45f-81e6f814b9b3"
+    },
+    {
+      "id": "dd59b449-751f-40f0-9991-6f11f4acd803",
+      "type": "istar.OrRefinementLink",
+      "source": "331a250b-d16d-4f1c-94a0-bc01195dec3d",
+      "target": "8e003be8-3661-4b15-a45f-81e6f814b9b3"
+    },
+    {
+      "id": "d8d0c68b-0f0c-4faf-ab40-9805a1ddf123",
+      "type": "istar.OrRefinementLink",
+      "source": "fd04fbff-1238-406b-8c39-e781b578c08c",
+      "target": "8e003be8-3661-4b15-a45f-81e6f814b9b3"
+    },
+    {
+      "id": "1006c606-2fed-401f-8b9e-90923b586a0a",
+      "type": "istar.OrRefinementLink",
+      "source": "f7cb8206-18d8-41b5-ad6c-9a33b96cea9e",
+      "target": "8e003be8-3661-4b15-a45f-81e6f814b9b3"
+    },
+    {
+      "id": "1dd5aee4-323c-4451-90cb-9136536a42e7",
+      "type": "istar.OrRefinementLink",
+      "source": "d162df62-ea6e-4a59-99fb-f7c08dfa1976",
+      "target": "8e003be8-3661-4b15-a45f-81e6f814b9b3"
+    },
+    {
+      "id": "446aba44-0d37-44a3-8590-fff4d2329fbf",
+      "type": "istar.AndRefinementLink",
+      "source": "dfd67495-335b-4a05-bf6a-7183e008ee1f",
+      "target": "a326d06a-39fa-49d8-9f17-8e2f05addead"
+    },
+    {
+      "id": "11184c2c-b64a-4ed4-8d66-4dc6b98c90b4",
+      "type": "istar.AndRefinementLink",
+      "source": "458ceca7-03e9-44a5-a1b7-5b187ca3cfca",
+      "target": "a326d06a-39fa-49d8-9f17-8e2f05addead"
+    },
+    {
+      "id": "bb88fce9-591c-4ccd-83ac-9aae045fe2f9",
+      "type": "istar.AndRefinementLink",
+      "source": "0f7698fe-9797-4f35-abee-473d42f4f7a0",
+      "target": "a326d06a-39fa-49d8-9f17-8e2f05addead"
+    },
+    {
+      "id": "92119b65-eeb3-450d-ab47-14e2126df1ed",
+      "type": "istar.AndRefinementLink",
+      "source": "c7239536-24e2-46eb-a731-5f5f0da5dbcd",
+      "target": "331a250b-d16d-4f1c-94a0-bc01195dec3d"
+    },
+    {
+      "id": "29d90acb-7e51-404d-b4d3-5b58c55d252c",
+      "type": "istar.AndRefinementLink",
+      "source": "a666ca86-3dc4-4fd1-b9de-d25ccbaa6f34",
+      "target": "331a250b-d16d-4f1c-94a0-bc01195dec3d"
+    },
+    {
+      "id": "da9c3bcc-976c-49b9-82d3-ffe8fa9ada2c",
+      "type": "istar.AndRefinementLink",
+      "source": "47fbf1cd-5eb7-4c63-9731-3ecbe095c897",
+      "target": "331a250b-d16d-4f1c-94a0-bc01195dec3d"
+    },
+    {
+      "id": "71e01ac9-6a93-4e08-b0b1-b07b54810a42",
+      "type": "istar.AndRefinementLink",
+      "source": "0b827471-56e7-4845-8960-bafb293b7f81",
+      "target": "fd04fbff-1238-406b-8c39-e781b578c08c"
+    },
+    {
+      "id": "1c138d88-d815-45d8-a845-35acdad5dea5",
+      "type": "istar.AndRefinementLink",
+      "source": "bd4983bd-7c9d-4762-a8df-297fe1e39ff1",
+      "target": "fd04fbff-1238-406b-8c39-e781b578c08c"
+    },
+    {
+      "id": "44ecee18-e5f3-4de5-a2a1-5376d87119f3",
+      "type": "istar.AndRefinementLink",
+      "source": "ebe661e4-91b5-4bee-a7c7-84ff3bb916e0",
+      "target": "fd04fbff-1238-406b-8c39-e781b578c08c"
+    },
+    {
+      "id": "a3f06d06-f0ab-4a9e-8e3d-101b470b906c",
+      "type": "istar.AndRefinementLink",
+      "source": "2f5fb562-cff1-4208-bcfd-e26fea780aef",
+      "target": "a7856748-bff3-4273-b1be-d9a51c1f7a4d"
+    },
+    {
+      "id": "0beec685-edb8-40db-af05-22e784a14275",
+      "type": "istar.AndRefinementLink",
+      "source": "12141a70-8077-41f8-aad3-e89ee22894df",
+      "target": "a7856748-bff3-4273-b1be-d9a51c1f7a4d"
+    },
+    {
+      "id": "1cf4be49-2c4b-47d5-87c5-0ee916cb9d99",
+      "type": "istar.AndRefinementLink",
+      "source": "a7856748-bff3-4273-b1be-d9a51c1f7a4d",
+      "target": "f7cb8206-18d8-41b5-ad6c-9a33b96cea9e"
+    },
+    {
+      "id": "bffda12b-55fc-44a2-87c5-d6f84cf8678a",
+      "type": "istar.AndRefinementLink",
+      "source": "dad4f592-6a93-4ef3-b53d-00dc853c0739",
+      "target": "f7cb8206-18d8-41b5-ad6c-9a33b96cea9e"
+    },
+    {
+      "id": "eccac820-c6e6-48ad-9b29-83a7b0948179",
+      "type": "istar.AndRefinementLink",
+      "source": "66721d8b-aff0-495e-8928-b97efd913d32",
+      "target": "f7cb8206-18d8-41b5-ad6c-9a33b96cea9e"
+    },
+    {
+      "id": "a140fa08-8060-41ea-8a58-c2057c4025c8",
+      "type": "istar.AndRefinementLink",
+      "source": "57748dfa-a84f-4507-a0b1-c75906361dea",
+      "target": "e071097c-ccd6-44b9-926c-d1d4d1b03296"
+    },
+    {
+      "id": "f60bf891-e8b4-4f0f-8401-4cfbb9a5dd97",
+      "type": "istar.AndRefinementLink",
+      "source": "dc1d61bb-da1b-4a54-8913-f7958a6f37d9",
+      "target": "e071097c-ccd6-44b9-926c-d1d4d1b03296"
+    },
+    {
+      "id": "8255c0db-bab0-4abe-8aed-27ec274361b6",
+      "type": "istar.AndRefinementLink",
+      "source": "63dd8e37-ea46-4d92-80e6-c418f9b5b3a4",
+      "target": "e071097c-ccd6-44b9-926c-d1d4d1b03296"
+    }
+  ],
+  "tool": "pistar.1.0.0",
+  "istar": "2.0",
+  "saveDate": "Mon, 21 Jan 2019 12:21:52 GMT",
+  "diagram": {
+    "width": 2949.5,
+    "height": 2272
+  }
+}
