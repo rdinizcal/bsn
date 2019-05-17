@@ -1,4 +1,4 @@
-#include "ThermometerModule.hpp"
+#include "ThermCollector.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -10,10 +10,8 @@ using namespace bsn::operation;
 using namespace bsn::configuration;
 
 using namespace bsn::msg::data;
-using namespace bsn::msg::info;
-using namespace bsn::msg::control;
 
-ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
+ThermCollector::ThermCollector(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
     buffer(),
     type("thermometer"),
@@ -30,9 +28,9 @@ ThermometerModule::ThermometerModule(const int32_t &argc, char **argv) :
     path("thermometer_output.csv"),
     fp() {}
 
-ThermometerModule::~ThermometerModule() {}
+ThermCollector::~ThermCollector() {}
 
-void ThermometerModule::setUp() {
+void ThermCollector::setUp() {
     //srand(time(NULL));
     addDataStoreFor(900, buffer);
     
@@ -94,125 +92,27 @@ void ThermometerModule::setUp() {
         sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
     }
 
- 
     { // Configure sensor data_accuracy
         data_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
         comm_accuracy = getKeyValueConfiguration().getValue<double>("thermometer.data_accuracy") / 100;
     }
 
-    { // Configure sensor persistency
-        persist = getKeyValueConfiguration().getValue<int>("thermometer.persist");
-        path = getKeyValueConfiguration().getValue<std::string>("thermometer.path");
-
-        if (persist) {
-            fp.open(path);
-            fp << "ID,DATA,RISK,TIME_MS" << endl;
-        }
-    }
-
 }
 
-void ThermometerModule::tearDown() {
+void ThermCollector::tearDown() {
     if (persist)
         fp.close();
 }
 
-void ThermometerModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
-    TaskInfo task(task_id, cost, reliability, frequency);
-    Container taskContainer(task);
-    getConference().send(taskContainer);
-}
-
-void ThermometerModule::sendContextInfo(const std::string &context_id, const bool &value) {
-    ContextInfo context(context_id, value, 0, 0, "");
-    Container contextContainer(context);
-    getConference().send(contextContainer);
-}
-
-void ThermometerModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
-    MonitorTaskInfo task(task_id, cost, reliability, frequency);
-    Container taskContainer(task);
-    getConference().send(taskContainer);
-}
-
-void ThermometerModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
-    MonitorContextInfo context(context_id, value, 0, 0, "");
-    Container contextContainer(context);
-    getConference().send(contextContainer);
-}
-
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollector::body(){
 
     Container container;
     double data;
     double risk;
-    bool first_exec = true;
     uint32_t id = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(first_exec){ // Send context info warning controller that this sensor is available  
-            sendContextInfo("TEMP_available",true);
-            sendMonitorContextInfo("TEMP_available",true);
-            first_exec = false; 
-        }
-        
-        { // update controller with task info 
-        /*           
-            sendContextInfo("TEMP_available",true);
-            sendTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
-          // and the monitor..
-            sendMonitorContextInfo("TEMP_available",true);
-            sendMonitorTaskInfo("G3_T1.31",0.1,data_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.32",0.1*params["m_avg"],1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.33",0.1,comm_accuracy,params["freq"]);
-        */
-            sendContextInfo("TEMP_available",true);
-            sendTaskInfo("G3_T1.31",0.076,1,1);
-            sendTaskInfo("G3_T1.32",0.076*params["m_avg"],1,1);
-            sendTaskInfo("G3_T1.33",0.076,1,1);
-          // and the monitor..
-            sendMonitorContextInfo("TEMP_available",true);
-            sendMonitorTaskInfo("G3_T1.31",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.32",0.076*params["m_avg"],1,1);
-            sendMonitorTaskInfo("G3_T1.33",0.076,1,1);
-        }
-
-        /*{ // recharge routine
-            //for debugging
-            cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
-            if(!active && battery.getCurrentLevel() > 90){
-                active = true;
-            }
-            if(active && battery.getCurrentLevel() < 2){
-                active = false;
-            }
-            
-            if (rand()%10 > 6) {
-                    bool x_active = (rand()%2==0)?active:!active;
-                    sendContextInfo("TEMP_available", x_active);
-            }
-            //sendContextInfo("TEMP_available", active);
-            sendMonitorContextInfo("TEMP_available",active);
-
-        }*/
-
-        /*
-         * Receive control command and module update
-         */
-        while(!buffer.isEmpty()){
-            container = buffer.leave();
-
-            active = container.getData<ThermometerControlCommand>().getActive();
-            params["freq"] = container.getData<ThermometerControlCommand>().getFrequency();
-        }
-
-        /*if(!active){ 
-            if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
-            continue; 
-        }*/
 
         /*
          * Module execution
@@ -220,6 +120,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
            
             { // TASK: Collect thermometer data with data_accuracy
+                
                 data = markov.calculate_state();
                 
                 double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
@@ -234,6 +135,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
 
                 //for debugging
                 std::cout << "New data: " << data << endl << endl;
+                
             }
 
             { // TASK: Filter data with moving average
@@ -258,17 +160,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermometerModule::bod
                 //cout << "Risk: " << risk << "%"  << endl;
             }
             
-        }
-
-        { // Persist sensor data
-            if (persist) {
-                fp << id++ << ",";
-                fp << data << ",";
-                fp << risk << ",";
-                fp << std::chrono::duration_cast<std::chrono::milliseconds>
-                        (std::chrono::time_point_cast<std::chrono::milliseconds>
-                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
-            }
         }
     }
 
