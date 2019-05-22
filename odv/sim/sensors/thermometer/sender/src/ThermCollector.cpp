@@ -114,51 +114,21 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollector::body()
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
 
-        /*
-         * Module execution
-         */
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
            
-            { // TASK: Collect thermometer data with data_accuracy
-                
-                data = markov.calculate_state();
-                
-                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
-
-                if (rand() % 2 == 0)
-                    data = data + offset;
-                else
-                    data = data - offset;
-
-                markov.next_state();
-                battery.consume(0.1);
-
-                //for debugging
-                std::cout << "New data: " << data << endl << endl;
-                
-            }
-
-            { // TASK: Filter data with moving average
-                filter.setRange(params["m_avg"]);
-                filter.insert(data, type);
-                data = filter.getValue(type);
-                battery.consume(0.1*params["m_avg"]);
-
-                //for debugging 
-                //cout << "Filtered data: " << data << endl;
-            }
+        
             
-            { // TASK: Transfer information to CentralHub
-                risk = sensorConfig.evaluateNumber(data);
-            
-                SensorData sdata(type, data, risk);
-                Container sdataContainer(sdata);
-                if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
-                battery.consume(0.1);
+            // TASK: Transfer information to CentralHub
+            risk = sensorConfig.evaluateNumber(data);
+        
+            SensorData sdata(type, data, risk);
+            Container sdataContainer(sdata);
+            if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
+            battery.consume(0.1);
 
-                // for debugging
-                //cout << "Risk: " << risk << "%"  << endl;
-            }
+            // for debugging
+            //cout << "Risk: " << risk << "%"  << endl;
+            
             
         }
     }

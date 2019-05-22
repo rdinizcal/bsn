@@ -166,57 +166,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(first_exec){ // Send context info warning controller that this sensor is available
-            sendContextInfo("ABP_available",true);
-            sendMonitorContextInfo("ABP_available",true);
-            first_exec = false; 
-        }
 
-        {  // update controller with task info
-            /*
-            sendContextInfo("ABP_available",true);
-            sendTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
-            sendTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
-           // and the monitor..
-            sendMonitorContextInfo("ABP_available",true);
-            sendMonitorTaskInfo("G3_T1.411",0.1,systdata_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.412",0.1,diasdata_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.42",0.1*params["m_avg"]*2,1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.43",0.1*2,(systcomm_accuracy+diascomm_accuracy)/2,params["freq"]);
-            */
-            sendContextInfo("ABP_available",true);
-            sendTaskInfo("G3_T1.411",0.076,1,1);
-            sendTaskInfo("G3_T1.412",0.076,1,1);
-            sendTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,1);
-            sendTaskInfo("G3_T1.43",0.076*2,(1+1)/2,1);
-           // and the monitor..
-            sendMonitorContextInfo("ABP_available",true);
-            sendMonitorTaskInfo("G3_T1.411",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.412",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.42",0.076*params["m_avg"]*2,1,1);
-            sendMonitorTaskInfo("G3_T1.43",0.076*2,(1+1)/2,1);
-        }
-
-        /*{ // recharge routine
-            //for debugging
-            cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
-            if(!active && battery.getCurrentLevel() > 90){
-                active = true;
-            }
-            if(active && battery.getCurrentLevel() < 2){
-                active = false;
-            }
-
-            if (rand()%10 > 6) {
-                bool x_active = (rand()%2==0)?active:!active;
-                sendContextInfo("ABP_available", x_active);
-            }
-
-            //sendContextInfo("ABP_available", active);
-            sendMonitorContextInfo("ABP_available", active);
-        }*/
+      
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
@@ -225,11 +176,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
             params["freq"] = container.getData<BloodpressureControlCommand>().getFrequency();
         }
 
-        /*if(!active){ 
-            if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
-            continue; 
-        }*/
-
+       
         /*
          * Module execution
          */
@@ -277,10 +224,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 dataD = filterDiastolic.getValue("bpmd");
                 battery.consume(0.1*params["m_avg"]);
 
-
-                //for debugging 
-                //cout << "Filtered data (systolic): " << dataS << endl;
-                //cout << "Filtered data (diastolic): " << dataD << endl;
             }
             
             { //TASK: Transfer information to CentralHub
@@ -290,8 +233,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 if((rand() % 100)+1 > int32_t(systcomm_accuracy*100))getConference().send(sdataSContainer);
                 battery.consume(0.1);
 
-                // for debugging
-                //cout << "Risk: " << risk << "%"  << endl;
+      
 
                 risk = sensorConfigDiastolic.evaluateNumber(dataD);
                 SensorData sdataD("bpmd", dataD, risk);
@@ -299,22 +241,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
                 if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
                 battery.consume(0.1);
 
-                // for debugging
-                //cout << "Risk: " << risk << "%"  << endl;
             }
 
-        }
-
-        { // Persist sensor data
-            if (persist) {
-              fp << id++ << ",";
-              fp << dataS << ",";
-              fp << dataD << ",";
-              fp << risk << ",";
-              fp << std::chrono::duration_cast<std::chrono::milliseconds>
-                        (std::chrono::time_point_cast<std::chrono::milliseconds>
-                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
-            }
         }
     }
 
