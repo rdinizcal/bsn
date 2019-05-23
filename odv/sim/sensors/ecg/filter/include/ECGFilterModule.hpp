@@ -21,11 +21,16 @@
 #include "bsn/msg/info/MonitorContextInfo.hpp"
 #include "bsn/msg/control/ECGControlCommand.hpp"
 
-class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class ECGFilterModule
+ : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	ECGModule(const ECGModule &);
-    	ECGModule &operator=(const ECGModule &);
+      	ECGFilterModule
+		  (const ECGFilterModule
+		   &);
+    	ECGFilterModule
+		 &operator=(const ECGFilterModule
+		 &);
 
     	virtual void setUp();
     	virtual void tearDown();
@@ -37,8 +42,10 @@ class ECGModule : public odcore::base::module::TimeTriggeredConferenceClientModu
 		void sendMonitorContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
 
   	public:
-    	ECGModule(const int32_t &argc, char **argv);
-    	virtual ~ECGModule();
+    	ECGFilterModule
+		(const int32_t &argc, char **argv);
+    	virtual ~ECGFilterModule
+		();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
