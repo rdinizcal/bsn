@@ -39,7 +39,7 @@ bool ECGFilterModule::Oraculo(double dados){
 float ECGFilterModule::noise(void){
     srand (time(NULL));
 
-    return (rand() % 1000 )/1000;
+    return ((rand() % 1000000 )/1000000) + 0.5;
 }
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body() {
