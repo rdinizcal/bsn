@@ -1,4 +1,4 @@
-#include "ECGFilterModule.hpp"
+#include "OximeterFilterModule.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -12,57 +12,46 @@ using namespace bsn::msg::data;
 using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
-ECGFilterModule::ECGFilterModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
+OximeterFilterModule::OximeterFilterModule(const int32_t &argc, char **argv) :
+    TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
-    type("ecg"),
+    type("oximeter"),
     active(true),
-    params({{"freq",0.9},{"m_avg",5}}),
+    params({{"freq",0.90},{"m_avg",5}}),
     filter(5)
-     {}
+    {}
 
-ECGFilterModule::~ECGFilterModule() {}
+OximeterFilterModule::~OximeterFilterModule() {}
 
-void ECGFilterModule::setUp() {
+void OximeterFilterModule::setUp() {
     
     addDataStoreFor(901, buffer);
-
 }
 
-void ECGFilterModule::tearDown() {
-   
-}
-
-bool ECGFilterModule::Oraculo(double dados){
-    bool dados_validos = true;
-    return dados_validos;
+void OximeterFilterModule::tearDown() {
     
 }
 
-float ECGFilterModule::noise(void){
-    srand (time(NULL));
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::body(){
 
-    return ((rand() % 1000000 )/1000000) + 0.5;
-}
-
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body() {
-  
     double data;
 
-    
-
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
+        
+        
         /*
          * Module execution
          */
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            data = container.getData<SensorData>().getData();
 
-             // TASK: Filter data with moving average
+            data = container.getData<OximeterData>().getData();
+            
+         // TASK: Filter data with moving average
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
+            
             data = data*noise;
             bool passou = Oraculo(data);
 
@@ -73,9 +62,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             Container sdataContainer(sdata);
             getConference().send(sdataContainer);
 
-        }    
-
+        }
     }
-
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }
