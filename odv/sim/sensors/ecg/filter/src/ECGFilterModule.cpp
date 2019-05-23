@@ -24,30 +24,57 @@ ECGFilterModule::ECGFilterModule(const int32_t &argc, char **argv) :
 ECGFilterModule::~ECGFilterModule() {}
 
 void ECGFilterModule::setUp() {
-
+addDataStoreFor(901, buffer);
 }
 
 void ECGFilterModule::tearDown() {
    
 }
 
+bool ECGFilterModule::Oraculo(double dados){
+    
+    if(dados )
+}
+
+float ECGFilterModule::noise(void){
+    srand (time(NULL));
+
+    return (rand() % 1000 )/1000;
+}
+
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body() {
   
     double data;
 
+    
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
-       
         /*
          * Module execution
          */
-        if((rand() % 100)+1 < int32_t(params["freq"]*100)){
-            
+        while(!buffer.isEmpty()){ // Receive control command and module update
+            container = buffer.leave();
+            data = container.getData<SensorData>().getData();
+
              // TASK: Filter data with moving average
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
+            data = data*noise
+            bool passou = Oraculo(data);
+
+            if(!passou)
+                sleep(TIMEOUT_PADRAO_ECG_FILTER);
+
+            SensorData sdata(type, data, risk);
+            Container sdataContainer(sdata);
+            getConference().send(sdataContainer);
+
+        }    
+       
+       
             
-        }
+        
 
     }
 
