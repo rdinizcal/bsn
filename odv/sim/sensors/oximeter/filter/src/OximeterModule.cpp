@@ -153,18 +153,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             first_exec = false; 
         }
 
-        {  // update controller with task info
-            /*
-            sendContextInfo("SaO2_available",true);
-            sendTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
-           // and the monitor..
-            sendMonitorContextInfo("SaO2_available",true);
-            sendMonitorTaskInfo("G3_T1.11",0.1,data_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.12",0.1*params["m_avg"],1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.13",0.1,comm_accuracy,params["freq"]);
-            */
+        {  
             sendContextInfo("SaO2_available",true);
             sendTaskInfo("G3_T1.11",0.076,1,1);
             sendTaskInfo("G3_T1.12",0.076*params["m_avg"],1,1);
@@ -176,24 +165,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             sendMonitorTaskInfo("G3_T1.13",0.076,1,1);
         }
 
-        /*{ // recharge routine
-            //for debugging
-            cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
-            if(!active && battery.getCurrentLevel() > 90){
-                active = true;
-            }
-            if(active && battery.getCurrentLevel() < 2){
-                active = false;
-            }
-
-            if (rand()%10 > 6) {
-                bool x_active = (rand()%2==0)?active:!active;
-                sendContextInfo("SaO2_available", x_active);
-            }
-            //sendContextInfo("SaO2_available", active);
-            sendMonitorContextInfo("SaO2_available", active);
-        }*/
-
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
@@ -201,70 +172,21 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body()
             params["freq"] = container.getData<OximeterControlCommand>().getFrequency();
         }
 
-        /*if(!active){ 
-            if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
-            continue; 
-        }*/
 
         /*
          * Module execution
          */
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
             
-            { // TASK: Collect oximeter data
-                data = markov.calculate_state();
-
-                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
-
-                if (rand() % 2 == 0)
-                    data = data + offset;
-                else
-                    data = data - offset;
-
-                markov.next_state();
-                battery.consume(0.1);
-                
-
-                //for debugging 
-                cout << "New data: " << data << endl << endl;
-            }
-            
-            { // TASK: Filter data with moving average
-                filter.setRange(params["m_avg"]);
-                filter.insert(data, type);
-                data = filter.getValue(type);
-                battery.consume(0.1*params["m_avg"]);
+         // TASK: Filter data with moving average
+            filter.setRange(params["m_avg"]);
+            filter.insert(data, type);
+            data = filter.getValue(type);
+            battery.consume(0.1*params["m_avg"]);
 
 
-                //for debugging 
-                //cout << "Dado filtrado: " << data << endl;
-            }
-            
-            { // TASK: Transfer information to CentralHub
-                risk = sensorConfig.evaluateNumber(data);
-                
-                SensorData sdata(type, data, risk);
-                Container sdataContainer(sdata);
-                if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
-                battery.consume(0.1);
-
-                // for debugging
-                //cout << "Risk: " << risk << "%"  << endl;
-            }
-
+            //for debugging 
+            //cout << "Dado filtrado: " << data << endl;
         }
-
-        { // Persist sensor data
-            if (persist) {
-                fp << id++ << ",";
-                fp << data << ",";
-                fp << risk << ",";
-                fp << std::chrono::duration_cast<std::chrono::milliseconds>
-                        (std::chrono::time_point_cast<std::chrono::milliseconds>
-                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
-            }
-        }
-    }
-
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }

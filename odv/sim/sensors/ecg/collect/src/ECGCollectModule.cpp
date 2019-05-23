@@ -1,4 +1,4 @@
-#include "ECGModule.hpp"
+#include "ECGCollectModule.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -12,7 +12,7 @@ using namespace bsn::msg::data;
 using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
-ECGModule::ECGModule(const int32_t &argc, char **argv) :
+ECGCollectModule::ECGCollectModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
     type("ecg"),
@@ -29,9 +29,9 @@ ECGModule::ECGModule(const int32_t &argc, char **argv) :
     path("ecg_output.csv"),
     fp() {}
 
-ECGModule::~ECGModule() {}
+ECGCollectModule::~ECGCollectModule() {}
 
-void ECGModule::setUp() {
+void ECGCollectModule::setUp() {
     //srand(time(NULL));
     addDataStoreFor(902, buffer);
     
@@ -109,36 +109,36 @@ void ECGModule::setUp() {
     }
 }
 
-void ECGModule::tearDown() {
+void ECGCollectModule::tearDown() {
     if (persist)
         fp.close();
 }
 
-void ECGModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+void ECGCollectModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     TaskInfo task(task_id, cost, reliability, frequency);
     Container taskContainer(task);
     getConference().send(taskContainer);
 }
 
-void ECGModule::sendContextInfo(const std::string &context_id, const bool &value) {
+void ECGCollectModule::sendContextInfo(const std::string &context_id, const bool &value) {
     ContextInfo context(context_id, value, 0, 0, "");
     Container contextContainer(context);
     getConference().send(contextContainer);
 }
 
-void ECGModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+void ECGCollectModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     MonitorTaskInfo task(task_id, cost, reliability, frequency);
     Container taskContainer(task);
     getConference().send(taskContainer);
 }
 
-void ECGModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
+void ECGCollectModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
     MonitorContextInfo context(context_id, value, 0, 0, "");
     Container contextContainer(context);
     getConference().send(contextContainer);
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body() {
   
     Container container;
     double data;
@@ -155,17 +155,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
         }
 
         {  // update controller with task info
-            /*
-            sendContextInfo("ECG_available",true);
-            sendTaskInfo("G3_T1.21",0.1,data_accuracy,params["freq"]);
-            sendTaskInfo("G3_T1.22",0.1*params["m_avg"],1,params["freq"]);
-            sendTaskInfo("G3_T1.23",0.1,comm_accuracy,params["freq"]);
-           // and the monitor..
-            sendMonitorContextInfo("ECG_available",true);
-            sendMonitorTaskInfo("G3_T1.21",0.1,data_accuracy,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.22",0.1*params["m_avg"],1,params["freq"]);
-            sendMonitorTaskInfo("G3_T1.23",0.1,comm_accuracy,params["freq"]);
-            */
+           
             sendContextInfo("ECG_available",true);
             sendTaskInfo("G3_T1.21",0.076,1,1);
             sendTaskInfo("G3_T1.22",0.076*params["m_avg"],1,1);
@@ -177,24 +167,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             sendMonitorTaskInfo("G3_T1.23",0.076,1,1);
         }
 
-        /*{ // recharge routine
-            //for debugging
-            cout << "Battery level: " << battery.getCurrentLevel() << "%" << endl;
-            if(!active && battery.getCurrentLevel() > 80){
-                active = true;
-            }
-            if(active && battery.getCurrentLevel() < 2){
-                active = false;
-            }
-
-            if (rand()%10 > 6) {
-                bool x_active = (rand()%2==0)?active:!active;
-                sendContextInfo("ECG_available", x_active);
-            }
-            //sendContextInfo("ECG_available", active);
-            sendMonitorContextInfo("ECG_available", active);
-        }*/
-
+       
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
@@ -202,69 +175,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGModule::body() {
             params["freq"] = container.getData<ECGControlCommand>().getFrequency();
         }
 
-        /*if(!active){ 
-            if(battery.getCurrentLevel() <= 100) battery.generate(2.5);
-            continue; 
-        }*/
+       
 
         /*
          * Module execution
          */
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
             
-            { // TASK: Collect ecg data
-                data = markov.calculate_state();
+            // TASK: Collect ecg data
+            data = markov.calculate_state();
 
-                double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
+            double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
 
-                if (rand() % 2 == 0)
-                    data = data + offset;
-                else
-                    data = data - offset;
+            if (rand() % 2 == 0)
+                data = data + offset;
+            else
+                data = data - offset;
 
-                markov.next_state();
-                battery.consume(0.1);
-                
-
-                //for debugging 
-                cout << "New data: " << data << endl << endl;
-            }
-            
-            { // TASK: Filter data with moving average
-                filter.setRange(params["m_avg"]);
-                filter.insert(data, type);
-                data = filter.getValue(type);
-                battery.consume(0.1*params["m_avg"]);
-
-
-                //for debugging 
-                //cout << "Filtered data: " << data << endl;
-            }
- 
-            { // TASK: Transfer information to CentralHub
-                risk = sensorConfig.evaluateNumber(data);
-                
-                SensorData sdata(type, data, risk);
-                Container sdataContainer(sdata);
-                if((rand() % 100)+1 > int32_t(comm_accuracy*100)) getConference().send(sdataContainer);
-                battery.consume(0.1);
-
-                // for debugging
-                //cout << "Risk: " << risk << "%"  << endl;
-            }
+            markov.next_state();
+            battery.consume(0.1);
             
         }
-
-        { // Persist sensor data
-            if (persist) {
-                fp << id++ << ",";
-                fp << data << ",";
-                fp << risk << ",";
-                fp << std::chrono::duration_cast<std::chrono::milliseconds>
-                        (std::chrono::time_point_cast<std::chrono::milliseconds>
-                        (std::chrono::high_resolution_clock::now()).time_since_epoch()).count() << endl;
-            }
-        }
+            
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
