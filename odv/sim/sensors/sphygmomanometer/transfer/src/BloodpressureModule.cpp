@@ -182,66 +182,22 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::b
          */
         if((rand() % 100)+1 < int32_t(params["freq"]*100)){
             
-            { // TASK: Collect bloodpressure data            
-                dataS = markovSystolic.calculate_state();      
+        //TASK: Transfer information to CentralHub
+            risk = sensorConfigSystolic.evaluateNumber(dataS);
+            SensorData sdataS("bpms", dataS, risk);
+            Container sdataSContainer(sdataS);
+            if((rand() % 100)+1 > int32_t(systcomm_accuracy*100))getConference().send(sdataSContainer);
+            battery.consume(0.1);
+
     
-                double offset = (1 - systdata_accuracy + (double)rand() / RAND_MAX * (1 - systdata_accuracy)) * dataS;
 
-                if (rand() % 2 == 0)
-                    dataS = dataS + offset;
-                else
-                    dataS = dataS - offset;
+            risk = sensorConfigDiastolic.evaluateNumber(dataD);
+            SensorData sdataD("bpmd", dataD, risk);
+            Container sdatadContainer(sdataD);
+            if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
+            battery.consume(0.1);
 
-                markovSystolic.next_state();
-                battery.consume(0.1);
-
-                dataD = markovDiastolic.calculate_state();
-
-                offset = (1 - diasdata_accuracy + (double)rand() / RAND_MAX * (1 - diasdata_accuracy)) * dataD;
-
-                if (rand() % 2 == 0)
-                    dataD = dataD + offset;
-                else
-                    dataD = dataD - offset;
-
-                markovDiastolic.next_state();
-                battery.consume(0.1);
-                
-
-                //for debugging 
-                cout << "New data (systolic): " << dataS << endl;
-                cout << "New data (diastolic): " << dataD << endl << endl;
-            }
-
-            { // TASK: Filter data with moving average
-                filterSystolic.setRange(params["m_avg"]);
-                filterSystolic.insert(dataS, "bpms");
-                dataS = filterSystolic.getValue("bpms");
-                battery.consume(0.1*params["m_avg"]);
-
-                filterDiastolic.setRange(params["m_avg"]);
-                filterDiastolic.insert(dataD, "bpmd");
-                dataD = filterDiastolic.getValue("bpmd");
-                battery.consume(0.1*params["m_avg"]);
-
-            }
             
-            { //TASK: Transfer information to CentralHub
-                risk = sensorConfigSystolic.evaluateNumber(dataS);
-                SensorData sdataS("bpms", dataS, risk);
-                Container sdataSContainer(sdataS);
-                if((rand() % 100)+1 > int32_t(systcomm_accuracy*100))getConference().send(sdataSContainer);
-                battery.consume(0.1);
-
-      
-
-                risk = sensorConfigDiastolic.evaluateNumber(dataD);
-                SensorData sdataD("bpmd", dataD, risk);
-                Container sdatadContainer(sdataD);
-                if((rand() % 100)+1 > int32_t(diascomm_accuracy*100)) getConference().send(sdatadContainer);
-                battery.consume(0.1);
-
-            }
 
         }
     }
