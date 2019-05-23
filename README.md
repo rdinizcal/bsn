@@ -2,30 +2,35 @@
 
 **B**ody **S**ensor **N**etwork é o protótipo de sistema de software para uma rede de sensores para monitoramento de sinais vitais do corpo humano com resposta em tempo real e autônomo.
 
-### TO-DO
-Refatorar código dos sensores/leaf-tasks
-	Refatorar sensor ECG
-		Collect
-		Filter
-		Transfer
-	Refatorar sensor Oxímetro
-		Collect
-		Filter
-		Transfer
-	Refatorar sensor Esfigmomanômetro
-		Collect
-		Filter
-		Transfer
-	Refatorar sensor Termômetro
-		Collect
-		Filter
-		Transfer
-Implementar Oráculo para cada um dos sensores (usar )
-Implementar Erro para cada um dos sensores
-Implementar serviço de mensagens entre módulos de cada sensor
-	Alterar libbsn/msg/data/ para permitir mensagens entre tasks
-Pensar em outros tipos de erro além de um range aleatório
-	Ex.: Não filtrar os dados, envio de tipo de dados errados, falhas e desvios do serviço esperado
+## TO-DO
+
+Tarefas: 
+
+	* Refatorar código dos sensores/leaf-tasks
+	* Refatorar sensor ECG
+		* Collect
+		* Filter
+		* Transfer
+	* Refatorar sensor Oxímetro
+		* Collect
+		* Filter
+		* Transfer
+	* Refatorar sensor Esfigmomanômetro
+		* Collect
+		* Filter
+		* Transfer
+	* Refatorar sensor Termômetro
+		* Collect
+		* Filter
+		* Transfer
+	* Implementar Oráculo para cada um dos sensores (usar )
+	* Implementar Erro para cada um dos sensores
+	* Implementar serviço de mensagens entre módulos de cada sensor
+	* Alterar libbsn/msg/data/ para permitir mensagens entre tasks
+	* Pensar em outros tipos de erro além de um range aleatório
+		* Ex.: Não filtrar os dados, envio de tipo de dados errados, falhas e desvios do serviço esperado
+
+	
 
 ### Branch de Fault Tolerance
 
@@ -115,8 +120,10 @@ O modo de escalonamento do odsupercomponent será First Come Fist Served (FCFS) 
 
 ## Configurações de teste
 
-* Sistema Operacional - Linux Ubuntu 16.04
-* Compilador -  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.5)
+Requisitos: 
+
+	* Sistema Operacional - Linux Ubuntu 16.04
+	* Compilador -  gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.5)
 
 ## Autores
 
