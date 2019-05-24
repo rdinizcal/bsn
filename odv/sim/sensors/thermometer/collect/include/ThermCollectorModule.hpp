@@ -1,5 +1,5 @@
-#ifndef THERM_COLLECTOR_MODULE_HPP
-#define THERM_COLLECTOR_MODULE_HPP
+#ifndef THERM_COLLECT_MODULE_HPP
+#define THERM_COLLECT_MODULE_HPP
 
 #include <fstream>
 #include <chrono>
@@ -12,18 +12,18 @@
 
 #include "bsn/msg/data/SensorData.h"
 
-class ThermCollectorModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class ThermCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	ThermCollectorModule(const ThermCollectorModule &);
-    	ThermCollectorModule &operator=(const ThermCollectorModule &);
+      	ThermCollectModule(const ThermCollectModule &);
+    	ThermCollectModule &operator=(const ThermCollectModule &);
 		
     	virtual void setUp();
     	virtual void tearDown();
 		
   	public:
-    	ThermCollectorModule(const int32_t &argc, char **argv);
-    	virtual ~ThermCollectorModule();
+    	ThermCollectModule(const int32_t &argc, char **argv);
+    	virtual ~ThermCollectModule();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
