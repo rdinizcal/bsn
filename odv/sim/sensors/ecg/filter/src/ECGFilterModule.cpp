@@ -19,7 +19,7 @@ ECGFilterModule::ECGFilterModule(const int32_t &argc, char **argv) :
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
     filter(5)
-     {}
+    {}
 
 ECGFilterModule::~ECGFilterModule() {}
 
