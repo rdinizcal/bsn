@@ -1,4 +1,5 @@
 #include "BloodpressureFilterModule.hpp"
+#define BLOODPRESUREFILTERMODULE_MSG_QUE 4032
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -25,7 +26,7 @@ BloodpressureFilterModule::BloodpressureFilterModule(const int32_t &argc, char *
 BloodpressureFilterModule::~BloodpressureFilterModule() {}
 
 void BloodpressureFilterModule::setUp() {
-    addDataStoreFor(903, buffer);
+    addDataStoreFor(BLOODPRESUREFILTERMODULE_MSG_QUE, buffer);
     
 }
 

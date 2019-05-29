@@ -1,4 +1,5 @@
 #include "OximeterFilterModule.hpp"
+#define OXIMETERFILTERMODULE_MSG_QUE 4022
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -25,7 +26,7 @@ OximeterFilterModule::~OximeterFilterModule() {}
 
 void OximeterFilterModule::setUp() {
     
-    addDataStoreFor(901, buffer);
+    addDataStoreFor(OXIMETERFILTERMODULE_MSG_QUE, buffer);
 }
 
 void OximeterFilterModule::tearDown() {

@@ -12,18 +12,18 @@
 
 #include "bsn/msg/data/SensorData.h"
 
-class OximeterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class OximeterTransferModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	OximeterModule(const OximeterModule &);
-    	OximeterModule &operator=(const OximeterModule &);
+      	OximeterTransferModule(const OximeterTransferModule &);
+    	OximeterTransferModule &operator=(const OximeterTransferModule &);
 
     	virtual void setUp();
     	virtual void tearDown();
 
   	public:
-    	OximeterModule(const int32_t &argc, char **argv);
-    	virtual ~OximeterModule();
+    	OximeterTransferModule(const int32_t &argc, char **argv);
+    	virtual ~OximeterTransferModule();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 

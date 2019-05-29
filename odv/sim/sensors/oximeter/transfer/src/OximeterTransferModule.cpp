@@ -1,4 +1,5 @@
 #include "OximeterTransferModule.hpp"
+#define OXIMETERTRANSFERMODULE_MSG_QUE 4023
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -12,7 +13,7 @@ using namespace bsn::msg::data;
 using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
-OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
+OximeterTransferModule::OximeterTransferModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
@@ -21,19 +22,19 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     filter(5),
     {}
 
-OximeterModule::~OximeterModule() {}
+OximeterTransferModule::~OximeterTransferModule() {}
 
-void OximeterModule::setUp() {
-    addDataStoreFor(901, buffer);
+void OximeterTransferModule::setUp() {
+    addDataStoreFor(OXIMETERTRANSFERMODULE_MSG_QUE, buffer);
     
     
 }
 
-void OximeterModule::tearDown() {
+void OximeterTransferModule::tearDown() {
 
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule::body(){
 
     double data;
     double risk;

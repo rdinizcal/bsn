@@ -1,4 +1,5 @@
 #include "ECGCollectModule.hpp"
+#define ECGCOLLECTMODULE_MSG_QUE 4011
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -25,7 +26,7 @@ ECGCollectModule::~ECGCollectModule() {}
 
 void ECGCollectModule::setUp() {
     //srand(time(NULL));
-    addDataStoreFor(902, buffer);
+    addDataStoreFor(ECGCOLLECTMODULE_MSG_QUE, buffer);
 
 }
 

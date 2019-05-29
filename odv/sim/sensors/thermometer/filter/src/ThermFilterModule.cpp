@@ -1,4 +1,5 @@
 #include "ThermFilterModule.hpp"
+#define THERMFILTERMODULE_MSG_QUE 4042
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -23,7 +24,7 @@ ThermFilterModule::ThermFilterModule(const int32_t &argc, char **argv) :
 ThermFilterModule::~ThermFilterModule() {}
 
 void ThermFilterModule::setUp() {
-    addDataStoreFor(900, buffer);
+    addDataStoreFor(THERMFILTERMODULE_MSG_QUE, buffer);
     
 }
 

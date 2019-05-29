@@ -1,4 +1,5 @@
 #include "ThermCollectModule.hpp"
+#define THERMCOLLECTMODULE_MSG_QUE 4041
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -23,7 +24,7 @@ ThermCollectModule::~ThermCollectModule() {}
 
 void ThermCollectModule::setUp() {
     //srand(time(NULL));
-    addDataStoreFor(900, buffer);
+    addDataStoreFor(THERMCOLLECTMODULE_MSG_QUE, buffer);
     
    
 }

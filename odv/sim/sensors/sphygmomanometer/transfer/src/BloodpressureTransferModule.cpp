@@ -1,4 +1,5 @@
 #include "BloodpressureTransferModule.hpp"
+#define BLOODPRESURETRANSFERMODULE_MSG_QUE 4033
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -27,7 +28,7 @@ BloodpressureTransferModule::~BloodpressureTransferModule() {}
 
 void BloodpressureTransferModule::setUp() {
     //srand(time(NULL));
-    addDataStoreFor(903, buffer);
+    addDataStoreFor(BLOODPRESURETRANSFERMODULE_MSG_QUE, buffer);
 
 }
 

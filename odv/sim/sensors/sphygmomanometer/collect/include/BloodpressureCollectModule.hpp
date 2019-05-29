@@ -1,5 +1,5 @@
-#ifndef BLOODPRESSURE_MODULE_HPP
-#define BLOODPRESSURE_MODULE_HPP
+#ifndef BLOODPRESSURE_COLLECT_MODULE_HPP
+#define BLOODPRESSURE_COLLECT_MODULE_HPP
 
 #include <fstream>
 #include <chrono>
@@ -21,11 +21,11 @@
 #include "bsn/msg/info/MonitorContextInfo.hpp"
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
-class BloodpressureModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class BloodpressureCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	BloodpressureModule(const BloodpressureModule &);
-    	BloodpressureModule &operator=(const BloodpressureModule &);
+      	BloodpressureCollectModule(const BloodpressureCollectModule &);
+    	BloodpressureCollectModule &operator=(const BloodpressureCollectModule &);
     	
 		virtual void setUp();
     	virtual void tearDown();
@@ -37,8 +37,8 @@ class BloodpressureModule : public odcore::base::module::TimeTriggeredConference
 		void sendMonitorContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
 
   	public:
-    	BloodpressureModule(const int32_t &argc, char **argv);
-    	virtual ~BloodpressureModule();
+    	BloodpressureCollectModule(const int32_t &argc, char **argv);
+    	virtual ~BloodpressureCollectModule();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 

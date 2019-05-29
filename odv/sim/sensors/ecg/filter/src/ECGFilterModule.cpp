@@ -1,4 +1,5 @@
 #include "ECGFilterModule.hpp"
+#define ECGFILTERMODULE_MSG_QUE 4012
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -25,7 +26,7 @@ ECGFilterModule::~ECGFilterModule() {}
 
 void ECGFilterModule::setUp() {
     
-    addDataStoreFor(901, buffer);
+    addDataStoreFor(ECGFILTERMODULE_MSG_QUE, buffer);
 
 }
 

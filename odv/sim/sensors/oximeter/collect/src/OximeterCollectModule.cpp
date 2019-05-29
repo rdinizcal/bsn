@@ -1,4 +1,5 @@
-#include "OximeterModule.hpp"
+#include "OximeterCollectModule.hpp"
+#define OXIMETERCOLLECTMODULE_MSG_QUE 4021
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -12,7 +13,7 @@ using namespace bsn::msg::data;
 using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
-OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
+OximeterCollectModule::OximeterCollectModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
@@ -29,11 +30,11 @@ OximeterModule::OximeterModule(const int32_t &argc, char **argv) :
     path("oximeter_output.csv"),
     fp() {}
 
-OximeterModule::~OximeterModule() {}
+OximeterCollectModule::~OximeterCollectModule() {}
 
-void OximeterModule::setUp() {
+void OximeterCollectModule::setUp() {
     //srand(time(NULL));
-    addDataStoreFor(901, buffer);
+    addDataStoreFor(OXIMETERCOLLECTMODULE_MSG_QUE, buffer);
     
     Operation op;
     
@@ -107,37 +108,37 @@ void OximeterModule::setUp() {
     }
 }
 
-void OximeterModule::tearDown() {
+void OximeterCollectModule::tearDown() {
     if (persist)
         fp.close();
 }
 
-void OximeterModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+void OximeterCollectModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     TaskInfo task(task_id, cost, reliability, frequency);
     Container taskContainer(task);
     getConference().send(taskContainer);
 }
 
-void OximeterModule::sendContextInfo(const std::string &context_id, const bool &value) {
+void OximeterCollectModule::sendContextInfo(const std::string &context_id, const bool &value) {
     ContextInfo context(context_id, value, 0, 0, "");
     Container contextContainer(context);
     getConference().send(contextContainer);
 }
 
-void OximeterModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
+void OximeterCollectModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
     MonitorTaskInfo task(task_id, cost, reliability, frequency);
     Container taskContainer(task);
     getConference().send(taskContainer);
 }
 
-void OximeterModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
+void OximeterCollectModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
     MonitorContextInfo context(context_id, value, 0, 0, "");
     Container contextContainer(context);
     getConference().send(contextContainer);
 }
 
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule::body(){
 
     Container container;
     double data;

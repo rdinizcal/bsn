@@ -1,4 +1,5 @@
 #include "ECGTransferModule.hpp"
+#define ECGTRANSFERMODULE_MSG_QUE 4013
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -33,7 +34,7 @@ ECGTransferModule::~ECGTransferModule() {}
 
 void ECGTransferModule::setUp() {
     //srand(time(NULL));
-    addDataStoreFor(902, buffer);
+    addDataStoreFor(ECGTRANSFERMODULE_MSG_QUE, buffer);
     
     Operation op;
     

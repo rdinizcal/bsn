@@ -1,4 +1,5 @@
-#include "ThermCollector.hpp"
+#include "ThermTransferCollector.hpp"
+#define THERMTRANSFERMODULE_MSG_QUE 4043
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -10,7 +11,7 @@ using namespace bsn::configuration;
 
 using namespace bsn::msg::data;
 
-ThermCollector::ThermCollector(const int32_t &argc, char **argv) :
+ThermTransferCollector::ThermTransferCollector(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
     buffer(),
     type("thermometer"),
@@ -20,18 +21,18 @@ ThermCollector::ThermCollector(const int32_t &argc, char **argv) :
     sensorConfig(),
     {}
 
-ThermCollector::~ThermCollector() {}
+ThermTransferCollector::~ThermTransferCollector() {}
 
-void ThermCollector::setUp() {
-    addDataStoreFor(900, buffer);
+void ThermTransferCollector::setUp() {
+    addDataStoreFor(THERMTRANSFERMODULE_MSG_QUE, buffer);
 
 }
 
-void ThermCollector::tearDown() {
+void ThermTransferCollector::tearDown() {
     
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollector::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferCollector::body(){
 
     double data;
     

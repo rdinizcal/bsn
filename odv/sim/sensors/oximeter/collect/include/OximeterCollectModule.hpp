@@ -1,5 +1,5 @@
-#ifndef OXIMETER_MODULE_HPP
-#define OXIMETER_MODULE_HPP
+#ifndef OXIMETER_COLLECT_MODULE_HPP
+#define OXIMETER_COLLECT_MODULE_HPP
 
 #include <fstream>
 #include <chrono>
@@ -21,11 +21,15 @@
 #include "bsn/msg/info/MonitorContextInfo.hpp"
 #include "bsn/msg/control/OximeterControlCommand.hpp"
 
-class OximeterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
+class OximeterCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:
-      	OximeterModule(const OximeterModule &);
-    	OximeterModule &operator=(const OximeterModule &);
+      	OximeterCollect
+		Module(const OximeterCollect
+		Module &);
+    	OximeterCollect
+	Module &operator=(const OximeterCollect
+	Module &);
 
     	virtual void setUp();
     	virtual void tearDown();
@@ -37,8 +41,10 @@ class OximeterModule : public odcore::base::module::TimeTriggeredConferenceClien
 		void sendMonitorContextInfo(const std::string &/*context_id*/, const bool &/*value*/);
 
   	public:
-    	OximeterModule(const int32_t &argc, char **argv);
-    	virtual ~OximeterModule();
+    	OximeterCollect
+	Module(const int32_t &argc, char **argv);
+    	virtual ~OximeterCollect
+	Module();
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 

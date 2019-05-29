@@ -1,5 +1,5 @@
-#include "BloodpressureModule.hpp"
-
+#include "BloodpressureCollectModule.hpp"
+#define BLOODPRESURECOLLECTMODULE_MSG_QUE 4031
 using namespace odcore::base::module;
 using namespace odcore::data;
 
@@ -12,7 +12,7 @@ using namespace bsn::msg::data;
 using namespace bsn::msg::info;
 using namespace bsn::msg::control;
 
-BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
+BloodpressureCollectModule::BloodpressureCollectModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "bloodpressure"),
     buffer(),
     type("bloodpressure"),
@@ -22,18 +22,18 @@ BloodpressureModule::BloodpressureModule(const int32_t &argc, char **argv) :
     filterDiastolic(5),
     {}
 
-BloodpressureModule::~BloodpressureModule() {}
+BloodpressureCollectModule::~BloodpressureCollectModule() {}
 
-void BloodpressureModule::setUp() {
-    addDataStoreFor(903, buffer);
+void BloodpressureCollectModule::setUp() {
+    addDataStoreFor(BLOODPRESURECOLLECTMODULE_MSG_QUE, buffer);
     
 }
 
-void BloodpressureModule::tearDown() {
+void BloodpressureCollectModule::tearDown() {
     
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureModule::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectModule::body(){
 
     double dataS;
     double dataD;
