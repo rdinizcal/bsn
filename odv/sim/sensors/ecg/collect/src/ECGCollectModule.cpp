@@ -77,26 +77,28 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body
   
     double data;
     double risk;
+    int i = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-       
-        while(!buffer.isEmpty()){ // Receive control command and module update
-            container = buffer.leave();
-            active = container.getData<ECGControlCommand>().getActive();
+        i = 0;
+        // Apenas executa uma vez a cada segundo
+        while(i > 10){ // Receive control command and module update
+            
             
             // TASK: Collect ecg data
             data = markov.calculate_state();
-            markov.next_state();                
+            markov.next_state();              
 
 
             // Send data from Collect task to Filter task
-            SensorData sdata(type, data, risk);
+            ECGCollectTaskMsg sdata(data);
             Container sdataContainer(sdata);
             getConference().send(sdataContainer);
+            i = 0;
+        }   
 
-            
-        }
+        i++;
             
     }
 

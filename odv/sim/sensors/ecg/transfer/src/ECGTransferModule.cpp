@@ -75,13 +75,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            active = container.getData<ECGControlCommand>().getActive();
-            params["freq"] = container.getData<ECGControlCommand>().getFrequency();
+            data = container.getData<ECGFilterTaskMsg>().getData();
+            
             
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(data);
             
-            SensorData sdata(type, data, risk);
+            ECGTransferTaskMsg sdata(risk);
             Container sdataContainer(sdata);
             getConference().send(sdataContainer);
        }

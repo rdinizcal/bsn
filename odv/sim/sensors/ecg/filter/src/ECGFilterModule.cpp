@@ -58,7 +58,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
          */
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            data = container.getData<SensorData>().getData();
+            data = container.getData<ECGCollectTaskMsg>().getData();
 
              // TASK: Filter data with moving average
             filter.setRange(params["m_avg"]);
@@ -70,7 +70,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             if(!passou)
                 sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
 
-            SensorData sdata(type, data, risk);
+            ECGFilterTaskMsg sdata(data);
             Container sdataContainer(sdata);
             getConference().send(sdataContainer);
 
