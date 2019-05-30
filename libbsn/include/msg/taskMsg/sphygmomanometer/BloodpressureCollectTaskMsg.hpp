@@ -10,7 +10,7 @@
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace taskMsg {
         
             class  BloodpressureCollectTaskMessage : public odcore::data::SerializableData {
             

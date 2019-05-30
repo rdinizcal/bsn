@@ -3,7 +3,7 @@
 
 namespace bsn {
     namespace msg { 
-        namespace control {
+        namespace taskMsg {
         
             using namespace std;
 

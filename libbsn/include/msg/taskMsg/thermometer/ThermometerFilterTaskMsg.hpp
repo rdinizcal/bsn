@@ -10,7 +10,7 @@
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace taskMsg {
         
             class  ThermometerFilterTaskMessage : public odcore::data::SerializableData {
             

@@ -10,7 +10,7 @@
 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace taskMsg {
         
             class  ECGCollectTaskMessage : public odcore::data::SerializableData {
             
