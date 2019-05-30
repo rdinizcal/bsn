@@ -1,5 +1,5 @@
 #include "ThermFilterModule.hpp"
-#define THERMFILTERMODULE_MSG_QUE 4042
+#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;

@@ -1,5 +1,6 @@
 #include "BloodpressureCollectModule.hpp"
-#define BLOODPRESURECOLLECTMODULE_MSG_QUE 4031
+#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
+
 using namespace odcore::base::module;
 using namespace odcore::data;
 

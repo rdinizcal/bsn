@@ -1,4 +1,5 @@
 #include "msg/control/BloodpressureControlCommand.hpp"
+#define ECGFILTERMODULE_MSG_QUE 4012
 
 namespace bsn {
     namespace msg { 

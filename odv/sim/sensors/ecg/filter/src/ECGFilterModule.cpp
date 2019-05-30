@@ -1,5 +1,5 @@
 #include "ECGFilterModule.hpp"
-#define ECGFILTERMODULE_MSG_QUE 4012
+#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;

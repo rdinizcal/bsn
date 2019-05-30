@@ -1,5 +1,5 @@
 #include "BloodpressureFilterModule.hpp"
-#define BLOODPRESUREFILTERMODULE_MSG_QUE 4032
+#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;

@@ -1,5 +1,5 @@
 #include "OximeterCollectModule.hpp"
-#define OXIMETERCOLLECTMODULE_MSG_QUE 4021
+#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;

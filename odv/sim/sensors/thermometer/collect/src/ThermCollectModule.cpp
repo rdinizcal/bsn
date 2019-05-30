@@ -1,5 +1,5 @@
 #include "ThermCollectModule.hpp"
-#define THERMCOLLECTMODULE_MSG_QUE 4041
+#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
