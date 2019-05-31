@@ -45,7 +45,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
-            data = container.getData<OximeterCollectTaskMsg>().getData();
+            data = container.getData<OximeterCollectTaskMessage>().getData();
             
          // TASK: Filter data with moving average
             filter.setRange(params["m_avg"]);
@@ -58,7 +58,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
             if(!passou)
                 sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
 
-            OximeterFilterTaskMsg sdata(data);
+            OximeterFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);
 

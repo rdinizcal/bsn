@@ -79,8 +79,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
-            filterS = container.getData<BloodpressureFilterTaskMsg>().getDataS();
-            filterD = container.getData<BloodpressureFilterTaskMsg>().getDataD();        
+            filterS = container.getData<BloodpressureFilterTaskMessage>().getDataS();
+            filterD = container.getData<BloodpressureFilterTaskMessage>().getDataD();        
 
        
         /*
@@ -89,12 +89,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
             
         //TASK: Transfer information to CentralHub
             riskS = sensorConfigSystolic.evaluateNumber(filterS);
-            BloodpressureTransferTaskMsg transferSMsg(riskS);
+            BloodpressureTransferTaskMessage transferSMsg(riskS);
             Container transferSContainer(transferSMsg);
             getConference().send(transferSContainer);
 
             riskD = sensorConfigDiastolic.evaluateNumber(filterD);
-            BloodpressureTransferTaskMsg transferDMsg(riskD);
+            BloodpressureTransferTaskMessage transferDMsg(riskD);
             Container transferDContainer(transferDMsg);
             getConference().send(transferDContainer);
 

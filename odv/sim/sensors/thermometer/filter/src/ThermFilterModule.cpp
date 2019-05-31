@@ -44,13 +44,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
             // TASK: Filter data with moving average
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            data = container.getData<ThermCollectTaskMsg>().getData()
+            data = container.getData<ThermCollectTaskMessage>().getData()
 
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
             
-            ThermFilterTaskMsg sdata(data);
+            ThermFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);
         }

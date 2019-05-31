@@ -78,7 +78,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::bo
             data = markov.calculate_state();
             markov.next_state();      
 
-            ThermCollectTaskMsg collectMsg(data);
+            ThermCollectTaskMessage collectMsg(data);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
             i = 0;

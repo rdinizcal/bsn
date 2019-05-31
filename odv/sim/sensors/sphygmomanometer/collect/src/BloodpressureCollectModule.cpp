@@ -83,7 +83,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectMo
             markovSystolic.next_state();
             markovDiastolic.next_state();
             
-            BloodpressureCollectTaskMsg collectMsg(dataS, dataD);
+            BloodpressureCollectTaskMessage collectMsg(dataS, dataD);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
             i = 0;

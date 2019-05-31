@@ -45,8 +45,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
-            dataS = container.getData<BloodpressureCollectTaskMsg>().getDataS();
-            dataD = container.getData<BloodpressureCollectTaskMsg>().getDataD();
+            dataS = container.getData<BloodpressureCollectTaskMessage>().getDataS();
+            dataD = container.getData<BloodpressureCollectTaskMessage>().getDataD();
          
         /*
          * Module execution
@@ -62,7 +62,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
             filterDiastolic.insert(dataD, "bpmd");
             filterD = filterDiastolic.getValue("bpmd");
            
-            BloodpressureFilterTaskMsg filterMsg(filterS, filterD);
+            BloodpressureFilterTaskMessage filterMsg(filterS, filterD);
             Container filterContainer(filterMsg);
             getConference().send(filterContainer);
         

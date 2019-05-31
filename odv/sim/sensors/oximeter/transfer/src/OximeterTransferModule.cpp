@@ -76,11 +76,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
             
             // Recebe dados do Task anterior
             filterContainer = buffer.leave();
-            filterResponse = FilterContainer.getData<OximeterFilterTaskMsg>().getActive();
+            filterResponse = FilterContainer.getData<OximeterFilterTaskMessage>().getActive();
 
             risk = sensorConfig.evaluateNumber(filterResponse);
 
-            OximeterTransferTaskMsg cData(data);
+            OximeterTransferTaskMessage cData(data);
             Container TransferContainer(cData);
             getConference().send(TransferContainer);
         }

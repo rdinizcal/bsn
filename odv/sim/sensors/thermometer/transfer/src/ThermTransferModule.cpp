@@ -75,12 +75,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferCollector
         while(!buffer.isEmpty()){
            
             container = buffer.leave();
-            filterResponse = container.getData<ThermFilterTaskMsg>().getData();
+            filterResponse = container.getData<ThermFilterTaskMessage>().getData();
             
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(data);
             
-            ThermTransferTaskMsg sdata(risk);
+            ThermTransferTaskMessage sdata(risk);
             Container transferContainer(sdata);
             getConference().send(transferContainer);
             

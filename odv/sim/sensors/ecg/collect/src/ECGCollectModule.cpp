@@ -84,7 +84,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body
 
 
             // Send data from Collect task to Filter task
-            ECGCollectTaskMsg collectMsg(data);
+            ECGCollectTaskMessage collectMsg(data);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
             i = 0;

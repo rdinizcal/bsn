@@ -85,7 +85,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule:
 
 
             // Send data from Collect task to Filter task
-            OximeterCollectTaskMsg collectMsg(data);
+            OximeterCollectTaskMessage collectMsg(data);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
             i = 0;
