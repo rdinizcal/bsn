@@ -20,7 +20,7 @@ BloodpressureFilterModule::BloodpressureFilterModule(const int32_t &argc, char *
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
     filterSystolic(5),
-    filterDiastolic(5),
+    filterDiastolic(5)
     {}
 
 BloodpressureFilterModule::~BloodpressureFilterModule() {}
@@ -36,15 +36,19 @@ void BloodpressureFilterModule::tearDown() {
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterModule::body(){
 
+    Container container;
     double dataS;
     double dataD;
+    double filterS;
+    double filterD;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
       
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
-            data = container.getData<SensorData>().getData();
+            dataS = container.getData<BloodpressureCollectTaskMsg>().getDataS();
+            dataD = container.getData<BloodpressureCollectTaskMsg>().getDataD();
          
         /*
          * Module execution
@@ -53,16 +57,16 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
         // TASK: Filter data with moving average
             filterSystolic.setRange(params["m_avg"]);
             filterSystolic.insert(dataS, "bpms");
-            dataS = filterSystolic.getValue("bpms");
+            filterS = filterSystolic.getValue("bpms");
            
 
             filterDiastolic.setRange(params["m_avg"]);
             filterDiastolic.insert(dataD, "bpmd");
-            dataD = filterDiastolic.getValue("bpmd");
+            filterD = filterDiastolic.getValue("bpmd");
            
-            SensorData sdata(type, data, risk);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
+            BloodpressureFilterTaskMsg filterMsg(filterS, filterD);
+            Container filterContainer(filterMsg);
+            getConference().send(filterContainer);
         
             }
         }

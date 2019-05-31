@@ -9,18 +9,20 @@ namespace bsn {
 
             BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage() : data() {}
 
-            BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage(const double &_data) : data(_frequency) {}
+            BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage(const double &_dataS, const double &_dataD) : dataS(_dataS), dataD(_dataD) {}
 
             BloodpressureFilterTaskMessage::~BloodpressureFilterTaskMessage() {}
             
             BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage(const BloodpressureFilterTaskMessage &obj) :
                 SerializableData(),
-                data(obj.getData())
+                dataS(obj.getDataS()),
+                dataD(obj.getDataD())
                 {}
                 
             
             BloodpressureFilterTaskMessage& BloodpressureFilterTaskMessage::operator=(const BloodpressureFilterTaskMessage &obj) {
-                data = obj.getData();
+                dataS = obj.getDataS();
+                dataD = obj.getDataD();
                 return (*this);
             }
             
@@ -45,19 +47,25 @@ namespace bsn {
             }
             
             
-            void BloodpressureFilterTaskMessage::setData(const double &_data) {
-                data = _data;
+            void BloodpressureFilterTaskMessage::setData(const double &_filterS, const double &_filterD) {
+                dataS = _filterS;
+                dataD = _filterD;
             }
 
-            double BloodpressureFilterTaskMessage::getData() const {
-                return data;
+            double BloodpressureFilterTaskMessage::getDataS() const {
+                return dataS;
+            }
+
+            double BloodpressureFilterTaskMessage::getDataD() const {
+                return dataD;
             }
 
             ostream& BloodpressureFilterTaskMessage::operator<<(ostream &out) const {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
                 
-                s->write(1, data);
+                s->write(1, dataS);
+                s->write(1, dataD);
                 return out;
             }
             
@@ -65,15 +73,17 @@ namespace bsn {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
                 
-                d->read(1, data);
+                d->read(1, dataS);
+                d->read(2, dataD);
                 return in;
             }
             
             const string BloodpressureFilterTaskMessage::toString() const {
                 stringstream sstr;
 
-                sstr << "BloodpressureFilterTaskMessage#" << endl;
-                sstr << "Data: " << data << endl;
+                sstr << "BloodpressureCollectTaskMessage#" << endl;
+                sstr << "Data Systolic: " << dataS << endl;
+                sstr << "Data Diastolic: " << dataD << endl;
 
                 return sstr.str();
             }

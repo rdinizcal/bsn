@@ -35,8 +35,9 @@ void OximeterFilterModule::tearDown() {
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::body(){
 
+    Container container;
     double data;
-
+    double type;
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         
@@ -46,7 +47,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
-            data = container.getData<OximeterData>().getData();
+            data = container.getData<OximeterCollectTaskMsg>().getData();
             
          // TASK: Filter data with moving average
             filter.setRange(params["m_avg"]);
@@ -59,9 +60,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
             if(!passou)
                 sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
 
-            SensorData sdata(type, data, risk);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
+            OximeterFilterTaskMsg sdata(data);
+            Container filterContainer(sdata);
+            getConference().send(filterContainer);
 
         }
     }

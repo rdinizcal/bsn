@@ -20,8 +20,7 @@ BloodpressureTransferModule::BloodpressureTransferModule(const int32_t &argc, ch
     type("bloodpressure"),
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
-    filterSystolic(5),
-    filterDiastolic(5),
+    sensorConfig()
     {}
 
 BloodpressureTransferModule::~BloodpressureTransferModule() {}
@@ -29,6 +28,35 @@ BloodpressureTransferModule::~BloodpressureTransferModule() {}
 void BloodpressureTransferModule::setUp() {
     //srand(time(NULL));
     addDataStoreFor(BLOODPRESURETRANSFERMODULE_MSG_QUE, buffer);
+
+    // Configure sensor configuration
+    Range low_range = ranges[2];
+    
+    array<Range,2> midRanges;
+    midRanges[0] = ranges[1];
+    midRanges[1] = ranges[3];
+    
+    array<Range,2> highRanges;
+    highRanges[0] = ranges[0];
+    highRanges[1] = ranges[4];
+
+    array<Range,3> percentages;
+
+    vector<string> low_p = op.split(getKeyValueConfiguration().getValue<string>("global.lowrisk"), ',');
+    percentages[0] = Range(stod(low_p[0]),stod(low_p[1]));
+
+    vector<string> mid_p = op.split(getKeyValueConfiguration().getValue<string>("global.midrisk"), ',');
+    percentages[1] = Range(stod(mid_p[0]),stod(mid_p[1]));
+
+    vector<string> high_p = op.split(getKeyValueConfiguration().getValue<string>("global.highrisk"), ',');
+    percentages[2] = Range(stod(high_p[0]),stod(high_p[1]));
+
+    if(i==0){
+        sensorConfigSystolic = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
+    } else {
+        sensorConfigDiastolic = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
+    }
+        
 
 }
 
@@ -40,9 +68,10 @@ void BloodpressureTransferModule::tearDown() {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferModule::body(){
 
     Container container;
-    double dataS;
-    double dataD;
-    double risk;
+    double filterS;
+    double filterD;
+    double riskS;
+    double riskD;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
@@ -52,8 +81,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
-            active = container.getData<BloodpressureControlCommand>().getActive();
-        
+            filterS = container.getData<BloodpressureFilterTaskMsg>().getDataS();
+            filterD = container.getData<BloodpressureFilterTaskMsg>().getDataD();        
 
        
         /*
@@ -61,19 +90,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
          */        
             
         //TASK: Transfer information to CentralHub
-            risk = sensorConfigSystolic.evaluateNumber(dataS);
-            SensorData sdataS("bpms", dataS, risk);
-            Container sdataSContainer(sdataS);
-            getConference().send(sdataSContainer);
+            riskS = sensorConfigSystolic.evaluateNumber(filterS);
+            BloodpressureTransferTaskMsg transferSMsg(riskS);
+            Container transferSContainer(transferSMsg);
+            getConference().send(transferSContainer);
 
-    
-
-            risk = sensorConfigDiastolic.evaluateNumber(dataD);
-            SensorData sdataD("bpmd", dataD, risk);
-            Container sdatadContainer(sdataD);
-            getConference().send(sdatadContainer);
-
-            
+            riskD = sensorConfigDiastolic.evaluateNumber(filterD);
+            BloodpressureTransferTaskMsg transferDMsg(riskD);
+            Container transferDContainer(transferDMsg);
+            getConference().send(transferDContainer);
 
         }
     }

@@ -68,22 +68,22 @@ void ECGTransferModule::tearDown() {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::body() {
   
     Container container;
-    double data;
+    double filterResponse;
     double risk;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            data = container.getData<ECGFilterTaskMsg>().getData();
+            filterResponse = container.getData<ECGFilterTaskMsg>().getData();
             
             
             // TASK: Transfer information to CentralHub
-            risk = sensorConfig.evaluateNumber(data);
+            risk = sensorConfig.evaluateNumber(filterResponse);
             
             ECGTransferTaskMsg sdata(risk);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
+            Container transferContainer(sdata);
+            getConference().send(transferContainer);
        }
     }
 

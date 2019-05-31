@@ -15,7 +15,7 @@ namespace bsn {
             class  BloodpressureCollectTaskMessage : public odcore::data::SerializableData {
             
                 public:
-                    BloodpressureCollectTaskMessage(const double &/*data*/);
+                    BloodpressureCollectTaskMessage(const double &/*dataS*/, const double &/*dataD*/);
     
                     BloodpressureCollectTaskMessage();
                     virtual ~  BloodpressureCollectTaskMessage();
@@ -39,11 +39,13 @@ namespace bsn {
                     virtual const std::string toString() const;
                     
                 public:
-                    void setData(const double &/*data*/);
-                    double getData() const;
+                    void setData(const double &/*dataS*/, const double &/*dataD*/);
+                    double getDataS() const;
+                    double getDataD() const;
 
                 private:
-                    double data;
+                    double dataS;
+                    double dataD;
             };
         }
     }

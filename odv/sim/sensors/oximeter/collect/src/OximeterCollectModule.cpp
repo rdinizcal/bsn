@@ -17,18 +17,11 @@ OximeterCollectModule::OximeterCollectModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    battery("oxi_batt",100,100,1),
     available(true),
-    data_accuracy(1),
-    comm_accuracy(1),
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
-    markov(),
-    filter(5),
-    sensorConfig(),
-    persist(1),
-    path("oximeter_output.csv"),
-    fp() {}
+    markov()
+    {}
 
 OximeterCollectModule::~OximeterCollectModule() {}
 
@@ -67,135 +60,40 @@ void OximeterCollectModule::setUp() {
         markov = Markov(transitions, ranges, 2);
     }
 
-    { // Configure sensor configuration
-        Range low_range = ranges[2];
-        
-        array<Range,2> midRanges;
-        midRanges[0] = ranges[1];
-        midRanges[1] = ranges[3];
-        
-        array<Range,2> highRanges;
-        highRanges[0] = ranges[0];
-        highRanges[1] = ranges[4];
-
-        array<Range,3> percentages;
-
-        vector<string> low_p = op.split(getKeyValueConfiguration().getValue<string>("global.lowrisk"), ',');
-        percentages[0] = Range(stod(low_p[0]),stod(low_p[1]));
-
-        vector<string> mid_p = op.split(getKeyValueConfiguration().getValue<string>("global.midrisk"), ',');
-        percentages[1] = Range(stod(mid_p[0]),stod(mid_p[1]));
-
-        vector<string> high_p = op.split(getKeyValueConfiguration().getValue<string>("global.highrisk"), ',');
-        percentages[2] = Range(stod(high_p[0]),stod(high_p[1]));
-
-        sensorConfig = SensorConfiguration(0,low_range,midRanges,highRanges,percentages);
-    }
-
-    { // Configure sensor data_accuracy
-        data_accuracy = getKeyValueConfiguration().getValue<double>("oximeter.data_accuracy") / 100;
-        comm_accuracy = getKeyValueConfiguration().getValue<double>("oximeter.data_accuracy") / 100;
-    }
-
-    { // Configure sensor persistency
-        persist = getKeyValueConfiguration().getValue<int>("oximeter.persist");
-        path = getKeyValueConfiguration().getValue<std::string>("oximeter.path");
-
-        if (persist) {
-            fp.open(path);
-            fp << "ID,DATA,RISK,TIME_MS" << endl;
-        }
-    }
+   
 }
 
 void OximeterCollectModule::tearDown() {
-    if (persist)
-        fp.close();
-}
 
-void OximeterCollectModule::sendTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
-    TaskInfo task(task_id, cost, reliability, frequency);
-    Container taskContainer(task);
-    getConference().send(taskContainer);
-}
-
-void OximeterCollectModule::sendContextInfo(const std::string &context_id, const bool &value) {
-    ContextInfo context(context_id, value, 0, 0, "");
-    Container contextContainer(context);
-    getConference().send(contextContainer);
-}
-
-void OximeterCollectModule::sendMonitorTaskInfo(const std::string &task_id, const double &cost, const double &reliability, const double &frequency) {
-    MonitorTaskInfo task(task_id, cost, reliability, frequency);
-    Container taskContainer(task);
-    getConference().send(taskContainer);
-}
-
-void OximeterCollectModule::sendMonitorContextInfo(const std::string &context_id, const bool &value) {
-    MonitorContextInfo context(context_id, value, 0, 0, "");
-    Container contextContainer(context);
-    getConference().send(contextContainer);
 }
 
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule::body(){
 
-    Container container;
     double data;
     double risk;
-    bool first_exec = true;
-    uint32_t id = 0;
+    int i = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(first_exec){ // Send context info warning controller that this sensor is available
-            sendContextInfo("SaO2_available",true);
-            sendMonitorContextInfo("SaO2_available",true);
-            first_exec = false; 
-        }
-
-        
-            sendContextInfo("SaO2_available",true);
-            sendTaskInfo("G3_T1.11",0.076,1,1);
-            sendTaskInfo("G3_T1.12",0.076*params["m_avg"],1,1);
-            sendTaskInfo("G3_T1.13",0.076,1,1);
-           // and the monitor..
-            sendMonitorContextInfo("SaO2_available",true);
-            sendMonitorTaskInfo("G3_T1.11",0.076,1,1);
-            sendMonitorTaskInfo("G3_T1.12",0.076*params["m_avg"],1,1);
-            sendMonitorTaskInfo("G3_T1.13",0.076,1,1);
-        }
-
-        
-        while(!buffer.isEmpty()){ // Receive control command and module update
-            container = buffer.leave();
-
-            active = container.getData<OximeterControlCommand>().getActive();
-            params["freq"] = container.getData<OximeterControlCommand>().getFrequency();
-        }
-
-        /*
-         * Module execution
-         */
-        if((rand() % 100)+1 < int32_t(params["freq"]*100)){
+        i = 0;
+        // Apenas executa uma vez a cada segundo
+        while(i > 10){ // Receive control command and module update
             
-        // TASK: Collect oximeter data
+            
+            // TASK: Collect ecg data
             data = markov.calculate_state();
+            markov.next_state();              
 
-            double offset = (1 - data_accuracy + (double)rand() / RAND_MAX * (1 - data_accuracy)) * data;
 
-            if (rand() % 2 == 0)
-                data = data + offset;
-            else
-                data = data - offset;
+            // Send data from Collect task to Filter task
+            OximeterCollectTaskMsg collectMsg(data);
+            Container collectContainer(collectMsg);
+            getConference().send(collectContainer);
+            i = 0;
+        }   
 
-            markov.next_state();
-            battery.consume(0.1);
-            
-
-            //for debugging 
-            cout << "New data: " << data << endl << endl;
-        }
+        i++;
             
     }
 

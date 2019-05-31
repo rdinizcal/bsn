@@ -18,7 +18,7 @@ ThermFilterModule::ThermFilterModule(const int32_t &argc, char **argv) :
     type("thermometer"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    filter(5),
+    filter(5)
     {}
 
 ThermFilterModule::~ThermFilterModule() {}
@@ -35,6 +35,7 @@ void ThermFilterModule::tearDown() {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::body(){
 
     double data;
+    double type;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         /*
@@ -43,15 +44,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
             // TASK: Filter data with moving average
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            data = container.getData<SensorData>().getData()
+            data = container.getData<ThermCollectTaskMsg>().getData()
 
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
             
-            SensorData sdata(type, data, risk);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
+            ThermFilterTaskMsg sdata(data);
+            Container filterContainer(sdata);
+            getConference().send(filterContainer);
         }
     }
 

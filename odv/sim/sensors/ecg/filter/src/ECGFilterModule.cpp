@@ -1,5 +1,6 @@
 #include "ECGFilterModule.hpp"
 #include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
+#define TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE 200
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -48,9 +49,9 @@ float ECGFilterModule::noise(void){
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body() {
   
+    Container container;
     double data;
-
-    
+    double type;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         /*
@@ -71,8 +72,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
                 sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
 
             ECGFilterTaskMsg sdata(data);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
+            Container filterContainer(sdata);
+            getConference().send(filterContainer);
 
         }    
 

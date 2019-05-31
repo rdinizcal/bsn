@@ -9,7 +9,7 @@ namespace bsn {
 
             BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage() : data() {}
 
-            BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage(const double &_data) : data(_frequency) {}
+            BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage(const double &_data) : data(_data) {}
 
             BloodpressureCollectTaskMessage::~BloodpressureCollectTaskMessage() {}
             
@@ -20,7 +20,8 @@ namespace bsn {
                 
             
             BloodpressureCollectTaskMessage& BloodpressureCollectTaskMessage::operator=(const BloodpressureCollectTaskMessage &obj) {
-                data = obj.getData();
+                dataS = obj.getDataS();
+                dataD = obj.getDataD();
                 return (*this);
             }
             
@@ -45,19 +46,25 @@ namespace bsn {
             }
             
             
-            void BloodpressureCollectTaskMessage::setData(const double &_data) {
-                data = _data;
+            void BloodpressureCollectTaskMessage::setData(const double &_dataS, const double &_dataD) {
+                dataS = _dataS;
+                dataD = _dataD;
             }
 
-            double BloodpressureCollectTaskMessage::getData() const {
-                return data;
+            double BloodpressureCollectTaskMessage::getDataS() const {
+                return dataS;
+            }
+            
+            double BloodpressureCollectTaskMessage::getDataD() const {
+                return dataD;
             }
 
             ostream& BloodpressureCollectTaskMessage::operator<<(ostream &out) const {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Serializer> s = sf.getQueryableNetstringsSerializer(out);
                 
-                s->write(1, data);
+                s->write(1, dataS);
+                s->write(2, dataD);
                 return out;
             }
             
@@ -65,7 +72,8 @@ namespace bsn {
                 odcore::serialization::SerializationFactory& sf=odcore::serialization::SerializationFactory::getInstance();
                 std::shared_ptr<odcore::serialization::Deserializer> d = sf.getQueryableNetstringsDeserializer(in);
                 
-                d->read(1, data);
+                d->read(1, dataS);
+                d->read(2, dataD);
                 return in;
             }
             
@@ -73,7 +81,8 @@ namespace bsn {
                 stringstream sstr;
 
                 sstr << "BloodpressureCollectTaskMessage#" << endl;
-                sstr << "Data: " << data << endl;
+                sstr << "Data Systolic: " << dataS << endl;
+                sstr << "Data Diastolic: " << dataD << endl;
 
                 return sstr.str();
             }

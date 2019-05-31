@@ -18,7 +18,7 @@ ECGCollectModule::ECGCollectModule(const int32_t &argc, char **argv) :
     type("ecg"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    filter(5)
+    markov()
     {}
 
 ECGCollectModule::~ECGCollectModule() {}
@@ -27,12 +27,6 @@ void ECGCollectModule::setUp() {
 
     addDataStoreFor(ECGTRANSFERMODULE_MSG_QUE, buffer);
     
-    Operation op;
-    
-    std::vector<string> t_probs;
-    std::array<float, 25> transitions;
-    std::array<bsn::range::Range,5> ranges;
-
     // Configure sensor configuration    
     Operation op;
     
@@ -76,12 +70,11 @@ void ECGCollectModule::tearDown() {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body() {
   
     double data;
-    double risk;
     int i = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        i = 0;
+        
         // Apenas executa uma vez a cada segundo
         while(i > 10){ // Receive control command and module update
             
@@ -92,9 +85,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body
 
 
             // Send data from Collect task to Filter task
-            ECGCollectTaskMsg sdata(data);
-            Container sdataContainer(sdata);
-            getConference().send(sdataContainer);
+            ECGCollectTaskMsg collectMsg(data);
+            Container collectContainer(collectMsg);
+            getConference().send(collectContainer);
             i = 0;
         }   
 
