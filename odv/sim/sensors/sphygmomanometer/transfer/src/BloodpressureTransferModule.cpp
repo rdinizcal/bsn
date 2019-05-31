@@ -25,7 +25,7 @@ BloodpressureTransferModule::~BloodpressureTransferModule() {}
 
 void BloodpressureTransferModule::setUp() {
     //srand(time(NULL));
-    addDataStoreFor(BLOODPRESURETRANSFERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(BLOODPRESSURETRANSFERMODULE_MSG_QUE, buffer);
 
     // Configure sensor configuration
     Range low_range = ranges[2];

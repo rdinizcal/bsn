@@ -9,7 +9,7 @@ namespace bsn {
 
             ThermometerCollectTaskMessage::ThermometerCollectTaskMessage() : data() {}
 
-            ThermometerCollectTaskMessage::ThermometerCollectTaskMessage(const double &_data) : data(_frequency) {}
+            ThermometerCollectTaskMessage::ThermometerCollectTaskMessage(const double &_data) : data(_data) {}
 
             ThermometerCollectTaskMessage::~ThermometerCollectTaskMessage() {}
             
@@ -25,7 +25,7 @@ namespace bsn {
             }
             
             int32_t ThermometerCollectTaskMessage::ID() {
-                return THERMOMETERCOLLECTMODULE_MSG_QUE;
+                return THERMCOLLECTMODULE_MSG_QUE;
             }
             const string ThermometerCollectTaskMessage::ShortName() {
                 return "ThermometerCollectTaskMessage";

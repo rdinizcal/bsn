@@ -9,7 +9,7 @@ namespace bsn {
 
             OximeterFilterTaskMessage::OximeterFilterTaskMessage() : data() {}
 
-            OximeterFilterTaskMessage::OximeterFilterTaskMessage(const double &_data) : data(_frequency) {}
+            OximeterFilterTaskMessage::OximeterFilterTaskMessage(const double &_data) : data(_data) {}
 
             OximeterFilterTaskMessage::~OximeterFilterTaskMessage() {}
             

@@ -26,7 +26,7 @@ FIND_PACKAGE (OpenDaVINCI REQUIRED)
 
 ###########################################################################
 # Set linking libraries to successfully link test suites and binaries.
-SET (LIBRARIES ${OPENDAVINCI_LIBRARIES})
+SET (LIBRARIES ${OPENDAVINCI_LIBRARIES} ${BSN_LIB})
 
 IF(WIN32)
     SET (BSN_LIB bsn-static)
@@ -37,6 +37,7 @@ ENDIF()
 ###########################################################################
 # Set header files from OpenDaVINCI.
 INCLUDE_DIRECTORIES (${OPENDAVINCI_INCLUDE_DIRS})
+
 # Set include directory.
 INCLUDE_DIRECTORIES(include)
 

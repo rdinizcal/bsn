@@ -7,15 +7,16 @@ namespace bsn {
         
             using namespace std;
 
-            BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage() : data() {}
+            BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage() : dataS(), dataD() {}
 
-            BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage(const double &_data) : data(_data) {}
+            BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage(const double &_dataS, const double &_dataD) : dataS(_dataS), dataD(_dataD){}
 
             BloodpressureCollectTaskMessage::~BloodpressureCollectTaskMessage() {}
             
             BloodpressureCollectTaskMessage::BloodpressureCollectTaskMessage(const BloodpressureCollectTaskMessage &obj) :
                 SerializableData(),
-                data(obj.getData())
+                dataS(obj.getDataS()),
+                dataD(obj.getDataD())
                 {}
                 
             

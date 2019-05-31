@@ -23,7 +23,7 @@ BloodpressureCollectModule::BloodpressureCollectModule(const int32_t &argc, char
 BloodpressureCollectModule::~BloodpressureCollectModule() {}
 
 void BloodpressureCollectModule::setUp() {
-    addDataStoreFor(BLOODPRESURECOLLECTMODULE_MSG_QUE, buffer);
+    addDataStoreFor(BLOODPRESSURECOLLECTMODULE_MSG_QUE, buffer);
     
     Operation op;
       for(int32_t i = 0; i < 2; i++){

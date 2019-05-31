@@ -9,7 +9,7 @@ namespace bsn {
 
             ThermometerTransferTaskMessage::ThermometerTransferTaskMessage() : data() {}
 
-            ThermometerTransferTaskMessage::ThermometerTransferTaskMessage(const double &_data) : data(_frequency) {}
+            ThermometerTransferTaskMessage::ThermometerTransferTaskMessage(const double &_data) : data(_data) {}
 
             ThermometerTransferTaskMessage::~ThermometerTransferTaskMessage() {}
             
@@ -25,7 +25,7 @@ namespace bsn {
             }
             
             int32_t ThermometerTransferTaskMessage::ID() {
-                return THERMOMETERTRANSFERTRANSFERMODULE_MSG_QUE;
+                return THERMTRANSFERMODULE_MSG_QUE;
             }
             const string ThermometerTransferTaskMessage::ShortName() {
                 return "ThermometerTransferTaskMessage";

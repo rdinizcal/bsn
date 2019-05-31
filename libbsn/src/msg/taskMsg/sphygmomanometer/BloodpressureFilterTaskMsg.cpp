@@ -7,7 +7,7 @@ namespace bsn {
         
             using namespace std;
 
-            BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage() : data() {}
+            BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage() : dataS(), dataD() {}
 
             BloodpressureFilterTaskMessage::BloodpressureFilterTaskMessage(const double &_dataS, const double &_dataD) : dataS(_dataS), dataD(_dataD) {}
 

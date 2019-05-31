@@ -9,7 +9,7 @@ namespace bsn {
 
             ECGCollectTaskMessage::ECGCollectTaskMessage() : data() {}
 
-            ECGCollectTaskMessage::ECGCollectTaskMessage(const double &_data) : data(_frequency) {}
+            ECGCollectTaskMessage::ECGCollectTaskMessage(const double &_data) : data(_data) {}
 
             ECGCollectTaskMessage::~ECGCollectTaskMessage() {}
             

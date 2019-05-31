@@ -24,7 +24,7 @@ BloodpressureFilterModule::BloodpressureFilterModule(const int32_t &argc, char *
 BloodpressureFilterModule::~BloodpressureFilterModule() {}
 
 void BloodpressureFilterModule::setUp() {
-    addDataStoreFor(BLOODPRESUREFILTERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(BLOODPRESSUREFILTERMODULE_MSG_QUE, buffer);
     
 }
 

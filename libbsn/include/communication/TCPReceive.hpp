@@ -20,7 +20,7 @@
 #include <opendavinci/odcore/wrapper/SharedMemory.h>
 #include <opendavinci/odcore/wrapper/SharedMemoryFactory.h>
 
-#include "bsn/operation/Operation.hpp"
+#include "operation/Operation.hpp"
 
 namespace bsn {
     namespace communication {

@@ -9,7 +9,7 @@ namespace bsn {
 
             ECGTransferTaskMessage::ECGTransferTaskMessage() : data() {}
 
-            ECGTransferTaskMessage::ECGTransferTaskMessage(const double &_data) : data(_frequency) {}
+            ECGTransferTaskMessage::ECGTransferTaskMessage(const double &_data) : data(_data) {}
 
             ECGTransferTaskMessage::~ECGTransferTaskMessage() {}
             

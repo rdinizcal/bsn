@@ -1,4 +1,4 @@
-#include "bsn/communication/TCPReceive.hpp"
+#include "communication/TCPReceive.hpp"
 
 using namespace std;
 

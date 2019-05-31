@@ -9,7 +9,7 @@ namespace bsn {
 
             ECGFilterTaskMessage::ECGFilterTaskMessage() : data() {}
 
-            ECGFilterTaskMessage::ECGFilterTaskMessage(const double &_data) : data(_frequency) {}
+            ECGFilterTaskMessage::ECGFilterTaskMessage(const double &_data) : data(_data) {}
 
             ECGFilterTaskMessage::~ECGFilterTaskMessage() {}
             

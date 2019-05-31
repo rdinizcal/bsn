@@ -53,3 +53,4 @@ IF(UNIX)
     SET (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wno-error=deprecated-declarations")
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ${CXX_OPTIONS} -pipe")
 ENDIF()
+

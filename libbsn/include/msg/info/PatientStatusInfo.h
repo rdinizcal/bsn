@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-#include "bsn/resource/Resource.hpp"
+#include "resource/Battery.hpp"
 
 namespace bsn {
     namespace msg { 

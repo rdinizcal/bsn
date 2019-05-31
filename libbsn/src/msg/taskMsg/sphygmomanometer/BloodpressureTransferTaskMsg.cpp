@@ -9,7 +9,7 @@ namespace bsn {
 
             BloodpressureTransferTaskMessage::BloodpressureTransferTaskMessage() : data() {}
 
-            BloodpressureTransferTaskMessage::BloodpressureTransferTaskMessage(const double &_data) : data(_frequency) {}
+            BloodpressureTransferTaskMessage::BloodpressureTransferTaskMessage(const double &_data) : data(_data) {}
 
             BloodpressureTransferTaskMessage::~BloodpressureTransferTaskMessage() {}
             

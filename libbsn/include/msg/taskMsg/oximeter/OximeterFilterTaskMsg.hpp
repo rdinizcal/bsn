@@ -7,21 +7,21 @@
 #include "opendavinci/odcore/serialization/Serializer.h"
 
 #include <stdint.h>
-
+ 
 namespace bsn {
     namespace msg { 
-        namespace data {
+        namespace taskMsg {
         
-            class  OximiterFilterTaskMessage : public odcore::data::SerializableData {
+            class  OximeterFilterTaskMessage : public odcore::data::SerializableData {
             
                 public:
-                    OximiterFilterTaskMessage(const double &/*data*/);
+                    OximeterFilterTaskMessage(const double &/*data*/);
     
-                    OximiterFilterTaskMessage();
-                    virtual ~  OximiterFilterTaskMessage();
+                    OximeterFilterTaskMessage();
+                    virtual ~  OximeterFilterTaskMessage();
                     
-                    OximiterFilterTaskMessage(const OximiterFilterTaskMessage &/*obj*/);
-                    OximiterFilterTaskMessage& operator=(const  OximiterFilterTaskMessage &/*obj*/);
+                    OximeterFilterTaskMessage(const OximeterFilterTaskMessage &/*obj*/);
+                    OximeterFilterTaskMessage& operator=(const  OximeterFilterTaskMessage &/*obj*/);
                 
                 public:
                     virtual int32_t getID() const;
