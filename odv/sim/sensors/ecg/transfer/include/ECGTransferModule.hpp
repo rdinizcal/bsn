@@ -11,9 +11,10 @@
 #include "bsn/operation/Operation.hpp"
 #include "bsn/configuration/SensorConfiguration.hpp"
 
-#include "bsn/msg/data/SensorData.h"
+
 #include "bsn/msg/MessageQueueCodes.hpp"
 #include "bsn/msg/taskMsg/ECG/ECGTransferTaskMsg.hpp"
+#include "bsn/msg/taskMsg/ECG/ECGFilterTaskMsg.hpp"
 
 class ECGTransferModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     

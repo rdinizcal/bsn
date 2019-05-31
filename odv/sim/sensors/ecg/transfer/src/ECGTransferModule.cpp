@@ -10,6 +10,7 @@ using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
+
 ECGTransferModule::ECGTransferModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
@@ -27,7 +28,6 @@ void ECGTransferModule::setUp() {
     Operation op;
     
     std::vector<string> t_probs;
-    std::array<float, 25> transitions;
     std::array<bsn::range::Range,5> ranges;
 
     { // Configure sensor configuration
@@ -71,13 +71,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            filterResponse = container.getData<ECGFilterTaskMsg>().getData();
+            filterResponse = container.getData<ECGFilterTaskMessage>().getData();
             
             
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(filterResponse);
             
-            ECGTransferTaskMsg data(risk);
+            ECGFilterTaskMessage data(risk);
             Container transferContainer(data);
             getConference().send(transferContainer);
        }
