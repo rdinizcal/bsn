@@ -8,7 +8,8 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/range/Range.hpp"
-#include "bsn/filters/MovingAverage.hpp"
+#include "bsn/operation/Operation.hpp"
+#include "bsn/configuration/SensorConfiguration.hpp"
 
 #include "bsn/msg/data/SensorData.h"
 
@@ -32,8 +33,8 @@ class BloodpressureTransferModule : public odcore::base::module::TimeTriggeredCo
 		std::string type;
 		bool active;
 		std::map<std::string,double> params;
-		bsn::filters::MovingAverage filterSystolic;
-		bsn::filters::MovingAverage filterDiastolic;
+		bsn::configuration::SensorConfiguration sensorConfigSystolic;
+		bsn::configuration::SensorConfiguration sensorConfigDiastolic;
 };
 
 #endif 

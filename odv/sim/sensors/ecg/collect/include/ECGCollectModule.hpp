@@ -8,7 +8,9 @@
 #include "opendavinci/odcore/base/FIFOQueue.h"
 
 #include "bsn/range/Range.hpp"
-#include "bsn/filters/MovingAverage.hpp"
+#include "bsn/generator/Markov.hpp"
+#include "bsn/operation/Operation.hpp"
+
 #include "bsn/msg/data/SensorData.h"
 
 class ECGCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -31,7 +33,7 @@ class ECGCollectModule : public odcore::base::module::TimeTriggeredConferenceCli
 		std::string type;
 		bool active;
 		std::map<std::string,double> params;
-		bsn::filters::MovingAverage filter;
+		bsn::generator::Markov markov;
 };
 
 #endif 

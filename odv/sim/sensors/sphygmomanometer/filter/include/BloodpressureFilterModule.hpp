@@ -33,6 +33,7 @@ class BloodpressureFilterModule : public odcore::base::module::TimeTriggeredConf
 		std::string type;
 		bool active;
 		std::map<std::string,double> params;
+		
 		bsn::filters::MovingAverage filterSystolic;
 		bsn::filters::MovingAverage filterDiastolic;
 };

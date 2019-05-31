@@ -9,9 +9,7 @@ using namespace bsn::generator;
 using namespace bsn::operation;
 using namespace bsn::configuration;
 
-using namespace bsn::msg::data;
-using namespace bsn::msg::info;
-using namespace bsn::msg::control;
+using namespace bsn::msg::taskMsg;
 
 OximeterFilterModule::OximeterFilterModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),

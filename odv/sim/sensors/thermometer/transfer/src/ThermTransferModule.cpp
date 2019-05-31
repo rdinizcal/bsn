@@ -9,7 +9,7 @@ using namespace bsn::generator;
 using namespace bsn::operation;
 using namespace bsn::configuration;
 
-using namespace bsn::msg::data;
+using namespace bsn::msg::taskMsg;
 
 ThermTransferCollector::ThermTransferCollector(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
