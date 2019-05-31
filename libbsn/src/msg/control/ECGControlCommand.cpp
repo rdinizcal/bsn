@@ -1,4 +1,4 @@
-#include "msg/control/ECGControlCommand.hpp"
+#include "bsn/msg/control/ECGControlCommand.hpp"
 
 namespace bsn {
     namespace msg { 

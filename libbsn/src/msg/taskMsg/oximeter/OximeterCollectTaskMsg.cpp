@@ -1,5 +1,5 @@
-#include "msg/taskMsg/oximeter/OximeterCollectTaskMsg.hpp"
-#include "msg/MessageQueueCodes.hpp"
+#include "bsn/msg/taskMsg/oximeter/OximeterCollectTaskMsg.hpp"
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 namespace bsn {
     namespace msg { 

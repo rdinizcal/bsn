@@ -1,4 +1,4 @@
-#include "msg/control/ThermometerControlCommand.hpp"
+#include "bsn/msg/control/ThermometerControlCommand.hpp"
 
 namespace bsn {
     namespace msg { 

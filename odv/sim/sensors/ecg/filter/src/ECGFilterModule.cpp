@@ -1,5 +1,5 @@
 #include "ECGFilterModule.hpp"
-#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
+#include "bsn/msg/MessageQueueCodes.hpp"
 #define TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE 200
 
 using namespace odcore::base::module;

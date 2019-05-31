@@ -1,4 +1,4 @@
-#include "msg/info/MonitorContextInfo.hpp"
+#include "bsn/msg/info/MonitorContextInfo.hpp"
 
 namespace bsn {
     namespace msg { 

@@ -9,12 +9,14 @@ IF(NOT ("${BSN_DIR}" STREQUAL ""))
     FIND_PATH(BSN_INCLUDE_DIR
                  NAMES bsn
                  PATHS ${BSN_DIR}/include
-                 NO_DEFAULT_PATH)
+                 NO_DEFAULT_PATH
+                  )
 
     FIND_LIBRARY(BSN_LIBRARY
                  NAMES bsn bsn-static
                  PATHS ${BSN_DIR}/lib
-                 NO_DEFAULT_PATH)
+                 NO_DEFAULT_PATH
+		 )
 ENDIF()
 IF(   ("${BSN_INCLUDE_DIR}" STREQUAL "BSN_INCLUDE_DIR-NOTFOUND")
    OR ("${BSN_DIR}" STREQUAL "") )
@@ -23,14 +25,16 @@ IF(   ("${BSN_INCLUDE_DIR}" STREQUAL "BSN_INCLUDE_DIR-NOTFOUND")
     FIND_PATH(BSN_INCLUDE_DIR 
                  NAMES bsn
                  PATHS /usr/include
-                       /usr/local/include)
+                       /usr/local/include
+                        )
 
     FIND_LIBRARY(BSN_LIBRARY
                  NAMES bsn bsn-static
                  PATHS /usr/lib
                        /usr/lib64
                        /usr/local/lib
-                       /usr/local/lib64)
+                       /usr/local/lib64
+                        )
 ENDIF()
 
 IF("${BSN_INCLUDE_DIR}" STREQUAL "")

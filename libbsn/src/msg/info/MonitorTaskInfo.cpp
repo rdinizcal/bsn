@@ -1,4 +1,4 @@
-#include "msg/info/MonitorTaskInfo.hpp"
+#include "bsn/msg/info/MonitorTaskInfo.hpp"
 
 namespace bsn {
     namespace msg { 

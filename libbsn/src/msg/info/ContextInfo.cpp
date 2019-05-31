@@ -1,4 +1,4 @@
-#include "msg/info/ContextInfo.hpp"
+#include "bsn/msg/info/ContextInfo.hpp"
 
 namespace bsn {
     namespace msg { 

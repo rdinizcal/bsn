@@ -1,5 +1,5 @@
-#include "msg/taskMsg/sphygmomanometer/BloodpressureTransferTaskMsg.hpp"
-#include "msg/MessageQueueCodes.hpp"
+#include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureTransferTaskMsg.hpp"
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 namespace bsn {
     namespace msg { 

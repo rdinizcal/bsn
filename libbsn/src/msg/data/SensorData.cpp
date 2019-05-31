@@ -5,7 +5,7 @@
  * @version v1.0
  */
 
-#include "msg/data/SensorData.h"
+#include "bsn/msg/data/SensorData.h"
 #include <iostream>
 
 namespace bsn {

@@ -1,4 +1,4 @@
-#include "msg/control/BloodpressureControlCommand.hpp"
+#include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
 namespace bsn {
     namespace msg { 

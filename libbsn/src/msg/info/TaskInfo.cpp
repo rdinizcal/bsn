@@ -1,4 +1,4 @@
-#include "msg/info/TaskInfo.hpp"
+#include "bsn/msg/info/TaskInfo.hpp"
 
 namespace bsn {
     namespace msg { 

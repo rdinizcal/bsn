@@ -1,4 +1,4 @@
-#include "msg/control/OximeterControlCommand.hpp"
+#include "bsn/msg/control/OximeterControlCommand.hpp"
 
 namespace bsn {
     namespace msg { 

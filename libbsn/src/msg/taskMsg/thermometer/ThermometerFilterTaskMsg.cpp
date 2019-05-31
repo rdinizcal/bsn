@@ -1,5 +1,5 @@
-#include "msg/taskMsg/thermometer/ThermometerFilterTaskMsg.hpp"
-#include "msg/MessageQueueCodes.hpp"
+#include "bsn/msg/taskMsg/thermometer/ThermometerFilterTaskMsg.hpp"
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 namespace bsn {
     namespace msg { 

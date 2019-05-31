@@ -1,11 +1,10 @@
 #include "ECGTransferModule.hpp"
-#include "bsn/libbsn/include/msg/MessageQueueCodes.hpp"
+
 
 using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::generator;
 using namespace bsn::operation;
 using namespace bsn::configuration;
 
@@ -15,7 +14,6 @@ ECGTransferModule::ECGTransferModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
     buffer(),
     type("ecg"),
-    available(true),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
     sensorConfig()
@@ -79,8 +77,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(filterResponse);
             
-            ECGTransferTaskMsg sdata(risk);
-            Container transferContainer(sdata);
+            ECGTransferTaskMsg data(risk);
+            Container transferContainer(data);
             getConference().send(transferContainer);
        }
     }

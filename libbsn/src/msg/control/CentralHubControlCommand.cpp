@@ -1,4 +1,4 @@
-#include "msg/control/CentralHubControlCommand.hpp"
+#include "bsn/msg/control/CentralHubControlCommand.hpp"
 
 namespace bsn {
     namespace msg { 

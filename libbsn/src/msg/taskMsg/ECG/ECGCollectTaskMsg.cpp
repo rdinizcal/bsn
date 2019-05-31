@@ -1,5 +1,5 @@
-#include "msg/taskMsg/ECG/ECGCollectTaskMsg.hpp"
-#include "msg/MessageQueueCodes.hpp"
+#include "bsn/msg/taskMsg/ECG/ECGCollectTaskMsg.hpp"
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 namespace bsn {
     namespace msg { 
