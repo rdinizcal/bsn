@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-PROJECT (thermometer)
+PROJECT (thermometertransfer)
 
 ###########################################################################
 # Set the search path for .cmake files.

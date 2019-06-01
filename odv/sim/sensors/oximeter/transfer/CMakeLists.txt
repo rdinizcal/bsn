@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-PROJECT (oximeter)
+PROJECT (oximetertransfer)
 
 ###########################################################################
 # Set the search path for .cmake files.
