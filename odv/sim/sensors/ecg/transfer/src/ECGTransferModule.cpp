@@ -1,6 +1,5 @@
 #include "ECGTransferModule.hpp"
 
-
 using namespace odcore::base::module;
 using namespace odcore::data;
 
@@ -9,7 +8,6 @@ using namespace bsn::operation;
 using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
-
 
 ECGTransferModule::ECGTransferModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),

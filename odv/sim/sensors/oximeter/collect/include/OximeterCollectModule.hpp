@@ -12,6 +12,10 @@
 #include "bsn/operation/Operation.hpp"
 
 #include "bsn/msg/control/OximeterControlCommand.hpp"
+#include "bsn/msg/taskMsg/ECG/OximeterCollectTaskMsg.hpp"
+
+#include "bsn/msg/MessageQueueCodes.hpp"
+
 
 class OximeterCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     

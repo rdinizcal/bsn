@@ -11,7 +11,10 @@
 #include "bsn/filters/MovingAverage.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/taskMsg/ECG/ECGCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/ECG/ECGFilterTaskMsg.hpp"
 
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 class ECGFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     

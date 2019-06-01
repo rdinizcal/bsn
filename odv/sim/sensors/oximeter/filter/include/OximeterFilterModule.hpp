@@ -12,6 +12,10 @@
 
 #include "bsn/msg/data/SensorData.h"
 
+#include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/msg/taskMsg/ECG/OximeterCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/ECG/OximeterFilterTaskMsg.hpp"
+
 class OximeterFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:

@@ -12,6 +12,11 @@
 
 #include "bsn/msg/data/SensorData.h"
 
+#include "bsn/msg/taskMsg/ECG/BloodpressureCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/ECG/BloodpressureFilterTaskMsg.hpp"
+
+#include "bsn/msg/MessageQueueCodes.hpp"
+
 class BloodpressureFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:

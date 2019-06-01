@@ -12,6 +12,11 @@
 
 #include "bsn/msg/data/SensorData.h"
 
+#include "bsn/msg/taskMsg/ECG/ThermCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/ECG/ThermFilterTaskMsg.hpp"
+
+#include "bsn/msg/MessageQueueCodes.hpp"
+
 class ThermFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:

@@ -1,5 +1,4 @@
 #include "ThermTransferCollector.hpp"
-#include "bsn/msg/MessageQueueCodes.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;

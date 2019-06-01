@@ -12,6 +12,9 @@
 #include "bsn/operation/Operation.hpp"
 
 #include "bsn/msg/data/SensorData.h"
+#include "bsn/msg/taskMsg/ECG/ECGCollectTaskMsg.hpp"
+
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 class ECGCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
