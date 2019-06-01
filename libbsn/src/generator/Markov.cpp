@@ -1,4 +1,4 @@
-#include "generator/Markov.hpp"
+#include "bsn/generator/Markov.hpp"
 
 using namespace std;
 using namespace bsn::range;

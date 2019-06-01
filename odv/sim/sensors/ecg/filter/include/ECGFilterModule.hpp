@@ -31,6 +31,9 @@ class ECGFilterModule : public odcore::base::module::TimeTriggeredConferenceClie
 
     	odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode body();
 
+		bool Oraculo(double);
+		double noise(void);
+
   	private:
 	    odcore::base::FIFOQueue buffer;
 		std::string type;

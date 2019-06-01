@@ -1,4 +1,4 @@
-#include "communication/TCPSend.hpp"
+#include "bsn/communication/TCPSend.hpp"
 
 using namespace std;
 using namespace odcore;

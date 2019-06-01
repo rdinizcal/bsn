@@ -4,9 +4,6 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::generator;
-using namespace bsn::operation;
-using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
@@ -34,7 +31,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
 
     Container container;
     double data;
-    double type;
+
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         
@@ -51,12 +48,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
             filter.insert(data, type);
             data = filter.getValue(type);
             
-            data = data*noise;
-            bool passou = Oraculo(data);
-
-            if(!passou)
-                sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
-
             OximeterFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);

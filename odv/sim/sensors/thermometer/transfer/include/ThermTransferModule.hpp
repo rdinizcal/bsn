@@ -13,8 +13,8 @@
 
 #include "bsn/msg/data/SensorData.h"
 
-#include "bsn/msg/taskMsg/ECG/ThermFilterTaskMsg.hpp"
-#include "bsn/msg/taskMsg/ECG/ThermTransferTaskMsg.hpp"
+#include "bsn/msg/taskMsg/thermometer/ThermometerFilterTaskMsg.hpp"
+#include "bsn/msg/taskMsg/thermometer/ThermometerTransferTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
 

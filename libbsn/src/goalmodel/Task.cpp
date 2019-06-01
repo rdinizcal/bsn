@@ -1,4 +1,4 @@
-#include "goalmodel/Task.hpp"
+#include "bsn/goalmodel/Task.hpp"
 
 namespace bsn {
     namespace goalmodel {

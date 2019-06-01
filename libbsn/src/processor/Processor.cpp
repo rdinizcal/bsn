@@ -1,4 +1,4 @@
-#include "processor/Processor.hpp"
+#include "bsn/processor/Processor.hpp"
 
 using namespace std;
 

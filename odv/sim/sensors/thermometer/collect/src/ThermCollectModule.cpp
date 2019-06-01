@@ -6,7 +6,7 @@ using namespace odcore::data;
 using namespace bsn::range;
 using namespace bsn::generator;
 using namespace bsn::operation;
-using namespace bsn::configuration;
+
 
 using namespace bsn::msg::taskMsg;
 
@@ -77,7 +77,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::bo
             data = markov.calculate_state();
             markov.next_state();      
 
-            ThermCollectTaskMessage collectMsg(data);
+            ThermometerCollectTaskMessage collectMsg(data);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
             i = 0;

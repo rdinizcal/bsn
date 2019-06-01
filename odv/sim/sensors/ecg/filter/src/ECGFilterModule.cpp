@@ -6,9 +6,6 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::generator;
-using namespace bsn::operation;
-using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
@@ -39,7 +36,7 @@ bool ECGFilterModule::Oraculo(double dados){
     
 }
 
-float ECGFilterModule::noise(void){
+double ECGFilterModule::noise(void){
     srand (time(NULL));
 
     return ((rand() % 1000000 )/1000000) + 0.5;
@@ -49,7 +46,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
   
     Container container;
     double data;
-    double type;
+    double noise;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         /*

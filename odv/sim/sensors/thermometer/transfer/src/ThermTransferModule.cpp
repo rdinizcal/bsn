@@ -1,34 +1,31 @@
-#include "ThermTransferCollector.hpp"
+#include "ThermTransferModule.hpp"
 
 using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::generator;
 using namespace bsn::operation;
 using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
-ThermTransferCollector::ThermTransferCollector(const int32_t &argc, char **argv) :
+ThermTransferModule::ThermTransferModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
     buffer(),
     type("thermometer"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    filter(5),
     sensorConfig()
     {}
 
-ThermTransferCollector::~ThermTransferCollector() {}
+ThermTransferModule::~ThermTransferModule() {}
 
-void ThermTransferCollector::setUp() {
+void ThermTransferModule::setUp() {
     addDataStoreFor(THERMTRANSFERMODULE_MSG_QUE, buffer);
 
-    Operation op;
+     Operation op;
     
     std::vector<string> t_probs;
-    std::array<float, 25> transitions;
     std::array<bsn::range::Range,5> ranges;
 
     { // Configure sensor configuration
@@ -58,11 +55,11 @@ void ThermTransferCollector::setUp() {
 
 }
 
-void ThermTransferCollector::tearDown() {
+void ThermTransferModule::tearDown() {
     
 }
 
-odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferCollector::body(){
+odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::body(){
 
     Container container;
     double filterResponse;
@@ -74,12 +71,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferCollector
         while(!buffer.isEmpty()){
            
             container = buffer.leave();
-            filterResponse = container.getData<ThermFilterTaskMessage>().getData();
+            filterResponse = container.getData<ThermometerFilterTaskMessage>().getData();
             
             // TASK: Transfer information to CentralHub
-            risk = sensorConfig.evaluateNumber(data);
+            risk = sensorConfig.evaluateNumber(filterResponse);
             
-            ThermTransferTaskMessage sdata(risk);
+            ThermometerTransferTaskMessage sdata(risk);
             Container transferContainer(sdata);
             getConference().send(transferContainer);
             

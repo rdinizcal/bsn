@@ -11,6 +11,7 @@ using namespace bsn::msg::control;
 using namespace bsn::communication;
 
 
+
 CentralhubModule::CentralhubModule(const int32_t &argc, char **argv) :
 TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
 	buffer(),
@@ -30,6 +31,12 @@ void CentralhubModule::setUp() {
     addDataStoreFor(873, buffer);
     addDataStoreFor(904, buffer);
 
+    addDataStoreFor(ECGTRANSFERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(OXIMETERTRANSFERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(BLOODPRESSURETRANSFERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(THERMTRANSFERMODULE_MSG_QUE, buffer);
+
+    
     connect = getKeyValueConfiguration().getValue<int>("centralhub.connect");
     port = getKeyValueConfiguration().getValue<int>("centralhub.port");
     ip = getKeyValueConfiguration().getValue<std::string>("centralhub.ip");

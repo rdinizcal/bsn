@@ -12,7 +12,7 @@
 #include "bsn/operation/Operation.hpp"
 
 #include "bsn/msg/control/OximeterControlCommand.hpp"
-#include "bsn/msg/taskMsg/ECG/OximeterCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/oximeter/OximeterCollectTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
 
@@ -21,8 +21,7 @@ class OximeterCollectModule : public odcore::base::module::TimeTriggeredConferen
     
 	private:
       	OximeterCollectModule(const OximeterCollectModule &);
-    	OximeterCollectModule &operator=(const OximeterCollect
-	Module &);
+    	OximeterCollectModule &operator=(const OximeterCollectModule &);
 
     	virtual void setUp();
     	virtual void tearDown();

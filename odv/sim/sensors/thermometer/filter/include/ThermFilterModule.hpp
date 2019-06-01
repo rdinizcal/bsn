@@ -12,8 +12,8 @@
 
 #include "bsn/msg/data/SensorData.h"
 
-#include "bsn/msg/taskMsg/ECG/ThermCollectTaskMsg.hpp"
-#include "bsn/msg/taskMsg/ECG/ThermFilterTaskMsg.hpp"
+#include "bsn/msg/taskMsg/thermometer/ThermometerCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/thermometer/ThermometerFilterTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
 
@@ -34,7 +34,7 @@ class ThermFilterModule : public odcore::base::module::TimeTriggeredConferenceCl
 
   	private:
 	    odcore::base::FIFOQueue buffer;
-		bsn::resource::Battery battery;
+		std::string type;	
 		bool active;
 		std::map<std::string,double> params;
 		bsn::filters::MovingAverage filter;

@@ -4,10 +4,6 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::resource;
-using namespace bsn::generator;
-using namespace bsn::operation;
-using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
@@ -33,8 +29,8 @@ void ThermFilterModule::tearDown() {
 
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::body(){
 
+    Container container;
     double data;
-    double type;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         /*
@@ -43,13 +39,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
             // TASK: Filter data with moving average
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-            data = container.getData<ThermCollectTaskMessage>().getData()
+            data = container.getData<ThermometerCollectTaskMessage>().getData();
 
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
             
-            ThermFilterTaskMessage sdata(data);
+            ThermometerFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);
         }

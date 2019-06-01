@@ -12,8 +12,8 @@
 
 #include "bsn/msg/data/SensorData.h"
 
-#include "bsn/msg/taskMsg/ECG/BloodpressureCollectTaskMsg.hpp"
-#include "bsn/msg/taskMsg/ECG/BloodpressureFilterTaskMsg.hpp"
+#include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureFilterTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
 

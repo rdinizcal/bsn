@@ -6,7 +6,6 @@ using namespace odcore::data;
 using namespace bsn::range;
 using namespace bsn::generator;
 using namespace bsn::operation;
-using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
@@ -14,7 +13,6 @@ OximeterCollectModule::OximeterCollectModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    available(true),
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
     markov()

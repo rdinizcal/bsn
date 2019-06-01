@@ -6,7 +6,6 @@ using namespace odcore::data;
 using namespace bsn::range;
 using namespace bsn::generator;
 using namespace bsn::operation;
-using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 

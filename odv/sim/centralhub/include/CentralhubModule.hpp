@@ -16,7 +16,8 @@
 #include "bsn/msg/data/SensorData.h"
 #include "bsn/msg/control/CentralHubControlCommand.hpp"
 
-
+// Módulo para receber mensagens dos tasks
+#include "bsn/msg/MessageQueueCodes.hpp"
 
 class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:

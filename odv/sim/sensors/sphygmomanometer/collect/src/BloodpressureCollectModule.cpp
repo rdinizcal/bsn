@@ -5,8 +5,7 @@ using namespace odcore::data;
 
 using namespace bsn::range;
 using namespace bsn::generator;
-using namespace bsn::operation;
-using namespace bsn::configuration;
+using namespace bsn::operation; 
 
 using namespace bsn::msg::taskMsg;
 
@@ -16,7 +15,8 @@ BloodpressureCollectModule::BloodpressureCollectModule(const int32_t &argc, char
     type("bloodpressure"),
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
-    markov()
+    markovSystolic(),
+    markovDiastolic()
     {}
 
 BloodpressureCollectModule::~BloodpressureCollectModule() {}
@@ -25,7 +25,7 @@ void BloodpressureCollectModule::setUp() {
     addDataStoreFor(BLOODPRESSURECOLLECTMODULE_MSG_QUE, buffer);
     
     Operation op;
-      for(int32_t i = 0; i < 2; i++){
+    for(int32_t i = 0; i < 2; i++){
         std::vector<string> t_probs;
         std::array<float, 25> transitions;
         std::array<bsn::range::Range,5> ranges;
@@ -59,8 +59,8 @@ void BloodpressureCollectModule::setUp() {
                 markovDiastolic = Markov(transitions, ranges, 2);
             }
         }
+    }
 }
-
 void BloodpressureCollectModule::tearDown() {
     
 }
@@ -69,8 +69,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectMo
 
     double dataS;
     double dataD;
-    double risk;
-
+    int i;
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         i = 0;

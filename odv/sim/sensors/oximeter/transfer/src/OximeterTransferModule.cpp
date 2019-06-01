@@ -4,7 +4,6 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::generator;
 using namespace bsn::operation;
 using namespace bsn::configuration;
 
@@ -14,7 +13,6 @@ OximeterTransferModule::OximeterTransferModule(const int32_t &argc, char **argv)
     TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
     buffer(),
     type("oximeter"),
-    available(true),
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
     sensorConfig()
@@ -25,10 +23,9 @@ OximeterTransferModule::~OximeterTransferModule() {}
 void OximeterTransferModule::setUp() {
     addDataStoreFor(OXIMETERTRANSFERMODULE_MSG_QUE, buffer);
     
-        Operation op;
+    Operation op;
     
     std::vector<string> t_probs;
-    std::array<float, 25> transitions;
     std::array<bsn::range::Range,5> ranges;
 
     { // Configure sensor configuration
@@ -74,11 +71,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
             
             // Recebe dados do Task anterior
             filterContainer = buffer.leave();
-            filterResponse = FilterContainer.getData<OximeterFilterTaskMessage>().getActive();
+            filterResponse = filterContainer.getData<OximeterFilterTaskMessage>().getData();
 
             risk = sensorConfig.evaluateNumber(filterResponse);
 
-            OximeterTransferTaskMessage cData(data);
+            OximeterTransferTaskMessage cData(risk);
             Container TransferContainer(cData);
             getConference().send(TransferContainer);
         }

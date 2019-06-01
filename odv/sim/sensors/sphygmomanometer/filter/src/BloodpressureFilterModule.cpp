@@ -4,9 +4,6 @@ using namespace odcore::base::module;
 using namespace odcore::data;
 
 using namespace bsn::range;
-using namespace bsn::generator;
-using namespace bsn::operation;
-using namespace bsn::configuration;
 
 using namespace bsn::msg::taskMsg;
 
@@ -65,9 +62,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
             Container filterContainer(filterMsg);
             getConference().send(filterContainer);
         
-            }
         }
     }
+    
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
 }

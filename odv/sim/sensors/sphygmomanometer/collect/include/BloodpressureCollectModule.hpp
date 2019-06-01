@@ -9,11 +9,11 @@
 
 #include "bsn/range/Range.hpp"
 #include "bsn/operation/Operation.hpp"
-#include "bsn/configuration/SensorConfiguration.hpp"
+#include "bsn/generator/Markov.hpp"
 
 #include "bsn/msg/control/BloodpressureControlCommand.hpp"
 
-#include "bsn/msg/taskMsg/ECG/BloodpressureCollectTaskMsg.hpp"
+#include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureCollectTaskMsg.hpp"
 #include "bsn/msg/MessageQueueCodes.hpp"
 
 
@@ -36,14 +36,11 @@ class BloodpressureCollectModule : public odcore::base::module::TimeTriggeredCon
 	    odcore::base::FIFOQueue buffer;
 		
 		std::string type;
-		bool available;
-
 		bool active;
 		std::map<std::string,double> params;
 
-		
-		bsn::configuration::SensorConfiguration sensorConfigSystolic;
-		bsn::configuration::SensorConfiguration sensorConfigDiastolic;
+		bsn::generator::Markov markovSystolic;
+		bsn::generator::Markov markovDiastolic;
 };
 
 #endif 

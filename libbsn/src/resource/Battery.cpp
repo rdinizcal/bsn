@@ -1,4 +1,4 @@
-#include "resource/Battery.hpp"
+#include "bsn/resource/Battery.hpp"
 
 namespace bsn {
     namespace resource {
