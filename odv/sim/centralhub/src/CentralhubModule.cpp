@@ -29,7 +29,7 @@ CentralhubModule::~CentralhubModule() {}
 
 void CentralhubModule::setUp() {
     addDataStoreFor(873, buffer);
-    addDataStoreFor(904, buffer);
+    addDataStoreFor(904, buffer);   
 
     addDataStoreFor(ECGTRANSFERMODULE_MSG_QUE, buffer);
     addDataStoreFor(OXIMETERTRANSFERMODULE_MSG_QUE, buffer);

@@ -1,6 +1,6 @@
 #include "ECGFilterModule.hpp"
 
-#define TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE 200
+#define TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE 1
 
 using namespace odcore::base::module;
 using namespace odcore::data;
@@ -10,7 +10,7 @@ using namespace bsn::range;
 using namespace bsn::msg::taskMsg;
 
 ECGFilterModule::ECGFilterModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
+    TimeTriggeredConferenceClientModule(argc, argv, "ecgfilter"),
     buffer(),
     type("ecg"),
     active(true),

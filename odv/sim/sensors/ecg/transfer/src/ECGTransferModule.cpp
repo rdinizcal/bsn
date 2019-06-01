@@ -10,7 +10,7 @@ using namespace bsn::configuration;
 using namespace bsn::msg::taskMsg;
 
 ECGTransferModule::ECGTransferModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
+    TimeTriggeredConferenceClientModule(argc, argv, "ecgtransfer"),
     buffer(),
     type("ecg"),
     active(true),

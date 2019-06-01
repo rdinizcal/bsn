@@ -10,7 +10,7 @@ using namespace bsn::configuration;
 using namespace bsn::msg::taskMsg;
 
 OximeterTransferModule::OximeterTransferModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
+    TimeTriggeredConferenceClientModule(argc, argv, "oximetertransfer"),
     buffer(),
     type("oximeter"),
     active(true),

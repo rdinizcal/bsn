@@ -8,7 +8,7 @@ using namespace bsn::range;
 using namespace bsn::msg::taskMsg;
 
 BloodpressureFilterModule::BloodpressureFilterModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "bloodpressure"),
+    TimeTriggeredConferenceClientModule(argc, argv, "bloodpressurefilter"),
     buffer(),
     type("bloodpressure"),
     active(true),

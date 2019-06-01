@@ -8,7 +8,7 @@ using namespace bsn::range;
 using namespace bsn::msg::taskMsg;
 
 ThermFilterModule::ThermFilterModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
+    TimeTriggeredConferenceClientModule(argc, argv, "thermometerfilter"),
     buffer(),
     type("thermometer"),
     active(true),

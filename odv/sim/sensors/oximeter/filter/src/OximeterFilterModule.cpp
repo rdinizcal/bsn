@@ -8,7 +8,7 @@ using namespace bsn::range;
 using namespace bsn::msg::taskMsg;
 
 OximeterFilterModule::OximeterFilterModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "oximeter"),
+    TimeTriggeredConferenceClientModule(argc, argv, "oximeterfilter"),
     buffer(),
     type("oximeter"),
     active(true),

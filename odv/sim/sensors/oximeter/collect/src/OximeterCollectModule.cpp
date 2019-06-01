@@ -76,7 +76,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule:
         while(i > 10){ // Receive control command and module update
             
             
-            // TASK: Collect ecg data
+            // TASK: Collect data
             data = markov.calculate_state();
             markov.next_state();              
 

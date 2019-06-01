@@ -34,7 +34,7 @@ void ThermCollectModule::setUp() {
 
     for(uint32_t i = 0; i < transitions.size(); i++){
         for(uint32_t j = 0; j < 5; j++){
-            t_probs = op.split(getKeyValueConfiguration().getValue<std::string>("ecg.state"+to_string(j)), ',');
+            t_probs = op.split(getKeyValueConfiguration().getValue<std::string>("thermometer.state"+to_string(j)), ',');
             for(uint32_t k = 0; k < 5; k++){
                 transitions[i++] = stod(t_probs[k]);
             }
@@ -44,11 +44,11 @@ void ThermCollectModule::setUp() {
     { // Configure markov chain
         std::vector<string> lrs,mrs0,hrs0,mrs1,hrs1;
 
-        lrs = op.split(getKeyValueConfiguration().getValue<string>("ecg.LowRisk"), ',');
-        mrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk0"), ',');
-        hrs0 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk0"), ',');
-        mrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.MidRisk1"), ',');
-        hrs1 = op.split(getKeyValueConfiguration().getValue<string>("ecg.HighRisk1"), ',');
+        lrs = op.split(getKeyValueConfiguration().getValue<string>("thermometer.LowRisk"), ',');
+        mrs0 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.MidRisk0"), ',');
+        hrs0 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.HighRisk0"), ',');
+        mrs1 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.MidRisk1"), ',');
+        hrs1 = op.split(getKeyValueConfiguration().getValue<string>("thermometer.HighRisk1"), ',');
 
         ranges[0] = Range(stod(hrs0[0]), stod(hrs0[1]));
         ranges[1] = Range(stod(mrs0[0]), stod(mrs0[1]));

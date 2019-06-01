@@ -10,7 +10,7 @@ using namespace bsn::configuration;
 using namespace bsn::msg::taskMsg;
 
 BloodpressureTransferModule::BloodpressureTransferModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "bloodpressure"),
+    TimeTriggeredConferenceClientModule(argc, argv, "bloodpressuretransfer"),
     buffer(),
     type("bloodpressure"),
     active(true),

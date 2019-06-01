@@ -10,7 +10,7 @@ using namespace bsn::configuration;
 using namespace bsn::msg::taskMsg;
 
 ThermTransferModule::ThermTransferModule(const int32_t &argc, char **argv) :
-    TimeTriggeredConferenceClientModule(argc, argv, "thermometer"),
+    TimeTriggeredConferenceClientModule(argc, argv, "thermometertransfer"),
     buffer(),
     type("thermometer"),
     active(true),
