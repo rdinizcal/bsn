@@ -73,7 +73,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::bo
         
         
         // Apenas executa uma vez a cada segundo
-        while(i > 10){ // Receive control command and module update
+        if (i==5){
+            sleep(3);
+        }
+        if(i > 10){ // Receive control command and module update
             data = markov.calculate_state();
             markov.next_state();      
 
