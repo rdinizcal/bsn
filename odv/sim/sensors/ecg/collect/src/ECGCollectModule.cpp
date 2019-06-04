@@ -8,6 +8,7 @@ using namespace bsn::generator;
 using namespace bsn::operation;
 
 using namespace bsn::msg::taskMsg;
+using namespace bsn::sensorfault;
 
 ECGCollectModule::ECGCollectModule(const int32_t &argc, char **argv) :
     TimeTriggeredConferenceClientModule(argc, argv, "ecg"),
@@ -15,7 +16,8 @@ ECGCollectModule::ECGCollectModule(const int32_t &argc, char **argv) :
     type("ecg"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    markov()
+    markov(),
+    falhaRand()
     {}
 
 ECGCollectModule::~ECGCollectModule() {}
@@ -71,15 +73,20 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
+
+
         // Apenas executa uma vez a cada segundo
         while(i > 10){ // Receive control command and module update
             
             
             // TASK: Collect ecg data
             data = markov.calculate_state();
-            markov.next_state();              
-
+            markov.next_state();                          
+            
+            
 
             // Send data from Collect task to Filter task
             ECGCollectTaskMessage collectMsg(data);

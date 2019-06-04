@@ -15,6 +15,7 @@
 #include "bsn/msg/taskMsg/ECG/ECGCollectTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class ECGCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -37,6 +38,7 @@ class ECGCollectModule : public odcore::base::module::TimeTriggeredConferenceCli
 		bool active;
 		std::map<std::string,double> params;
 		bsn::generator::Markov markov;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

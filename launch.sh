@@ -1,6 +1,6 @@
 bsn_folder=$PWD
 
-gnome-terminal --working-directory=${bsn_folder}/odv/sim/ -e 'sudo odsupercomponent --cid=111 --managed=simulation_rt --scheduling=fifo --freq=1 --realtime=2'    & sleep 3s
+gnome-terminal --working-directory=${bsn_folder}/odv/sim/ -e 'sudo odsupercomponent --cid=111 --managed=simulation_rt --scheduling=fifo --freq=1 --realtime=2 --configuration=/home/les-06/ODVEDF/odsupercomponent/configuration'    & sleep 3s
 
 echo "Terminal do ODV"
 
