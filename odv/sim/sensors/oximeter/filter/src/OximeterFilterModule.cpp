@@ -13,7 +13,8 @@ OximeterFilterModule::OximeterFilterModule(const int32_t &argc, char **argv) :
     type("oximeter"),
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
-    filter(5)
+    filter(5),
+    falhaRand()
     {}
 
 OximeterFilterModule::~OximeterFilterModule() {}
@@ -34,7 +35,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
+
         /*
          * Module execution
          */

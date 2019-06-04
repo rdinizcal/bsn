@@ -15,7 +15,8 @@ ECGTransferModule::ECGTransferModule(const int32_t &argc, char **argv) :
     type("ecg"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    sensorConfig()
+    sensorConfig(),
+    falhaRand()
     {}
 
 ECGTransferModule::~ECGTransferModule() {}
@@ -66,6 +67,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
     double risk;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
+
+
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();

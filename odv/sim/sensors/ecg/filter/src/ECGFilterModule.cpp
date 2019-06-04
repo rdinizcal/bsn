@@ -15,7 +15,8 @@ ECGFilterModule::ECGFilterModule(const int32_t &argc, char **argv) :
     type("ecg"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    filter(5)
+    filter(5),
+    falhaRand()
     {}
 
 ECGFilterModule::~ECGFilterModule() {}
@@ -52,6 +53,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
         /*
          * Module execution
          */
+
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
+
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
             data = container.getData<ECGCollectTaskMessage>().getData();

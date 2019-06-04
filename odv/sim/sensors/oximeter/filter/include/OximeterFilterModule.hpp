@@ -15,6 +15,7 @@
 #include "bsn/msg/MessageQueueCodes.hpp"
 #include "bsn/msg/taskMsg/oximeter/OximeterCollectTaskMsg.hpp"
 #include "bsn/msg/taskMsg/oximeter/OximeterFilterTaskMsg.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class OximeterFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -37,6 +38,7 @@ class OximeterFilterModule : public odcore::base::module::TimeTriggeredConferenc
 		bool active;
 		std::map<std::string,double> params;
 		bsn::filters::MovingAverage filter;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

@@ -15,6 +15,7 @@
 #include "bsn/msg/taskMsg/oximeter/OximeterCollectTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 
 class OximeterCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -38,7 +39,7 @@ class OximeterCollectModule : public odcore::base::module::TimeTriggeredConferen
 		bool active;
 		std::map<std::string,double> params;
 		bsn::generator::Markov markov;
-
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

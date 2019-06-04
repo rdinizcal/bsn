@@ -15,6 +15,7 @@
 #include "bsn/msg/taskMsg/ECG/ECGFilterTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class ECGFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -40,6 +41,7 @@ class ECGFilterModule : public odcore::base::module::TimeTriggeredConferenceClie
 		bool active;
 		std::map<std::string,double> params;
 		bsn::filters::MovingAverage filter;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

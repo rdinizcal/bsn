@@ -17,6 +17,8 @@
 #include "bsn/msg/MessageQueueCodes.hpp"
 #include "bsn/sensorfault/RandomSensorFault.hpp"
 
+
+
 class ECGCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
 	private:

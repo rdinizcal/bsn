@@ -15,6 +15,7 @@
 #include "bsn/msg/MessageQueueCodes.hpp"
 #include "bsn/msg/taskMsg/ECG/ECGTransferTaskMsg.hpp"
 #include "bsn/msg/taskMsg/ECG/ECGFilterTaskMsg.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class ECGTransferModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -37,6 +38,7 @@ class ECGTransferModule : public odcore::base::module::TimeTriggeredConferenceCl
 		bool active;
 		std::map<std::string,double> params;
 		bsn::configuration::SensorConfiguration sensorConfig;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

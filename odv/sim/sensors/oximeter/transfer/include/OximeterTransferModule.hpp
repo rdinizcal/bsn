@@ -17,6 +17,7 @@
 #include "bsn/msg/taskMsg/oximeter/OximeterTransferTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 
 class OximeterTransferModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -40,6 +41,7 @@ class OximeterTransferModule : public odcore::base::module::TimeTriggeredConfere
 		bool active;
 		std::map<std::string,double> params;
 		bsn::configuration::SensorConfiguration sensorConfig;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 
