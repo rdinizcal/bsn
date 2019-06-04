@@ -16,6 +16,7 @@
 #include "bsn/msg/taskMsg/thermometer/ThermometerFilterTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class ThermFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -38,6 +39,7 @@ class ThermFilterModule : public odcore::base::module::TimeTriggeredConferenceCl
 		bool active;
 		std::map<std::string,double> params;
 		bsn::filters::MovingAverage filter;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

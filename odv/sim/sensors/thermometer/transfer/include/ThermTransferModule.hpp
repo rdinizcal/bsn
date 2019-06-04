@@ -17,6 +17,7 @@
 #include "bsn/msg/taskMsg/thermometer/ThermometerTransferTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class ThermTransferModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -39,6 +40,7 @@ class ThermTransferModule : public odcore::base::module::TimeTriggeredConference
 		bool active;
 		std::map<std::string,double> params;
 		bsn::configuration::SensorConfiguration sensorConfig;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

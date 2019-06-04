@@ -15,6 +15,7 @@
 
 #include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureCollectTaskMsg.hpp"
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 
 class BloodpressureCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
@@ -41,6 +42,8 @@ class BloodpressureCollectModule : public odcore::base::module::TimeTriggeredCon
 
 		bsn::generator::Markov markovSystolic;
 		bsn::generator::Markov markovDiastolic;
+		
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

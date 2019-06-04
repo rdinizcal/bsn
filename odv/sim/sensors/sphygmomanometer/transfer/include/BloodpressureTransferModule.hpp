@@ -17,6 +17,7 @@
 #include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureTransferTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class BloodpressureTransferModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -40,6 +41,7 @@ class BloodpressureTransferModule : public odcore::base::module::TimeTriggeredCo
 		std::map<std::string,double> params;
 		bsn::configuration::SensorConfiguration sensorConfigSystolic;
 		bsn::configuration::SensorConfiguration sensorConfigDiastolic;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

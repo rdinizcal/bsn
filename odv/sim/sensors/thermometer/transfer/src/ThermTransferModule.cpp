@@ -15,7 +15,8 @@ ThermTransferModule::ThermTransferModule(const int32_t &argc, char **argv) :
     type("thermometer"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    sensorConfig()
+    sensorConfig(),
+    falhaRand()
     {}
 
 ThermTransferModule::~ThermTransferModule() {}
@@ -67,6 +68,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
 
         while(!buffer.isEmpty()){
            

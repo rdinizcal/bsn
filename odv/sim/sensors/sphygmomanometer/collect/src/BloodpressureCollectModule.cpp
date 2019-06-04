@@ -16,7 +16,8 @@ BloodpressureCollectModule::BloodpressureCollectModule(const int32_t &argc, char
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
     markovSystolic(),
-    markovDiastolic()
+    markovDiastolic(),
+    falhaRand()
     {}
 
 BloodpressureCollectModule::~BloodpressureCollectModule() {}
@@ -73,6 +74,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectMo
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
+
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
         i = 0;
         // Apenas executa uma vez a cada segundo
         while(i > 10){ // Receive control command and module update

@@ -16,7 +16,8 @@ ThermCollectModule::ThermCollectModule(const int32_t &argc, char **argv) :
     type("thermometer"),
     active(true),
     params({{"freq",0.9},{"m_avg",5}}),
-    markov()
+    markov(),
+    falhaRand()
     {}
 
 ThermCollectModule::~ThermCollectModule() {}
@@ -71,7 +72,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::bo
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
+
         // Apenas executa uma vez a cada segundo
         if (i==5){
             sleep(3);

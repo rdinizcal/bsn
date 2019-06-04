@@ -16,6 +16,7 @@
 #include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureFilterTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class BloodpressureFilterModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -41,6 +42,7 @@ class BloodpressureFilterModule : public odcore::base::module::TimeTriggeredConf
 		
 		bsn::filters::MovingAverage filterSystolic;
 		bsn::filters::MovingAverage filterDiastolic;
+		bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

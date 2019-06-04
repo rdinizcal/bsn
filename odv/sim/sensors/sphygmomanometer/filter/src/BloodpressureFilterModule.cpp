@@ -14,7 +14,8 @@ BloodpressureFilterModule::BloodpressureFilterModule(const int32_t &argc, char *
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
     filterSystolic(5),
-    filterDiastolic(5)
+    filterDiastolic(5),
+    falhaRand()
     {}
 
 BloodpressureFilterModule::~BloodpressureFilterModule() {}
@@ -38,6 +39,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
       
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 

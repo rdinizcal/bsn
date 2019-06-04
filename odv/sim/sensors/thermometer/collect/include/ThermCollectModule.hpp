@@ -16,6 +16,7 @@
 #include "bsn/msg/taskMsg/thermometer/ThermometerCollectTaskMsg.hpp"
 
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
 
 class ThermCollectModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     
@@ -38,6 +39,8 @@ class ThermCollectModule : public odcore::base::module::TimeTriggeredConferenceC
 		bool active;
 		std::map<std::string,double> params;
 		bsn::generator::Markov markov;
+		bsn::sensorfault::RandomSensorFault falhaRand;
+		
 };
 
 #endif 

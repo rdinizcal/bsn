@@ -16,7 +16,8 @@ BloodpressureTransferModule::BloodpressureTransferModule(const int32_t &argc, ch
     active(true),
     params({{"freq",0.90},{"m_avg",5}}),
     sensorConfigSystolic(),
-    sensorConfigDiastolic()
+    sensorConfigDiastolic(),
+    falhaRand()
     {}
 
 BloodpressureTransferModule::~BloodpressureTransferModule() {}
@@ -79,7 +80,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
         
 
       
-
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(41000);
+        }
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
