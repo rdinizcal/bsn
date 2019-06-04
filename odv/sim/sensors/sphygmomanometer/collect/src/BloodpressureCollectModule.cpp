@@ -70,17 +70,17 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectMo
 
     double dataS;
     double dataD;
-    int i;
+    
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
 
         if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+                usleep(50000);
         }
-        i = 0;
+        
         // Apenas executa uma vez a cada segundo
-        while(i > 10){ // Receive control command and module update
+        
             dataS = markovSystolic.calculate_state();
             dataD = markovDiastolic.calculate_state();
 
@@ -90,9 +90,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectMo
             BloodpressureCollectTaskMessage collectMsg(dataS, dataD);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
-            i = 0;
-        }        
-        i++;
+           
             
     }
 

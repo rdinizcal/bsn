@@ -22,6 +22,7 @@ ThermTransferModule::ThermTransferModule(const int32_t &argc, char **argv) :
 ThermTransferModule::~ThermTransferModule() {}
 
 void ThermTransferModule::setUp() {
+    addDataStoreFor(THERMFILTERMODULE_MSG_QUE, buffer);
     addDataStoreFor(THERMTRANSFERMODULE_MSG_QUE, buffer);
 
      Operation op;
@@ -68,8 +69,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
 
         while(!buffer.isEmpty()){
@@ -80,6 +82,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(filterResponse);
             
+            if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+            }
+
+
             ThermometerTransferTaskMessage sdata(risk);
             Container transferContainer(sdata);
             getConference().send(transferContainer);

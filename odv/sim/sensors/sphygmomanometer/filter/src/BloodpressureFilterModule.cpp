@@ -21,6 +21,7 @@ BloodpressureFilterModule::BloodpressureFilterModule(const int32_t &argc, char *
 BloodpressureFilterModule::~BloodpressureFilterModule() {}
 
 void BloodpressureFilterModule::setUp() {
+    addDataStoreFor(BLOODPRESSURECOLLECTMODULE_MSG_QUE, buffer);
     addDataStoreFor(BLOODPRESSUREFILTERMODULE_MSG_QUE, buffer);
     
 }
@@ -39,9 +40,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
       
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
-        }
+        
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
+        } 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
@@ -52,6 +55,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
          * Module execution
          */
         
+
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+        }
+
         // TASK: Filter data with moving average
             filterSystolic.setRange(params["m_avg"]);
             filterSystolic.insert(dataS, "bpms");

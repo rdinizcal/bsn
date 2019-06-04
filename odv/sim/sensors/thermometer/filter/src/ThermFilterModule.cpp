@@ -20,6 +20,7 @@ ThermFilterModule::ThermFilterModule(const int32_t &argc, char **argv) :
 ThermFilterModule::~ThermFilterModule() {}
 
 void ThermFilterModule::setUp() {
+    addDataStoreFor(THERMCOLLECTMODULE_MSG_QUE, buffer);
     addDataStoreFor(THERMFILTERMODULE_MSG_QUE, buffer);
     
 }
@@ -35,8 +36,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
         /*
          * Module execution
@@ -50,6 +52,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
             filter.insert(data, type);
             data = filter.getValue(type);
             
+            if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+            }
+
             ThermometerFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);

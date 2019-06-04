@@ -18,6 +18,12 @@
 
 // Módulo para receber mensagens dos tasks
 #include "bsn/msg/MessageQueueCodes.hpp"
+#include "bsn/sensorfault/RandomSensorFault.hpp"
+
+#include "bsn/msg/taskMsg/ECG/ECGTransferTaskMsg.hpp"
+#include "bsn/msg/taskMsg/oximeter/OximeterTransferTaskMsg.hpp"
+#include "bsn/msg/taskMsg/sphygmomanometer/BloodpressureTransferTaskMsg.hpp"
+#include "bsn/msg/taskMsg/thermometer/ThermometerTransferTaskMsg.hpp"
 
 class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceClientModule{
     private:
@@ -50,6 +56,7 @@ class CentralhubModule : public odcore::base::module::TimeTriggeredConferenceCli
         uint32_t persist;
         std::ofstream fp;
         std::string path;
+        bsn::sensorfault::RandomSensorFault falhaRand;
 };
 
 #endif 

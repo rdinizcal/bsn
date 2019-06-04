@@ -24,7 +24,7 @@ ECGCollectModule::~ECGCollectModule() {}
 
 void ECGCollectModule::setUp() {
 
-    addDataStoreFor(ECGTRANSFERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(ECGCOLLECTMODULE_MSG_QUE, buffer);
     
     // Configure sensor configuration    
     Operation op;
@@ -69,33 +69,29 @@ void ECGCollectModule::tearDown() {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body() {
   
     double data;
-    int i = 0;
-
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+                usleep(50000);
         }
 
 
         // Apenas executa uma vez a cada segundo
-        while(i > 10){ // Receive control command and module update
+        // Receive control command and module update
             
             
             // TASK: Collect ecg data
-            data = markov.calculate_state();
-            markov.next_state();                          
-            
-            
+                data = markov.calculate_state();
+                markov.next_state();                          
+                
+                
 
-            // Send data from Collect task to Filter task
-            ECGCollectTaskMessage collectMsg(data);
-            Container collectContainer(collectMsg);
-            getConference().send(collectContainer);
-            i = 0;
-        }   
-
-        i++;
+                // Send data from Collect task to Filter task
+                ECGCollectTaskMessage collectMsg(data);
+                Container collectContainer(collectMsg);
+                getConference().send(collectContainer);
+            
             
     }
 

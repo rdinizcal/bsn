@@ -23,7 +23,8 @@ TimeTriggeredConferenceClientModule(argc, argv, "centralhub"),
     ip("localhost"),
     persist(1),
     fp(),
-    path("centralhub_output.csv") {}
+    path("centralhub_output.csv"),
+    falhaRand() {}
 	
 CentralhubModule::~CentralhubModule() {}
 
@@ -96,6 +97,16 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
         while(!buffer.isEmpty()){
             
             container = buffer.leave();
+            
+/*
+            if(container.getDataType()!=ECGTRANSFERMODULE_MSG_QUE &&
+               container.getDataType()!=OXIMETERTRANSFERMODULE_MSG_QUE &&
+               container.getDataType()!=BLOODPRESSURETRANSFERMODULE_MSG_QUE &&
+               container.getDataType()!=THERMTRANSFERMODULE_MSG_QUE
+            ){
+                // Se não recebeu nenhuma mensagem, falha
+                usleep(50000);
+            }*/
 
             if(container.getDataType()==904){
                 active = container.getData<CentralHubControlCommand>().getActive();
@@ -105,6 +116,24 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                 Container ncont(container.getData<SensorData>());
                 localQueue.add(ncont);
             }
+            /*
+            if(container.getDataType()==ECGTRANSFERMODULE_MSG_QUE){
+                Container ncont(container.getData<bsn::msg::taskMsg::ECGTransferTaskMessage>());
+                localQueue.add(ncont);
+            }            
+            if(container.getDataType()==OXIMETERTRANSFERMODULE_MSG_QUE){
+                Container ncont(container.getData<bsn::msg::taskMsg::OximeterTransferTaskMessage>());
+                localQueue.add(ncont);
+            }
+            if(container.getDataType()==BLOODPRESSURETRANSFERMODULE_MSG_QUE){
+                Container ncont(container.getData<bsn::msg::taskMsg::BloodpressureTransferTaskMessage>());
+                localQueue.add(ncont);
+            }
+            if(container.getDataType()==THERMTRANSFERMODULE_MSG_QUE){
+                Container ncont(container.getData<bsn::msg::taskMsg::ThermometerTransferTaskMessage>());
+                localQueue.add(ncont);
+            }*/
+            
         }
         
         /*sets the centralhub reliability based on the number of messages to process (fibonacci)*/
@@ -232,6 +261,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                 cout << "*****************************************" << endl;
             }
         }
+           if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+        }
+
+
 
     }
 

@@ -22,7 +22,7 @@ ECGFilterModule::ECGFilterModule(const int32_t &argc, char **argv) :
 ECGFilterModule::~ECGFilterModule() {}
 
 void ECGFilterModule::setUp() {
-    
+    addDataStoreFor(ECGCOLLECTMODULE_MSG_QUE, buffer);
     addDataStoreFor(ECGFILTERMODULE_MSG_QUE, buffer);
 
 }
@@ -53,12 +53,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
         /*
          * Module execution
          */
-
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
 
+        int flag = 0;
         while(!buffer.isEmpty()){ // Receive control command and module update
+            flag = 1;
             container = buffer.leave();
             data = container.getData<ECGCollectTaskMessage>().getData();
 
@@ -69,6 +72,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             data = data*noise;
             bool passou = Oraculo(data);
 
+            if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+        }
+
             if(!passou)
                 sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
 
@@ -77,7 +84,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             getConference().send(filterContainer);
 
         }    
-
+        if (!flag) usleep(50000);
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

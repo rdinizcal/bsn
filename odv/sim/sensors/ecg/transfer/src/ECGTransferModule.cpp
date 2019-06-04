@@ -22,6 +22,7 @@ ECGTransferModule::ECGTransferModule(const int32_t &argc, char **argv) :
 ECGTransferModule::~ECGTransferModule() {}
 
 void ECGTransferModule::setUp() {
+    addDataStoreFor(ECGFILTERMODULE_MSG_QUE, buffer);
     addDataStoreFor(ECGTRANSFERMODULE_MSG_QUE, buffer);
     
     Operation op;
@@ -69,19 +70,37 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
 
 
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
+        
 
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
+
+
+            if (container.getDataType()!=ECGFILTERMODULE_MSG_QUE){
+                //Falha : A mensagem recebida não é do tipo esperado
+                usleep(50000);
+            }
+
+
             filterResponse = container.getData<ECGFilterTaskMessage>().getData();
             
             
+
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(filterResponse);
             
-            ECGFilterTaskMessage data(risk);
+
+            if(falhaRand.seOcorreuFalha() ){
+                    //Falha
+                    usleep(50000);
+            }
+
+            ECGTransferTaskMessage data(risk);
             Container transferContainer(data);
             getConference().send(transferContainer);
        }

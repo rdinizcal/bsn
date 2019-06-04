@@ -1,6 +1,6 @@
 bsn_folder=$PWD
 
-gnome-terminal --working-directory=${bsn_folder}/odv/sim/ -e 'sudo odsupercomponent --cid=111 --managed=simulation_rt --scheduling=fifo --freq=1 --realtime=2 --configuration=/home/les-06/ODVEDF/odsupercomponent/configuration'    & sleep 3s
+gnome-terminal --working-directory=${bsn_folder}/odv/sim/ -e 'sudo odsupercomponent --cid=111 --managed=simulation_rt --scheduling=fifo --freq=1 --realtime=2 --configuration=/home/les-06/ODVEDF/odsupercomponent/configuration >> result_su.txt'    & sleep 3s
 
 echo "Terminal do ODV"
 
@@ -33,7 +33,7 @@ ${bsn_folder}/odv/sim/sensors/sphygmomanometer/transfer/build/bloodpressuretrans
 
 # execute central hub
 echo "Terminal do centralhub"
-gnome-terminal --working-directory=${bsn_folder} -e './odv/sim/centralhub/build/centralhub --cid=111'                       & sleep 30s
+gnome-terminal --working-directory=${bsn_folder} -e './odv/sim/centralhub/build/centralhub --cid=111 >> result_ch.txt'                       & sleep 30s
 
 # jokers instances to clog the centralhub channel
 #${bsn_folder}/odv/sim/sensors/joker/build/joker --cid=111 --id=0 & sleep 1s

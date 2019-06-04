@@ -23,6 +23,7 @@ OximeterTransferModule::~OximeterTransferModule() {}
 
 void OximeterTransferModule::setUp() {
     addDataStoreFor(OXIMETERTRANSFERMODULE_MSG_QUE, buffer);
+    addDataStoreFor(OXIMETERFILTERMODULE_MSG_QUE, buffer);
     
     Operation op;
     
@@ -67,9 +68,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        
+        
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
+        
         
         while(!buffer.isEmpty()){ // Receive control command and module update
             
@@ -79,6 +84,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
 
             risk = sensorConfig.evaluateNumber(filterResponse);
 
+
+
+            if(falhaRand.seOcorreuFalha() ){
+                    usleep(50000);
+            }
             OximeterTransferTaskMessage cData(risk);
             Container TransferContainer(cData);
             getConference().send(TransferContainer);

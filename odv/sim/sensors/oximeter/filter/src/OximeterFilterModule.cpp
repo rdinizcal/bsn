@@ -20,7 +20,7 @@ OximeterFilterModule::OximeterFilterModule(const int32_t &argc, char **argv) :
 OximeterFilterModule::~OximeterFilterModule() {}
 
 void OximeterFilterModule::setUp() {
-    
+    addDataStoreFor(OXIMETERCOLLECTMODULE_MSG_QUE, buffer);
     addDataStoreFor(OXIMETERFILTERMODULE_MSG_QUE, buffer);
 }
 
@@ -35,9 +35,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        
+        
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
+        
 
         /*
          * Module execution
@@ -51,7 +55,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
-            
+
+            if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+        }
+
             OximeterFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);

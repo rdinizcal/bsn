@@ -74,11 +74,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule:
         
 
         if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+                usleep(50000);
         }
         i = 0;
         // Apenas executa uma vez a cada segundo
-        while(i > 10){ // Receive control command and module update
+        
             
             
             // TASK: Collect data
@@ -90,10 +90,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule:
             OximeterCollectTaskMessage collectMsg(data);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
-            i = 0;
-        }   
-
-        i++;
+       
             
     }
 

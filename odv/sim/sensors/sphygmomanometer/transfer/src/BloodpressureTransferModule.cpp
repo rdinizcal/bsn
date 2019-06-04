@@ -24,6 +24,7 @@ BloodpressureTransferModule::~BloodpressureTransferModule() {}
 
 void BloodpressureTransferModule::setUp() {
     //srand(time(NULL));
+    addDataStoreFor(BLOODPRESSUREFILTERMODULE_MSG_QUE, buffer);
     addDataStoreFor(BLOODPRESSURETRANSFERMODULE_MSG_QUE, buffer);
 
     Operation op;
@@ -78,11 +79,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-
-      
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+        
+        if (buffer.isEmpty()){
+            //Falha
+            usleep(50000);
         }
+        
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
@@ -94,7 +96,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
          * Module execution
          */        
             
-        //TASK: Transfer information to CentralHub
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(50000);
+        }
+            //TASK: Transfer information to CentralHub
             riskS = sensorConfigSystolic.evaluateNumber(filterS);
             BloodpressureTransferTaskMessage transferSMsg(riskS);
             Container transferSContainer(transferSMsg);

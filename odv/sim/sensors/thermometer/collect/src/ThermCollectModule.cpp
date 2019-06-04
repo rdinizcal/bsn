@@ -73,23 +73,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::bo
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(falhaRand.seOcorreuFalha() ){
-                usleep(41000);
+                usleep(50000);
         }
 
         // Apenas executa uma vez a cada segundo
-        if (i==5){
-            sleep(3);
-        }
-        if(i > 10){ // Receive control command and module update
+       
+         // Receive control command and module update
             data = markov.calculate_state();
             markov.next_state();      
 
             ThermometerCollectTaskMessage collectMsg(data);
             Container collectContainer(collectMsg);
             getConference().send(collectContainer);
-            i = 0;
-        }
-        i++;
+          
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;
