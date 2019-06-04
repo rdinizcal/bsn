@@ -105,7 +105,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                container.getDataType()!=THERMTRANSFERMODULE_MSG_QUE
             ){
                 // Se não recebeu nenhuma mensagem, falha
-                usleep(50000);
+                usleep(40000);
             }*/
 
             if(container.getDataType()==904){
@@ -262,7 +262,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
             }
         }
            if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
 
 

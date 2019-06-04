@@ -73,7 +73,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::bo
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
 
         // Apenas executa uma vez a cada segundo

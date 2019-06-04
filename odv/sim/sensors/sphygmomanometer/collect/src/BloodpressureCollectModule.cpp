@@ -76,7 +76,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureCollectMo
         
 
         if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
         
         // Apenas executa uma vez a cada segundo

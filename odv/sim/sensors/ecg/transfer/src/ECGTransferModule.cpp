@@ -73,7 +73,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
         
 
@@ -83,7 +83,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
 
             if (container.getDataType()!=ECGFILTERMODULE_MSG_QUE){
                 //Falha : A mensagem recebida não é do tipo esperado
-                usleep(50000);
+                usleep(40000);
             }
 
 
@@ -97,7 +97,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGTransferModule::bod
 
             if(falhaRand.seOcorreuFalha() ){
                     //Falha
-                    usleep(50000);
+                    usleep(40000);
             }
 
             ECGTransferTaskMessage data(risk);

@@ -74,7 +74,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule:
         
 
         if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
         i = 0;
         // Apenas executa uma vez a cada segundo

@@ -39,7 +39,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
         
 
@@ -57,7 +57,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
             data = filter.getValue(type);
 
             if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
 
             OximeterFilterTaskMessage sdata(data);

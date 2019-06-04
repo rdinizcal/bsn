@@ -82,7 +82,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
         
         while(!buffer.isEmpty()){ // Receive control command and module update
@@ -97,7 +97,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
          */        
             
         if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
             //TASK: Transfer information to CentralHub
             riskS = sensorConfigSystolic.evaluateNumber(filterS);

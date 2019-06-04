@@ -73,7 +73,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGCollectModule::body
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
 
 

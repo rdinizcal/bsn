@@ -56,7 +56,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
 
         int flag = 0;
@@ -73,7 +73,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             bool passou = Oraculo(data);
 
             if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
         }
 
             if(!passou)
@@ -84,7 +84,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             getConference().send(filterContainer);
 
         }    
-        if (!flag) usleep(50000);
+        if (!flag) usleep(40000);
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

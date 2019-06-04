@@ -72,7 +72,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
         
         
@@ -87,7 +87,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
 
 
             if(falhaRand.seOcorreuFalha() ){
-                    usleep(50000);
+                    usleep(40000);
             }
             OximeterTransferTaskMessage cData(risk);
             Container TransferContainer(cData);

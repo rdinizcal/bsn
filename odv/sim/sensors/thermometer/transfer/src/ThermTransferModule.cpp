@@ -71,7 +71,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
 
         while(!buffer.isEmpty()){
@@ -83,7 +83,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
             risk = sensorConfig.evaluateNumber(filterResponse);
             
             if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
             }
 
 

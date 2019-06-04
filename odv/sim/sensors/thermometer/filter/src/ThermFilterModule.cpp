@@ -38,7 +38,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
         
         if (buffer.isEmpty()){
             //Falha
-            usleep(50000);
+            usleep(40000);
         }
         /*
          * Module execution
@@ -53,7 +53,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
             data = filter.getValue(type);
             
             if(falhaRand.seOcorreuFalha() ){
-                usleep(50000);
+                usleep(40000);
             }
 
             ThermometerFilterTaskMessage sdata(data);
