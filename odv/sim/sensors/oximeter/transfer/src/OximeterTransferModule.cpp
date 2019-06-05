@@ -68,14 +68,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        
-        
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
-        }
-        
-        
+        if(falhaRand.seOcorreuFalha() ){
+                    usleep(40000);
+            }
+
         while(!buffer.isEmpty()){ // Receive control command and module update
             
             // Recebe dados do Task anterior
@@ -83,12 +79,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterTransferModule
             filterResponse = filterContainer.getData<OximeterFilterTaskMessage>().getData();
 
             risk = sensorConfig.evaluateNumber(filterResponse);
-
-
-
-            if(falhaRand.seOcorreuFalha() ){
-                    usleep(40000);
-            }
+           
             OximeterTransferTaskMessage cData(risk);
             Container TransferContainer(cData);
             getConference().send(TransferContainer);

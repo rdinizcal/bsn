@@ -40,11 +40,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
       
-        
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
-        } 
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000);
+        }
+
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
 
@@ -54,12 +53,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureFilterMod
         /*
          * Module execution
          */
-        
-
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-        }
-
+      
         // TASK: Filter data with moving average
             filterSystolic.setRange(params["m_avg"]);
             filterSystolic.insert(dataS, "bpms");

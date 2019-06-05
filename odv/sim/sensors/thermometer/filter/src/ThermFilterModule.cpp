@@ -36,10 +36,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000); 
         }
+
         /*
          * Module execution
          */
@@ -51,11 +51,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermFilterModule::bod
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
-            
-            if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-            }
-
+     
             ThermometerFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);

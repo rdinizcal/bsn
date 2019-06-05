@@ -68,7 +68,6 @@ void ThermCollectModule::tearDown() {
 odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermCollectModule::body(){
 
     double data;
-    int i = 0;
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         

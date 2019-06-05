@@ -68,23 +68,19 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterCollectModule:
 
     double data;
     double risk;
-    int i = 0;
-
+    
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
 
         if(falhaRand.seOcorreuFalha() ){
                 usleep(40000);
         }
-        i = 0;
+
         // Apenas executa uma vez a cada segundo
-        
-            
-            
+          
             // TASK: Collect data
             data = markov.calculate_state();
             markov.next_state();              
-
 
             // Send data from Collect task to Filter task
             OximeterCollectTaskMessage collectMsg(data);

@@ -53,15 +53,13 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
         /*
          * Module execution
          */
-        
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
-        }
 
-        int flag = 0;
+
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000);
+        }
         while(!buffer.isEmpty()){ // Receive control command and module update
-            flag = 1;
+
             container = buffer.leave();
             data = container.getData<ECGCollectTaskMessage>().getData();
 
@@ -72,19 +70,15 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ECGFilterModule::body(
             data = data*noise;
             bool passou = Oraculo(data);
 
-            if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-        }
-
-            if(!passou)
-                sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
+            
+            //if(!passou)
+                //sleep(TIMEOUT_PADRAO_ECG_FAULT_TOLERANCE);
 
             ECGFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
             getConference().send(filterContainer);
 
         }    
-        if (!flag) usleep(40000);
     }
 
     return odcore::data::dmcp::ModuleExitCodeMessage::OKAY;

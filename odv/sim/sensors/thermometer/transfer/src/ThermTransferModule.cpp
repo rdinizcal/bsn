@@ -69,10 +69,9 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
     
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
-        }
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000);
+            }
 
         while(!buffer.isEmpty()){
            
@@ -82,11 +81,6 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode ThermTransferModule::b
             // TASK: Transfer information to CentralHub
             risk = sensorConfig.evaluateNumber(filterResponse);
             
-            if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-            }
-
-
             ThermometerTransferTaskMessage sdata(risk);
             Container transferContainer(sdata);
             getConference().send(transferContainer);

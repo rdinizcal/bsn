@@ -80,9 +80,8 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
         
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000);
         }
         
         while(!buffer.isEmpty()){ // Receive control command and module update
@@ -91,14 +90,10 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
             filterS = container.getData<BloodpressureFilterTaskMessage>().getDataS();
             filterD = container.getData<BloodpressureFilterTaskMessage>().getDataD();        
 
-       
         /*
          * Module execution
          */        
             
-        if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-        }
             //TASK: Transfer information to CentralHub
             riskS = sensorConfigSystolic.evaluateNumber(filterS);
             BloodpressureTransferTaskMessage transferSMsg(riskS);

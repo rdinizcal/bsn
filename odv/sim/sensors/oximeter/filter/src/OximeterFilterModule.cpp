@@ -35,30 +35,21 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode OximeterFilterModule::
 
     while (getModuleStateAndWaitForRemainingTimeInTimeslice() == odcore::data::dmcp::ModuleStateMessage::RUNNING) {
         
-        
-        
-        if (buffer.isEmpty()){
-            //Falha
-            usleep(40000);
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000);
         }
-        
 
         /*
          * Module execution
          */
         while(!buffer.isEmpty()){ // Receive control command and module update
             container = buffer.leave();
-
             data = container.getData<OximeterCollectTaskMessage>().getData();
             
          // TASK: Filter data with moving average
             filter.setRange(params["m_avg"]);
             filter.insert(data, type);
             data = filter.getValue(type);
-
-            if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-        }
 
             OximeterFilterTaskMessage sdata(data);
             Container filterContainer(sdata);
