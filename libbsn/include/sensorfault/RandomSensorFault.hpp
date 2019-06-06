@@ -13,8 +13,8 @@ namespace bsn {
             std::default_random_engine gerador;
             std::normal_distribution<double> distribuicaoErro;
             const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-            double const chanceFalha = 0.05;    
-            const double z = 1.64;
+            //chanceFalha = 0.10, chancesucesso = 0.90 para dist > z;    
+            const double z = 1.29;
         };
     }
 }

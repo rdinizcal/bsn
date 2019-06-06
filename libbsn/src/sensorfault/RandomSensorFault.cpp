@@ -13,6 +13,7 @@ namespace bsn {
         bool RandomSensorFault::seOcorreuFalha(void){
             
             return distribuicaoErro(gerador) >= z;
+            
         }
 
     }

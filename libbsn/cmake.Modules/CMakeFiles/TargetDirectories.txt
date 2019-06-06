@@ -1,0 +1,9 @@
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/install/strip.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/install/local.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/bsn-static.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/install.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/bsn.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/bsn-core.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/edit_cache.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/rebuild_cache.dir
+/home/les-06/Documentos/odvbsn/libbsn/cmake.Modules/CMakeFiles/list_install_components.dir

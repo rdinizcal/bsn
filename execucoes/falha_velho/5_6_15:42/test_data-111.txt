@@ -1,0 +1,14 @@
+Service	Invocations	Failures
+bloodpressure-0	214	51
+bloodpressurefilter-0	213	10
+bloodpressuretransfer-0	212	74
+centralhub-0	209	14
+ecg-0	223	10
+ecgfilter-0	222	15
+ecgtransfer-0	221	46
+oximeter-0	217	23
+oximeterfilter-0	216	19
+oximetertransfer-0	215	36
+thermometer-0	220	19
+thermometerfilter-0	219	27
+thermometertransfer-0	218	51

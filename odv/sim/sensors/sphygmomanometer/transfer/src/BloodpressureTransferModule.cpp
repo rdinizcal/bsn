@@ -88,7 +88,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
             container = buffer.leave();
 
             filterS = container.getData<BloodpressureFilterTaskMessage>().getDataS();
-            filterD = container.getData<BloodpressureFilterTaskMessage>().getDataD();        
+            //filterD = container.getData<BloodpressureFilterTaskMessage>().getDataD();        
 
         /*
          * Module execution
@@ -99,12 +99,12 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode BloodpressureTransferM
             BloodpressureTransferTaskMessage transferSMsg(riskS);
             Container transferSContainer(transferSMsg);
             getConference().send(transferSContainer);
-
+            /*
             riskD = sensorConfigDiastolic.evaluateNumber(filterD);
             BloodpressureTransferTaskMessage transferDMsg(riskD);
             Container transferDContainer(transferDMsg);
             getConference().send(transferDContainer);
-
+            */
         }
     }
 

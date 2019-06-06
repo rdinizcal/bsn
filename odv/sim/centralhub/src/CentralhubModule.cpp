@@ -94,6 +94,11 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
         received = false;
         cout << "operating frequency: " << params["freq"] << endl;
 
+        if(falhaRand.seOcorreuFalha() ){
+                usleep(40000);
+        }
+
+
         while(!buffer.isEmpty()){
             
             container = buffer.leave();
@@ -261,9 +266,7 @@ odcore::data::dmcp::ModuleExitCodeMessage::ModuleExitCode CentralhubModule::body
                 cout << "*****************************************" << endl;
             }
         }
-           if(falhaRand.seOcorreuFalha() ){
-                usleep(40000);
-        }
+           
 
 
 
